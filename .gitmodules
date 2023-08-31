@@ -1,0 +1,48 @@
+[submodule "deps/imgui"]
+	path = deps/imgui
+	url = https://github.com/fedddddd/imgui.git
+[submodule "deps/GSL"]
+	path = deps/GSL
+	url = https://github.com/Microsoft/GSL.git
+[submodule "deps/libtommath"]
+	path = deps/libtommath
+	url = https://github.com/libtom/libtommath.git
+[submodule "deps/libtomcrypt"]
+	path = deps/libtomcrypt
+	url = https://github.com/libtom/libtomcrypt.git
+[submodule "deps/zlib"]
+	path = deps/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "deps/json"]
+	path = deps/json
+	url = https://github.com/nlohmann/json.git
+[submodule "deps/curl"]
+	path = deps/curl
+	url = https://github.com/curl/curl.git
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/fedddddd/imgui.git
+[submodule "GSL"]
+	path = GSL
+	url = https://github.com/Microsoft/GSL.git
+[submodule "libtommath"]
+	path = libtommath
+	url = https://github.com/libtom/libtommath.git
+[submodule "libtomcrypt"]
+	path = libtomcrypt
+	url = https://github.com/libtom/libtomcrypt.git
+[submodule "zlib"]
+	path = zlib
+	url = https://github.com/madler/zlib.git
+[submodule "json"]
+	path = json
+	url = https://github.com/nlohmann/json.git
+[submodule "deps/DPP"]
+	path = deps/DPP
+	url = https://github.com/brainboxdotcc/DPP.git
+[submodule "deps/openssl"]
+	path = deps/openssl
+	url = https://github.com/openssl/openssl.git
+[submodule "deps/mongoose"]
+	path = deps/mongoose
+	url = https://github.com/cesanta/mongoose.git
