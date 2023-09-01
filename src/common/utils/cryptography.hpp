@@ -308,6 +308,8 @@ namespace utils::cryptography
 		}
 	};
 
+	// https://github.com/unknown321/mgsv_emulator/blob/master/emulator/blowfish.py
+
 	class blowfish
 	{
 	public:

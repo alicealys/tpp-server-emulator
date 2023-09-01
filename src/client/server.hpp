@@ -24,7 +24,7 @@ namespace tpp
 			return {};
 		}
 
-		virtual std::string encrypt_response(const std::string& msgid, nlohmann::json data)
+		virtual std::string encrypt_response(const std::uint32_t rq_id, const std::string& msgid, nlohmann::json data)
 		{
 			return {};
 		}
@@ -87,4 +87,6 @@ namespace tpp
 		std::unordered_map<std::string, std::unique_ptr<platform_handler>> platform_handlers_;
 
 	};
+
+	int start_server();
 }
