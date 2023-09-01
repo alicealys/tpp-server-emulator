@@ -75,6 +75,9 @@
 
 #include <gsl/gsl>
 
+#include <mongoose.h>
+#include <json.hpp>
+
 #pragma warning(pop)
 #pragma warning(disable: 4100)
 
@@ -83,5 +86,7 @@
 #pragma comment(lib, "urlmon.lib" )
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "Crypt32.lib")
+
+#include "resource.hpp"
 
 using namespace std::literals;
