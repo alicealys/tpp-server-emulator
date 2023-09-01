@@ -220,7 +220,7 @@ newaction {
 dependencies.load()
 
 workspace "tpp-server-emulator"
-startproject "client"
+startproject "server"
 location "./build"
 objdir "%{wks.location}/obj"
 targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
@@ -280,20 +280,20 @@ resincludedirs {"$(ProjectDir)src"}
 
 dependencies.imports()
 
-project "client"
+project "server"
 kind "ConsoleApp"
 language "C++"
 
 targetname "tpp-server-emulator"
 
 pchheader "std_include.hpp"
-pchsource "src/client/std_include.cpp"
+pchsource "src/server/std_include.cpp"
 
 linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
 
-files {"./src/client/**.rc", "./src/client/**.hpp", "./src/client/**.cpp"}
+files {"./src/server/**.rc", "./src/server/**.hpp", "./src/server/**.cpp"}
 
-includedirs {"./src/client", "./src/common", "%{prj.location}/src"}
+includedirs {"./src/server", "./src/common", "%{prj.location}/src"}
 
 resincludedirs {"$(ProjectDir)src"}
 
