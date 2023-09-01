@@ -1,12 +1,10 @@
 #include <std_include.hpp>
 
-#include "get_svrlist.hpp"
-
-#define HOSTNAME "http://localhost:80/"
+#include "cmd_get_svrlist.hpp"
 
 namespace tpp
 {
-	nlohmann::json get_svrlist_handler::execute(const nlohmann::json& data)
+	nlohmann::json cmd_get_svrlist::execute(const nlohmann::json& data)
 	{
 		nlohmann::json result;
 

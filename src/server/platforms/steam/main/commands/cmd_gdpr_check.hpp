@@ -1,10 +1,10 @@
 #pragma once
 
-#include "server.hpp"
+#include "types/command_handler.hpp"
 
 namespace tpp
 {
-	class get_svrtime_handler : public command_handler
+	class cmd_gdpr_check : public command_handler
 	{
 		nlohmann::json execute(const nlohmann::json& data) override;
 	};

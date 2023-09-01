@@ -1,12 +1,12 @@
 #include <std_include.hpp>
 
-#include "get_svrtime.hpp"
+#include "cmd_get_svrtime.hpp"
 
 #define HOSTNAME "http://localhost:80/"
 
 namespace tpp
 {
-	nlohmann::json get_svrtime_handler::execute(const nlohmann::json& data)
+	nlohmann::json cmd_get_svrtime::execute(const nlohmann::json& data)
 	{
 		nlohmann::json result;
 

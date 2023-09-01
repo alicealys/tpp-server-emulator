@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "get_urllist.hpp"
+#include "cmd_get_urllist.hpp"
 
 #define HOSTNAME "http://localhost:80/"
 
@@ -110,7 +110,7 @@ namespace tpp
 		};
 	}
 
-	nlohmann::json get_urllist_handler::execute(const nlohmann::json& data)
+	nlohmann::json cmd_get_urllist::execute(const nlohmann::json& data)
 	{
 		nlohmann::json result;
 
