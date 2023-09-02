@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_gdpr_check : public command_handler
+	class cmd_get_playerlist : public command_handler
 	{
 		nlohmann::json execute(const nlohmann::json& data, const std::string& session_key) override;
 	};

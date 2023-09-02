@@ -20,17 +20,6 @@ create table if not exists `players`
 
 namespace database::players
 {
-	namespace
-	{
-		std::string get_data()
-		{
-			std::string data{};
-			data.resize(16);
-			utils::cryptography::random::get_data(data.data(), 16);
-			return data;
-		}
-	}
-
 	auto players_table = players_t();
 
 	std::optional<player> find(const std::uint64_t id)
@@ -85,7 +74,7 @@ namespace database::players
 	}
 
 
-	player insert(const std::uint64_t account_id)
+	player find_or_insert(const std::uint64_t account_id)
 	{
 		{
 			const auto found = find_from_account(account_id);
@@ -113,7 +102,8 @@ namespace database::players
 
 	std::string generate_login_password(const std::uint64_t account_id)
 	{
-		const auto password = utils::string::dump_hex(get_data(), "", false);
+		const auto data = utils::cryptography::random::get_data(16);
+		const auto password = utils::string::dump_hex(data, "", false);
 
 		const auto result = database::get()->operator()(
 			sqlpp::update(players_table)
@@ -127,7 +117,8 @@ namespace database::players
 
 	std::string generate_session_id(const std::uint64_t account_id)
 	{
-		const auto session_id = utils::string::dump_hex(get_data(), "", false);
+		const auto data = utils::cryptography::random::get_data(16);
+		const auto session_id = utils::string::dump_hex(data, "", false);
 
 		const auto result = database::get()->operator()(
 			sqlpp::update(players_table)
@@ -142,7 +133,8 @@ namespace database::players
 
 	std::string generate_crypto_key(const std::uint64_t account_id)
 	{
-		const auto crypto_key = utils::cryptography::base64::encode(get_data());
+		const auto data = utils::cryptography::random::get_data(16);
+		const auto crypto_key = utils::cryptography::base64::encode(data);
 
 		const auto result = database::get()->operator()(
 			sqlpp::update(players_table)

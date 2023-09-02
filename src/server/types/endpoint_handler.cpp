@@ -18,6 +18,12 @@ namespace tpp
 			return {};
 		}
 
+		const auto& session_key = json_req["session_key"];
+		if (!session_key.is_string())
+		{
+			return {};
+		}
+
 		const auto msgid_str = json_req["data"]["msgid"].get<std::string>();
 
 		printf("[Endpoint] Handling command \"%s\"\n", msgid_str.data());
@@ -28,7 +34,7 @@ namespace tpp
 			return {};
 		}
 
-		const auto json_res = handler->second->execute(json_req["data"]);
+		const auto json_res = handler->second->execute(json_req["data"], session_key.get<std::string>());
 		return this->encrypt_response(json_req, json_res);
 	}
 }

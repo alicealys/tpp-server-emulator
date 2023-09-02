@@ -63,7 +63,7 @@ namespace database::players
 	std::optional<player> find_from_account(const std::uint64_t id);
 	std::optional<player> find_by_session_id(const std::string session_id);
 
-	player insert(const std::uint64_t account_id);
+	player find_or_insert(const std::uint64_t account_id);
 
 	std::string generate_login_password(const std::uint64_t account_id);
 	std::string generate_session_id(const std::uint64_t account_id);

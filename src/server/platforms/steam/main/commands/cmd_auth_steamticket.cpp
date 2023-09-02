@@ -8,7 +8,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_auth_steamticket::execute(const nlohmann::json& data)
+	nlohmann::json cmd_auth_steamticket::execute(const nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 		result["xuid"] = {};

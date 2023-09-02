@@ -6,6 +6,9 @@
 #include "commands/cmd_auth_steamticket.hpp"
 #include "commands/cmd_reqauth_https.hpp"
 #include "commands/cmd_send_ipandport.hpp"
+#include "commands/cmd_get_playerlist.hpp"
+#include "commands/cmd_create_player.hpp"
+#include "commands/cmd_set_currentplayer.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -26,6 +29,9 @@ namespace tpp
 		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
 		this->register_handler<cmd_reqauth_https>("CMD_REQAUTH_HTTPS");
 		this->register_handler<cmd_send_ipandport>("CMD_SEND_IPANDPORT");
+		this->register_handler<cmd_get_playerlist>("CMD_GET_PLAYERLIST");
+		this->register_handler<cmd_create_player>("CMD_CREATE_PLAYER");
+		this->register_handler<cmd_set_currentplayer>("CMD_SET_CURRENTPLAYER");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)
