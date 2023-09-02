@@ -10,10 +10,12 @@
 
 namespace auth
 {
-	std::optional<std::string> verify_ticket(const std::string& auth_ticket)
+	std::optional<std::uint64_t> verify_ticket(const std::string& auth_ticket)
 	{
-		std::uint64_t account_id{};
-		return std::to_string(account_id);
+		const auto data = utils::cryptography::base64::decode(auth_ticket);
+		const auto data_ptr = reinterpret_cast<size_t>(data.data());
+		const auto account_id = *reinterpret_cast<std::uint64_t*>(data_ptr + 12);
+		return {account_id};
 	}
 
 	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket)
@@ -24,15 +26,14 @@ namespace auth
 			return {};
 		}
 
-		const auto& account_id = account_id_opt.value();
-		const auto account_id_int = std::strtoull(account_id.data(), nullptr, 10);
+		const auto account_id = account_id_opt.value();
 
-		database::players::insert(account_id_int);
+		database::players::insert(account_id);
 
 		auth_ticket_response response{};
-		response.account_id = account_id_opt.value();
+		response.account_id = std::to_string(account_id);
 		response.currency = "EUR";
-		response.password = database::players::generate_login_password(account_id_int);
+		response.password = database::players::generate_login_password(account_id);
 		response.smart_device_id = database::get_smart_device_id(response.account_id);
 
 		return {response};
