@@ -6,13 +6,10 @@
 
 namespace tpp
 {
-	namespace
-	{
-		const auto gdpr_list = nlohmann::json::parse(utils::nt::load_resource(CMD_GDPR_CHECK));
-	}
-
 	nlohmann::json cmd_gdpr_check::execute(const nlohmann::json& data)
 	{
+		static const auto gdpr_list = nlohmann::json::parse(utils::nt::load_resource(CMD_GDPR_CHECK));
+
 		nlohmann::json result = gdpr_list;
 
 		result["result"] = "NOERR";

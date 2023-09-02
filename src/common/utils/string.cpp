@@ -65,7 +65,7 @@ namespace utils::string
 		return std::equal(substring.rbegin(), substring.rend(), text.rbegin());
 	}
 
-	std::string dump_hex(const std::string& data, const std::string& separator)
+	std::string dump_hex(const std::string& data, const std::string& separator, bool upper_case)
 	{
 		std::string result;
 
@@ -76,7 +76,14 @@ namespace utils::string
 				result.append(separator);
 			}
 
-			result.append(va("%02X", data[i] & 0xFF));
+			if (upper_case)
+			{
+				result.append(va("%02X", data[i] & 0xFF));
+			}
+			else
+			{
+				result.append(va("%02x", data[i] & 0xFF));
+			}
 		}
 
 		return result;

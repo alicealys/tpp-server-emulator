@@ -86,6 +86,7 @@
 #pragma comment(lib, "urlmon.lib" )
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "Crypt32.lib")
+#pragma comment(lib, "libmysql.lib")
 
 #include "resource.hpp"
 

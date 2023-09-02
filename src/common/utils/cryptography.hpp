@@ -96,6 +96,12 @@ namespace utils::cryptography
 		std::string compute(const uint8_t* data, size_t length, bool hex = false);
 	}
 
+	namespace md5
+	{
+		std::string compute(const std::string& data, bool hex = false);
+		std::string compute(const uint8_t* data, size_t length, bool hex = false);
+	}
+
 	namespace base64
 	{
 		std::string encode(const uint8_t* data, size_t len);

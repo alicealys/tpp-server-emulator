@@ -87,7 +87,7 @@ namespace utils::string
 	bool starts_with(const std::string& text, const std::string& substring);
 	bool ends_with(const std::string& text, const std::string& substring);
 
-	std::string dump_hex(const std::string& data, const std::string& separator = " ");
+	std::string dump_hex(const std::string& data, const std::string& separator = " ", bool upper_case = true);
 
 	std::string get_clipboard_data();
 

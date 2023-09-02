@@ -148,3 +148,5 @@ user*.bat
 
 # Premake binary
 #premake5.exe
+
+deps/mysql

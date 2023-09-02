@@ -4,8 +4,11 @@
 
 #include "commands/cmd_gdpr_check.hpp"
 #include "commands/cmd_auth_steamticket.hpp"
+#include "commands/cmd_reqauth_https.hpp"
+#include "commands/cmd_send_ipandport.hpp"
 
 #include "database/database.hpp"
+#include "database/models/players.hpp"
 
 #include "utils/encoding.hpp"
 #include "utils/tpp.hpp"
@@ -21,19 +24,72 @@ namespace tpp
 
 		this->register_handler<cmd_gdpr_check>("CMD_GDPR_CHECK");
 		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
+		this->register_handler<cmd_reqauth_https>("CMD_REQAUTH_HTTPS");
+		this->register_handler<cmd_send_ipandport>("CMD_SEND_IPANDPORT");
 	}
 
-	nlohmann::json main_handler::decrypt_request(const std::string& data)
+	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)
 	{
 		const auto str = this->blow_.decrypt(data);
 		auto json = nlohmann::json::parse(str);
 
-		if (json["data"].is_string())
+		if (!json["data"].is_string())
 		{
-			const auto data_str = json["data"].get<std::string>();
-			const auto unescaped_data = utils::encoding::unescape_json(data_str);
-			const auto data_json = nlohmann::json::parse(unescaped_data);
-			json["data"] = data_json;
+			return json;
+		}
+
+		const auto& compressed_val = json["compress"];
+		if (!compressed_val.is_boolean())
+		{
+			return json;
+		}
+
+		const auto compressed = compressed_val.get<bool>();
+		const auto& session_crypto = json["session_crypto"];
+		const auto data_str = json["data"].get<std::string>();
+
+		if (session_crypto.is_boolean() && session_crypto.get<bool>())
+		{
+			const auto session_key = json["session_key"].get<std::string>();
+			const auto player = database::players::find_by_session_id(session_key);
+			if (!player.has_value())
+			{
+				json["data"] = {};
+				return json;
+			}
+
+			utils::cryptography::blowfish session_blow;
+			session_blow.set_key(player->get_crypto_key());
+
+			const auto decrypted = session_blow.decrypt(data_str);
+			if (!compressed)
+			{
+				const auto unescaped_data = utils::encoding::unescape_json(decrypted);
+				json["data"] = nlohmann::json::parse(unescaped_data);
+			}
+			else
+			{
+				const auto decompressed = utils::compression::zlib::decompress(decrypted);
+				const auto unescaped_data = utils::encoding::unescape_json(decompressed);
+				json["data"] = nlohmann::json::parse(unescaped_data);
+			}
+		}
+		else
+		{
+			if (!compressed)
+			{
+				const auto unescaped_data = utils::encoding::unescape_json(data_str);
+				const auto data_json = nlohmann::json::parse(unescaped_data);
+				json["data"] = data_json;
+
+			}
+			else
+			{
+				const auto decoded = utils::cryptography::base64::decode(data_str);
+				const auto decompressed = utils::compression::zlib::decompress(decoded);
+				const auto unescaped_data = utils::encoding::unescape_json(decompressed);
+				json["data"] = nlohmann::json::parse(unescaped_data);
+			}
 		}
 
 		return json;
@@ -48,7 +104,13 @@ namespace tpp
 		}
 
 		const auto& session_crypto = request["session_crypto"];
-		if (!session_crypto.is_boolean() || session_crypto.get<bool>())
+		const auto& session_key = request["session_key"];
+		if (!session_crypto.is_boolean())
+		{
+			return false;
+		}
+
+		if (session_crypto.get<bool>() && (!session_key.is_string() || session_key.get<std::string>().empty()))
 		{
 			return false;
 		}
@@ -64,7 +126,7 @@ namespace tpp
 		return true;
 	}
 
-	std::string main_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data)
+	std::optional<std::string> main_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data)
 	{
 		const auto& session_crypto_val = request["session_crypto"];
 		const auto session_crypto = session_crypto_val.is_boolean() && session_crypto_val.get<bool>();
@@ -94,10 +156,15 @@ namespace tpp
 		else
 		{
 			const auto session_key = request["session_key"].get<std::string>();
-			const auto crypto_key = database::get_crypto_key(session_key);
+			const auto player = database::players::find_by_session_id(session_key);
+
+			if (!player.has_value())
+			{
+				return {};
+			}
 
 			utils::cryptography::blowfish session_blow;
-			session_blow.set_key(crypto_key);
+			session_blow.set_key(player->get_crypto_key());
 			data_dump = session_blow.encrypt(data_dump);
 		}
 

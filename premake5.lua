@@ -293,7 +293,9 @@ linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWA
 
 files {"./src/server/**.rc", "./src/server/**.hpp", "./src/server/**.cpp"}
 
-includedirs {"./src/server", "./src/common", "%{prj.location}/src"}
+includedirs {"./src/server", "./src/common", "%{prj.location}/src", "./deps/mysql/include"}
+
+libdirs {"./deps/mysql/lib"}
 
 resincludedirs {"$(ProjectDir)src"}
 
@@ -303,7 +305,18 @@ links {"common"}
 
 prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "tools\\premake5 generate-buildinfo", "popd"}
 
+local requiredlibs = {
+	"libcrypto-3-x64.dll",
+	"libssl-3-x64.dll",
+}
+
+postbuildcommands {"copy /y \"$(ProjectDir)\\..\\deps\\mysql\\lib\\libmysql.dll\" \"$(TargetDir)\""}
+for i = 1, #requiredlibs do
+	postbuildcommands {string.format("copy /y \"$(ProjectDir)\\..\\deps\\mysql\\bin\\%s\" \"$(TargetDir)\"", requiredlibs[i])}
+end
+
 if _OPTIONS["copy-to"] then
+	postbuildcommands {"copy /y \"$(TargetDir)\\*.dll\"" .. _OPTIONS["copy-to"] .. "\""}
 	postbuildcommands {"copy /y \"$(TargetPath)\" \"" .. _OPTIONS["copy-to"] .. "\""}
 end
 
