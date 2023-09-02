@@ -6,6 +6,6 @@ namespace tpp
 {
 	class cmd_send_ipandport : public command_handler
 	{
-		nlohmann::json execute(const nlohmann::json& data) override;
+		nlohmann::json execute(const nlohmann::json& data, const std::string& session_key) override;
 	};
 }

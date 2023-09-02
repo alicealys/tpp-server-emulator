@@ -661,6 +661,14 @@ namespace utils::cryptography
 		prng_.read(data, size);
 	}
 
+	std::string random::get_data(const size_t size)
+	{
+		std::string data;
+		data.resize(size);
+		random::get_data(data.data(), size);
+		return data;
+	}
+
 	blowfish::blowfish()
 	{
 		std::memcpy(this->s_, initial_s, sizeof(initial_s));

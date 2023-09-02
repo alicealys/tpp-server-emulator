@@ -28,7 +28,7 @@ namespace auth
 
 		const auto account_id = account_id_opt.value();
 
-		database::players::insert(account_id);
+		database::players::find_or_insert(account_id);
 
 		auth_ticket_response response{};
 		response.account_id = std::to_string(account_id);
