@@ -71,9 +71,9 @@ namespace database::players
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
-			sqlpp::all_of(players_table))
-			.from(players_table)
-			.where(players_table.session_id == session_id));
+				sqlpp::all_of(players_table))
+					.from(players_table)
+						.where(players_table.session_id == session_id));
 
 		if (results.empty())
 		{
