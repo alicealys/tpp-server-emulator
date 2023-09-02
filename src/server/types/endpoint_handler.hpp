@@ -8,7 +8,7 @@ namespace tpp
 	class endpoint_handler : public base_handler<command_handler>
 	{
 	public:
-		virtual nlohmann::json decrypt_request(const std::string& data)
+		virtual std::optional<nlohmann::json> decrypt_request(const std::string& data)
 		{
 			return {};
 		}
@@ -18,7 +18,7 @@ namespace tpp
 			return false;
 		}
 
-		virtual std::string encrypt_response(const nlohmann::json& request, nlohmann::json data)
+		virtual std::optional<std::string> encrypt_response(const nlohmann::json& request, nlohmann::json data)
 		{
 			return {};
 		}

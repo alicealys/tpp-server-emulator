@@ -21,7 +21,7 @@ namespace tpp
 		}
 
 		const auto steam_ticket = steam_ticket_val.get<std::string>();
-		const auto auth_result_opt = auth::authenticate_user(steam_ticket);
+		const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket);
 		if (!auth_result_opt.has_value())
 		{
 			result["result"] = "ERR_INVALID_TICKET";

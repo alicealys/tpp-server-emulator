@@ -23,20 +23,41 @@ namespace tpp
 		this->register_handler<cmd_get_svrtime>("CMD_GET_SVRTIME");
 	}
 
-	nlohmann::json gate_handler::decrypt_request(const std::string& data)
+	std::optional<nlohmann::json> gate_handler::decrypt_request(const std::string& data)
 	{
 		const auto str = this->blow_.decrypt(data);
 		auto json = nlohmann::json::parse(str);
 		
-		if (json["data"].is_string())
+		const auto& compressed_val = json["compress"];
+		if (!compressed_val.is_boolean())
 		{
-			const auto data_str = json["data"].get<std::string>();
+			return {};
+		}
+
+		const auto compressed = compressed_val.get<bool>();
+		const auto data_str = json["data"].get<std::string>();
+
+		if (!json["data"].is_string())
+		{
+			return {};
+		}
+
+		if (!compressed)
+		{
 			const auto unescaped_data = utils::encoding::unescape_json(data_str);
 			const auto data_json = nlohmann::json::parse(unescaped_data);
 			json["data"] = data_json;
+
+		}
+		else
+		{
+			const auto decoded = utils::cryptography::base64::decode(data_str);
+			const auto decompressed = utils::compression::zlib::decompress(decoded);
+			const auto unescaped_data = utils::encoding::unescape_json(decompressed);
+			json["data"] = nlohmann::json::parse(unescaped_data);
 		}
 
-		return json;
+		return {json};
 	}
 
 	bool gate_handler::verify_request(const nlohmann::json& request)
@@ -75,7 +96,7 @@ namespace tpp
 		return true;
 	}
 
-	std::string gate_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data)
+	std::optional<std::string> gate_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data)
 	{
 		data["crypto_type"] = "COMMON";
 		data["flowid"] = {};
@@ -99,6 +120,6 @@ namespace tpp
 		const auto response_str = response.dump();
 		const auto str = this->blow_.encrypt(response_str);
 
-		return str;
+		return {str};
 	}
 }

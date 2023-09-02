@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "types/server.hpp"
+#include "database/database.hpp"
 
 namespace tpp
 {

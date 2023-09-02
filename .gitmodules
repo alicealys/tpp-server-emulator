@@ -46,3 +46,9 @@
 [submodule "deps/mongoose"]
 	path = deps/mongoose
 	url = https://github.com/cesanta/mongoose.git
+[submodule "deps/sqlpp11"]
+	path = deps/sqlpp11
+	url = https://github.com/rbock/sqlpp11.git
+[submodule "deps/date"]
+	path = deps/date
+	url = https://github.com/HowardHinnant/date
