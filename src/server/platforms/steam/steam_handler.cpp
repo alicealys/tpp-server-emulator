@@ -1,7 +1,7 @@
 #include <std_include.hpp>
 
-#include "gate/gate_handler.hpp"
-#include "main/main_handler.hpp"
+#include "endpoints/gate/gate_handler.hpp"
+#include "endpoints/main/main_handler.hpp"
 
 #include "steam_handler.hpp"
 
