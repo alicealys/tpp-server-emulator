@@ -81,4 +81,4 @@ namespace database::player_stats
 	};
 }
 
-REGISTER_TABLE(database::player_stats::table)
+REGISTER_TABLE(database::player_stats::table, -1)

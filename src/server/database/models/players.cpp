@@ -73,7 +73,6 @@ namespace database::players
 		return {player(row)};
 	}
 
-
 	player find_or_insert(const std::uint64_t account_id)
 	{
 		{
@@ -156,4 +155,4 @@ namespace database::players
 	};
 }
 
-REGISTER_TABLE(database::players::table)
+REGISTER_TABLE(database::players::table, 1)

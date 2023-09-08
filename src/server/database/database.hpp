@@ -30,26 +30,33 @@ namespace database
 		static_assert(std::is_base_of<table_interface, T>::value, "table has invalid base class");
 
 	public:
-		installer()
+		installer(int priority)
 		{
-			register_table(std::make_unique<T>());
+			register_table(std::make_unique<T>(), priority);
 		}
 	};
 
-	void register_table(std::unique_ptr<table_interface>&& component);
+	void register_table(std::unique_ptr<table_interface>&& component, int priority);
 
-	using tables = std::vector<std::unique_ptr<table_interface>>;
+	struct table_def
+	{
+		int priority;
+		std::unique_ptr<table_interface> inst;
+	};
+
+	using tables = std::vector<table_def>;
 	tables& get_tables();
+	bool create_tables();
 
 	database_t& get();
 
 	std::string get_smart_device_id(const std::string& account_id);
 }
 
-#define REGISTER_TABLE(name)													\
+#define REGISTER_TABLE(name, ...)												\
 namespace																		\
 {																				\
-	static database::installer<name> table__;									\
+	static database::installer<name> table__(__VA_ARGS__);						\
 }																				\
 
 #define DEFINE_FIELD(field_name, type)											\

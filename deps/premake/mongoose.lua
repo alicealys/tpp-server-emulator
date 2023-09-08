@@ -12,6 +12,10 @@ function mongoose.includes()
 	includedirs {
 		mongoose.source,
 	}
+
+	defines {
+		"MG_TLS=1"
+	}
 end
 
 function mongoose.project()
@@ -19,6 +23,7 @@ function mongoose.project()
 		language "C"
 
 		mongoose.includes()
+		mbedtls.import()
 
 		files {
 			path.join(mongoose.source, "mongoose.c"),

@@ -7,6 +7,11 @@ namespace tpp
 {
 	int start_server()
 	{
+		if (!database::create_tables())
+		{
+			return 0;
+		}
+
 		server s;
 		s.start();
 		return 0;

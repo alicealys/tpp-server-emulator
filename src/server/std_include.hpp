@@ -72,10 +72,10 @@
 #include <optional>
 #include <unordered_set>
 #include <variant>
+#include <future>
 
 #include <gsl/gsl>
 
-#include <mongoose.h>
 #include <json.hpp>
 
 #pragma warning(pop)
