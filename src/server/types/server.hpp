@@ -5,9 +5,21 @@
 #include "endpoint_handler.hpp"
 #include "platform_handler.hpp"
 
+#include "utils/http_server.hpp"
+
+#include <utils/memory.hpp>
+
 namespace tpp
 {
 	class server;
+
+	struct response
+	{
+		std::string headers;
+		std::string body;
+	};
+
+	using response_task = std::future<std::optional<response>>;
 
 	class server : public base_handler<platform_handler>
 	{
@@ -16,19 +28,16 @@ namespace tpp
 
 		void start();
 
-		static void event_handler(mg_connection* c, const int ev, void* ev_data, void* fn_data);
+		void request_handler(const utils::http_connection& conn, const utils::request_params& params);
 
 		std::string encode_response(const std::string& data);
 		std::optional<std::string> decode_request(const std::string& data);
 
-		void handle_request(mg_connection* connection, const std::string& platform, const std::string& endpoint, const std::string& body);
-
-		mg_connection* get_connection();
-		void set_connection(mg_connection*);
+		utils::response_params handle_request(const std::string& platform, const std::string& endpoint, const std::string& body);
 
 	private:
 		std::atomic_bool killed_ = false;
-		mg_connection* connection_ = nullptr;
+		utils::http_server http_server;
 
 	};
 
