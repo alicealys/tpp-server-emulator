@@ -9,6 +9,11 @@
 #include "commands/cmd_get_playerlist.hpp"
 #include "commands/cmd_create_player.hpp"
 #include "commands/cmd_set_currentplayer.hpp"
+#include "commands/cmd_get_abolition_count.hpp"
+#include "commands/cmd_get_challenge_task_rewards.hpp"
+#include "commands/cmd_get_login_param.hpp"
+#include "commands/cmd_get_combat_deploy_result.hpp"
+#include "commands/cmd_update_session.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -32,6 +37,11 @@ namespace tpp
 		this->register_handler<cmd_get_playerlist>("CMD_GET_PLAYERLIST");
 		this->register_handler<cmd_create_player>("CMD_CREATE_PLAYER");
 		this->register_handler<cmd_set_currentplayer>("CMD_SET_CURRENTPLAYER");
+		this->register_handler<cmd_get_abolition_count>("CMD_GET_ABOLITION_COUNT");
+		this->register_handler<cmd_get_challenge_task_rewards>("CMD_GET_CHALLENGE_TASK_REWARDS");
+		this->register_handler<cmd_get_login_param>("CMD_GET_LOGIN_PARAM");
+		this->register_handler<cmd_get_combat_deploy_result>("CMD_GET_COMBAT_DEPLOY_RESULT");
+		this->register_handler<cmd_update_session>("CMD_UPDATE_SESSION");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)

@@ -93,7 +93,9 @@ END
 // Data
 //
 
-CMD_GDPR_CHECK        RCDATA "resources/data/CMD_GDPR_CHECK.json"
+RESOURCE_GDPR_CHECK        RCDATA "resources/data/gdpr_check.json"
+RESOURCE_CHALLENGE_TASK_REWARDS        RCDATA "resources/data/challenge_task_rewards.json"
+RESOURCE_LOGIN_PARAM        RCDATA "resources/data/login_param.json"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

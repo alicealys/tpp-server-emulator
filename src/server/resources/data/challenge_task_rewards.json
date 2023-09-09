@@ -1,0 +1,4145 @@
+{
+    "task_count": 414,
+    "task_list": [
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 10
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 20
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 30
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 40
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 50
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 60
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 70
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 80
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 90
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 100
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 110
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 120
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 130
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 4
+            },
+            "task_id": 140
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 150
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 160
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 4
+            },
+            "task_id": 170
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 6,
+                "value": 4
+            },
+            "task_id": 180
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 190
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 200
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 210
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 6
+            },
+            "task_id": 220
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 6
+            },
+            "task_id": 230
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 6
+            },
+            "task_id": 240
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 250
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 260
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 270
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 280
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 290
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 300
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 310
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 320
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 330
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 340
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 350
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 360
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 370
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 380
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 390
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 400
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 410
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 420
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 430
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 5,
+                "value": 4
+            },
+            "task_id": 440
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 450
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 460
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 470
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 480
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 490
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 500
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 510
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 520
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 530
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 8
+            },
+            "task_id": 540
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 550
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 560
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 570
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 6
+            },
+            "task_id": 580
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 590
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 8
+            },
+            "task_id": 600
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 7,
+                "value": 8
+            },
+            "task_id": 610
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 10
+            },
+            "task_id": 620
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 8
+            },
+            "task_id": 630
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 640
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 6,
+                "value": 8
+            },
+            "task_id": 650
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 5,
+                "value": 4
+            },
+            "task_id": 660
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 6,
+                "value": 10
+            },
+            "task_id": 670
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 10
+            },
+            "task_id": 680
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 690
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 700
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 710
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 720
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 730
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 740
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 750
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 760
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 770
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 1
+            },
+            "task_id": 780
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 790
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 800
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 810
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 820
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 830
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 6
+            },
+            "task_id": 840
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 6
+            },
+            "task_id": 850
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 4,
+                "value": 6
+            },
+            "task_id": 860
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 6
+            },
+            "task_id": 870
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 880
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 4,
+                "value": 6
+            },
+            "task_id": 890
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 8
+            },
+            "task_id": 900
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 8
+            },
+            "task_id": 910
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 4
+            },
+            "task_id": 920
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 8
+            },
+            "task_id": 930
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 8
+            },
+            "task_id": 940
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 8
+            },
+            "task_id": 950
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 8
+            },
+            "task_id": 960
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 300000
+            },
+            "task_id": 970
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 7500
+            },
+            "task_id": 980
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 5000
+            },
+            "task_id": 990
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 19,
+                "value": 500
+            },
+            "task_id": 1000
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 1010
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 15000
+            },
+            "task_id": 1020
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 300
+            },
+            "task_id": 1025
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 5000
+            },
+            "task_id": 1030
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 300
+            },
+            "task_id": 1040
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1000000
+            },
+            "task_id": 1050
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 17,
+                "value": 30
+            },
+            "task_id": 1060
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 30000
+            },
+            "task_id": 1070
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 300
+            },
+            "task_id": 1080
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 1090
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 1100
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 1110
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 1120
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 40000
+            },
+            "task_id": 1130
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 1000
+            },
+            "task_id": 1140
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1150
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 1160
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 80000
+            },
+            "task_id": 1170
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 28,
+                "value": 1
+            },
+            "task_id": 1180
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 1190
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1200
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 300
+            },
+            "task_id": 1210
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 1220
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 12,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1230
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 28,
+                "value": 1
+            },
+            "task_id": 1240
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 1250
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 29,
+                "value": 3
+            },
+            "task_id": 1260
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 1270
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 120000
+            },
+            "task_id": 1280
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 150000
+            },
+            "task_id": 1290
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 18,
+                "value": 200
+            },
+            "task_id": 1300
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 200000
+            },
+            "task_id": 1310
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 23,
+                "value": 300
+            },
+            "task_id": 1320
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 1330
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1340
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 14,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1350
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 7,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1360
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 8,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 1370
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 250000
+            },
+            "task_id": 1380
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 11,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 1390
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 300000
+            },
+            "task_id": 1400
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 28,
+                "value": 5
+            },
+            "task_id": 1410
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 28,
+                "value": 5
+            },
+            "task_id": 1420
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 22,
+                "value": 600
+            },
+            "task_id": 1430
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 2000
+            },
+            "task_id": 1440
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 1450
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 60
+            },
+            "task_id": 1460
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 60
+            },
+            "task_id": 1470
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 3
+            },
+            "task_id": 1480
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 350000
+            },
+            "task_id": 1490
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 28,
+                "value": 4
+            },
+            "task_id": 1500
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 21,
+                "value": 1000
+            },
+            "task_id": 1510
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 350000
+            },
+            "task_id": 1520
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 1530
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 1000
+            },
+            "task_id": 1540
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 18,
+                "value": 1000
+            },
+            "task_id": 1550
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 9,
+                "type": 29,
+                "value": 3
+            },
+            "task_id": 1560
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 5
+            },
+            "task_id": 1570
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 11,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 1580
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 1590
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 5000
+            },
+            "task_id": 1600
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 8
+            },
+            "task_id": 1610
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 1620
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 1630
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 9,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 1640
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 100
+            },
+            "task_id": 1650
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 100
+            },
+            "task_id": 1660
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 1670
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 28,
+                "value": 4
+            },
+            "task_id": 1680
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 1690
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 17,
+                "value": 1400
+            },
+            "task_id": 1700
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 1000
+            },
+            "task_id": 1710
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 100000
+            },
+            "task_id": 1720
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 200000
+            },
+            "task_id": 1730
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 300000
+            },
+            "task_id": 1740
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 400000
+            },
+            "task_id": 1750
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 1760
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 600000
+            },
+            "task_id": 1770
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 700000
+            },
+            "task_id": 1780
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 800000
+            },
+            "task_id": 1790
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 900000
+            },
+            "task_id": 1800
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1000000
+            },
+            "task_id": 1810
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 1820
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 1830
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 1840
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 6,
+                "value": 2
+            },
+            "task_id": 1850
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 6,
+                "value": 2
+            },
+            "task_id": 1860
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 1870
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 1880
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 1890
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 1900
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 1910
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 2
+            },
+            "task_id": 1920
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 200
+            },
+            "task_id": 1930
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 1000
+            },
+            "task_id": 1940
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 1000
+            },
+            "task_id": 1950
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 23,
+                "value": 200
+            },
+            "task_id": 1960
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 18,
+                "value": 200
+            },
+            "task_id": 1970
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 19,
+                "value": 200
+            },
+            "task_id": 1980
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 7500
+            },
+            "task_id": 1990
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 100
+            },
+            "task_id": 2000
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 100
+            },
+            "task_id": 2010
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 5000
+            },
+            "task_id": 2020
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2030
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2040
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 2050
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 6,
+                "value": 2
+            },
+            "task_id": 2060
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 2070
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 2
+            },
+            "task_id": 2080
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 1
+            },
+            "task_id": 2090
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2100
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2110
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 2120
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 2
+            },
+            "task_id": 2130
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 2140
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 1
+            },
+            "task_id": 2150
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2160
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 2170
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 2180
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 1
+            },
+            "task_id": 2190
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2200
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 2210
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 2220
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 2230
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 1
+            },
+            "task_id": 2240
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 30000
+            },
+            "task_id": 2250
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 60000
+            },
+            "task_id": 2260
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 90000
+            },
+            "task_id": 2270
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 120000
+            },
+            "task_id": 2280
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 150000
+            },
+            "task_id": 2290
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 180000
+            },
+            "task_id": 2300
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 210000
+            },
+            "task_id": 2310
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 240000
+            },
+            "task_id": 2320
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 270000
+            },
+            "task_id": 2330
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2340
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2350
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 29,
+                "value": 5
+            },
+            "task_id": 2360
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 9,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 2370
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 2380
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 2390
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 2400
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 12,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2410
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 14,
+                "type": 29,
+                "value": 3
+            },
+            "task_id": 2420
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 10,
+                "type": 29,
+                "value": 5
+            },
+            "task_id": 2430
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 2440
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 2450
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 2460
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 2470
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 2480
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 2490
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 2500
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 2510
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 2520
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 2530
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2540
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2550
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2560
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2570
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 7,
+                "value": 1
+            },
+            "task_id": 2580
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 2590
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 6,
+                "value": 1
+            },
+            "task_id": 2600
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 2610
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 2620
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 4,
+                "value": 1
+            },
+            "task_id": 2630
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 2640
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 2650
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 2660
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 2670
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 17,
+                "value": 100
+            },
+            "task_id": 2680
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 22,
+                "value": 100
+            },
+            "task_id": 2690
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 21,
+                "value": 100
+            },
+            "task_id": 2700
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 19,
+                "value": 60
+            },
+            "task_id": 2710
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 23,
+                "value": 60
+            },
+            "task_id": 2720
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 18,
+                "value": 60
+            },
+            "task_id": 2730
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 30
+            },
+            "task_id": 2740
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 30
+            },
+            "task_id": 2750
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 80
+            },
+            "task_id": 2760
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 300
+            },
+            "task_id": 2770
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 21,
+                "value": 500
+            },
+            "task_id": 2780
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 1000
+            },
+            "task_id": 2790
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 2000
+            },
+            "task_id": 2800
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 18,
+                "value": 500
+            },
+            "task_id": 2810
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 21,
+                "value": 1500
+            },
+            "task_id": 2820
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 23,
+                "value": 600
+            },
+            "task_id": 2830
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 10000
+            },
+            "task_id": 2840
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 300
+            },
+            "task_id": 2850
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 500
+            },
+            "task_id": 2860
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 30000
+            },
+            "task_id": 2870
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2880
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2890
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2900
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 8,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 2910
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 2920
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 2930
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 9,
+                "type": 29,
+                "value": 8
+            },
+            "task_id": 2940
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 29,
+                "value": 8
+            },
+            "task_id": 2950
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 7500
+            },
+            "task_id": 2960
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 7500
+            },
+            "task_id": 2970
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 7500
+            },
+            "task_id": 2980
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 4000
+            },
+            "task_id": 2990
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 100
+            },
+            "task_id": 3000
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 7500
+            },
+            "task_id": 3010
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 7500
+            },
+            "task_id": 3020
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 7500
+            },
+            "task_id": 3030
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 7500
+            },
+            "task_id": 3040
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 4000
+            },
+            "task_id": 3050
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 4000
+            },
+            "task_id": 3060
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 4000
+            },
+            "task_id": 3070
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 4000
+            },
+            "task_id": 3080
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 100
+            },
+            "task_id": 3090
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 100
+            },
+            "task_id": 3100
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 500
+            },
+            "task_id": 3110
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 15000
+            },
+            "task_id": 3120
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 8000
+            },
+            "task_id": 3130
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 16,
+                "value": 1500
+            },
+            "task_id": 3140
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 8000
+            },
+            "task_id": 3150
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3160
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3170
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 3180
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 3190
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 8,
+                "type": 29,
+                "value": 1
+            },
+            "task_id": 3200
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3210
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3220
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3230
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3240
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 8,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3250
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 200000
+            },
+            "task_id": 3260
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 3270
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 100000
+            },
+            "task_id": 3280
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 200000
+            },
+            "task_id": 3290
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 300000
+            },
+            "task_id": 3300
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 400000
+            },
+            "task_id": 3310
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 3320
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1000000
+            },
+            "task_id": 3330
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1000000
+            },
+            "task_id": 3340
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 2000000
+            },
+            "task_id": 3350
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 3000000
+            },
+            "task_id": 3360
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 5000000
+            },
+            "task_id": 3370
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 2
+            },
+            "task_id": 3380
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 2
+            },
+            "task_id": 3390
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 2
+            },
+            "task_id": 3400
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 3410
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 3420
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3430
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3440
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3450
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 13,
+                "type": 29,
+                "value": 9
+            },
+            "task_id": 3460
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 3470
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 3480
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 6,
+                "value": 5
+            },
+            "task_id": 3490
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 5,
+                "value": 5
+            },
+            "task_id": 3500
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 5
+            },
+            "task_id": 3510
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 3520
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 7,
+                "value": 3
+            },
+            "task_id": 3530
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 3540
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 3
+            },
+            "task_id": 3550
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 4,
+                "value": 3
+            },
+            "task_id": 3560
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3570
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3580
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3590
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3600
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 29,
+                "value": 4
+            },
+            "task_id": 3610
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 7,
+                "type": 29,
+                "value": 8
+            },
+            "task_id": 3620
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 8,
+                "type": 29,
+                "value": 8
+            },
+            "task_id": 3630
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 9,
+                "type": 29,
+                "value": 8
+            },
+            "task_id": 3640
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 7,
+                "value": 5
+            },
+            "task_id": 3650
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 3
+            },
+            "task_id": 3660
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 6,
+                "value": 6
+            },
+            "task_id": 3670
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 7500
+            },
+            "task_id": 3680
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 300000
+            },
+            "task_id": 3690
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 17,
+                "value": 500
+            },
+            "task_id": 3700
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 3710
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 7500
+            },
+            "task_id": 3720
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 19,
+                "value": 500
+            },
+            "task_id": 3730
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1000000
+            },
+            "task_id": 3740
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 7500
+            },
+            "task_id": 3750
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 500
+            },
+            "task_id": 3760
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 500
+            },
+            "task_id": 3770
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 2000
+            },
+            "task_id": 3780
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 2000000
+            },
+            "task_id": 3790
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 3800
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 700000
+            },
+            "task_id": 3810
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1500000
+            },
+            "task_id": 3820
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 5,
+                "type": 29,
+                "value": 3
+            },
+            "task_id": 3830
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 28,
+                "value": 5
+            },
+            "task_id": 3840
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 9,
+                "type": 29,
+                "value": 3
+            },
+            "task_id": 3850
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 5
+            },
+            "task_id": 3860
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 11,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3870
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 11,
+                "type": 29,
+                "value": 2
+            },
+            "task_id": 3880
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 3,
+                "type": 28,
+                "value": 3
+            },
+            "task_id": 3890
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 28,
+                "value": 3
+            },
+            "task_id": 3900
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 3910
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 6,
+                "value": 10
+            },
+            "task_id": 3920
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 5,
+                "value": 10
+            },
+            "task_id": 3930
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 4,
+                "value": 10
+            },
+            "task_id": 3940
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 5,
+                "value": 1
+            },
+            "task_id": 3950
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 200000
+            },
+            "task_id": 3960
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 1,
+                "type": 28,
+                "value": 2
+            },
+            "task_id": 3970
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 2,
+                "type": 28,
+                "value": 5
+            },
+            "task_id": 3980
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 500000
+            },
+            "task_id": 3990
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 600000
+            },
+            "task_id": 4000
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 1200000
+            },
+            "task_id": 4010
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 1,
+                "value": 2000000
+            },
+            "task_id": 4020
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 15,
+                "value": 20000
+            },
+            "task_id": 4030
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 13,
+                "value": 10000
+            },
+            "task_id": 4040
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 12,
+                "value": 25000
+            },
+            "task_id": 4050
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 14,
+                "value": 10000
+            },
+            "task_id": 4060
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 19,
+                "value": 2000
+            },
+            "task_id": 4070
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 24,
+                "value": 1000
+            },
+            "task_id": 4080
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 0,
+                "type": 20,
+                "value": 1000
+            },
+            "task_id": 4090
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 6,
+                "type": 29,
+                "value": 10
+            },
+            "task_id": 4100
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 8,
+                "type": 29,
+                "value": 10
+            },
+            "task_id": 4110
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 4,
+                "type": 28,
+                "value": 10
+            },
+            "task_id": 4120
+        },
+        {
+            "reward": {
+                "bottom_type": 0,
+                "rate": 0,
+                "section": 10,
+                "type": 29,
+                "value": 10
+            },
+            "task_id": 4130
+        }
+    ]
+}

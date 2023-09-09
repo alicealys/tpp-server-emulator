@@ -65,11 +65,6 @@ namespace tpp
 		return utils::encoding::decode_url_string(result);
 	}
 
-	void server::send_default_response(const utils::http_connection& conn)
-	{
-		conn.reply(200);
-	}
-
 	void server::request_handler(const utils::http_connection& conn, const utils::request_params& params)
 	{
 		conn.reply_async([=, this]

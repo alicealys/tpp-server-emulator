@@ -145,6 +145,16 @@ namespace database::players
 		return crypto_key;
 	}
 
+	bool update_session(const std::uint64_t player_id)
+	{
+		const auto result = database::get()->operator()(
+			sqlpp::update(players_table)
+				.set(players_table.last_update = std::chrono::system_clock::now())
+					.where(players_table.id == player_id));
+
+		return result != 0;
+	}
+
 	class table final : public table_interface
 	{
 	public:
