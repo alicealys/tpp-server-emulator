@@ -8,7 +8,7 @@ namespace tpp
 {
 	nlohmann::json cmd_gdpr_check::execute(const nlohmann::json& data, const std::string& session_key)
 	{
-		static const auto gdpr_list = nlohmann::json::parse(utils::nt::load_resource(CMD_GDPR_CHECK));
+		static const auto gdpr_list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_GDPR_CHECK));
 
 		nlohmann::json result = gdpr_list;
 

@@ -68,4 +68,6 @@ namespace database::players
 	std::string generate_login_password(const std::uint64_t account_id);
 	std::string generate_session_id(const std::uint64_t account_id);
 	std::string generate_crypto_key(const std::uint64_t account_id);
+
+	bool update_session(const std::uint64_t player_id);
 }
