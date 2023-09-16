@@ -45,7 +45,7 @@ namespace database
 		config.port = 3306;
 		config.database = "mgstpp";
 #ifdef DEBUG
-		config.debug = true;
+		//config.debug = true;
 #endif
 
 		try
@@ -55,6 +55,7 @@ namespace database
 		catch (const std::exception& e)
 		{
 			printf("[Database] Error connecting to database %s\n", e.what());
+			throw std::runtime_error(e.what());
 		}
 	}
 

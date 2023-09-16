@@ -513,6 +513,9 @@
             ]
         }
     ],
+    "crypto_type": "COMPOUND",
+    "event_point": 0,
+    "flowid": null,
     "fob_event_task_list": {
         "normal_defense": [
             {
@@ -698,6 +701,7 @@
     "hero_threshold_point": 150000,
     "is_able_to_buy_fob4": 1,
     "is_stuck_rescue": 0,
+    "msgid": "CMD_GET_LOGIN_PARAM",
     "not_hero_threshold_point": 100000,
     "online_challenge_task": {
         "end_date": 1694498400,
@@ -877,6 +881,8 @@
         0,
         0
     ],
+    "result": "NOERR",
+    "rqid": 0,
     "server_product_params": [
         {
             "dev_coin": 1,
@@ -9840,5 +9846,6 @@
                 2000
             ]
         }
-    ]
+    ],
+    "xuid": null
 }

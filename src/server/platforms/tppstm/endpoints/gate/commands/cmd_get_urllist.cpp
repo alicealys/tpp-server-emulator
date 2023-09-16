@@ -29,7 +29,7 @@ namespace tpp
 			},
 			{
 				.type = "EULA",
-				.url = "http://mgstpp-game.konamionline.com/tppstmweb/eula/eula.var",
+				.url = HOSTNAME "tppstmweb/eula/eula.var",
 				.version = 6
 			},
 			{
@@ -44,22 +44,22 @@ namespace tpp
 			},
 			{
 				.type = "EULA_COIN",
-				.url = "http://mgstpp-game.konamionline.com/tppstmweb/coin/coin.var",
+				.url = HOSTNAME "tppstmweb/coin/coin.var",
 				.version = 1
 			},
 			{
 				.type = "POLICY_GDPR",
-				.url = "http://mgstpp-game.konamionline.com/tppstmweb/gdpr/privacy.var",
+				.url = HOSTNAME "tppstmweb/gdpr/privacy.var",
 				.version = 1
 			},
 			{
 				.type = "POLICY_JP",
-				.url = "http://mgstpp-game.konamionline.com/tppstmweb/privacy_jp/privacy.var",
+				.url = HOSTNAME "tppstmweb/privacy_jp/privacy.var",
 				.version = 2
 			},
 			{
 				.type = "POLICY_ELSE",
-				.url = "http://mgstpp-game.konamionline.com/tppstmweb/privacy/privacy.var",
+				.url = HOSTNAME "tppstmweb/privacy/privacy.var",
 				.version = 1
 			},
 			{
@@ -74,7 +74,7 @@ namespace tpp
 			},
 			{
 				.type = "POLICY_CCPA",
-				.url = "http://mgstpp-game.konamionline.com/tppstmweb/privacy_ccpa/privacy.var",
+				.url = HOSTNAME "tppstmweb/privacy_ccpa/privacy.var",
 				.version = 1
 			},
 			{

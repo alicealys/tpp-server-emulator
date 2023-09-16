@@ -12,8 +12,16 @@
 #include "commands/cmd_get_abolition_count.hpp"
 #include "commands/cmd_get_challenge_task_rewards.hpp"
 #include "commands/cmd_get_login_param.hpp"
+#include "commands/cmd_get_informationlist2.hpp"
+#include "commands/cmd_send_boot.hpp"
 #include "commands/cmd_get_combat_deploy_result.hpp"
 #include "commands/cmd_update_session.hpp"
+#include "commands/cmd_get_server_item_list.hpp"
+#include "commands/cmd_sync_soldier_bin.hpp"
+#include "commands/cmd_sync_resource.hpp"
+#include "commands/cmd_sync_loadout.hpp"
+#include "commands/cmd_sync_mother_base.hpp"
+#include "commands/cmd_get_resource_param.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -40,13 +48,29 @@ namespace tpp
 		this->register_handler<cmd_get_abolition_count>("CMD_GET_ABOLITION_COUNT");
 		this->register_handler<cmd_get_challenge_task_rewards>("CMD_GET_CHALLENGE_TASK_REWARDS");
 		this->register_handler<cmd_get_login_param>("CMD_GET_LOGIN_PARAM");
+		this->register_handler<cmd_get_informationlist2>("CMD_GET_INFORMATIONLIST2");
+		this->register_handler<cmd_send_boot>("CMD_SEND_BOOT");
 		this->register_handler<cmd_get_combat_deploy_result>("CMD_GET_COMBAT_DEPLOY_RESULT");
 		this->register_handler<cmd_update_session>("CMD_UPDATE_SESSION");
+		this->register_handler<cmd_get_server_item_list>("CMD_GET_SERVER_ITEM_LIST");
+		this->register_handler<cmd_sync_soldier_bin>("CMD_SYNC_SOLDIER_BIN");
+		this->register_handler<cmd_sync_resource>("CMD_SYNC_RESOURCE");
+		this->register_handler<cmd_sync_loadout>("CMD_SYNC_LOADOUT");
+		this->register_handler<cmd_sync_mother_base>("CMD_SYNC_MOTHER_BASE");
+		this->register_handler<cmd_get_resource_param>("CMD_GET_RESOURCE_PARAM");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)
 	{
-		const auto str = this->blow_.decrypt(data);
+		if (!data.starts_with("httpMsg="))
+		{
+			return {};
+		}
+
+		const auto result = data.substr(8);
+		const auto decoded_data = utils::encoding::decode_url_string(result);
+
+		const auto str = this->blow_.decrypt(decoded_data);
 		auto json = nlohmann::json::parse(str);
 
 		if (!json["data"].is_string())
@@ -134,10 +158,16 @@ namespace tpp
 		const auto& msgid = data["msgid"];
 		const auto& rq_id = data["rqid"];
 
+
 		if (!msgid.is_string() || !rq_id.is_number_integer())
 		{
 			return false;
 		}
+
+#ifdef DEBUG
+		const auto msg_id = msgid.get<std::string>();
+		printf("[Endpoint:main] Received message of type \"%s\"\n", msg_id.data());
+#endif
 
 		return true;
 	}
@@ -195,6 +225,7 @@ namespace tpp
 		const auto response_str = response.dump();
 		const auto str = this->blow_.encrypt(response_str);
 
-		return str;
+		const auto encoded = utils::encoding::split_into_lines(str);
+		return {encoded};
 	}
 }

@@ -11,7 +11,8 @@ namespace database::players
 	DEFINE_FIELD(crypto_key, sqlpp::text);
 	DEFINE_FIELD(last_update, sqlpp::time_point);
 	DEFINE_FIELD(creation_time, sqlpp::time_point);
-	DEFINE_TABLE(players, id_t, account_id_t, session_id_t, login_password_t, crypto_key_t, last_update_t, creation_time_t);
+	DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t, 
+		login_password_field_t, crypto_key_field_t, last_update_field_t, creation_time_field_t);
 
 	class player
 	{
@@ -54,8 +55,8 @@ namespace database::players
 		std::string session_id_;
 		std::string login_password_;
 		std::string crypto_key_;
-		std::chrono::high_resolution_clock::time_point last_update_;
-		std::chrono::high_resolution_clock::time_point creation_time_;
+		std::chrono::system_clock::time_point last_update_;
+		std::chrono::system_clock::time_point creation_time_;
 
 	};
 

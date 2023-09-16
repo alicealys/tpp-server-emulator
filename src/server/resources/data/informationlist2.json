@@ -1,0 +1,33 @@
+{
+    "info_list": [
+        {
+            "date": 1693234800,
+            "important": "FALSE",
+            "info_id": 10572,
+            "mes_body": "<I=C=cmn-col-special|** [Event] \"Skulls Attack\" Event FOB missions **>\n\nInfiltrate this Event FOB with no fear of retaliation (the enemy force will not counter-attack your base), and exchange the Event Points you earn for amazing rewards! \n\n[Event Point rewards]\n<I=C=cmn-col-special|- Placed weapon [E-RB WH GEN. (Wormhole Generator)] Blueprint.>\n<I=C=cmn-col-special|- Weapon [RENOV-ICKX TP BIS (Penetrate Sniper Rifle / Non-Lethal)] Blueprint>\n<I=C=cmn-col-special|- Limited edition event-only FOB color schemes. / weapon colors. / FOB staff swimwears.>\nIn addition, you can trade for various exclusive rewards such as S, S+, S++ staff, etc.\n\n\n[Event period]\nAug. 29, 2023, end of maintenance time to Sep. 12, 2023, 5AM (GMT)\n\n<I=C=cmn-col-ng|* Event rankings are not available.>",
+            "mes_subject": ""
+        },
+        {
+            "date": 1693234800,
+            "important": "FALSE",
+            "info_id": 10582,
+            "mes_body": "<I=C=cmn-col-special|** [Event] \"Skulls Attack\" Event FOB missions **>\n\n* Access the Event Points exchange via [FOB MISSIONS] > [Events] > [Event Points Exchange].\n* Event Points are only valid <I=C=cmn-col-special|during the event in which they were earned.>\n\n<I=C=cmn-col-ng|* Event Points are not carried over to the next event.>\n<I=C=cmn-col-ng|  Be aware that any Event Points earned during this event will be lost when the event period ends.>\n\n* Event FOB missions can only be played <I=C=cmn-col-special|after completing Episode 22> in the main game.",
+            "mes_subject": ""
+        },
+        {
+            "date": 1654588800,
+            "important": "FALSE",
+            "info_id": 6407,
+            "mes_body": "<I=C=cmn-col-ng|** Notice to Customers Residing in Japan **>\r\n\r\nRevision of the Japanese Specified Commercial Transactions Law has gone into effect from June 1st, 2022.\r\nFor customers residing in Japan, please read the Japanese notice regarding this matter.\r\nTo view the Japanese notice, change the language setting through options.\r\n",
+            "mes_subject": " "
+        },
+        {
+            "date": 1471273200,
+            "important": "FALSE",
+            "info_id": 4569,
+            "mes_body": "<I=C=cmn-col-ng|** MB Coin validity period (Users situated in Japan) **>\r\n\r\nMB Coins are subject to a 180-day validity period, regardless of whether they were purchased or received for free (<I=C=cmn-col-ng|this applies to Japan only>).\r\nBe aware that any MB Coins that remain unused when the validity period runs out will be rendered unusable.\r\nTo check the usage status of your MB Coins, view MISSIONS > LOG > MB Coins in the in-game iDroid menu.",
+            "mes_subject": " "
+        }
+    ],
+    "info_num": 4
+}

@@ -4,10 +4,10 @@
 
 namespace tpp
 {
-	class steam_handler : public platform_handler
+	class tppstmweb_handler : public platform_handler
 	{
 	public:
-		steam_handler();
+		tppstmweb_handler();
 
 	private:
 

@@ -2,7 +2,8 @@
 
 #include "server.hpp"
 
-#include "platforms/steam/steam_handler.hpp"
+#include "platforms/tppstm/tppstm_handler.hpp"
+#include "platforms/tppstmweb/tppstmweb_handler.hpp"
 
 #include "utils/encoding.hpp"
 #include "utils/http_server.hpp"
@@ -15,10 +16,12 @@ namespace tpp
 {
 	server::server()
 	{
-		this->register_handler<steam_handler>("tppstm");
+		this->register_handler<tppstm_handler>("tppstm");
+		this->register_handler<tppstmweb_handler>("tppstmweb");
 	}
 
-	utils::response_params server::handle_request(const std::string& platform, const std::string& endpoint, const std::string& data)
+	utils::response_params server::handle_request(const utils::request_params& params, const std::string& platform, 
+		const std::string& endpoint, const std::string& data)
 	{
 		utils::response_params response;
 		response.code = 200;
@@ -29,13 +32,11 @@ namespace tpp
 			return response;
 		}
 
-		const auto result_opt = handler->second->handle_endpoint(endpoint, data);
+		const auto result_opt = handler->second->handle_endpoint(params, endpoint, data);
 		if (!result_opt.has_value())
 		{
 			return response;
 		}
-
-		const auto encoded_response = this->encode_response(result_opt.value());
 
 		std::string headers;
 		headers.append("Set-Cookie: \r\n");
@@ -44,25 +45,9 @@ namespace tpp
 		headers.append("Connection: Keep-Alive\r\n");
 
 		response.headers = headers;
-		response.body = encoded_response;
+		response.body = result_opt.value();
 
 		return response;
-	}
-
-	std::string server::encode_response(const std::string& data)
-	{
-		return utils::encoding::split_into_lines(data);
-	}
-	
-	std::optional<std::string> server::decode_request(const std::string& data)
-	{
-		if (!data.starts_with("httpMsg="))
-		{
-			return {};
-		}
-
-		auto result = data.substr(8);
-		return utils::encoding::decode_url_string(result);
 	}
 
 	void server::request_handler(const utils::http_connection& conn, const utils::request_params& params)
@@ -81,15 +66,7 @@ namespace tpp
 			const auto& platform = endpoint_params[0];
 			const auto& endpoint = endpoint_params[1];
 
-			const auto request_opt = this->decode_request(params.body);
-			if (!request_opt.has_value())
-			{
-				return response;
-			}
-
-			const auto& request = request_opt.value();
-
-			return this->handle_request(platform, endpoint, request);
+			return this->handle_request(params, platform, endpoint, params.body);
 		});
 	}
 

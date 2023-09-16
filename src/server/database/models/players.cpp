@@ -12,7 +12,7 @@ create table if not exists `players`
 	account_id          bigint unsigned	not null,
 	session_id          char(32)		default null,
 	login_password      char(32)		default null,
-	last_update         date			default null,
+	last_update         datetime		default null,
 	crypto_key			char(32)		default null,
 	creation_time		datetime        default current_timestamp not null,
 	primary key (`id`)
@@ -20,7 +20,7 @@ create table if not exists `players`
 
 namespace database::players
 {
-	auto players_table = players_t();
+	auto players_table = players_table_t();
 
 	std::optional<player> find(const std::uint64_t id)
 	{
@@ -70,7 +70,8 @@ namespace database::players
 		}
 
 		const auto& row = results.front();
-		return {player(row)};
+		player player(row);
+		return {player};
 	}
 
 	player find_or_insert(const std::uint64_t account_id)
@@ -151,7 +152,7 @@ namespace database::players
 			sqlpp::update(players_table)
 				.set(players_table.last_update = std::chrono::system_clock::now())
 					.where(players_table.id == player_id));
-
+		printf("update session %i\n", result);
 		return result != 0;
 	}
 

@@ -21,4 +21,9 @@ namespace utils::tpp
 	{
 		return sizeof(static_key);
 	}
+
+	std::uint32_t calculate_mb_coins(const std::uint32_t seconds)
+	{
+		return static_cast<std::uint32_t>(static_cast<float>(seconds) * 0.01565f);
+	}
 }

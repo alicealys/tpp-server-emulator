@@ -60,7 +60,7 @@ namespace																		\
 }																				\
 
 #define DEFINE_FIELD(field_name, type)											\
-struct field_name##_t															\
+struct field_name##_field_t														\
 	{																			\
 	struct _alias_t																\
 	{																			\
@@ -85,7 +85,7 @@ struct field_name##_t															\
 };																				\
 
 #define DEFINE_TABLE(table_name, ...)											\
-struct table_name##_t : sqlpp::table_t<table_name##_t, ##__VA_ARGS__>			\
+struct table_name##_table_t : sqlpp::table_t<table_name##_table_t, ##__VA_ARGS__>\
 {																				\
 	struct _alias_t																\
 	{																			\

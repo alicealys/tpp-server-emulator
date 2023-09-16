@@ -26,7 +26,7 @@ create table if not exists `player_stats`
 
 namespace database::player_stats
 {
-	auto player_stats_table = player_stats_t();
+	auto player_stats_table = player_stats_table_t();
 
 	std::optional<stats> find(const std::uint64_t player_id)
 	{

@@ -2,6 +2,7 @@
 
 #include "base_handler.hpp"
 #include "command_handler.hpp"
+#include "utils/http_server.hpp"
 
 namespace tpp
 {
@@ -23,6 +24,6 @@ namespace tpp
 			return {};
 		}
 
-		std::optional<std::string> handle_command(const std::string& data);
+		virtual std::optional<std::string> handle_command(const utils::request_params& params, const std::string& data);
 	};
 }

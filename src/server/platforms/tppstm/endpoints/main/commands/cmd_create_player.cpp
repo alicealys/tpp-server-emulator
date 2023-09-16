@@ -6,6 +6,7 @@
 
 #include "database/models/players.hpp"
 #include "database/models/player_stats.hpp"
+#include "database/models/player_data.hpp"
 
 #include <utils/nt.hpp>
 
@@ -24,6 +25,8 @@ namespace tpp
 		}
 
 		database::player_stats::find_or_insert(player->get_id());
+		database::player_data::create(player->get_id());
+
 		result["player_id"] = player->get_id();
 		result["result"] = "NOERR";
 

@@ -67,8 +67,16 @@ namespace utils
 				return;
 			}
 
-			const auto res = response->get();
-			conn.reply(res.code, res.headers, res.body);
+			try
+			{
+				const auto res = response->get();
+				conn.reply(res.code, res.headers, res.body);
+			}
+			catch (const std::exception& e)
+			{
+				printf("error: %s\n", e.what());
+			}
+
 			conn.clear_task();
 		}
 	}
