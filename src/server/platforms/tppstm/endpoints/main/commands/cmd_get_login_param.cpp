@@ -2,6 +2,8 @@
 
 #include "cmd_get_login_param.hpp"
 
+#include "database/models/items.hpp"
+
 #include <utils/nt.hpp>
 
 namespace tpp
@@ -12,6 +14,7 @@ namespace tpp
 
 		nlohmann::json result = list;
 
+		//result["server_product_params"] = database::items::get_static_list_json();
 		result["result"] = "NOERR";
 		result["xuid"] = {};
 

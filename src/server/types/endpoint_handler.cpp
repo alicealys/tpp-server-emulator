@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	std::optional<std::string> endpoint_handler::handle_command(const std::string& data)
+	std::optional<std::string> endpoint_handler::handle_command([[maybe_unused]] const utils::request_params& params, const std::string& data)
 	{
 		const auto json_req_opt = this->decrypt_request(data);
 		if (!json_req_opt.has_value())
@@ -26,13 +26,13 @@ namespace tpp
 
 		const auto msgid_str = json_req["data"]["msgid"].get<std::string>();
 
-		printf("[Endpoint] Handling command \"%s\"\n", msgid_str.data());
-
 		const auto handler = this->handlers_.find(msgid_str);
 		if (handler == this->handlers_.end())
 		{
 			return {};
 		}
+
+		printf("[Endpoint] Handling command \"%s\"\n", msgid_str.data());
 
 		const auto json_res = handler->second->execute(json_req["data"], session_key.get<std::string>());
 		return this->encrypt_response(json_req, json_res);

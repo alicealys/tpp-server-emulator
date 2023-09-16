@@ -8,6 +8,6 @@ namespace tpp
 	class platform_handler : public base_handler<endpoint_handler>
 	{
 	public:
-		std::optional<std::string> handle_endpoint(const std::string& endpoint, const std::string& body);
+		std::optional<std::string> handle_endpoint(const utils::request_params& params, const std::string& endpoint, const std::string& body);
 	};
 }

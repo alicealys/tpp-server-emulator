@@ -25,7 +25,15 @@ namespace tpp
 
 	std::optional<nlohmann::json> gate_handler::decrypt_request(const std::string& data)
 	{
-		const auto str = this->blow_.decrypt(data);
+		if (!data.starts_with("httpMsg="))
+		{
+			return {};
+		}
+
+		const auto result = data.substr(8);
+		const auto decoded_data = utils::encoding::decode_url_string(result);
+
+		const auto str = this->blow_.decrypt(decoded_data);
 		auto json = nlohmann::json::parse(str);
 		
 		const auto& compressed_val = json["compress"];
@@ -93,6 +101,11 @@ namespace tpp
 			return false;
 		}
 
+#ifdef DEBUG
+		const auto msg_id = msgid.get<std::string>();
+		printf("[Endpoint:main] Received message of type \"%s\"\n", msg_id.data());
+#endif
+
 		return true;
 	}
 
@@ -120,6 +133,7 @@ namespace tpp
 		const auto response_str = response.dump();
 		const auto str = this->blow_.encrypt(response_str);
 
-		return {str};
+		const auto encoded = utils::encoding::split_into_lines(str);
+		return {encoded};
 	}
 }

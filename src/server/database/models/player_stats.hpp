@@ -16,9 +16,9 @@ namespace database::player_stats
 	DEFINE_FIELD(league_rank, sqlpp::integer);
 	DEFINE_FIELD(playtime, sqlpp::integer);
 	DEFINE_FIELD(point, sqlpp::integer);
-	DEFINE_TABLE(player_stats, id_t, player_id_t, espionage_lose_t, espionage_win_t, 
-		fob_grade_t, fob_point_t, fob_rank_t, is_insurance_t, league_grade_t,
-		league_rank_t, playtime_t, point_t);
+	DEFINE_TABLE(player_stats, id_field_t, player_id_field_t, espionage_lose_field_t, espionage_win_field_t,
+		fob_grade_field_t, fob_point_field_t, fob_rank_field_t, is_insurance_field_t, league_grade_field_t,
+		league_rank_field_t, playtime_field_t, point_field_t);
 
 	class stats
 	{

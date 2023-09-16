@@ -6,6 +6,7 @@
 
 #include "database/models/players.hpp"
 #include "database/models/player_stats.hpp"
+#include "database/models/player_data.hpp"
 
 #include <utils/nt.hpp>
 
@@ -24,10 +25,11 @@ namespace tpp
 		}
 
 		const auto stats = database::player_stats::find(player->get_id());
+		const auto player_data = database::player_data::find(player->get_id());
 
 		result["player_num"] = 0;
 
-		if (stats.has_value())
+		if (stats.has_value() && player_data.get())
 		{
 			result["player_num"] = 1;
 

@@ -30,10 +30,8 @@ namespace tpp
 
 		void request_handler(const utils::http_connection& conn, const utils::request_params& params);
 
-		std::string encode_response(const std::string& data);
-		std::optional<std::string> decode_request(const std::string& data);
-
-		utils::response_params handle_request(const std::string& platform, const std::string& endpoint, const std::string& body);
+		utils::response_params handle_request(const utils::request_params& params, const std::string& platform, 
+			const std::string& endpoint, const std::string& body);
 
 	private:
 		std::atomic_bool killed_ = false;
