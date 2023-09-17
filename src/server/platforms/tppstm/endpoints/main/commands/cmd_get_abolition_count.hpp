@@ -6,6 +6,6 @@ namespace tpp
 {
 	class cmd_get_abolition_count : public command_handler
 	{
-		nlohmann::json execute(const nlohmann::json& data, const std::string& session_key) override;
+		nlohmann::json execute(nlohmann::json& data, const std::string& session_key) override;
 	};
 }

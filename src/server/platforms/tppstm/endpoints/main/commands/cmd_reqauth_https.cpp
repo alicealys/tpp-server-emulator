@@ -8,7 +8,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_reqauth_https::execute(const nlohmann::json& data, const std::string&)
+	nlohmann::json cmd_reqauth_https::execute(nlohmann::json& data, const std::string&)
 	{
 		nlohmann::json result;
 		result["xuid"] = {};

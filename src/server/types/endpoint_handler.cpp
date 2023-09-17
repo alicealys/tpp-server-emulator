@@ -6,13 +6,13 @@ namespace tpp
 {
 	std::optional<std::string> endpoint_handler::handle_command([[maybe_unused]] const utils::request_params& params, const std::string& data)
 	{
-		const auto json_req_opt = this->decrypt_request(data);
+		auto json_req_opt = this->decrypt_request(data);
 		if (!json_req_opt.has_value())
 		{
 			return {};
 		}
 
-		const auto& json_req = json_req_opt.value();
+		auto& json_req = json_req_opt.value();
 		if (!this->verify_request(json_req))
 		{
 			return {};

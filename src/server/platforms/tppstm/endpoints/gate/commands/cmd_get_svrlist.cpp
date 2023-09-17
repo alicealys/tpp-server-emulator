@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_svrlist::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_svrlist::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 

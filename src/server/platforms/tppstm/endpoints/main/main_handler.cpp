@@ -22,6 +22,8 @@
 #include "commands/cmd_sync_loadout.hpp"
 #include "commands/cmd_sync_mother_base.hpp"
 #include "commands/cmd_get_resource_param.hpp"
+#include "commands/cmd_sale_resource.hpp"
+#include "commands/cmd_get_server_item.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -58,6 +60,8 @@ namespace tpp
 		this->register_handler<cmd_sync_loadout>("CMD_SYNC_LOADOUT");
 		this->register_handler<cmd_sync_mother_base>("CMD_SYNC_MOTHER_BASE");
 		this->register_handler<cmd_get_resource_param>("CMD_GET_RESOURCE_PARAM");
+		this->register_handler<cmd_sale_resource>("CMD_SALE_RESOURCE");
+		this->register_handler<cmd_get_server_item>("CMD_GET_SERVER_ITEM");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)
@@ -227,5 +231,12 @@ namespace tpp
 
 		const auto encoded = utils::encoding::split_into_lines(str);
 		return {encoded};
+	}
+
+	nlohmann::json error(const std::string& id)
+	{
+		nlohmann::json result;
+		result["result"] = id;
+		return result;
 	}
 }

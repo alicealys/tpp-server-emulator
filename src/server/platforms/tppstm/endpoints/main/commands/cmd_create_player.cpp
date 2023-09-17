@@ -12,7 +12,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_create_player::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_create_player::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 		result["xuid"] = {};

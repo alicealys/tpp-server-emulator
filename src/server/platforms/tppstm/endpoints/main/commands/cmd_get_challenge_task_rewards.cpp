@@ -6,7 +6,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_challenge_task_rewards::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_challenge_task_rewards::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		static const auto list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_CHALLENGE_TASK_REWARDS));
 

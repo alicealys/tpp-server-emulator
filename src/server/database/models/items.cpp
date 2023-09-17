@@ -119,7 +119,7 @@ namespace database::items
 		return list;
 	}
 
-	item_t get_item(const std::uint32_t id)
+	item_t get_item_data(const std::uint32_t id)
 	{
 		const auto& map = get_static_map();
 		const auto iter = map.find(id);
@@ -242,6 +242,36 @@ namespace database::items
 		}
 
 		return list;
+	}
+
+	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id)
+	{
+		auto results = database::get()->operator()(
+			sqlpp::select(
+				sqlpp::all_of(items_table))
+					.from(items_table)
+						.where(items_table.player_id == player_id &&
+							   items_table.item_id == item_id));
+
+		const auto& static_map = get_static_map();
+		auto iter = static_map.find(item_id);
+		if (iter == static_map.end())
+		{
+			return {};
+		}
+
+		auto p_data = player_data::find(player_id);
+
+		if (results.empty())
+		{
+			item_status status(item_id, player_id);
+			status.set_data(iter->second, p_data);
+			return status;
+		}
+
+		item_status status(results.front());
+		status.set_data(iter->second, p_data);
+		return status;
 	}
 
 	class table final : public table_interface

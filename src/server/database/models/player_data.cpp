@@ -327,14 +327,13 @@ namespace database::player_data
 
 	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value)
 	{
-		return std::min(value, get_max_resource_value(type, index));
+		return std::max(0u, std::min(value, get_max_resource_value(type, index)));
 	}
 
 #pragma warning(push)
 #pragma warning(disable: 4127)
 	void create(const std::uint64_t player_id)
 	{
-
 		database::get()->operator()(
 			sqlpp::insert_into(player_data_table)
 				.set(player_data_table.player_id = player_id,
@@ -399,6 +398,7 @@ namespace database::player_data
 				.set(player_data_table.player_id = player_id,
 					 player_data_table.resource_arrays = encode_buffer(resource_buf),
 					 player_data_table.local_gmp = local_gmp,
+					 player_data_table.server_gmp = server_gmp,
 					 player_data_table.version = player_data_table.version + 1)
 						.where(player_data_table.player_id == player_id
 			));
