@@ -6,28 +6,27 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF std::format(R"(
+#define TABLE_DEF R"(
 create table if not exists `player_data`
 (
 	id						bigint unsigned	not null	auto_increment,
 	player_id				bigint unsigned	not null,
-	unit_counts				binary({}) default null,
-	unit_levels				binary({}) default null,
+	unit_counts				blob default null,
+	unit_levels				blob default null,
 	resource_arrays			mediumblob default null,
 	staff_count				bigint unsigned not null,
 	staff_bin				mediumblob default null,
 	loadout					text not null,
 	motherbase				text not null,
-	local_gmp				bigint unsigned not null,
-	server_gmp				bigint unsigned not null,
-	loadout_gmp				bigint unsigned not null,
-	insurance_gmp			bigint unsigned not null,
-	injury_gmp				bigint unsigned not null,
+	local_gmp				bigint default 0,
+	server_gmp				bigint default 0,
+	loadout_gmp				bigint default 0,
+	insurance_gmp			bigint default 0,
+	injury_gmp				bigint default 0,
 	version 				bigint unsigned default 0,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
-))", sizeof(database::player_data::unit_counts_t), \
-	sizeof(database::player_data::unit_levels_t)) \
+))"
 
 namespace database::player_data
 {
@@ -284,6 +283,13 @@ namespace database::player_data
 			0,
 			0
 		};
+
+		template <typename T>
+		std::string encode(T& value)
+		{
+			const std::string str = {reinterpret_cast<char*>(&value), sizeof(T)};
+			return utils::cryptography::base64::encode(str);
+		}
 	}
 
 	std::string encode_buffer(const std::string& buffer)
@@ -375,21 +381,30 @@ namespace database::player_data
 			));
 	}
 
-	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
+	void set_soldier_diff(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data, 
+		unit_levels_t& levels, unit_counts_t& counts)
 	{
-		const auto levels_buf = std::string{reinterpret_cast<char*>(levels), sizeof(unit_levels_t)};
-		const auto counts_buf = std::string{reinterpret_cast<char*>(counts), sizeof(unit_counts_t)};
-
 		database::get()->operator()(
 			sqlpp::update(player_data_table)
-				.set(player_data_table.player_id = player_id,
-					 player_data_table.unit_levels = levels_buf,
-					 player_data_table.unit_counts = counts_buf)
+				.set(player_data_table.staff_count = staff_count,
+					 player_data_table.staff_bin = encode_buffer(data),
+					 player_data_table.unit_levels = encode(levels),
+					 player_data_table.unit_counts = encode(counts))
 						.where(player_data_table.player_id == player_id
 			));
 	}
 
-	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::uint32_t local_gmp, const std::uint32_t server_gmp)
+	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
+	{
+		database::get()->operator()(
+			sqlpp::update(player_data_table)
+				.set(player_data_table.unit_levels = encode(levels),
+					 player_data_table.unit_counts = encode(counts))
+						.where(player_data_table.player_id == player_id
+			));
+	}
+
+	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 	{
 		const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
 

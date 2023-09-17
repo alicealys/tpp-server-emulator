@@ -23,7 +23,7 @@ namespace tpp
 		const auto& item_id_j = data["item_id"];
 		if (!item_id_j.is_number_integer())
 		{
-			result["result"] = "ERR_INVALID_ARG";
+			result["result"] = "ERR_INVALIDARG";
 			return result;
 		}
 

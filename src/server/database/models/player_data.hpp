@@ -12,18 +12,18 @@ namespace database::player_data
 {
 	DEFINE_FIELD(id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(unit_counts, sqlpp::binary);
-	DEFINE_FIELD(unit_levels, sqlpp::binary);
+	DEFINE_FIELD(unit_counts, sqlpp::blob);
+	DEFINE_FIELD(unit_levels, sqlpp::blob);
 	DEFINE_FIELD(resource_arrays, sqlpp::mediumblob);
 	DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
 	DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
 	DEFINE_FIELD(loadout, sqlpp::text);
 	DEFINE_FIELD(motherbase, sqlpp::text);
-	DEFINE_FIELD(local_gmp, sqlpp::integer_unsigned);
-	DEFINE_FIELD(server_gmp, sqlpp::integer_unsigned);
-	DEFINE_FIELD(loadout_gmp, sqlpp::integer_unsigned);
-	DEFINE_FIELD(insurance_gmp, sqlpp::integer_unsigned);
-	DEFINE_FIELD(injury_gmp, sqlpp::integer_unsigned);
+	DEFINE_FIELD(local_gmp, sqlpp::integer);
+	DEFINE_FIELD(server_gmp, sqlpp::integer);
+	DEFINE_FIELD(loadout_gmp, sqlpp::integer);
+	DEFINE_FIELD(insurance_gmp, sqlpp::integer);
+	DEFINE_FIELD(injury_gmp, sqlpp::integer);
 	DEFINE_FIELD(version, sqlpp::integer_unsigned);
 	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
 		resource_arrays_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, motherbase_field_t,
@@ -83,8 +83,8 @@ namespace database::player_data
 	constexpr auto unit_count = 7;
 	constexpr auto resource_type_count = 59;
 	constexpr auto max_staff_count = 3500u;
-	constexpr auto max_server_gmp = 25000000u;
-	constexpr auto max_local_gmp = 5000000u;
+	constexpr auto max_server_gmp = 25000000;
+	constexpr auto max_local_gmp = 5000000;
 
 	using resource_array_t = std::uint32_t[resource_type_count];
 	using resource_arrays_t = resource_array_t[resource_array_types::count];
@@ -103,6 +103,8 @@ namespace database::player_data
 		{
 			const auto resource_arrays_str = decode_buffer(row.resource_arrays.value());
 			const auto staff_bin_str = decode_buffer(row.staff_bin.value());
+			const auto unit_counts_str = decode_buffer(row.unit_counts.value());
+			const auto unit_levels_str = decode_buffer(row.unit_levels.value());
 
 			if (resource_arrays_str.size() == sizeof(resource_arrays_t))
 			{
@@ -112,6 +114,16 @@ namespace database::player_data
 			if (staff_bin_str.size() == sizeof(staff_array_t))
 			{
 				std::memcpy(this->staff_array_, staff_bin_str.data(), sizeof(staff_array_t));
+			}
+
+			if (unit_counts_str.size() == sizeof(unit_counts_t))
+			{
+				std::memcpy(this->unit_counts_, unit_counts_str.data(), sizeof(unit_counts_t));
+			}
+
+			if (unit_levels_str.size() == sizeof(unit_levels_t))
+			{
+				std::memcpy(this->unit_levels_, unit_levels_str.data(), sizeof(unit_levels_t));
 			}
 
 			this->staff_count_ = static_cast<std::uint32_t>(row.staff_count);
@@ -194,12 +206,12 @@ namespace database::player_data
 			return this->motherbase_;
 		}
 
-		std::uint32_t get_server_gmp() const
+		std::int32_t get_server_gmp() const
 		{
 			return this->server_gmp_;
 		}
 
-		std::uint32_t get_local_gmp() const
+		std::int32_t get_local_gmp() const
 		{
 			return this->local_gmp_;
 		}
@@ -239,6 +251,8 @@ namespace database::player_data
 	void create(const std::uint64_t player_id);
 	std::unique_ptr<player_data> find(const std::uint64_t player_id);
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
+	void set_soldier_diff(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
+		unit_levels_t& levels, unit_counts_t& counts);
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
-	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::uint32_t local_gmp, const std::uint32_t server_gmp);
+	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 }

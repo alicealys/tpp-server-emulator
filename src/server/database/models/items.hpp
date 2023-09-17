@@ -17,7 +17,7 @@ namespace database::items
 	struct item_t
 	{
 		std::uint32_t dev_coin;
-		std::uint32_t dev_gmp;
+		std::int32_t dev_gmp;
 		std::uint32_t dev_item_1;
 		std::uint32_t dev_item_2;
 		std::uint32_t dev_platform_levels[7];
@@ -32,6 +32,12 @@ namespace database::items
 		std::uint32_t use_resource_values[2];
 		std::uint32_t use_resource_ids[2];
 	};
+
+#ifdef DEBUG
+	constexpr auto dev_limit = 999;
+#else
+	constexpr auto dev_limit = 4;
+#endif
 
 	nlohmann::json get_static_list_json();
 	std::vector<item_t>& get_static_list();
@@ -121,6 +127,16 @@ namespace database::items
 			return this->created_;
 		}
 
+		std::uint32_t get_resource_id(const std::uint32_t index) const
+		{
+			return this->resource_ids_[index];
+		}
+
+		std::uint32_t get_resource_value(const std::uint32_t index) const
+		{
+			return this->resource_values_[index];
+		}
+
 	private:
 		bool open_;
 		bool created_;
@@ -132,10 +148,13 @@ namespace database::items
 		std::uint32_t mb_coin_;
 		std::uint32_t left_second_;
 		std::uint32_t max_second_;
+		std::uint32_t resource_ids_[2];
+		std::uint32_t resource_values_[2];
 		std::chrono::system_clock::time_point create_date_;
 
 	};
 
 	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id);
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id);
+	void create(const std::uint64_t player_id, const std::uint32_t item_id);
 }

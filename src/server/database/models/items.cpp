@@ -37,7 +37,7 @@ namespace database::items
 				auto& entry = data[i];
 
 				item.dev_coin = entry["dev_coin"].get<std::uint32_t>();
-				item.dev_gmp = entry["dev_gmp"].get<std::uint32_t>();
+				item.dev_gmp = entry["dev_gmp"].get<std::int32_t>();
 				item.dev_item_1 = entry["dev_item_1"].get<std::uint32_t>();
 				item.dev_item_2 = entry["dev_item_2"].get<std::uint32_t>();
 
@@ -135,27 +135,41 @@ namespace database::items
 	{
 		const auto now = std::chrono::system_clock::now();
 
-		this->max_second_ = item_data.dev_time;
+		this->max_second_ = item_data.dev_time * 60;
 		this->gmp_ = item_data.dev_gmp;
+
+		this->resource_ids_[0] = item_data.dev_resource_ids[0];
+		this->resource_ids_[1] = item_data.dev_resource_ids[1];
+		this->resource_values_[0] = item_data.dev_resource_values[0];
+		this->resource_values_[1] = item_data.dev_resource_values[1];
 
 		const auto diff = now - this->create_date_;
 		const auto seconds_passed = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
 
 		if (this->created_)
 		{
-			this->left_second_ = static_cast<std::uint32_t>(std::max(0ull, (seconds_passed - static_cast<std::uint64_t>(this->max_second_))));
+			if (static_cast<std::int64_t>(this->max_second_) < seconds_passed)
+			{
+				this->left_second_ = 0;
+				this->develop_ = 2;
+			}
+			else
+			{
+				this->left_second_ = static_cast<std::uint32_t>(static_cast<std::uint64_t>(this->max_second_) - seconds_passed);
+				this->develop_ = 1;
+			}
 		}
 		else
 		{
 			this->left_second_ = this->max_second_;
+			this->develop_ = 0;
 		}
 
 		this->mb_coin_ = utils::tpp::calculate_mb_coins(this->left_second_);
 
-		this->develop_ = this->left_second_ == 0 ? 2 : 0;
 		this->open_ = this->left_second_ == 0;
 
-		if (this->open_ && p_data.get())
+		if (!this->open_ && p_data.get())
 		{
 			const auto count_1 = p_data->get_resource_value(player_data::processed_server, item_data.dev_resource_ids[0]);
 			const auto count_2 = p_data->get_resource_value(player_data::processed_server, item_data.dev_resource_ids[1]);
@@ -177,7 +191,7 @@ namespace database::items
 					}
 				}
 
-				auto has_skill = false;
+				auto has_skill = item_data.dev_skill == 0;
 				if (should_be_open && item_data.dev_skill != 0)
 				{
 					for (auto i = 0u; i < p_data->get_staff_count(); i++)
@@ -273,6 +287,19 @@ namespace database::items
 		status.set_data(iter->second, p_data);
 		return status;
 	}
+
+#pragma warning(push)
+#pragma warning(disable: 4127)
+	void create(const std::uint64_t player_id, const std::uint32_t item_id)
+	{
+		database::get()->operator()(
+			sqlpp::insert_into(items_table)
+				.set(items_table.player_id = player_id,
+					 items_table.item_id = item_id,
+					 items_table.create_date = std::chrono::system_clock::now()
+			));
+	}
+#pragma warning(pop)
 
 	class table final : public table_interface
 	{
