@@ -1,0 +1,80 @@
+{
+    "after_mining_resource": {
+        "biotic_resource": 0,
+        "common_metal": 0,
+        "fuel_resource": 0,
+        "minor_metal": 0,
+        "precious_metal": 0
+    },
+    "after_mining_resource_processing": {
+        "biotic_resource": 1000000,
+        "common_metal": 1000000,
+        "fuel_resource": 1000000,
+        "minor_metal": 1000000,
+        "precious_metal": 1000000
+    },
+    "after_mining_resource_usable": {
+        "biotic_resource": 1000000,
+        "common_metal": 1000000,
+        "fuel_resource": 1000000,
+        "minor_metal": 1000000,
+        "precious_metal": 1000000
+    },
+    "after_process_resource": {
+        "biotic_resource": 0,
+        "common_metal": 0,
+        "fuel_resource": 0,
+        "minor_metal": 0,
+        "precious_metal": 0
+    },
+    "after_process_resource_processing": {
+        "biotic_resource": 1000000,
+        "common_metal": 1000000,
+        "fuel_resource": 1000000,
+        "minor_metal": 1000000,
+        "precious_metal": 1000000
+    },
+    "after_process_resource_usable": {
+        "biotic_resource": 1000000,
+        "common_metal": 1000000,
+        "fuel_resource": 1000000,
+        "minor_metal": 1000000,
+        "precious_metal": 1000000
+    },
+    "before_mining_resource": {
+        "biotic_resource": 0,
+        "common_metal": 0,
+        "fuel_resource": 0,
+        "minor_metal": 0,
+        "precious_metal": 0
+    },
+    "before_process_resource": {
+        "biotic_resource": 0,
+        "common_metal": 0,
+        "fuel_resource": 0,
+        "minor_metal": 0,
+        "precious_metal": 0
+    },
+    "before_process_resource_processing": {
+        "biotic_resource": 1000000,
+        "common_metal": 1000000,
+        "fuel_resource": 1000000,
+        "minor_metal": 1000000,
+        "precious_metal": 1000000
+    },
+    "before_process_resource_usable": {
+        "biotic_resource": 1000000,
+        "common_metal": 1000000,
+        "fuel_resource": 1000000,
+        "minor_metal": 1000000,
+        "precious_metal": 1000000
+    },
+    "break_time": 2100,
+    "local_process_resource": {
+        "biotic_resource": 0,
+        "common_metal": 0,
+        "fuel_resource": 0,
+        "minor_metal": 0,
+        "precious_metal": 0
+    }
+}
