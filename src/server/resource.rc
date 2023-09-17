@@ -98,6 +98,7 @@ RESOURCE_CHALLENGE_TASK_REWARDS        RCDATA "resources/data/challenge_task_rew
 RESOURCE_LOGIN_PARAM        RCDATA "resources/data/login_param.json"
 RESOURCE_INFORMATIONLIST2        RCDATA "resources/data/informationlist2.json"
 RESOURCE_ITEM_LIST        RCDATA "resources/data/item_list.json"
+RESOURCE_MINING_RESOURCE        RCDATA "resources/data/mining_resource.json"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
