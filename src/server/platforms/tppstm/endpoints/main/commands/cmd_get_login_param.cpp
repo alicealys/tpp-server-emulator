@@ -8,7 +8,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_login_param::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_login_param::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		static const auto list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_LOGIN_PARAM));
 

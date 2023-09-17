@@ -36,7 +36,7 @@ namespace database::items
 	nlohmann::json get_static_list_json();
 	std::vector<item_t>& get_static_list();
 	std::unordered_map<std::uint32_t, item_t>& get_static_map();
-	item_t get_item(const std::uint32_t id);
+	item_t get_item_data(const std::uint32_t id);
 
 	class item_status
 	{
@@ -48,6 +48,7 @@ namespace database::items
 			this->player_id_ = row.player_id;
 			this->create_date_ = std::chrono::time_point<std::chrono::system_clock>(row.create_date.value().time_since_epoch());
 			this->created_ = true;
+			this->valid_ = true;
 		}
 
 		item_status(const std::uint32_t item_id, const std::uint64_t player_id)
@@ -55,11 +56,17 @@ namespace database::items
 			this->id_ = item_id;
 			this->player_id_ = player_id;
 			this->created_ = false;
+			this->valid_ = true;
+		}
+
+		item_status()
+		{
+			this->valid_ = false;
 		}
 
 		void set_data(const item_t& item_data, std::unique_ptr<player_data::player_data>& p_data);
 
-		bool is_open() const
+		int is_open() const
 		{
 			return this->open_;
 		}
@@ -117,6 +124,7 @@ namespace database::items
 	private:
 		bool open_;
 		bool created_;
+		bool valid_;
 		std::uint64_t player_id_;
 		std::uint32_t id_;
 		std::uint32_t gmp_;
@@ -129,4 +137,5 @@ namespace database::items
 	};
 
 	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id);
+	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id);
 }

@@ -9,7 +9,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_server_item_list::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_server_item_list::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 

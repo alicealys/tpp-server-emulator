@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_update_session : public command_handler
+	class cmd_get_server_item : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::string& session_key) override;
 	};

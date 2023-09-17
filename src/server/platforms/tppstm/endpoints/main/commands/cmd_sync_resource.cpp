@@ -9,7 +9,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_sync_resource::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_sync_resource::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 		result["result"] = "NOERR";
@@ -63,8 +63,14 @@ namespace tpp
 
 				if (resource_arrays[server_type][i] < max_server)
 				{
-					const auto transfer_amount = std::min(max_server - resource_arrays[server_type][i],
+					auto transfer_amount = std::min(
+						max_server - resource_arrays[server_type][i],
 						static_cast<std::uint32_t>(max * 0.1f));
+
+					if (transfer_amount > resource_arrays[local_type][i])
+					{
+						transfer_amount = resource_arrays[local_type][i];
+					}
 
 					printf("transfering %i resource %i to server\n", transfer_amount, i);
 
@@ -100,10 +106,10 @@ namespace tpp
 			local_gmp -= transfer_amount;
 
 			printf("transfering %i gmp to server\n", transfer_amount);
-
-			result["local_gmp"] = local_gmp;
-			result["server_gmp"] = server_gmp;
 		}
+
+		result["local_gmp"] = local_gmp;
+		result["server_gmp"] = server_gmp;
 
 		database::player_data::set_resources(player->get_id(), resource_arrays, local_gmp, server_gmp);
 		result["version"] = player_data->get_version() + 1;

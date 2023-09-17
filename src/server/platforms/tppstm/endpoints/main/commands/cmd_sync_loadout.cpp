@@ -6,7 +6,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_sync_loadout::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_sync_loadout::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 		result["result"] = "NOERR";

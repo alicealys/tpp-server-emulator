@@ -12,7 +12,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_sync_soldier_bin::execute(const nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_sync_soldier_bin::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 
