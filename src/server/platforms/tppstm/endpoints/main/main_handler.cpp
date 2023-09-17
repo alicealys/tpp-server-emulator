@@ -24,6 +24,8 @@
 #include "commands/cmd_get_resource_param.hpp"
 #include "commands/cmd_sale_resource.hpp"
 #include "commands/cmd_get_server_item.hpp"
+#include "commands/cmd_develop_server_item.hpp"
+#include "commands/cmd_sync_soldier_diff.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -62,6 +64,8 @@ namespace tpp
 		this->register_handler<cmd_get_resource_param>("CMD_GET_RESOURCE_PARAM");
 		this->register_handler<cmd_sale_resource>("CMD_SALE_RESOURCE");
 		this->register_handler<cmd_get_server_item>("CMD_GET_SERVER_ITEM");
+		this->register_handler<cmd_develop_server_item>("CMD_DEVELOP_SERVER_ITEM");
+		this->register_handler<cmd_sync_soldier_diff>("CMD_SYNC_SOLDIER_DIFF");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)

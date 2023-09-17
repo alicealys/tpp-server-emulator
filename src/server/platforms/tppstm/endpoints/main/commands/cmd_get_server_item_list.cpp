@@ -37,6 +37,9 @@ namespace tpp
 			result["item_list"][i]["open"] = item_status.second.is_open();
 		}
 
+		result["item_num"] = status_list.size();
+		result["develop_limit"] = database::items::dev_limit;
+
 		result["result"] = "NOERR";
 		result["xuid"] = {};
 

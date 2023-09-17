@@ -92,7 +92,7 @@ namespace tpp
 		result["diff_gmp"] = 0;
 
 		auto server_gmp = player_data->get_server_gmp();
-		auto local_gmp = std::min(database::player_data::max_local_gmp, gmp_j.get<std::uint32_t>());
+		auto local_gmp = std::min(database::player_data::max_local_gmp, gmp_j.get<std::int32_t>());
 
 		printf("server_gmp = %i\n", server_gmp);
 		printf("local_gmp = %i\n", local_gmp);
@@ -100,7 +100,7 @@ namespace tpp
 		if (server_gmp < database::player_data::max_server_gmp)
 		{
 			const auto transfer_amount = std::min(database::player_data::max_server_gmp - server_gmp,
-				static_cast<std::uint32_t>(local_gmp * 0.8f));
+				static_cast<std::int32_t>(local_gmp * 0.8f));
 
 			server_gmp += transfer_amount;
 			local_gmp -= transfer_amount;
