@@ -11,6 +11,7 @@
 #include "commands/cmd_set_currentplayer.hpp"
 #include "commands/cmd_get_abolition_count.hpp"
 #include "commands/cmd_get_challenge_task_rewards.hpp"
+#include "commands/cmd_get_challenge_task_target_values.hpp"
 #include "commands/cmd_get_login_param.hpp"
 #include "commands/cmd_get_informationlist2.hpp"
 #include "commands/cmd_send_boot.hpp"
@@ -22,6 +23,7 @@
 #include "commands/cmd_sync_loadout.hpp"
 #include "commands/cmd_sync_mother_base.hpp"
 #include "commands/cmd_get_resource_param.hpp"
+#include "commands/cmd_mining_resource.hpp"
 #include "commands/cmd_sale_resource.hpp"
 #include "commands/cmd_get_server_item.hpp"
 #include "commands/cmd_develop_server_item.hpp"
@@ -57,6 +59,7 @@ namespace tpp
 		this->register_handler<cmd_set_currentplayer>("CMD_SET_CURRENTPLAYER");
 		this->register_handler<cmd_get_abolition_count>("CMD_GET_ABOLITION_COUNT");
 		this->register_handler<cmd_get_challenge_task_rewards>("CMD_GET_CHALLENGE_TASK_REWARDS");
+		this->register_handler<cmd_get_challenge_task_target_values>("CMD_GET_CHALLENGE_TASK_TARGET_VALUES");
 		this->register_handler<cmd_get_login_param>("CMD_GET_LOGIN_PARAM");
 		this->register_handler<cmd_get_informationlist2>("CMD_GET_INFORMATIONLIST2");
 		this->register_handler<cmd_send_boot>("CMD_SEND_BOOT");
@@ -68,6 +71,7 @@ namespace tpp
 		this->register_handler<cmd_sync_loadout>("CMD_SYNC_LOADOUT");
 		this->register_handler<cmd_sync_mother_base>("CMD_SYNC_MOTHER_BASE");
 		this->register_handler<cmd_get_resource_param>("CMD_GET_RESOURCE_PARAM");
+		this->register_handler<cmd_mining_resource>("CMD_MINING_RESOURCE");
 		this->register_handler<cmd_sale_resource>("CMD_SALE_RESOURCE");
 		this->register_handler<cmd_get_server_item>("CMD_GET_SERVER_ITEM");
 		this->register_handler<cmd_develop_server_item>("CMD_DEVELOP_SERVER_ITEM");

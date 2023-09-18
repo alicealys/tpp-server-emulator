@@ -16,7 +16,8 @@ create table if not exists `player_data`
 	resource_arrays			mediumblob default null,
 	staff_count				bigint unsigned not null,
 	staff_bin				mediumblob default null,
-	loadout					text not null,
+	loadout					mediumtext not null,
+	motherbase				mediumtext not null,
 	local_gmp				bigint default 0,
 	server_gmp				bigint default 0,
 	loadout_gmp				bigint default 0,
@@ -346,6 +347,7 @@ namespace database::player_data
 				.set(player_data_table.player_id = player_id,
 					 player_data_table.staff_count = 0,
 					 player_data_table.loadout = "{}",
+					 player_data_table.motherbase = "{}",
 					 player_data_table.local_gmp = 0,
 					 player_data_table.server_gmp = 0,
 					 player_data_table.loadout_gmp = 0,
@@ -435,6 +437,26 @@ namespace database::player_data
 					 player_data_table.version = player_data_table.version + 1)
 						.where(player_data_table.player_id == player_id
 			));
+	}
+
+	void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase)
+	{
+		database::get()->operator()(
+			sqlpp::update(player_data_table)
+				.set(player_data_table.player_id = player_id,
+					 player_data_table.motherbase = motherbase.dump())
+						.where(player_data_table.player_id == player_id)
+			);
+	}
+
+	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout)
+	{
+		database::get()->operator()(
+			sqlpp::update(player_data_table)
+				.set(player_data_table.player_id = player_id,
+					 player_data_table.loadout = loadout.dump())
+						.where(player_data_table.player_id == player_id)
+			);
 	}
 
 	class table final : public table_interface
