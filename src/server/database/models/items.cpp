@@ -74,17 +74,6 @@ namespace database::items
 			return items;
 		}
 
-		class a
-		{
-		public:
-			a()
-			{
-				load_static_list();
-			}
-		};
-
-		a ab;
-
 		std::unordered_map<std::uint32_t, item_t> load_static_map()
 		{
 			static const auto list = load_static_list();
@@ -232,12 +221,6 @@ namespace database::items
 		}
 
 		auto p_data = player_data::find(player_id);
-
-		for (auto i = 0; i < player_data::resource_type_count; i++)
-		{
-			const auto count = p_data->get_resource_value(player_data::processed_server, i);
-			printf("%i: %i\n", i, count);
-		}
 
 		const auto& static_list = get_static_list();
 		for (const auto& item : static_list)

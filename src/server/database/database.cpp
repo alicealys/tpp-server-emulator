@@ -86,7 +86,8 @@ namespace database
 
 	database_t& get()
 	{
-		static thread_local database_t database = {};
+		thread_local database_t database = {};
+
 		if (database.get() == nullptr)
 		{
 			connect(database);

@@ -24,11 +24,12 @@ namespace database::player_data
 	DEFINE_FIELD(loadout_gmp, sqlpp::integer);
 	DEFINE_FIELD(insurance_gmp, sqlpp::integer);
 	DEFINE_FIELD(injury_gmp, sqlpp::integer);
+	DEFINE_FIELD(last_sync, sqlpp::time_point);
 	DEFINE_FIELD(version, sqlpp::integer_unsigned);
 	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
 		resource_arrays_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, motherbase_field_t,
-		local_gmp_field_t, server_gmp_field_t, loadout_gmp_field_t, insurance_gmp_field_t, injury_gmp_field_t,
-		version_field_t);
+		local_gmp_field_t, server_gmp_field_t, loadout_gmp_field_t, insurance_gmp_field_t, injury_gmp_field_t, 
+		last_sync_field_t, version_field_t);
 
 	enum resource_array_types
 	{
@@ -72,8 +73,16 @@ namespace database::player_data
 	{
 		std::uint32_t seed;
 		std::uint32_t unk;
-		staff_header_t header;
-		staff_status_t status;
+		union
+		{
+			std::uint32_t packed_header;
+			staff_header_t header;
+		};
+		union
+		{
+			std::uint32_t packed_status;
+			staff_status_t status;
+		};
 		std::uint32_t unk2;
 		std::uint32_t unk3;
 	};
@@ -133,7 +142,18 @@ namespace database::player_data
 			this->insurance_gmp_ = static_cast<std::uint32_t>(row.insurance_gmp);
 			this->injury_gmp_ = static_cast<std::uint32_t>(row.injury_gmp);
 
+			this->last_sync_ = row.last_sync.value().time_since_epoch();
 			this->version_ = static_cast<std::uint32_t>(row.version);
+
+			for (auto i = 0u; i < this->staff_count_; i++)
+			{
+				this->staff_array_[i].seed = _byteswap_ulong(this->staff_array_[i].seed);
+				this->staff_array_[i].unk = _byteswap_ulong(this->staff_array_[i].unk);
+				this->staff_array_[i].packed_header = _byteswap_ulong(this->staff_array_[i].packed_header);
+				this->staff_array_[i].packed_status = _byteswap_ulong(this->staff_array_[i].packed_status);
+				this->staff_array_[i].unk2 = _byteswap_ulong(this->staff_array_[i].unk2);
+				this->staff_array_[i].unk3 = _byteswap_ulong(this->staff_array_[i].unk3);
+			}
 
 			try
 			{
@@ -167,6 +187,12 @@ namespace database::player_data
 			{
 				return {};
 			}
+
+			staff_t staff{};
+			int header{};
+			std::memcpy(&header, &this->staff_array_[index].header, 4);
+			header = _byteswap_ulong(header);
+			std::memcpy(&staff.header, &header, 4);
 
 			return this->staff_array_[index];
 		}
@@ -221,6 +247,11 @@ namespace database::player_data
 			return this->version_;
 		}
 
+		std::chrono::microseconds get_last_sync() const
+		{
+			return this->last_sync_;
+		}
+
 	private:
 		resource_arrays_t resource_arrays_{};
 
@@ -239,9 +270,8 @@ namespace database::player_data
 		std::uint32_t insurance_gmp_{};
 		std::uint32_t injury_gmp_{};
 
+		std::chrono::microseconds last_sync_;
 		std::uint32_t version_{};
-
-		utils::memory::allocator allocator_;
 
 	};
 
@@ -250,9 +280,13 @@ namespace database::player_data
 
 	void create(const std::uint64_t player_id);
 	std::unique_ptr<player_data> find(const std::uint64_t player_id);
+
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
+
 	void set_soldier_diff(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
 		unit_levels_t& levels, unit_counts_t& counts);
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
+
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
+	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 }

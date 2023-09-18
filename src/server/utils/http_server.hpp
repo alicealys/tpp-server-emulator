@@ -21,33 +21,40 @@ namespace utils
 		std::string body;
 	};
 
-	using response_t = std::future<response_params>;
+	struct mg_response_params
+	{
+		std::uint32_t code;
+		char* headers;
+		char* body;
+	};
+
+	struct thread_data_t
+	{
+		mg_response_params params;
+		std::thread thread;
+		bool done;
+	};
 
 	class http_connection
 	{
 	public:
 		http_connection(mg_connection* c);
 		void reply(const std::uint32_t code, const std::string& headers = "", const std::string& data = "") const;
+		void reply(const std::uint32_t code, const char* headers, const char* data) const;
+		void reply(const std::function<response_params()>& cb) const;
 
-		template <typename F>
-		void reply_async(F&& f) const
-		{
-			auto task = utils::memory::get_allocator()->allocate<response_t>();
-			task->operator=(std::async(f));
-			this->set_data<response_t>(task);
-		}
+		void reply_async(const std::function<response_params()>& cb) const;
 
 		template <typename T>
 		void set_data(T* data) const
 		{
-			static_assert(sizeof(T) <= sizeof(mg_connection::data));
-			std::memcpy(&this->conn_->data, data, sizeof(T));
+			*reinterpret_cast<T**>(&this->conn_->data) = data;
 		}
 
 		template <typename T>
 		T* get_data() const
 		{
-			return reinterpret_cast<T*>(&this->conn_->data);
+			return *reinterpret_cast<T**>(&this->conn_->data);
 		}
 
 		void clear_task();
