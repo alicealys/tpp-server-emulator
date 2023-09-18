@@ -26,6 +26,12 @@
 #include "commands/cmd_get_server_item.hpp"
 #include "commands/cmd_develop_server_item.hpp"
 #include "commands/cmd_sync_soldier_diff.hpp"
+#include "commands/cmd_get_own_fob_list.hpp"
+#include "commands/cmd_get_fob_status.hpp"
+#include "commands/cmd_get_fob_notice.hpp"
+#include "commands/cmd_get_purchasable_area_list.hpp"
+#include "commands/cmd_get_mbcoin_remainder.hpp"
+#include "commands/cmd_purchase_first_fob.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -66,6 +72,12 @@ namespace tpp
 		this->register_handler<cmd_get_server_item>("CMD_GET_SERVER_ITEM");
 		this->register_handler<cmd_develop_server_item>("CMD_DEVELOP_SERVER_ITEM");
 		this->register_handler<cmd_sync_soldier_diff>("CMD_SYNC_SOLDIER_DIFF");
+		this->register_handler<cmd_get_own_fob_list>("CMD_GET_OWN_FOB_LIST");
+		this->register_handler<cmd_get_fob_status>("CMD_GET_FOB_STATUS");
+		this->register_handler<cmd_get_fob_notice>("CMD_GET_FOB_NOTICE");
+		this->register_handler<cmd_get_purchasable_area_list>("CMD_GET_PURCHASABLE_AREA_LIST");
+		this->register_handler<cmd_get_mbcoin_remainder>("CMD_GET_MBCOIN_REMAINDER");
+		this->register_handler<cmd_purchase_first_fob>("CMD_PURCHASE_FIRST_FOB");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)

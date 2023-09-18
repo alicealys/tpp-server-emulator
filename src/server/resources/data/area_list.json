@@ -1,0 +1,79 @@
+[
+    {
+        "area_id": 10,
+        "location_index": 1,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1200
+    },
+    {
+        "area_id": 20,
+        "location_index": 12,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1100
+    },
+    {
+        "area_id": 32,
+        "location_index": 0,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1100
+    },
+    {
+        "area_id": 40,
+        "location_index": 24,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1200
+    },
+    {
+        "area_id": 53,
+        "location_index": 3,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1000
+    },
+    {
+        "area_id": 62,
+        "location_index": 39,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1000
+    },
+    {
+        "area_id": 71,
+        "location_index": 13,
+        "mining_resource": [
+            10,
+            10,
+            0,
+            0
+        ],
+        "price": 1000
+    }
+]
