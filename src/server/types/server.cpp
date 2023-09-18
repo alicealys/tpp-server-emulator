@@ -58,16 +58,25 @@ namespace tpp
 			utils::response_params response;
 			response.code = 200;
 
-			const auto endpoint_params = utils::string::split(params.uri.substr(1), '/');
-			if (endpoint_params.size() < 2)
+			try
 			{
+				const auto endpoint_params = utils::string::split(params.uri.substr(1), '/');
+				if (endpoint_params.size() < 2)
+				{
+					return response;
+				}
+
+				const auto& platform = endpoint_params[0];
+				const auto& endpoint = endpoint_params[1];
+
+				return this->handle_request(params, platform, endpoint, params.body);
+			}
+			catch (const std::exception& e)
+			{
+				printf("server error: %s\n", e.what());
+				response.code = 500;
 				return response;
 			}
-
-			const auto& platform = endpoint_params[0];
-			const auto& endpoint = endpoint_params[1];
-
-			return this->handle_request(params, platform, endpoint, params.body);
 		});
 	}
 

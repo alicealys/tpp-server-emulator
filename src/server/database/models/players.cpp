@@ -20,6 +20,22 @@ create table if not exists `players`
 
 namespace database::players
 {
+	namespace
+	{
+		std::string generate_data(const size_t len, bool base64)
+		{
+			const auto data = utils::cryptography::random::get_data(len);
+			if (base64)
+			{
+				return utils::cryptography::base64::encode(data);
+			}
+			else
+			{
+				return utils::string::dump_hex(data, "", false);
+			}
+		}
+	}
+
 	auto players_table = players_table_t();
 
 	std::optional<player> find(const std::uint64_t id)
@@ -102,46 +118,37 @@ namespace database::players
 
 	std::string generate_login_password(const std::uint64_t account_id)
 	{
-		const auto data = utils::cryptography::random::get_data(16);
-		const auto password = utils::string::dump_hex(data, "", false);
+		const auto password = generate_data(16, false);
 
-		const auto result = database::get()->operator()(
+		database::get()->operator()(
 			sqlpp::update(players_table)
 				.set(players_table.login_password = password)
 					.where(players_table.account_id == account_id));
-
-		printf("password: %s %lli\n", password.data(), result);
 
 		return password;
 	}
 
 	std::string generate_session_id(const std::uint64_t account_id)
 	{
-		const auto data = utils::cryptography::random::get_data(16);
-		const auto session_id = utils::string::dump_hex(data, "", false);
+		const auto session_id = generate_data(16, false);
 
-		const auto result = database::get()->operator()(
+		database::get()->operator()(
 			sqlpp::update(players_table)
 				.set(players_table.session_id = session_id,
 					 players_table.last_update = std::chrono::system_clock::now())
 						.where(players_table.account_id == account_id));
-
-		printf("session_id: %s %lli\n", session_id.data(), result);
 
 		return session_id;
 	}
 
 	std::string generate_crypto_key(const std::uint64_t account_id)
 	{
-		const auto data = utils::cryptography::random::get_data(16);
-		const auto crypto_key = utils::cryptography::base64::encode(data);
+		const auto crypto_key = generate_data(16, true);
 
-		const auto result = database::get()->operator()(
+		database::get()->operator()(
 			sqlpp::update(players_table)
 				.set(players_table.crypto_key = crypto_key)
 					.where(players_table.account_id == account_id));
-
-		printf("crypto_key: %s %lli\n", crypto_key.data(), result);
 
 		return crypto_key;
 	}
@@ -149,10 +156,10 @@ namespace database::players
 	bool update_session(const std::uint64_t player_id)
 	{
 		const auto result = database::get()->operator()(
-			sqlpp::update(players_table)
+			sqlpp::update(players_table)	
 				.set(players_table.last_update = std::chrono::system_clock::now())
 					.where(players_table.id == player_id));
-		printf("update session %i\n", result);
+
 		return result != 0;
 	}
 
