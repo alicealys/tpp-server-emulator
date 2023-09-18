@@ -18,18 +18,18 @@ namespace database::player_data
 	DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
 	DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
 	DEFINE_FIELD(loadout, sqlpp::text);
-	DEFINE_FIELD(motherbase, sqlpp::text);
 	DEFINE_FIELD(local_gmp, sqlpp::integer);
 	DEFINE_FIELD(server_gmp, sqlpp::integer);
 	DEFINE_FIELD(loadout_gmp, sqlpp::integer);
 	DEFINE_FIELD(insurance_gmp, sqlpp::integer);
 	DEFINE_FIELD(injury_gmp, sqlpp::integer);
+	DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
 	DEFINE_FIELD(last_sync, sqlpp::time_point);
 	DEFINE_FIELD(version, sqlpp::integer_unsigned);
 	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-		resource_arrays_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, motherbase_field_t,
-		local_gmp_field_t, server_gmp_field_t, loadout_gmp_field_t, insurance_gmp_field_t, injury_gmp_field_t, 
-		last_sync_field_t, version_field_t);
+		resource_arrays_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, local_gmp_field_t, 
+		server_gmp_field_t, loadout_gmp_field_t, insurance_gmp_field_t, injury_gmp_field_t, 
+		mb_coin_field_t, last_sync_field_t, version_field_t);
 
 	enum resource_array_types
 	{
@@ -142,6 +142,7 @@ namespace database::player_data
 			this->insurance_gmp_ = static_cast<std::uint32_t>(row.insurance_gmp);
 			this->injury_gmp_ = static_cast<std::uint32_t>(row.injury_gmp);
 
+			this->mb_coin_ = row.mb_coin;
 			this->last_sync_ = row.last_sync.value().time_since_epoch();
 			this->version_ = static_cast<std::uint32_t>(row.version);
 
@@ -158,11 +159,10 @@ namespace database::player_data
 			try
 			{
 				this->loadout_.emplace(nlohmann::json::parse(row.loadout.value()));
-				this->motherbase_.emplace(nlohmann::json::parse(row.motherbase.value()));
 			}
 			catch (const std::exception& e)
 			{
-				printf("error parsing loadout or motherbase: %s\n", e.what());
+				printf("error parsing loadout: %s\n", e.what());
 			}
 		}
 
@@ -227,11 +227,6 @@ namespace database::player_data
 			return this->loadout_;
 		}
 
-		std::optional<nlohmann::json> get_motherbase() const
-		{
-			return this->motherbase_;
-		}
-
 		std::int32_t get_server_gmp() const
 		{
 			return this->server_gmp_;
@@ -240,6 +235,11 @@ namespace database::player_data
 		std::int32_t get_local_gmp() const
 		{
 			return this->local_gmp_;
+		}
+
+		std::uint32_t get_mb_coin() const
+		{
+			return this->mb_coin_;
 		}
 
 		std::uint32_t get_version() const
@@ -262,7 +262,8 @@ namespace database::player_data
 		staff_array_t staff_array_{};
 
 		std::optional<nlohmann::json> loadout_{};
-		std::optional<nlohmann::json> motherbase_{};
+
+		std::uint32_t mb_coin_{};
 
 		std::uint32_t local_gmp_{};
 		std::uint32_t server_gmp_{};

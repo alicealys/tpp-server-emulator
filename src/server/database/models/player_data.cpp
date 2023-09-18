@@ -17,13 +17,13 @@ create table if not exists `player_data`
 	staff_count				bigint unsigned not null,
 	staff_bin				mediumblob default null,
 	loadout					text not null,
-	motherbase				text not null,
 	local_gmp				bigint default 0,
 	server_gmp				bigint default 0,
 	loadout_gmp				bigint default 0,
 	insurance_gmp			bigint default 0,
 	injury_gmp				bigint default 0,
 	last_sync				datetime default null,
+	mb_coin					bigint default 0,
 	version 				bigint unsigned default 0,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
@@ -337,16 +337,15 @@ namespace database::player_data
 		return std::max(0u, std::min(value, get_max_resource_value(type, index)));
 	}
 
-#pragma warning(push)
-#pragma warning(disable: 4127)
 	void create(const std::uint64_t player_id)
 	{
+#pragma warning(push)
+#pragma warning(disable: 4127)
 		database::get()->operator()(
 			sqlpp::insert_into(player_data_table)
 				.set(player_data_table.player_id = player_id,
 					 player_data_table.staff_count = 0,
 					 player_data_table.loadout = "{}",
-					 player_data_table.motherbase = "{}",
 					 player_data_table.local_gmp = 0,
 					 player_data_table.server_gmp = 0,
 					 player_data_table.loadout_gmp = 0,
