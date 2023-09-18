@@ -2,6 +2,8 @@
 
 #include "cmd_get_urllist.hpp"
 
+#include "utils/config.hpp"
+
 #define HOSTNAME "http://localhost:80/"
 
 namespace tpp
@@ -13,24 +15,28 @@ namespace tpp
 			std::string type;
 			std::string url;
 			std::uint32_t version;
+			bool replace_hostname = false;
 		};
 
 		std::vector<url_t> url_list =
 		{
 			{
 				.type = "GATE",
-				.url = HOSTNAME "tppstm/gate",
-				.version = 17
+				.url = "tppstm/gate",
+				.version = 17,
+				.replace_hostname = true
 			},
 			{
 				.type = "WEB",
-				.url = HOSTNAME "tppstm/main",
-				.version = 17
+				.url = "tppstm/main",
+				.version = 17,
+				.replace_hostname = true
 			},
 			{
 				.type = "EULA",
-				.url = HOSTNAME "tppstmweb/eula/eula.var",
-				.version = 6
+				.url = "tppstmweb/eula/eula.var",
+				.version = 6,
+				.replace_hostname = true
 			},
 			{
 				.type = "HEATMAP",
@@ -44,23 +50,27 @@ namespace tpp
 			},
 			{
 				.type = "EULA_COIN",
-				.url = HOSTNAME "tppstmweb/coin/coin.var",
-				.version = 1
+				.url = "tppstmweb/coin/coin.var",
+				.version = 1,
+				.replace_hostname = true
 			},
 			{
 				.type = "POLICY_GDPR",
-				.url = HOSTNAME "tppstmweb/gdpr/privacy.var",
-				.version = 1
+				.url = "tppstmweb/gdpr/privacy.var",
+				.version = 1,
+				.replace_hostname = true
 			},
 			{
 				.type = "POLICY_JP",
-				.url = HOSTNAME "tppstmweb/privacy_jp/privacy.var",
-				.version = 2
+				.url = "tppstmweb/privacy_jp/privacy.var",
+				.version = 2,
+				.replace_hostname = true
 			},
 			{
 				.type = "POLICY_ELSE",
-				.url = HOSTNAME "tppstmweb/privacy/privacy.var",
-				.version = 1
+				.url = "tppstmweb/privacy/privacy.var",
+				.version = 1,
+				.replace_hostname = true
 			},
 			{
 				.type = "LEGAL",
@@ -74,8 +84,9 @@ namespace tpp
 			},
 			{
 				.type = "POLICY_CCPA",
-				.url = HOSTNAME "tppstmweb/privacy_ccpa/privacy.var",
-				.version = 1
+				.url = "tppstmweb/privacy_ccpa/privacy.var",
+				.version = 1,
+				.replace_hostname = true
 			},
 			{
 				.type = "EULA_TEXT",
@@ -108,6 +119,23 @@ namespace tpp
 				.version = 1
 			}
 		};
+	}
+
+	cmd_get_urllist::cmd_get_urllist()
+	{
+		const auto base_url = config::get<std::string>("base_url");
+		if (!base_url.has_value())
+		{
+			return;
+		}
+
+		for (auto& url : url_list)
+		{
+			if (url.replace_hostname)
+			{
+				url.url = std::format("{}/{}", base_url.value(), url.url);
+			}
+		}
 	}
 
 	nlohmann::json cmd_get_urllist::execute(nlohmann::json& data, const std::string& session_key)

@@ -7,6 +7,7 @@
 
 #include "utils/encoding.hpp"
 #include "utils/http_server.hpp"
+#include "utils/config.hpp"
 
 #include <utils/string.hpp>
 #include <utils/cryptography.hpp>
@@ -72,8 +73,18 @@ namespace tpp
 
 	void server::start()
 	{
-		this->http_server.set_ports(80, 443);
-		this->http_server.set_tls("config/cert.pem", "config/key.pem");
+		const auto http_port = config::get<std::uint16_t>("http_port");
+		const auto https_port = config::get<std::uint16_t>("https_port");
+		const auto cert_file = config::get<std::string>("cert_file");
+		const auto key_file = config::get<std::string>("key_file");
+
+		this->http_server.set_ports(http_port.value(), https_port.value());
+
+		if (key_file.has_value() && cert_file.has_value())
+		{
+			this->http_server.set_tls(cert_file.value(), key_file.value());
+		}
+
 		this->http_server.set_request_handler([&](
 			const utils::http_connection& conn, const utils::request_params& params)
 		{
