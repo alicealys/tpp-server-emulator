@@ -12,6 +12,14 @@ namespace tpp
 			return {};
 		}
 
-		return handler->second->handle_command(params, data);
+		try
+		{
+			return handler->second->handle_command(params, data);
+		}
+		catch (const std::exception& e)
+		{
+			printf("error handling command: %s\n", e.what());
+			return {};
+		}
 	}
 }

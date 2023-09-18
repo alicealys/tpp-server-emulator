@@ -4,8 +4,6 @@
 
 #include "utils/config.hpp"
 
-#define HOSTNAME "http://localhost:80/"
-
 namespace tpp
 {
 	namespace
