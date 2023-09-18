@@ -11,6 +11,8 @@ create table if not exists `fobs`
 (
 	id                  bigint unsigned	not null	auto_increment,
 	player_id	        bigint unsigned	not null,
+	platform_count		bigint unsigned	not null,
+	security_rank		bigint unsigned	not null,
 	area_id	            bigint unsigned	not null,
 	cluster_param		mediumtext,
 	construct_param		bigint unsigned	not null,
@@ -80,6 +82,58 @@ namespace database::fobs
 			));
 
 #pragma warning(pop)
+	}
+
+	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs)
+	{
+		auto list = get_fob_list(player_id);
+
+		auto index = 0;
+		for (auto& server_fob : list)
+		{
+			if (index >= fobs.size())
+			{
+				return;
+			}
+
+			auto& fob = fobs[index];
+			auto& server_cluster_param = server_fob.get_cluster_param();
+			auto& cluster_param = fob.get_cluster_param();
+
+			const auto merge_custom_security = [](nlohmann::json& data, nlohmann::json& server_data, const std::string& key)
+			{
+				if (!data.is_object() || data[key].is_null())
+				{
+					data[key] = server_data[key];
+				}
+			};
+
+			for (auto i = 0; i < cluster_param.size(); i++)
+			{
+				auto& data = cluster_param[i];
+				auto& server_data = server_cluster_param[i];
+
+				if (server_data.is_null() || data.is_null())
+				{
+					continue;
+				}
+
+				merge_custom_security(data, server_data, "voluntary_coord_camera_params");
+				merge_custom_security(data, server_data, "voluntary_coord_mine_params");
+			}
+
+			const auto cluster_param_str = cluster_param.dump();
+
+			database::get()->operator()(
+				sqlpp::update(fobs_table)
+					.set(fobs_table.security_rank = fob.get_security_rank(),
+						 fobs_table.platform_count = fob.get_platform_count(),
+						 fobs_table.construct_param = fob.get_construct_param(),
+						 fobs_table.cluster_param = cluster_param_str)
+							.where(fobs_table.player_id == player_id && fobs_table.id == server_fob.get_id()));
+
+			++index;
+		}
 	}
 
 	class table final : public table_interface

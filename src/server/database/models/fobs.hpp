@@ -11,10 +11,13 @@ namespace database::fobs
 	DEFINE_FIELD(id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(area_id, sqlpp::integer_unsigned);
+	DEFINE_FIELD(platform_count, sqlpp::integer_unsigned);
+	DEFINE_FIELD(security_rank, sqlpp::integer_unsigned);
 	DEFINE_FIELD(cluster_param, sqlpp::text);
 	DEFINE_FIELD(construct_param, sqlpp::integer_unsigned);
 	DEFINE_FIELD(create_date, sqlpp::time_point);
 	DEFINE_TABLE(fobs, id_field_t, player_id_field_t, area_id_field_t, 
+		platform_count_field_t, security_rank_field_t,
 		cluster_param_field_t, construct_param_field_t, create_date_field_t);
 
 	nlohmann::json& get_area_list();
@@ -42,6 +45,14 @@ namespace database::fobs
 			this->create_date_ = row.create_date.value().time_since_epoch();
 		}
 
+		fob(const nlohmann::json& json)
+		{
+			this->platform_count_ = json["platform_count"].get<std::uint32_t>();
+			this->security_rank_ = json["security_rank"].get<std::uint32_t>();
+			this->construct_param_ = json["construct_param"].get<std::uint32_t>();
+			this->cluster_param_ = json["cluster_param"];
+		}
+
 		std::uint32_t get_id() const
 		{
 			return this->id_;
@@ -50,6 +61,16 @@ namespace database::fobs
 		std::uint32_t get_area_id() const
 		{
 			return this->area_id_;
+		}
+
+		std::uint32_t get_platform_count() const
+		{
+			return this->platform_count_;
+		}
+
+		std::uint32_t get_security_rank() const
+		{
+			return this->security_rank_;
 		}
 
 		std::uint32_t get_construct_param() const
@@ -71,6 +92,8 @@ namespace database::fobs
 		std::uint32_t id_;
 		std::uint32_t player_id_;
 		std::uint32_t area_id_;
+		std::uint32_t platform_count_;
+		std::uint32_t security_rank_;
 		std::uint32_t construct_param_;
 		std::chrono::microseconds create_date_;
 		nlohmann::json cluster_param_;
@@ -79,4 +102,5 @@ namespace database::fobs
 
 	std::vector<fob> get_fob_list(const std::uint64_t player_id);
 	void create(const std::uint64_t player_id, const std::uint32_t area_id);
+	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs);
 }
