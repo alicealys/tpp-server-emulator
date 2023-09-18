@@ -46,7 +46,8 @@ namespace tpp
 
 		const auto sync_resources = [&](const nlohmann::json& resources, 
 			const database::player_data::resource_array_types local_type, 
-			const database::player_data::resource_array_types server_type)
+			const database::player_data::resource_array_types server_type,
+			bool sync)
 		{
 			const auto id = local_type == database::player_data::unprocessed_local ? "2"s : "1"s;
 			for (auto i = 0; i < resources.size(); i++)
@@ -72,7 +73,10 @@ namespace tpp
 						transfer_amount = resource_arrays[local_type][i];
 					}
 
-					printf("transfering %i resource %i to server\n", transfer_amount, i);
+					if (!sync)
+					{
+						transfer_amount = 0;
+					}
 
 					resource_arrays[local_type][i] -= transfer_amount;
 					resource_arrays[server_type][i] += transfer_amount;
@@ -83,36 +87,43 @@ namespace tpp
 			}
 		};
 
-		sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server);
-		sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server);
+		auto server_gmp = player_data->get_server_gmp();
+		auto local_gmp = std::min(database::player_data::max_local_gmp, gmp_j.get<std::int32_t>());
+
+		const auto now = std::chrono::system_clock::now();
+		const auto now_epoc = now.time_since_epoch();
+		const auto diff = now_epoc - player_data->get_last_sync();
+		const auto should_sync = diff >= 30min;
+
+		sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, should_sync);
+		sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, should_sync);
+
+		if (should_sync)
+		{
+			if (server_gmp < database::player_data::max_server_gmp)
+			{
+				const auto transfer_amount = std::min(database::player_data::max_server_gmp - server_gmp,
+					static_cast<std::int32_t>(local_gmp * 0.8f));
+
+				server_gmp += transfer_amount;
+				local_gmp -= transfer_amount;
+			}
+
+			database::player_data::set_resources_as_sync(player->get_id(), resource_arrays, local_gmp, server_gmp);
+			result["version"] = player_data->get_version() + 1;
+		}
+		else
+		{
+			result["version"] = player_data->get_version();
+		}
 
 		result["injury_gmp"] = 0;
 		result["insurance_gmp"] = 0;
 		result["loadout_gmp"] = 0;
 		result["diff_gmp"] = 0;
 
-		auto server_gmp = player_data->get_server_gmp();
-		auto local_gmp = std::min(database::player_data::max_local_gmp, gmp_j.get<std::int32_t>());
-
-		printf("server_gmp = %i\n", server_gmp);
-		printf("local_gmp = %i\n", local_gmp);
-
-		if (server_gmp < database::player_data::max_server_gmp)
-		{
-			const auto transfer_amount = std::min(database::player_data::max_server_gmp - server_gmp,
-				static_cast<std::int32_t>(local_gmp * 0.8f));
-
-			server_gmp += transfer_amount;
-			local_gmp -= transfer_amount;
-
-			printf("transfering %i gmp to server\n", transfer_amount);
-		}
-
 		result["local_gmp"] = local_gmp;
 		result["server_gmp"] = server_gmp;
-
-		database::player_data::set_resources(player->get_id(), resource_arrays, local_gmp, server_gmp);
-		result["version"] = player_data->get_version() + 1;
 
 		return result;
 	}

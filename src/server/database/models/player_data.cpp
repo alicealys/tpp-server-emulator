@@ -23,6 +23,7 @@ create table if not exists `player_data`
 	loadout_gmp				bigint default 0,
 	insurance_gmp			bigint default 0,
 	injury_gmp				bigint default 0,
+	last_sync				datetime default null,
 	version 				bigint unsigned default 0,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
@@ -352,6 +353,8 @@ namespace database::player_data
 					 player_data_table.insurance_gmp = 0,
 					 player_data_table.injury_gmp = 0
 			));
+
+#pragma warning(pop)
 	}
 
 	std::unique_ptr<player_data> find(const std::uint64_t player_id)
@@ -418,7 +421,22 @@ namespace database::player_data
 						.where(player_data_table.player_id == player_id
 			));
 	}
-#pragma warning(pop)
+
+	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
+	{
+		const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
+
+		database::get()->operator()(
+			sqlpp::update(player_data_table)
+				.set(player_data_table.player_id = player_id,
+					 player_data_table.resource_arrays = encode_buffer(resource_buf),
+					 player_data_table.local_gmp = local_gmp,
+					 player_data_table.server_gmp = server_gmp,
+					 player_data_table.last_sync = std::chrono::system_clock::now(),
+					 player_data_table.version = player_data_table.version + 1)
+						.where(player_data_table.player_id == player_id
+			));
+	}
 
 	class table final : public table_interface
 	{

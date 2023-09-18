@@ -53,7 +53,7 @@ namespace tpp
 
 	void server::request_handler(const utils::http_connection& conn, const utils::request_params& params)
 	{
-		conn.reply_async([=, this]
+		conn.reply_async([=]
 		{
 			utils::response_params response;
 			response.code = 200;

@@ -16,13 +16,51 @@ namespace utils
 		mg_http_reply(this->conn_, code, headers.data(), "%s", data.data());
 	}
 
+	void http_connection::reply(const std::uint32_t code, const char* headers, const char* data) const
+	{
+		mg_http_reply(this->conn_, code, headers, "%s", data);
+	}
+
+	void http_connection::reply(const std::function<response_params()>& cb) const
+	{
+		const auto result = cb();
+		this->reply(result.code, result.headers, result.body);
+	}
+
 	void http_connection::clear_task()
 	{
-		const auto task = this->get_data<response_t>();
-		if (task != nullptr)
+		const auto task = this->get_data<thread_data_t>();
+		if (task == nullptr)
 		{
-			utils::memory::get_allocator()->free(task);
+			return;
 		}
+
+		if (task->thread.joinable())
+		{
+			task->thread.join();
+		}
+
+		task->thread.~thread();
+		utils::memory::free(task->params.body);
+		utils::memory::free(task->params.headers);
+		utils::memory::free(task);
+		std::memset(this->conn_->data, 0, MG_DATA_SIZE);
+	}
+
+	void http_connection::reply_async(const std::function<response_params()>& cb) const
+	{
+		auto thread_data = utils::memory::allocate<thread_data_t>();
+
+		thread_data->thread.operator=(std::thread([=]()
+		{
+			const auto result = cb();
+			thread_data->params.body = utils::memory::duplicate_string(result.body);
+			thread_data->params.headers = utils::memory::duplicate_string(result.headers);
+			thread_data->params.code = result.code;
+			thread_data->done = true;
+		}));
+
+		this->set_data<thread_data_t>(thread_data);
 	}
 
 	http_server::http_server()
@@ -39,9 +77,11 @@ namespace utils
 	{
 		const auto inst = reinterpret_cast<http_server*>(fn_data);
 		http_connection conn = c;
-		const auto response = conn.get_data<response_t>();
+		const auto response = conn.get_data<thread_data_t>();
 
-		if (ev == MG_EV_HTTP_MSG)
+		switch (ev)
+		{
+		case MG_EV_HTTP_MSG:
 		{
 			const auto http_message = static_cast<mg_http_message*>(ev_data);
 
@@ -59,18 +99,18 @@ namespace utils
 			params.uri = uri;
 
 			inst->request_handler->operator()(conn, params);
+			break;
 		}
-		else if (ev == MG_EV_POLL)
+		case MG_EV_POLL:
 		{
-			if (response == nullptr || !response->valid() || response->wait_for(0ms) != std::future_status::ready)
+			if (response == nullptr || !response->done)
 			{
 				return;
 			}
 
 			try
 			{
-				const auto res = response->get();
-				conn.reply(res.code, res.headers, res.body);
+				conn.reply(response->params.code, response->params.headers, response->params.body);
 			}
 			catch (const std::exception& e)
 			{
@@ -78,6 +118,13 @@ namespace utils
 			}
 
 			conn.clear_task();
+			break;
+		}
+		case MG_EV_CLOSE:
+		{
+			conn.clear_task();
+			break;
+		}
 		}
 	}
 
