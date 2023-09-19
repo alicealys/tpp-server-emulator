@@ -20,6 +20,7 @@ namespace database::player_data
 	DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
 	DEFINE_FIELD(loadout, sqlpp::text);
 	DEFINE_FIELD(motherbase, sqlpp::text);
+	DEFINE_FIELD(emblem, sqlpp::text);
 	DEFINE_FIELD(local_gmp, sqlpp::integer);
 	DEFINE_FIELD(server_gmp, sqlpp::integer);
 	DEFINE_FIELD(loadout_gmp, sqlpp::integer);
@@ -30,8 +31,8 @@ namespace database::player_data
 	DEFINE_FIELD(version, sqlpp::integer_unsigned);
 	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
 		resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, 
-		local_gmp_field_t, server_gmp_field_t, motherbase_field_t, loadout_gmp_field_t, insurance_gmp_field_t, 
-		injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t);
+		local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t, 
+		insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t);
 
 	enum resource_array_types
 	{
@@ -159,31 +160,63 @@ namespace database::player_data
 				this->staff_array_[i].unk2 = _byteswap_ulong(this->staff_array_[i].unk2);
 				this->staff_array_[i].unk3 = _byteswap_ulong(this->staff_array_[i].unk3);
 			}
+		}
 
+		template <typename ...Args>
+		void parse_motherbase(const sqlpp::result_row_t<Args...>& row)
+		{
 			try
 			{
-				if (!row.loadout.value().empty())
-				{
-					this->loadout_.emplace(nlohmann::json::parse(row.loadout.value()));
-				}
-				else
-				{
-					this->loadout_ = nlohmann::json::object();
-				}
-
 				if (!row.motherbase.value().empty())
 				{
-					this->motherbase_.emplace(nlohmann::json::parse(row.motherbase.value()));
-				}
-				else
-				{
-					this->motherbase_ = nlohmann::json::object();
+					this->motherbase_ = nlohmann::json::parse(row.motherbase.value());
+					return;
 				}
 			}
 			catch (const std::exception& e)
 			{
-				printf("error parsing loadout or motherbase: %s\n", e.what());
+				printf("error parsing motherbase: %s\n", e.what());
 			}
+
+			this->motherbase_ = nlohmann::json::object();
+		}
+
+		template <typename ...Args>
+		void parse_loadout(const sqlpp::result_row_t<Args...>& row)
+		{
+			try
+			{
+				if (!row.loadout.value().empty())
+				{
+					this->loadout_ = nlohmann::json::parse(row.loadout.value());
+					return;
+				}
+			}
+			catch (const std::exception& e)
+			{
+				printf("error parsing loadout: %s\n", e.what());
+			}
+
+			this->emblem_ = nlohmann::json::object();
+		}
+
+		template <typename ...Args>
+		void parse_emblem(const sqlpp::result_row_t<Args...>& row)
+		{
+			try
+			{
+				if (!row.motherbase.value().empty())
+				{
+					this->emblem_ = nlohmann::json::parse(row.emblem.value());
+					return;
+				}
+			}
+			catch (const std::exception& e)
+			{
+				printf("error parsing emblem: %s\n", e.what());
+			}
+
+			this->emblem_ = nlohmann::json::object();
 		}
 
 		std::uint32_t get_resource_value(const resource_array_types type, const std::uint32_t index) const
@@ -242,9 +275,19 @@ namespace database::player_data
 			return std::min(this->staff_count_, max_staff_count);
 		}
 
-		std::optional<nlohmann::json> get_loadout() const
+		nlohmann::json get_motherbase() const
+		{
+			return this->motherbase_;
+		}
+
+		nlohmann::json get_loadout() const
 		{
 			return this->loadout_;
+		}
+
+		nlohmann::json get_emblem() const
+		{
+			return this->emblem_;
 		}
 
 		std::int32_t get_server_gmp() const
@@ -281,8 +324,9 @@ namespace database::player_data
 		std::uint32_t staff_count_{};
 		staff_array_t staff_array_{};
 
-		std::optional<nlohmann::json> loadout_{};
-		std::optional<nlohmann::json> motherbase_{};
+		nlohmann::json loadout_{};
+		nlohmann::json motherbase_{};
+		nlohmann::json emblem_{};
 
 		std::uint32_t mb_coin_{};
 
@@ -303,7 +347,7 @@ namespace database::player_data
 	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index);
 
 	void create(const std::uint64_t player_id);
-	std::unique_ptr<player_data> find(const std::uint64_t player_id);
+	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
 	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id);
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
@@ -317,6 +361,7 @@ namespace database::player_data
 
 	void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase);
 	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase);
+	void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem);
 
 	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value);
 
