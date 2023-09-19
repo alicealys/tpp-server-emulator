@@ -41,6 +41,9 @@
 #include "commands/cmd_calc_cost_time_reduction.hpp"
 #include "commands/cmd_consume_reserve.hpp"
 #include "commands/cmd_purchase_platform_construction.hpp"
+#include "commands/cmd_sneak_mother_base.hpp"
+#include "commands/cmd_get_fob_param.hpp"
+#include "commands/cmd_get_online_prison_list.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -96,6 +99,9 @@ namespace tpp
 		this->register_handler<cmd_calc_cost_time_reduction>("CMD_CALC_COST_TIME_REDUCTION");
 		this->register_handler<cmd_consume_reserve>("CMD_CONSUME_RESERVE");
 		this->register_handler<cmd_purchase_platform_construction>("CMD_PURCHASE_PLATFORM_CONSTRUCTION");
+		this->register_handler<cmd_sneak_mother_base>("CMD_SNEAK_MOTHER_BASE");
+		this->register_handler<cmd_get_fob_param>("CMD_GET_FOB_PARAM");
+		this->register_handler<cmd_get_online_prison_list>("CMD_GET_ONLINE_PRISON_LIST");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)

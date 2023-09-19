@@ -101,10 +101,26 @@ namespace database::player_data
 	{
 		staff_unknown1_t unk;
 		staff_unknown2_t unk2;
-		staff_header_t header;
-		staff_seed_t seed;
-		staff_status_sync_t status_sync;
-		staff_status_no_sync_t status_no_sync;
+		union
+		{
+			staff_header_t header;
+			std::uint32_t packed_header;
+		};
+		union
+		{
+			staff_seed_t seed;
+			std::uint32_t packed_seed;
+		};
+		union
+		{
+			staff_status_sync_t status_sync;
+			std::uint32_t packed_status_sync;
+		};
+		union
+		{
+			staff_status_no_sync_t status_no_sync;
+			std::uint32_t packed_status_no_sync;
+		};
 	};
 
 	union staff_t
