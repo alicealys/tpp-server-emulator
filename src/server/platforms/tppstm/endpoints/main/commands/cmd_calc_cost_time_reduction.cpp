@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "cmd_get_mbcoin_remainder.hpp"
+#include "cmd_calc_cost_time_reduction.hpp"
 
 #include "database/models/player_data.hpp"
 #include "database/models/players.hpp"
@@ -9,7 +9,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_mbcoin_remainder::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_calc_cost_time_reduction::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
 
@@ -19,15 +19,15 @@ namespace tpp
 			result["result"] = "ERR_INVALID_SESSION";
 			return result;
 		}
+		
+		const auto& kind_j = data["kind"];
+		const auto& remaining_time_j = data["remaining_time"];
 
-		const auto p_data = database::player_data::find(player->get_id());
-		if (!player.has_value())
+		if (!kind_j.is_string() || !remaining_time_j.is_number_integer())
 		{
 			result["result"] = "ERR_INVALIDARG";
 			return result;
 		}
-
-		result["remainder"] = p_data->get_mb_coin();
 
 		return result;
 	}

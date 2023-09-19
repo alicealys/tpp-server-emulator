@@ -459,6 +459,19 @@ namespace database::player_data
 			);
 	}
 
+	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		const auto result = database::get()->operator()(
+			sqlpp::update(player_data_table)
+				.set(player_data_table.player_id = player_id,
+					 player_data_table.mb_coin = player_data_table.mb_coin - value)
+						.where(player_data_table.player_id == player_id &&
+							   player_data_table.mb_coin >= value)
+			);
+
+		return result != 0;
+	}
+
 	class table final : public table_interface
 	{
 	public:

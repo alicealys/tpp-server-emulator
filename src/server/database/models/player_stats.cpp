@@ -8,18 +8,21 @@
 #define TABLE_DEF R"(
 create table if not exists `player_stats`
 (
-	id                  bigint unsigned	not null	auto_increment,
-	player_id           bigint unsigned	not null,
-	espionage_lose      int				default 0,
-	espionage_win		int				default 0,
-	fob_grade			int				default 0,
-	fob_point			int				default 0,
-	fob_rank			int				default 0,
-	is_insurance		boolean			default false,
-	league_grade		int				default 0,
-	league_rank			int				default 0,
-	playtime			int				default 0,
-	point				int				default 0,
+	id							bigint unsigned	not null	auto_increment,
+	player_id					bigint unsigned	not null,
+	fob_grade					int				default 0,
+	fob_point					int				default 0,
+	fob_rank					int				default 0,
+	is_insurance				boolean			default false,
+	league_grade				int				default 0,
+	league_rank					int				default 0,
+	playtime					int				default 0,
+	point						int				default 0,
+	fob_defense_win				int				default 0,
+	fob_defense_lose			int				default 0,
+	fob_sneak_win				int				default 0,
+	fob_sneak_lose				int				default 0,
+	fob_deploy_emergency_count	int				default 0,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
 ))"

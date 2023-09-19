@@ -101,11 +101,6 @@ namespace tpp
 			return false;
 		}
 
-#ifdef DEBUG
-		const auto msg_id = msgid.get<std::string>();
-		printf("[Endpoint:main] Received message of type \"%s\"\n", msg_id.data());
-#endif
-
 		return true;
 	}
 
@@ -113,8 +108,14 @@ namespace tpp
 	{
 		data["crypto_type"] = "COMMON";
 		data["flowid"] = {};
+		data["xuid"] = {};
 		data["rqid"] = request["data"]["rqid"];
 		data["msgid"] = request["data"]["msgid"];
+
+		if (data["result"].is_null())
+		{
+			data["result"] = "NOERR";
+		}
 
 		auto data_dump = data.dump();
 		const auto original_size = data_dump.size();

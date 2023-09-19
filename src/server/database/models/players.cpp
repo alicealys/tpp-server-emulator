@@ -14,6 +14,11 @@ create table if not exists `players`
 	login_password      char(32)		default null,
 	last_update         datetime		default null,
 	crypto_key			char(32)		default null,
+	ex_ip			    varchar(15)		default null,
+	in_ip			    varchar(15)		default null,
+	ex_port			    int unsigned	default 0,
+	in_port			    int unsigned	default 0,
+	nat					int unsigned	default 0,
 	creation_time		datetime        default current_timestamp not null,
 	primary key (`id`)
 ))"
@@ -34,6 +39,41 @@ namespace database::players
 				return utils::string::dump_hex(data, "", false);
 			}
 		}
+
+		std::vector<std::string> nat_types =
+		{
+			"SYMMETRIC_NAT",
+			"RESTRICTED_PORT_CONE_NAT",
+			"RESTRICTED_CONE_NAT",
+			"OPEN_CHOICE_PORT",
+			"FULL_CONE_NAT",
+			"SYMMETRIC_OPEN",
+			"SYMMETRIC_UDP_FIREWALL",
+			"OPEN_INTERNET"
+		};
+	}
+
+	std::uint32_t get_nat_type_id(const std::string& nat_type)
+	{
+		for (auto i = 0u; i < nat_types.size(); i++)
+		{
+			if (nat_type == nat_types[i])
+			{
+				return i;
+			}
+		}
+
+		return 0;
+	}
+
+	std::string get_nat_type(const std::uint32_t nat_type_id)
+	{
+		if (nat_type_id < nat_types.size())
+		{
+			return nat_types[nat_type_id];
+		}
+
+		return nat_types[0];
 	}
 
 	auto players_table = players_table_t();
@@ -161,6 +201,20 @@ namespace database::players
 					.where(players_table.id == player_id));
 
 		return result != 0;
+	}
+
+	void set_ip_and_port(const std::uint64_t player_id, const std::string& ex_ip, const std::uint16_t ex_port,
+		const std::string& in_ip, const std::uint16_t in_port, const std::string& nat_type)
+	{
+		const auto nat_type_id = get_nat_type_id(nat_type);
+		database::get()->operator()(
+			sqlpp::update(players_table)	
+				.set(players_table.ex_ip = ex_ip,
+					 players_table.in_ip = in_ip,
+					 players_table.ex_port = ex_port,
+					 players_table.in_port = in_port,
+					 players_table.nat = nat_type_id)
+					.where(players_table.id == player_id));
 	}
 
 	class table final : public table_interface

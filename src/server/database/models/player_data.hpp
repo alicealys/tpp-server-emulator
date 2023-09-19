@@ -311,4 +311,6 @@ namespace database::player_data
 
 	void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase);
 	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase);
+
+	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value);
 }

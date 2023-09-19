@@ -31,9 +31,14 @@
 #include "commands/cmd_get_own_fob_list.hpp"
 #include "commands/cmd_get_fob_status.hpp"
 #include "commands/cmd_get_fob_notice.hpp"
+#include "commands/cmd_get_fob_target_list.hpp"
 #include "commands/cmd_get_purchasable_area_list.hpp"
 #include "commands/cmd_get_mbcoin_remainder.hpp"
 #include "commands/cmd_purchase_first_fob.hpp"
+#include "commands/cmd_purchase_fob.hpp"
+#include "commands/cmd_calc_cost_time_reduction.hpp"
+#include "commands/cmd_consume_reserve.hpp"
+#include "commands/cmd_purchase_platform_construction.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -79,9 +84,14 @@ namespace tpp
 		this->register_handler<cmd_get_own_fob_list>("CMD_GET_OWN_FOB_LIST");
 		this->register_handler<cmd_get_fob_status>("CMD_GET_FOB_STATUS");
 		this->register_handler<cmd_get_fob_notice>("CMD_GET_FOB_NOTICE");
+		this->register_handler<cmd_get_fob_target_list>("CMD_GET_FOB_TARGET_LIST");
 		this->register_handler<cmd_get_purchasable_area_list>("CMD_GET_PURCHASABLE_AREA_LIST");
 		this->register_handler<cmd_get_mbcoin_remainder>("CMD_GET_MBCOIN_REMAINDER");
 		this->register_handler<cmd_purchase_first_fob>("CMD_PURCHASE_FIRST_FOB");
+		this->register_handler<cmd_purchase_fob>("CMD_PURCHASE_FOB");
+		this->register_handler<cmd_calc_cost_time_reduction>("CMD_CALC_COST_TIME_REDUCTION");
+		this->register_handler<cmd_consume_reserve>("CMD_CONSUME_RESERVE");
+		this->register_handler<cmd_purchase_platform_construction>("CMD_PURCHASE_PLATFORM_CONSTRUCTION");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)
@@ -188,11 +198,6 @@ namespace tpp
 			return false;
 		}
 
-#ifdef DEBUG
-		const auto msg_id = msgid.get<std::string>();
-		printf("[Endpoint:main] Received message of type \"%s\"\n", msg_id.data());
-#endif
-
 		return true;
 	}
 
@@ -211,8 +216,14 @@ namespace tpp
 		}
 
 		data["flowid"] = {};
+		data["xuid"] = {};
 		data["rqid"] = request["data"]["rqid"];
 		data["msgid"] = request["data"]["msgid"];
+
+		if (data["result"].is_null())
+		{
+			data["result"] = "NOERR";
+		}
 
 		auto data_dump = data.dump();
 		const auto original_size = data_dump.size();

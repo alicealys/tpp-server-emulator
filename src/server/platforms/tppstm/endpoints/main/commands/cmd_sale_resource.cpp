@@ -60,11 +60,7 @@ namespace tpp
 		const auto total_profit = num * unit_price;
 		server_gmp += total_profit;
 
-		printf("total_profit = %d\n", total_profit);
-
 		const auto left = (server_gmp - database::player_data::max_server_gmp);
-		printf("left = %d", left);
-
 
 		if (left > 0)
 		{
@@ -76,12 +72,6 @@ namespace tpp
 			{
 				local_gmp -= local_left;
 			}
-
-			printf("local_left = %d", local_left);
-
-
-			printf("server_gmp = %d", server_gmp);
-			printf("local_gmp = %d", local_gmp);
 		}
 
 		result["result_gmp"] = server_gmp;
