@@ -26,6 +26,9 @@ namespace database::players
 	std::uint32_t get_nat_type_id(const std::string& nat_type);
 	std::string get_nat_type(const std::uint32_t nat_type_id);
 
+	constexpr auto session_heartbeat = 60s;
+	constexpr auto session_timeout = 200s;
+
 	class player
 	{
 	public:
@@ -138,7 +141,7 @@ namespace database::players
 
 	std::optional<player> find(const std::uint64_t id);
 	std::optional<player> find_from_account(const std::uint64_t id);
-	std::optional<player> find_by_session_id(const std::string session_id);
+	std::optional<player> find_by_session_id(const std::string session_id, bool use_timeout = true, bool* is_expired = nullptr);
 
 	player find_or_insert(const std::uint64_t account_id);
 

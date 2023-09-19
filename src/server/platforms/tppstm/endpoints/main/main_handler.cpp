@@ -129,7 +129,7 @@ namespace tpp
 		if (session_crypto.is_boolean() && session_crypto.get<bool>())
 		{
 			const auto session_key = json["session_key"].get<std::string>();
-			const auto player = database::players::find_by_session_id(session_key);
+			const auto player = database::players::find_by_session_id(session_key, false);
 			if (!player.has_value())
 			{
 				json["data"] = {};
@@ -241,7 +241,7 @@ namespace tpp
 		else
 		{
 			const auto session_key = request["session_key"].get<std::string>();
-			const auto player = database::players::find_by_session_id(session_key);
+			const auto player = database::players::find_by_session_id(session_key, false);
 
 			if (!player.has_value())
 			{
