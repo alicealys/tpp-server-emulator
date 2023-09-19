@@ -24,7 +24,8 @@ create table if not exists `player_stats`
 	fob_sneak_lose				int				default 0,
 	fob_deploy_emergency_count	int				default 0,
 	primary key (`id`),
-	foreign key (`player_id`) references players(`id`)
+	foreign key (`player_id`) references players(`id`),
+	unique (`player_id`)
 ))"
 
 namespace database::player_stats
@@ -48,7 +49,7 @@ namespace database::player_stats
 		return {stats(row)};
 	}
 
-	stats find_or_insert(const std::uint64_t player_id)
+	stats find_or_create(const std::uint64_t player_id)
 	{
 		{
 			const auto found = find(player_id);

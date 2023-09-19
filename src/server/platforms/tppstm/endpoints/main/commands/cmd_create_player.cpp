@@ -24,8 +24,8 @@ namespace tpp
 			return result;
 		}
 
-		database::player_stats::find_or_insert(player->get_id());
-		database::player_data::create(player->get_id());
+		database::player_stats::find_or_create(player->get_id());
+		database::player_data::find_or_create(player->get_id());
 
 		result["player_id"] = player->get_id();
 		result["result"] = "NOERR";

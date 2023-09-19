@@ -128,5 +128,5 @@ namespace database::player_stats
 	};
 
 	std::optional<stats> find(const std::uint64_t player_id);
-	stats find_or_insert(const std::uint64_t player_id);
+	stats find_or_create(const std::uint64_t player_id);
 }

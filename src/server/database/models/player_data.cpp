@@ -14,20 +14,22 @@ create table if not exists `player_data`
 	unit_counts				blob default null,
 	unit_levels				blob default null,
 	resource_arrays			mediumblob default null,
-	staff_count				bigint unsigned not null,
+	nuke_count				bigint unsigned default 0,
+	staff_count				int unsigned not null,
 	staff_bin				mediumblob default null,
-	loadout					mediumtext not null,
-	motherbase				mediumtext not null,
-	local_gmp				bigint default 0,
-	server_gmp				bigint default 0,
-	loadout_gmp				bigint default 0,
-	insurance_gmp			bigint default 0,
-	injury_gmp				bigint default 0,
+	loadout					json not null,
+	motherbase				json not null,
+	local_gmp				int default 0,
+	server_gmp				int default 0,
+	loadout_gmp				int default 0,
+	insurance_gmp			int default 0,
+	injury_gmp				int default 0,
 	last_sync				datetime default null,
-	mb_coin					bigint default 0,
+	mb_coin					int default 0,
 	version 				bigint unsigned default 0,
 	primary key (`id`),
-	foreign key (`player_id`) references players(`id`)
+	foreign key (`player_id`) references players(`id`),
+	unique (`player_id`)
 ))"
 
 namespace database::player_data
@@ -292,6 +294,8 @@ namespace database::player_data
 			const std::string str = {reinterpret_cast<char*>(&value), sizeof(T)};
 			return utils::cryptography::base64::encode(str);
 		}
+
+		constexpr auto nuke_resource_id = 28;
 	}
 
 	std::string encode_buffer(const std::string& buffer)
@@ -338,6 +342,20 @@ namespace database::player_data
 		return std::max(0u, std::min(value, get_max_resource_value(type, index)));
 	}
 
+	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index)
+	{
+		const auto local_max = get_max_resource_value(local_type, index);
+		const auto server_max = get_max_resource_value(server_type, index);
+		const auto total = local_max + server_max;
+
+		if (total == 0)
+		{
+			return 0.f;
+		}
+
+		return static_cast<float>(local_max) / static_cast<float>(total);
+	}
+
 	void create(const std::uint64_t player_id)
 	{
 #pragma warning(push)
@@ -354,7 +372,6 @@ namespace database::player_data
 					 player_data_table.insurance_gmp = 0,
 					 player_data_table.injury_gmp = 0
 			));
-
 #pragma warning(pop)
 	}
 
@@ -373,6 +390,18 @@ namespace database::player_data
 
 		const auto& row = results.front();
 		return std::make_unique<player_data>(row);
+	}
+
+	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id)
+	{
+		auto found = find(player_id);
+		if (found.get())
+		{
+			return found;
+		}
+
+		create(player_id);
+		return find(player_id);
 	}
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data)
@@ -412,12 +441,15 @@ namespace database::player_data
 	{
 		const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
 
+		const auto nuke_count = arrays[processed_local][nuke_resource_id] + arrays[processed_server][nuke_resource_id];
+
 		database::get()->operator()(
 			sqlpp::update(player_data_table)
 				.set(player_data_table.player_id = player_id,
 					 player_data_table.resource_arrays = encode_buffer(resource_buf),
 					 player_data_table.local_gmp = local_gmp,
 					 player_data_table.server_gmp = server_gmp,
+					 player_data_table.nuke_count = nuke_count,
 					 player_data_table.version = player_data_table.version + 1)
 						.where(player_data_table.player_id == player_id
 			));
@@ -472,12 +504,30 @@ namespace database::player_data
 		return result != 0;
 	}
 
+	std::uint32_t get_nuke_count()
+	{
+		const auto result = database::get()->operator()(
+			sqlpp::select(
+				sqlpp::sum(player_data_table.nuke_count))
+					.from(player_data_table).unconditionally()
+		);
+
+		if (result.empty())
+		{
+			return 0;
+		}
+
+		return static_cast<std::uint32_t>(result.front().sum.value());
+	}
+
 	class table final : public table_interface
 	{
 	public:
 		void create(database_t& database) override
 		{
 			database->execute(TABLE_DEF);
+
+			get_nuke_count();
 		}
 	};
 }
