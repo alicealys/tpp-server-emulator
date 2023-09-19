@@ -58,29 +58,18 @@ namespace tpp
 					return;
 				}
 
-				const auto max = database::player_data::get_max_resource_value(local_type, i);
-				const auto max_server = database::player_data::get_max_resource_value(server_type, i);
-				resource_arrays[local_type][i] = database::player_data::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
+				const auto ratio = database::player_data::get_local_resource_ratio(local_type, server_type, i);
 
-				if (resource_arrays[server_type][i] < max_server)
-				{
-					auto transfer_amount = std::min(
-						max_server - resource_arrays[server_type][i],
-						static_cast<std::uint32_t>(max * 0.1f));
+				const auto current_local_value = database::player_data::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
+				const auto current_server_value = database::player_data::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
 
-					if (transfer_amount > resource_arrays[local_type][i])
-					{
-						transfer_amount = resource_arrays[local_type][i];
-					}
+				const auto total = current_local_value + current_server_value;
 
-					if (!sync)
-					{
-						transfer_amount = 0;
-					}
+				const auto local_value = database::player_data::cap_resource_value(local_type, i, static_cast<std::uint32_t>(total * ratio));
+				const auto server_value = database::player_data::cap_resource_value(server_type, i, total - local_value);
 
-					resource_arrays[local_type][i] -= transfer_amount;
-					resource_arrays[server_type][i] += transfer_amount;
-				}
+				resource_arrays[local_type][i] = local_value;
+				resource_arrays[server_type][i] = server_value;
 
 				result["diff_resource" + id][i] = resource_arrays[local_type][i];
 				result["fix_resource" + id][i] = resource_arrays[server_type][i];
@@ -93,21 +82,17 @@ namespace tpp
 		const auto now = std::chrono::system_clock::now();
 		const auto now_epoc = now.time_since_epoch();
 		const auto diff = now_epoc - player_data->get_last_sync();
-		const auto should_sync = diff >= 30min;
+		//const auto should_sync = diff >= 30min;
+		const auto should_sync = true;
 
 		sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, should_sync);
 		sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, should_sync);
 
 		if (should_sync)
 		{
-			if (server_gmp < database::player_data::max_server_gmp)
-			{
-				const auto transfer_amount = std::min(database::player_data::max_server_gmp - server_gmp,
-					static_cast<std::int32_t>(local_gmp * 0.8f));
-
-				server_gmp += transfer_amount;
-				local_gmp -= transfer_amount;
-			}
+			const auto total_gmp = local_gmp + server_gmp;
+			local_gmp = std::min(database::player_data::max_local_gmp, static_cast<std::int32_t>(database::player_data::gmp_ratio * total_gmp));
+			server_gmp = std::min(database::player_data::max_server_gmp, total_gmp - local_gmp);
 
 			database::player_data::set_resources_as_sync(player->get_id(), resource_arrays, local_gmp, server_gmp);
 			result["version"] = player_data->get_version() + 1;

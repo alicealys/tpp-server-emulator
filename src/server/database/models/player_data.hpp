@@ -15,6 +15,7 @@ namespace database::player_data
 	DEFINE_FIELD(unit_counts, sqlpp::blob);
 	DEFINE_FIELD(unit_levels, sqlpp::blob);
 	DEFINE_FIELD(resource_arrays, sqlpp::mediumblob);
+	DEFINE_FIELD(nuke_count, sqlpp::integer_unsigned);
 	DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
 	DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
 	DEFINE_FIELD(loadout, sqlpp::text);
@@ -28,15 +29,15 @@ namespace database::player_data
 	DEFINE_FIELD(last_sync, sqlpp::time_point);
 	DEFINE_FIELD(version, sqlpp::integer_unsigned);
 	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-		resource_arrays_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, local_gmp_field_t, 
-		server_gmp_field_t, motherbase_field_t, loadout_gmp_field_t, insurance_gmp_field_t, injury_gmp_field_t, 
-		mb_coin_field_t, last_sync_field_t, version_field_t);
+		resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, 
+		local_gmp_field_t, server_gmp_field_t, motherbase_field_t, loadout_gmp_field_t, insurance_gmp_field_t, 
+		injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t);
 
 	enum resource_array_types
 	{
 		processed_local,
-		processed_server,
 		unprocessed_local,
+		processed_server,
 		unprocessed_server,
 		count
 	};
@@ -95,6 +96,8 @@ namespace database::player_data
 	constexpr auto max_staff_count = 3500u;
 	constexpr auto max_server_gmp = 25000000;
 	constexpr auto max_local_gmp = 5000000;
+	constexpr auto gmp_ratio = static_cast<float>(database::player_data::max_local_gmp) / 
+		static_cast<float>(database::player_data::max_server_gmp + database::player_data::max_local_gmp);
 
 	using resource_array_t = std::uint32_t[resource_type_count];
 	using resource_arrays_t = resource_array_t[resource_array_types::count];
@@ -297,8 +300,11 @@ namespace database::player_data
 	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index);
 	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value);
 
+	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index);
+
 	void create(const std::uint64_t player_id);
 	std::unique_ptr<player_data> find(const std::uint64_t player_id);
+	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id);
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
 
@@ -313,4 +319,6 @@ namespace database::player_data
 	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase);
 
 	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value);
+
+	std::uint32_t get_nuke_count();
 }

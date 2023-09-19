@@ -2,6 +2,8 @@
 
 #include "cmd_get_abolition_count.hpp"
 
+#include "database/models/player_data.hpp"
+
 #include <utils/nt.hpp>
 
 namespace tpp
@@ -13,7 +15,7 @@ namespace tpp
 		result["count"] = 3;
 		result["date"] = std::time(nullptr);
 		result["max"] = std::numeric_limits<int>::max();
-		result["num"] = 1000;
+		result["num"] = database::player_data::get_nuke_count();
 		result["status"] = 0;
 
 		return result;
