@@ -2,7 +2,7 @@
 
 #include "../database.hpp"
 
-namespace database::player_stats
+namespace database::player_records
 {
 	DEFINE_FIELD(id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
@@ -18,16 +18,18 @@ namespace database::player_stats
 	DEFINE_FIELD(fob_defense_lose, sqlpp::integer_unsigned);
 	DEFINE_FIELD(fob_sneak_win, sqlpp::integer_unsigned);
 	DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
-	DEFINE_TABLE(player_stats, id_field_t, player_id_field_t, fob_grade_field_t, 
+	DEFINE_FIELD(shield_date, sqlpp::time_point);
+	DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, 
 		fob_point_field_t, fob_rank_field_t, is_insurance_field_t, league_grade_field_t, 
 		league_rank_field_t, playtime_field_t, point_field_t, fob_defense_win_field_t, 
-		fob_defense_lose_field_t, fob_sneak_win_field_t, fob_sneak_lose_field_t);
+		fob_defense_lose_field_t, fob_sneak_win_field_t, fob_sneak_lose_field_t,
+		shield_date_field_t);
 
-	class stats
+	class player_record
 	{
 	public:
 		template <typename ...Args>
-		stats(const sqlpp::result_row_t<Args...>& row)
+		player_record(const sqlpp::result_row_t<Args...>& row)
 		{
 			this->id_ = row.id;
 			this->player_id_ = row.player_id;
@@ -43,6 +45,7 @@ namespace database::player_stats
 			this->fob_defense_lose_ = static_cast<std::uint32_t>(row.fob_defense_lose);
 			this->fob_sneak_win_ = static_cast<std::uint32_t>(row.fob_sneak_win);
 			this->fob_sneak_lose_ = static_cast<std::uint32_t>(row.fob_sneak_lose);
+			this->shield_date_ = row.shield_date.value().time_since_epoch();
 		}
 
 		std::uint64_t get_player_id() const
@@ -109,6 +112,18 @@ namespace database::player_stats
 		{
 			return this->fob_sneak_lose_;
 		}
+
+		std::int64_t get_shield_date() const
+		{
+			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch());
+			if (now > this->shield_date_)
+			{
+				return 0u;
+			}
+
+			return this->shield_date_.count();
+		}
+
 	private:
 		std::uint64_t id_;
 		std::uint64_t player_id_;
@@ -125,8 +140,10 @@ namespace database::player_stats
 		std::uint32_t fob_sneak_win_;
 		std::uint32_t fob_sneak_lose_;
 
+		std::chrono::microseconds shield_date_;
+
 	};
 
-	std::optional<stats> find(const std::uint64_t player_id);
-	stats find_or_create(const std::uint64_t player_id);
+	std::optional<player_record> find(const std::uint64_t player_id);
+	player_record find_or_create(const std::uint64_t player_id);
 }

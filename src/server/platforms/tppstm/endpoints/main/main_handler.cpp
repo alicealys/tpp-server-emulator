@@ -33,6 +33,7 @@
 #include "commands/cmd_get_fob_status.hpp"
 #include "commands/cmd_get_fob_notice.hpp"
 #include "commands/cmd_get_fob_target_list.hpp"
+#include "commands/cmd_get_fob_target_detail.hpp"
 #include "commands/cmd_get_purchasable_area_list.hpp"
 #include "commands/cmd_get_mbcoin_remainder.hpp"
 #include "commands/cmd_purchase_first_fob.hpp"
@@ -87,6 +88,7 @@ namespace tpp
 		this->register_handler<cmd_get_fob_status>("CMD_GET_FOB_STATUS");
 		this->register_handler<cmd_get_fob_notice>("CMD_GET_FOB_NOTICE");
 		this->register_handler<cmd_get_fob_target_list>("CMD_GET_FOB_TARGET_LIST");
+		this->register_handler<cmd_get_fob_target_detail>("CMD_GET_FOB_TARGET_DETAIL");
 		this->register_handler<cmd_get_purchasable_area_list>("CMD_GET_PURCHASABLE_AREA_LIST");
 		this->register_handler<cmd_get_mbcoin_remainder>("CMD_GET_MBCOIN_REMAINDER");
 		this->register_handler<cmd_purchase_first_fob>("CMD_PURCHASE_FIRST_FOB");

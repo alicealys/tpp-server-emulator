@@ -3,7 +3,7 @@
 #include "cmd_get_fob_status.hpp"
 
 #include "database/models/fobs.hpp"
-#include "database/models/player_stats.hpp"
+#include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 
 #include <utils/nt.hpp>
@@ -21,7 +21,7 @@ namespace tpp
 			return result;
 		}
 
-		const auto stats = database::player_stats::find(player->get_id());
+		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
 			result["result"] = "ERR_INVALIDARG";
@@ -39,7 +39,7 @@ namespace tpp
 		result["record"]["defense"]["lose"] = stats->get_defense_lose();
 		result["record"]["insurance"] = 0;
 		result["record"]["score"] = stats->get_fob_point();
-		result["record"]["shield_date"] = 0;
+		result["record"]["shield_date"] = stats->get_shield_date();
 		result["record"]["sneak"]["win"] = stats->get_sneak_win();
 		result["record"]["sneak"]["lose"] = stats->get_sneak_lose();
 

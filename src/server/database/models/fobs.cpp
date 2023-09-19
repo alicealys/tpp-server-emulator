@@ -135,6 +135,22 @@ namespace database::fobs
 		}
 	}
 
+	std::optional<fob> get_fob(const std::uint64_t id)
+	{
+		auto results = database::get()->operator()(
+			sqlpp::select(
+				sqlpp::all_of(fobs_table))
+					.from(fobs_table)
+						.where(fobs_table.id == id));
+
+		if (results.empty())
+		{
+			return {};
+		}
+
+		return fob(results.front());
+	}
+
 	class table final : public table_interface
 	{
 	public:

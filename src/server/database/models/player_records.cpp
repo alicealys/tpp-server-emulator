@@ -1,12 +1,12 @@
 #include <std_include.hpp>
 
-#include "player_stats.hpp"
+#include "player_records.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
 #define TABLE_DEF R"(
-create table if not exists `player_stats`
+create table if not exists `player_record`
 (
 	id							bigint unsigned	not null	auto_increment,
 	player_id					bigint unsigned	not null,
@@ -23,22 +23,23 @@ create table if not exists `player_stats`
 	fob_sneak_win				int				default 0,
 	fob_sneak_lose				int				default 0,
 	fob_deploy_emergency_count	int				default 0,
+	shield_date					datetime not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)
 ))"
 
-namespace database::player_stats
+namespace database::player_records
 {
-	auto player_stats_table = player_stats_table_t();
+	auto player_records_table = player_records_table_t();
 
-	std::optional<stats> find(const std::uint64_t player_id)
+	std::optional<player_record> find(const std::uint64_t player_id)
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
-				sqlpp::all_of(player_stats_table))
-					.from(player_stats_table)
-						.where(player_stats_table.player_id == player_id));
+				sqlpp::all_of(player_records_table))
+					.from(player_records_table)
+						.where(player_records_table.player_id == player_id));
 
 		if (results.empty())
 		{
@@ -46,10 +47,10 @@ namespace database::player_stats
 		}
 
 		const auto& row = results.front();
-		return {stats(row)};
+		return {player_record(row)};
 	}
 
-	stats find_or_create(const std::uint64_t player_id)
+	player_record find_or_create(const std::uint64_t player_id)
 	{
 		{
 			const auto found = find(player_id);
@@ -62,14 +63,15 @@ namespace database::player_stats
 #pragma warning(push)
 #pragma warning(disable: 4127)
 		database::get()->operator()(
-			sqlpp::insert_into(player_stats_table)
-				.set(player_stats_table.player_id = player_id));
+			sqlpp::insert_into(player_records_table)
+				.set(player_records_table.player_id = player_id,
+					 player_records_table.shield_date = std::chrono::system_clock::now()));
 #pragma warning(pop)
 
 		const auto found = find(player_id);
 		if (!found.has_value())
 		{
-			throw std::runtime_error("[database::player_stats::insert] Insertion failed");
+			throw std::runtime_error("[database::player_records::insert] Insertion failed");
 		}
 
 		return found.value();
@@ -85,4 +87,4 @@ namespace database::player_stats
 	};
 }
 
-REGISTER_TABLE(database::player_stats::table, -1)
+REGISTER_TABLE(database::player_records::table, -1)

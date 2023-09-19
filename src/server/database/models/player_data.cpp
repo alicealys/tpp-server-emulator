@@ -299,6 +299,27 @@ namespace database::player_data
 		constexpr auto nuke_resource_id = 28;
 	}
 
+	std::vector<std::string> unit_names =
+	{
+		"combat",
+		"develop",
+		"base",
+		"suport" ,
+		"spy",
+		"medical",
+		"security"
+	};
+
+	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation)
+	{
+		if (designation < des_combat || designation > des_security)
+		{
+			return {};
+		}
+
+		return {unit_names[designation - 1]};
+	}
+
 	std::string encode_buffer(const std::string& buffer)
 	{
 		return utils::cryptography::base64::encode(buffer);

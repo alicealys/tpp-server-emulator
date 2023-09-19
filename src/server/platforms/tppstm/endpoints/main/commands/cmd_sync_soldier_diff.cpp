@@ -45,20 +45,9 @@ namespace tpp
 		database::player_data::unit_levels_t levels{};
 		database::player_data::unit_counts_t counts{};
 
-		static std::vector<std::string> keys =
-		{
-			"base",
-			"combat",
-			"develop",
-			"medical" ,
-			"security",
-			"spy",
-			"suport"
-		};
-
 		for (auto i = 0; i < database::player_data::unit_count; i++)
 		{
-			const auto& key = keys[i];
+			const auto& key = database::player_data::unit_names[i];
 			if (section[key].is_number_integer())
 			{
 				levels[i] = section[key].get<std::uint32_t>();
