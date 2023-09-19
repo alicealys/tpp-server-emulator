@@ -47,11 +47,15 @@ namespace database::fobs
 
 	std::vector<fob> get_fob_list(const std::uint64_t player_id)
 	{
+#pragma warning(push)
+#pragma warning(disable: 4127)
 		auto results = database::get()->operator()(
 			sqlpp::select(
 				sqlpp::all_of(fobs_table))
 					.from(fobs_table)
-						.where(fobs_table.player_id == player_id));
+						.where(fobs_table.player_id == player_id)
+							.order_by(fobs_table.create_date.asc()));
+#pragma warning(pop)
 
 		std::vector<fob> list;
 
@@ -59,11 +63,6 @@ namespace database::fobs
 		{
 			list.emplace_back(row);
 		}
-
-		std::sort(list.begin(), list.end(), [](const auto& a, const auto& b)
-		{
-			return a.get_creation_time() < b.get_creation_time();
-		});
 
 		return list;
 	}

@@ -290,6 +290,10 @@ namespace database::items
 		void create(database_t& database) override
 		{
 			database->execute(TABLE_DEF);
+
+			get_static_map();
+			get_static_list();
+			get_static_list_json();
 		}
 	};
 }
