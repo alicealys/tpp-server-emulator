@@ -45,49 +45,72 @@ namespace database::player_data
 
 	struct staff_header_t
 	{
-		unsigned int suppress_stats : 1;
-		unsigned int stat_bonus : 2;
-		unsigned int peak_rank : 4;
-		unsigned int stat_distribution : 6;
-		unsigned int skill : 7;
-		unsigned int face_gender : 10;
+		std::uint32_t suppress_stats : 1;
+		std::uint32_t stat_bonus : 2;
+		std::uint32_t peak_rank : 4;
+		std::uint32_t stat_distribution : 6;
+		std::uint32_t skill : 7;
+		std::uint32_t face_gender : 10;
 	};
 
-	struct staff_status_t
+	struct staff_status_sync_t
 	{
-		unsigned int combat_deployment_team : 4;
-		unsigned int player_selected : 3;
-		unsigned int direct_contract : 1;
-		unsigned int proficiency : 4;
-		unsigned int ds_medal : 1;
-		unsigned int ds_cross : 1;
-		unsigned int honor_medal : 1;
-		unsigned int unk : 1;
-		unsigned int symptomatic : 1;
-		unsigned int health_level : 3;
-		unsigned int health_state : 2;
-		unsigned int morale : 4;
-		unsigned int enemy : 1;
-		unsigned int designation : 4;
-		unsigned int unselectable : 1;
+		std::uint32_t combat_deployment_team : 4;
+		std::uint32_t player_selected : 3;
+		std::uint32_t direct_contract : 1;
+		std::uint32_t proficiency : 4;
+		std::uint32_t ds_medal : 1;
+		std::uint32_t ds_cross : 1;
+		std::uint32_t honor_medal : 1;
+		std::uint32_t unk : 1;
+		std::uint32_t symptomatic : 1;
+		std::uint32_t health_level : 3;
+		std::uint32_t health_state : 2;
+		std::uint32_t morale : 4;
+		std::uint32_t enemy : 1;
+		std::uint32_t designation : 4;
+		std::uint32_t unselectable : 1;
 	};
 
-	struct staff_t
+	struct staff_status_packed_t
 	{
-		std::uint32_t seed;
-		std::uint32_t unk;
-		union
-		{
-			std::uint32_t packed_header;
-			staff_header_t header;
-		};
-		union
-		{
-			std::uint32_t packed_status;
-			staff_status_t status;
-		};
-		std::uint32_t unk2;
-		std::uint32_t unk3;
+		std::uint32_t data;
+	};
+
+	struct staff_seed_t
+	{
+		std::uint32_t data;
+	};
+
+	struct staff_status_no_sync_t
+	{
+		std::uint32_t data;
+	};
+
+	struct staff_unknown1_t
+	{
+		std::uint32_t data;
+	};
+
+	struct staff_unknown2_t
+	{
+		std::uint32_t data;
+	};
+
+	struct staff_fields_t
+	{
+		staff_unknown1_t unk;
+		staff_unknown2_t unk2;
+		staff_header_t header;
+		staff_seed_t seed;
+		staff_status_sync_t status_sync;
+		staff_status_no_sync_t status_no_sync;
+	};
+
+	union staff_t
+	{
+		staff_fields_t fields;
+		std::uint32_t packed[6];
 	};
 
 	static_assert(sizeof(staff_t) == 24);
@@ -129,11 +152,80 @@ namespace database::player_data
 		des_count,
 	};
 
+	enum stat_distribution_t
+	{
+		stat_dist_none_1 = 0b11010,
+		stat_dist_none_2 = 0b11011,
+		stat_dist_none_3 = 0b11100,
+		stat_dist_none_4 = 0b11101,
+		stat_dist_none_5 = 0b100100,
+		stat_dist_none_6 = 0b100101,
+		stat_dist_none_7 = 0b100110,
+		stat_dist_none_8 = 0b100111,
+		stat_dist_none_9 = 0b111011,
+		stat_dist_security = 0b1,
+		stat_dist_base_dev_focus = 0b100,
+		stat_dist_base_dev_and_combat = 0b110011,
+		stat_dist_base_dev_and_intel = 0b10010,
+		stat_dist_base_dev_plus_and_intel_plus = 0b110001,
+		stat_dist_base_dev_and_medical = 0b10011,
+		stat_dist_base_dev_plus_and_medical_plus = 0b110010,
+		stat_dist_base_dev_and_rnd = 0b101110,
+		stat_dist_base_dev_and_support_and_intel_and_medical = 0b100000,
+		stat_dist_base_dev_and_support = 0b10001,
+		stat_dist_base_dev_plus_and_support_plus = 0b110000,
+		stat_dist_combat_focus = 0b10,
+		stat_dist_combat_and_base_dev = 0b101111,
+		stat_dist_combat_and_intel = 0b1001,
+		stat_dist_combat_plus_and_intel_plus = 0b101001,
+		stat_dist_combat_and_medical = 0b1010,
+		stat_dist_combat_and_rnd = 0b1000,
+		stat_dist_combat_and_support_and_intel_and_medical = 0b11111,
+		stat_dist_combat_and_support = 0b101000,
+		stat_dist_intel_focus = 0b110,
+		stat_dist_intel_and_base_dev = 0b10000,
+		stat_dist_intel_plus_and_base_dev_plus = 0b110110,
+		stat_dist_intel_and_combat_and_support_and_medical = 0b100010,
+		stat_dist_intel_and_combat = 0b1110,
+		stat_dist_intel_plus_and_combat_plus = 0b111001,
+		stat_dist_intel_and_medical = 0b111000,
+		stat_dist_intel_and_rnd = 0b1111,
+		stat_dist_intel_and_support = 0b111010,
+		stat_dist_medical_focus = 0b111,
+		stat_dist_medical_and_base_dev_and_support_and_intel = 0b100011,
+		stat_dist_medical_and_base_dev = 0b11000,
+		stat_dist_medical_plus_and_base_dev_plus = 0b111110,
+		stat_dist_medical_and_combat = 0b10111,
+		stat_dist_medical_plus_and_combat_plus = 0b111100,
+		stat_dist_medical_and_intel = 0b110111,
+		stat_dist_medical_and_rnd = 0b111101,
+		stat_dist_medical_and_support = 0b11001,
+		stat_dist_rnd_focus = 0b11,
+		stat_dist_rnd_and_base_dev = 0b1011,
+		stat_dist_rnd_plus_and_base_dev_plus = 0b101011,
+		stat_dist_rnd_and_combat = 0b101010,
+		stat_dist_rnd_and_medical = 0b1101,
+		stat_dist_rnd_plus_and_medical_plus = 0b101101,
+		stat_dist_rnd_and_support_and_intel_and_medical = 0b11110,
+		stat_dist_rnd_and_support = 0b1100,
+		stat_dist_rnd_plus_and_support_plus = 0b101100,
+		stat_dist_support_focus = 0b101,
+		stat_dist_support_and_combat = 0b10100,
+		stat_dist_support_plus_and_combat_plus = 0b110100,
+		stat_dist_support_and_intel = 0b10110,
+		stat_dist_support_plus_and_intel_plus = 0b110101,
+		stat_dist_support_and_rnd_and_intel_and_medical = 0b100001,
+		stat_dist_special_character = 0b111111,
+	};
+
 	extern std::vector<std::string> unit_names;
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
 
 	std::string decode_buffer(const std::string& buffer);
 	std::string decode_buffer(const std::vector<std::uint8_t>& buffer);
+
+	bool is_usable_staff(const staff_t& staff);
+	bool is_usable_staff(const staff_fields_t& staff);
 
 	class player_data
 	{
@@ -179,12 +271,10 @@ namespace database::player_data
 
 			for (auto i = 0u; i < this->staff_count_; i++)
 			{
-				this->staff_array_[i].seed = _byteswap_ulong(this->staff_array_[i].seed);
-				this->staff_array_[i].unk = _byteswap_ulong(this->staff_array_[i].unk);
-				this->staff_array_[i].packed_header = _byteswap_ulong(this->staff_array_[i].packed_header);
-				this->staff_array_[i].packed_status = _byteswap_ulong(this->staff_array_[i].packed_status);
-				this->staff_array_[i].unk2 = _byteswap_ulong(this->staff_array_[i].unk2);
-				this->staff_array_[i].unk3 = _byteswap_ulong(this->staff_array_[i].unk3);
+				for (auto o = 0; o < 6; o++)
+				{
+					this->staff_array_[i].packed[o] = _byteswap_ulong(this->staff_array_[i].packed[o]);
+				}
 			}
 
 			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
@@ -268,20 +358,14 @@ namespace database::player_data
 			std::memcpy(arrays, this->resource_arrays_, sizeof(resource_arrays_t));
 		}
 
-		staff_t get_staff(const std::uint32_t index) const
+		staff_fields_t get_staff(const std::uint32_t index) const
 		{
 			if (index >= max_staff_count)
 			{
 				return {};
 			}
 
-			staff_t staff{};
-			int header{};
-			std::memcpy(&header, &this->staff_array_[index].header, 4);
-			header = _byteswap_ulong(header);
-			std::memcpy(&staff.header, &header, 4);
-
-			return this->staff_array_[index];
+			return this->staff_array_[index].fields;
 		}
 
 		std::uint32_t get_unit_level(const std::uint32_t unit) const
@@ -307,6 +391,23 @@ namespace database::player_data
 		std::uint32_t get_staff_count() const
 		{
 			return std::min(this->staff_count_, max_staff_count);
+		}
+
+		std::uint32_t get_usable_staff_count() const
+		{
+			auto count = 0;
+			const auto max = this->get_staff_count();
+
+			for (auto i = 0u; i < max; i++)
+			{
+				const auto staff = this->staff_array_[i];
+				if (is_usable_staff(staff))
+				{
+					++count;
+				}
+			}
+
+			return count;
 		}
 
 		nlohmann::json get_motherbase() const
@@ -392,7 +493,7 @@ namespace database::player_data
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
 
-	void set_soldier_diff(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
+	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
 		unit_levels_t& levels, unit_counts_t& counts);
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
 

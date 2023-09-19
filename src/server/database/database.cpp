@@ -8,13 +8,6 @@
 
 namespace database
 {
-	std::string get_smart_device_id(const std::string& account_id)
-	{
-		std::string data;
-		data.resize(80);
-		return utils::cryptography::base64::encode(data);
-	}
-
 	tables& get_tables()
 	{
 		static tables tables = {};

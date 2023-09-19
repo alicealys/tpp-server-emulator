@@ -14,6 +14,8 @@ create table if not exists `players`
 	login_password      char(32)		default null,
 	last_update         datetime		default null,
 	crypto_key			char(32)		default null,
+	smart_device_id		char(128)		default null,
+	currency			varchar(32)		default null,
 	ex_ip			    varchar(15)		default null,
 	in_ip			    varchar(15)		default null,
 	ex_port			    int unsigned	default 0,
@@ -144,7 +146,9 @@ namespace database::players
 #pragma warning(disable: 4127)
 		database::get()->operator()(
 			sqlpp::insert_into(players_table)
-				.set(players_table.account_id = account_id));
+				.set(players_table.account_id = account_id,
+					 players_table.currency = "EUR",
+					 players_table.smart_device_id = generate_data(80, true)));
 #pragma warning(pop)
 
 		const auto found = find_from_account(account_id);
@@ -214,7 +218,7 @@ namespace database::players
 					 players_table.ex_port = ex_port,
 					 players_table.in_port = in_port,
 					 players_table.nat = nat_type_id)
-					.where(players_table.id == player_id));
+						.where(players_table.id == player_id));
 	}
 
 	std::vector<player> get_player_list(const std::uint32_t limit)

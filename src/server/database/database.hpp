@@ -49,8 +49,6 @@ namespace database
 	bool create_tables();
 
 	database_t& get();
-
-	std::string get_smart_device_id(const std::string& account_id);
 }
 
 #define REGISTER_TABLE(name, ...)												\

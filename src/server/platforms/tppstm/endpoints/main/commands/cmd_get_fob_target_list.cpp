@@ -131,7 +131,7 @@ namespace tpp
 			result["target_list"][index]["owner_detail_record"]["sneak_rank"]["rank"] = 0;
 			result["target_list"][index]["owner_detail_record"]["sneak_rank"]["score"] = 0;
 			
-			result["target_list"][index]["owner_detail_record"]["staff_count"] = target_data->get_staff_count();
+			result["target_list"][index]["owner_detail_record"]["staff_count"] = target_data->get_usable_staff_count();
 
 			result["target_list"][index]["owner_fob_record"]["attack_count"] = 0;
 			result["target_list"][index]["owner_fob_record"]["attack_gmp"] = 0;
@@ -167,8 +167,11 @@ namespace tpp
 			for (auto i = 0u; i < target_data->get_staff_count(); i++)
 			{
 				const auto staff = target_data->get_staff(i);
-				const auto value = staff_counts[staff.header.peak_rank].get<std::uint32_t>();
-				staff_counts[staff.header.peak_rank] = value + 1;
+				if (database::player_data::is_usable_staff(staff))
+				{
+					const auto value = staff_counts[staff.header.peak_rank].get<std::uint32_t>();
+					staff_counts[staff.header.peak_rank] = value + 1;
+				}
 			}
 
 			result["target_list"][index]["owner_fob_record"]["support_count"] = 0;
