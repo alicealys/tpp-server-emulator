@@ -19,6 +19,7 @@ create table if not exists `player_data`
 	staff_bin				mediumblob default null,
 	loadout					json not null,
 	motherbase				json not null,
+	emblem					json not null,
 	local_gmp				int default 0,
 	server_gmp				int default 0,
 	loadout_gmp				int default 0,
@@ -366,6 +367,7 @@ namespace database::player_data
 					 player_data_table.staff_count = 0,
 					 player_data_table.loadout = "{}",
 					 player_data_table.motherbase = "{}",
+					 player_data_table.emblem = "{}",
 					 player_data_table.local_gmp = 0,
 					 player_data_table.server_gmp = 0,
 					 player_data_table.loadout_gmp = 0,
@@ -375,7 +377,7 @@ namespace database::player_data
 #pragma warning(pop)
 	}
 
-	std::unique_ptr<player_data> find(const std::uint64_t player_id)
+	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
@@ -389,7 +391,23 @@ namespace database::player_data
 		}
 
 		const auto& row = results.front();
-		return std::make_unique<player_data>(row);
+		auto p_data = std::make_unique<player_data>(row);
+		if (parse_motherbase)
+		{
+			p_data->parse_motherbase(row);
+		}
+
+		if (parse_loadout)
+		{
+			p_data->parse_loadout(row);
+		}
+
+		if (parse_emblem)
+		{
+			p_data->parse_emblem(row);
+		}
+
+		return std::move(p_data);
 	}
 
 	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id)
@@ -487,6 +505,16 @@ namespace database::player_data
 			sqlpp::update(player_data_table)
 				.set(player_data_table.player_id = player_id,
 					 player_data_table.loadout = loadout.dump())
+						.where(player_data_table.player_id == player_id)
+			);
+	}
+
+	void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem)
+	{
+		database::get()->operator()(
+			sqlpp::update(player_data_table)
+				.set(player_data_table.player_id = player_id,
+					 player_data_table.emblem = emblem.dump())
 						.where(player_data_table.player_id == player_id)
 			);
 	}

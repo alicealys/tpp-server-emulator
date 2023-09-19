@@ -82,8 +82,7 @@ namespace tpp
 		const auto now = std::chrono::system_clock::now();
 		const auto now_epoc = now.time_since_epoch();
 		const auto diff = now_epoc - player_data->get_last_sync();
-		//const auto should_sync = diff >= 30min;
-		const auto should_sync = true;
+		const auto should_sync = diff >= 30min;
 
 		sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, should_sync);
 		sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, should_sync);

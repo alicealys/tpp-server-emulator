@@ -22,6 +22,7 @@
 #include "commands/cmd_sync_resource.hpp"
 #include "commands/cmd_sync_loadout.hpp"
 #include "commands/cmd_sync_mother_base.hpp"
+#include "commands/cmd_sync_emblem.hpp"
 #include "commands/cmd_get_resource_param.hpp"
 #include "commands/cmd_mining_resource.hpp"
 #include "commands/cmd_sale_resource.hpp"
@@ -75,6 +76,7 @@ namespace tpp
 		this->register_handler<cmd_sync_resource>("CMD_SYNC_RESOURCE");
 		this->register_handler<cmd_sync_loadout>("CMD_SYNC_LOADOUT");
 		this->register_handler<cmd_sync_mother_base>("CMD_SYNC_MOTHER_BASE");
+		this->register_handler<cmd_sync_emblem>("CMD_SYNC_EMBLEM");
 		this->register_handler<cmd_get_resource_param>("CMD_GET_RESOURCE_PARAM");
 		this->register_handler<cmd_mining_resource>("CMD_MINING_RESOURCE");
 		this->register_handler<cmd_sale_resource>("CMD_SALE_RESOURCE");

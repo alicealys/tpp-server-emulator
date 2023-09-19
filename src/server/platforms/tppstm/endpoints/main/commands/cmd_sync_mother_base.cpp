@@ -48,8 +48,18 @@ namespace tpp
 			}
 		}
 		
-		nlohmann::json mb_data = data;
-		mb_data["mother_base_param"] = {};
+		nlohmann::json mb_data;
+		mb_data["equip_flag"] = data["equip_flag"];
+		mb_data["equip_grade"] = data["equip_grade"];
+		mb_data["invalid_fob"] = data["invalid_fob"];
+		mb_data["pf_skill_staff"] = data["pf_skill_staff"];
+		mb_data["local_base_param"] = data["local_base_param"];
+		mb_data["name_plate_id"] = data["name_plate_id"];
+		mb_data["mother_base_num"] = data["mother_base_num"];
+		mb_data["pickup_open"] = data["pickup_open"];
+		mb_data["section_open"] = data["section_open"];
+		mb_data["security_level"] = data["security_level"];
+		mb_data["tape_flag"] = data["tape_flag"];
 
 		database::player_data::sync_motherbase(player->get_id(), mb_data);
 
