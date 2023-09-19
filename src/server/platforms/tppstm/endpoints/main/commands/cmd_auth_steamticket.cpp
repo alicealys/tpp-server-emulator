@@ -40,7 +40,7 @@ namespace tpp
 		}
 		else
 		{
-			const auto player = database::players::find_by_session_id(session_key);
+			const auto player = database::players::find_by_session_id(session_key, false);
 			if (!player.has_value())
 			{
 				result["result"] = "ERR_INVALID_SESSION";

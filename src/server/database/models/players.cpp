@@ -21,7 +21,7 @@ create table if not exists `players`
 	ex_port			    int unsigned	default 0,
 	in_port			    int unsigned	default 0,
 	nat					int unsigned	default 0,
-	creation_time		datetime        default current_timestamp not null,
+	creation_time		datetime        not null,
 	primary key (`id`)
 ))"
 
@@ -114,7 +114,7 @@ namespace database::players
 		return {player(row)};
 	}
 
-	std::optional<player> find_by_session_id(const std::string session_id)
+	std::optional<player> find_by_session_id(const std::string session_id, bool use_timeout, bool* is_expired)
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
@@ -127,8 +127,23 @@ namespace database::players
 			return {};
 		}
 
+		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+			std::chrono::system_clock::now().time_since_epoch());
+
 		const auto& row = results.front();
 		player player(row);
+
+		const auto expired = now - player.get_last_update() > session_timeout;
+		if (is_expired != nullptr)
+		{
+			*is_expired = expired;
+		}
+
+		if (use_timeout && expired)
+		{
+			return {};
+		}
+
 		return {player};
 	}
 
@@ -148,7 +163,8 @@ namespace database::players
 			sqlpp::insert_into(players_table)
 				.set(players_table.account_id = account_id,
 					 players_table.currency = "EUR",
-					 players_table.smart_device_id = generate_data(80, true)));
+					 players_table.smart_device_id = generate_data(80, true),
+					 players_table.last_update = std::chrono::system_clock::now()));
 #pragma warning(pop)
 
 		const auto found = find_from_account(account_id);

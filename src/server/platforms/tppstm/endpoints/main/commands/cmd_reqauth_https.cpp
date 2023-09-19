@@ -23,8 +23,8 @@ namespace tpp
 
 		const auto hash = hash_val.get<std::string>();
 
-		result["timeout_sec"] = 200;
-		result["heartbeat_sec"] = 60;
+		result["timeout_sec"] = std::chrono::duration_cast<std::chrono::seconds>(database::players::session_timeout).count();
+		result["heartbeat_sec"] = std::chrono::duration_cast<std::chrono::seconds>(database::players::session_heartbeat).count();
 		result["inquiry_id"] = 0;
 
 		if (session_key.empty())
@@ -45,11 +45,17 @@ namespace tpp
 		}
 		else
 		{
-			const auto player = database::players::find_by_session_id(session_key);
+			auto expired = false;
+			const auto player = database::players::find_by_session_id(session_key, false, &expired);
 			if (!player.has_value())
 			{
 				result["result"] = "ERR_INVALID_SESSION";
 				return result;
+			}
+
+			if (expired)
+			{
+				database::players::update_session(player->get_id());
 			}
 
 			result["crypto_key"] = player->get_crypto_key();
