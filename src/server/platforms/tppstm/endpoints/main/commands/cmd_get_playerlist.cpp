@@ -5,7 +5,7 @@
 #include "database/auth.hpp"
 
 #include "database/models/players.hpp"
-#include "database/models/player_stats.hpp"
+#include "database/models/player_records.hpp"
 #include "database/models/player_data.hpp"
 
 #include <utils/nt.hpp>
@@ -24,7 +24,7 @@ namespace tpp
 			return result;
 		}
 
-		const auto stats = database::player_stats::find(player->get_id());
+		const auto stats = database::player_records::find(player->get_id());
 		const auto player_data = database::player_data::find(player->get_id());
 
 		result["player_num"] = 0;

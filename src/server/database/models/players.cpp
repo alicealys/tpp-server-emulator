@@ -217,6 +217,24 @@ namespace database::players
 					.where(players_table.id == player_id));
 	}
 
+	std::vector<player> get_player_list(const std::uint32_t limit)
+	{
+		auto results = database::get()->operator()(
+			sqlpp::select(
+				sqlpp::all_of(players_table))
+					.from(players_table)
+						.unconditionally().limit(limit));
+
+		std::vector<player> list;
+
+		for (auto& row : results)
+		{
+			list.emplace_back(row);
+		}
+
+		return list;
+	}
+
 	class table final : public table_interface
 	{
 	public:

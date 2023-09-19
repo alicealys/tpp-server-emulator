@@ -40,9 +40,11 @@ namespace database::fobs
 
 			this->id_ = row.id;
 			this->player_id_ = row.player_id;
-			this->area_id_ = row.area_id;
-			this->construct_param_ = row.construct_param;
+			this->area_id_ = static_cast<std::uint32_t>(row.area_id);
+			this->construct_param_ = static_cast<std::uint32_t>(row.construct_param);
 			this->create_date_ = row.create_date.value().time_since_epoch();
+			this->platform_count_ = static_cast<std::uint32_t>(row.platform_count);
+			this->security_rank_ = static_cast<std::uint32_t>(row.security_rank);
 		}
 
 		fob(const nlohmann::json& json)
@@ -53,9 +55,14 @@ namespace database::fobs
 			this->cluster_param_ = json["cluster_param"];
 		}
 
-		std::uint32_t get_id() const
+		std::uint64_t get_id() const
 		{
 			return this->id_;
+		}
+
+		std::uint64_t get_player_id() const
+		{
+			return this->player_id_;
 		}
 
 		std::uint32_t get_area_id() const
@@ -89,8 +96,8 @@ namespace database::fobs
 		}
 
 	private:
-		std::uint32_t id_;
-		std::uint32_t player_id_;
+		std::uint64_t id_;
+		std::uint64_t player_id_;
 		std::uint32_t area_id_;
 		std::uint32_t platform_count_;
 		std::uint32_t security_rank_;
@@ -103,4 +110,5 @@ namespace database::fobs
 	std::vector<fob> get_fob_list(const std::uint64_t player_id);
 	void create(const std::uint64_t player_id, const std::uint32_t area_id);
 	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs);
+	std::optional<fob> get_fob(const std::uint64_t id);
 }

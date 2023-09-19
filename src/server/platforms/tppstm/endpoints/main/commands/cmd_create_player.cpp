@@ -5,7 +5,7 @@
 #include "database/auth.hpp"
 
 #include "database/models/players.hpp"
-#include "database/models/player_stats.hpp"
+#include "database/models/player_records.hpp"
 #include "database/models/player_data.hpp"
 
 #include <utils/nt.hpp>
@@ -24,7 +24,7 @@ namespace tpp
 			return result;
 		}
 
-		database::player_stats::find_or_create(player->get_id());
+		database::player_records::find_or_create(player->get_id());
 		database::player_data::find_or_create(player->get_id());
 
 		result["player_id"] = player->get_id();

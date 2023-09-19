@@ -5,7 +5,7 @@
 #include "database/auth.hpp"
 
 #include "database/models/players.hpp"
-#include "database/models/player_stats.hpp"
+#include "database/models/player_records.hpp"
 
 #include <utils/nt.hpp>
 

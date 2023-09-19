@@ -21,7 +21,7 @@ namespace tpp
 			return result;
 		}
 
-		if (data["emblem"].is_object())
+		if (!data["emblem"].is_object())
 		{
 			result["result"] = "ERR_INVALIDARG";
 			return result;

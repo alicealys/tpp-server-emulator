@@ -134,4 +134,6 @@ namespace database::players
 
 	void set_ip_and_port(const std::uint64_t player_id, const std::string& ex_ip, const std::uint16_t ex_port,
 		const std::string& in_ip, const std::uint16_t in_port, const std::string& nat_type);
+
+	std::vector<player> get_player_list(const std::uint32_t limit = 10);
 }

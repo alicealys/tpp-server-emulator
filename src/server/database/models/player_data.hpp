@@ -106,6 +106,32 @@ namespace database::player_data
 	using unit_levels_t = std::uint32_t[unit_count];
 	using unit_counts_t = std::uint32_t[unit_count];
 
+	enum designation_t
+	{
+		des_none = 0,
+		des_units_start = 1,
+		des_combat = 1,
+		des_rnd = 2,
+		des_base_dev = 3,
+		des_support = 4,
+		des_intel = 5,
+		des_medical = 6,
+		des_security = 7,
+		des_sickbay = 8,
+		des_units_end = 8,
+		des_brig = 9,
+		des_quarantine = 10,
+		des_waiting_room_1 = 11,
+		des_waiting_room_2 = 12,
+		des_waiting_room_3 = 13,
+		des_waiting_room_4 = 14,
+		des_waiting_room_5 = 15,
+		des_count,
+	};
+
+	extern std::vector<std::string> unit_names;
+	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
+
 	std::string decode_buffer(const std::string& buffer);
 	std::string decode_buffer(const std::vector<std::uint8_t>& buffer);
 
@@ -141,11 +167,11 @@ namespace database::player_data
 			}
 
 			this->staff_count_ = static_cast<std::uint32_t>(row.staff_count);
-			this->server_gmp_ = static_cast<std::uint32_t>(row.server_gmp);
-			this->local_gmp_ = static_cast<std::uint32_t>(row.local_gmp);
-			this->loadout_gmp_ = static_cast<std::uint32_t>(row.loadout_gmp);
-			this->insurance_gmp_ = static_cast<std::uint32_t>(row.insurance_gmp);
-			this->injury_gmp_ = static_cast<std::uint32_t>(row.injury_gmp);
+			this->server_gmp_ = static_cast<std::int32_t>(row.server_gmp);
+			this->local_gmp_ = static_cast<std::int32_t>(row.local_gmp);
+			this->loadout_gmp_ = static_cast<std::int32_t>(row.loadout_gmp);
+			this->insurance_gmp_ = static_cast<std::int32_t>(row.insurance_gmp);
+			this->injury_gmp_ = static_cast<std::int32_t>(row.injury_gmp);
 
 			this->mb_coin_ = row.mb_coin;
 			this->last_sync_ = row.last_sync.value().time_since_epoch();
@@ -160,6 +186,8 @@ namespace database::player_data
 				this->staff_array_[i].unk2 = _byteswap_ulong(this->staff_array_[i].unk2);
 				this->staff_array_[i].unk3 = _byteswap_ulong(this->staff_array_[i].unk3);
 			}
+
+			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
 		}
 
 		template <typename ...Args>
@@ -170,7 +198,6 @@ namespace database::player_data
 				if (!row.motherbase.value().empty())
 				{
 					this->motherbase_ = nlohmann::json::parse(row.motherbase.value());
-					return;
 				}
 			}
 			catch (const std::exception& e)
@@ -178,7 +205,10 @@ namespace database::player_data
 				printf("error parsing motherbase: %s\n", e.what());
 			}
 
-			this->motherbase_ = nlohmann::json::object();
+			if (!this->motherbase_.is_object())
+			{
+				this->motherbase_ = nlohmann::json::object();
+			}
 		}
 
 		template <typename ...Args>
@@ -189,7 +219,6 @@ namespace database::player_data
 				if (!row.loadout.value().empty())
 				{
 					this->loadout_ = nlohmann::json::parse(row.loadout.value());
-					return;
 				}
 			}
 			catch (const std::exception& e)
@@ -197,7 +226,10 @@ namespace database::player_data
 				printf("error parsing loadout: %s\n", e.what());
 			}
 
-			this->emblem_ = nlohmann::json::object();
+			if (!this->loadout_.is_object())
+			{
+				this->loadout_ = nlohmann::json::object();
+			}
 		}
 
 		template <typename ...Args>
@@ -208,7 +240,6 @@ namespace database::player_data
 				if (!row.motherbase.value().empty())
 				{
 					this->emblem_ = nlohmann::json::parse(row.emblem.value());
-					return;
 				}
 			}
 			catch (const std::exception& e)
@@ -216,7 +247,10 @@ namespace database::player_data
 				printf("error parsing emblem: %s\n", e.what());
 			}
 
-			this->emblem_ = nlohmann::json::object();
+			if (!this->emblem_.is_object())
+			{
+				this->emblem_ = nlohmann::json::object();
+			}
 		}
 
 		std::uint32_t get_resource_value(const resource_array_types type, const std::uint32_t index) const
@@ -315,8 +349,14 @@ namespace database::player_data
 			return this->last_sync_;
 		}
 
+		std::uint32_t get_nuke_count()
+		{
+			return this->nuke_count_;
+		}
+
 	private:
 		resource_arrays_t resource_arrays_{};
+		std::uint32_t nuke_count_;
 
 		unit_levels_t unit_levels_{};
 		unit_counts_t unit_counts_{};
@@ -330,11 +370,11 @@ namespace database::player_data
 
 		std::uint32_t mb_coin_{};
 
-		std::uint32_t local_gmp_{};
-		std::uint32_t server_gmp_{};
-		std::uint32_t loadout_gmp_{};
-		std::uint32_t insurance_gmp_{};
-		std::uint32_t injury_gmp_{};
+		std::int32_t local_gmp_{};
+		std::int32_t server_gmp_{};
+		std::int32_t loadout_gmp_{};
+		std::int32_t insurance_gmp_{};
+		std::int32_t injury_gmp_{};
 
 		std::chrono::microseconds last_sync_;
 		std::uint32_t version_{};
