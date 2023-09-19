@@ -378,6 +378,18 @@ namespace database::player_data
 		return static_cast<float>(local_max) / static_cast<float>(total);
 	}
 
+	bool is_usable_staff(const staff_fields_t& staff)
+	{
+		return staff.header.stat_distribution != stat_dist_special_character &&
+			staff.status_sync.designation >= des_combat && staff.status_sync.designation <= des_security &&
+			staff.status_sync.direct_contract == 0;
+	}
+
+	bool is_usable_staff(const staff_t& staff)
+	{
+		return is_usable_staff(staff.fields);
+	}
+
 	void create(const std::uint64_t player_id)
 	{
 #pragma warning(push)
@@ -453,7 +465,7 @@ namespace database::player_data
 			));
 	}
 
-	void set_soldier_diff(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data, 
+	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data, 
 		unit_levels_t& levels, unit_counts_t& counts)
 	{
 		database::get()->operator()(

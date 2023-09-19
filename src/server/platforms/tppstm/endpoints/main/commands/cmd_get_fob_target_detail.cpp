@@ -102,8 +102,13 @@ namespace tpp
 		for (auto i = 0u; i < player_data->get_staff_count(); i++)
 		{
 			const auto staff = player_data->get_staff(i);
-			const auto key_opt = database::player_data::unit_name_from_designation(staff.status.designation);
+			const auto key_opt = database::player_data::unit_name_from_designation(staff.status_sync.designation);
 			if (!key_opt.has_value())
+			{
+				continue;
+			}
+
+			if (!database::player_data::is_usable_staff(staff))
 			{
 				continue;
 			}
@@ -131,8 +136,7 @@ namespace tpp
 		result["session"]["xnaddr"] = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		result["session"]["xnkey"] = {};
 		result["session"]["xnkid"] = {};
-		result["xuid"]["xnkid"] = player->get_account_id();
-
+		result["session"]["xuid"] = player->get_account_id();
 
 		return result;
 	}

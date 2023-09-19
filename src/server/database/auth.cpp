@@ -28,13 +28,13 @@ namespace auth
 
 		const auto account_id = account_id_opt.value();
 
-		database::players::find_or_insert(account_id);
+		const auto player = database::players::find_or_insert(account_id);
 
 		auth_ticket_response response{};
 		response.account_id = std::to_string(account_id);
-		response.currency = "EUR";
+		response.currency = player.get_currency();
 		response.password = database::players::generate_login_password(account_id);
-		response.smart_device_id = database::get_smart_device_id(response.account_id);
+		response.smart_device_id = player.get_smart_device_id();
 
 		return {response};
 	}
@@ -63,7 +63,7 @@ namespace auth
 		}
 
 		response.player_id = player.get_id();
-		response.smart_device_id = database::get_smart_device_id(account_id);
+		response.smart_device_id = player.get_smart_device_id();
 		response.session_id = database::players::generate_session_id(account_id_int);
 		response.crypto_key = database::players::generate_crypto_key(account_id_int);
 

@@ -26,8 +26,6 @@ namespace tpp
 		const auto p_data = database::player_data::find(player->get_id());
 		if (!p_data.get())
 		{
-			printf("pdata not fnd\n");
-
 			result["result"] = "ERR_INVALIDARG";
 			return result;
 		}
