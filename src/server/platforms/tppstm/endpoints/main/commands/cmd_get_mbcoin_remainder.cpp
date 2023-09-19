@@ -28,8 +28,6 @@ namespace tpp
 		}
 
 		result["remainder"] = p_data->get_mb_coin();
-		result["result"] = "NOERR";
-		result["xuid"] = {};
 
 		return result;
 	}

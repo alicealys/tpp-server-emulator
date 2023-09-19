@@ -36,8 +36,8 @@ namespace tpp
 			result["player_list"][0]["index"] = 0;
 			result["player_list"][0]["name"] = std::format("{}_player01", player->get_account_id());
 
-			result["player_list"][0]["espionage_lose"] = stats->get_espionage_lose();
-			result["player_list"][0]["espionage_win"] = stats->get_espionage_win();
+			result["player_list"][0]["espionage_lose"] = stats->get_sneak_win();
+			result["player_list"][0]["espionage_win"] = stats->get_sneak_lose();
 			result["player_list"][0]["fob_grade"] = stats->get_fob_grade();
 			result["player_list"][0]["fob_point"] = stats->get_fob_point();
 			result["player_list"][0]["fob_rank"] = stats->get_fob_rank();

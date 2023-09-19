@@ -11,11 +11,11 @@ create table if not exists `fobs`
 (
 	id                  bigint unsigned	not null	auto_increment,
 	player_id	        bigint unsigned	not null,
-	platform_count		bigint unsigned	not null,
-	security_rank		bigint unsigned	not null,
-	area_id	            bigint unsigned	not null,
+	platform_count		bigint unsigned	not null default 0,
+	security_rank		bigint unsigned	not null default 0,
+	area_id	            bigint unsigned	not null default 0,
 	cluster_param		mediumtext,
-	construct_param		bigint unsigned	not null,
+	construct_param		bigint unsigned	not null default 0,
 	create_date			datetime        default current_timestamp not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
