@@ -34,11 +34,13 @@ namespace database::fobs
 	std::optional<nlohmann::json> get_area(const std::uint32_t area_id)
 	{
 		auto& list = get_area_list();
-		for (auto i = 0; i < list.size(); i++)
+		auto& areas = list["area"];
+
+		for (auto i = 0; i < areas.size(); i++)
 		{
-			if (list[i]["area_id"] == area_id)
+			if (areas[i]["area_id"] == area_id)
 			{
-				return {list[i]};
+				return {areas[i]};
 			}
 		}
 
@@ -79,7 +81,6 @@ namespace database::fobs
 					 fobs_table.construct_param = 0,
 					 fobs_table.create_date = std::chrono::system_clock::now()
 			));
-
 #pragma warning(pop)
 	}
 

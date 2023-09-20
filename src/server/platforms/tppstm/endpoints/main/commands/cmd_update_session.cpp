@@ -20,7 +20,7 @@ namespace tpp
 			return result;
 		}
 
-		if (!database::players::update_session(player->get_id()))
+		if (!database::players::update_session(player.value()))
 		{
 			result["result"] = "ERR_DATABASE";
 			return result;

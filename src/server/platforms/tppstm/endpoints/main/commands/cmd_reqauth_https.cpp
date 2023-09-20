@@ -55,7 +55,7 @@ namespace tpp
 
 			if (expired)
 			{
-				database::players::update_session(player->get_id());
+				database::players::update_session(player.value());
 			}
 
 			result["crypto_key"] = player->get_crypto_key();

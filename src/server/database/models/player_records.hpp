@@ -146,4 +146,5 @@ namespace database::player_records
 
 	std::optional<player_record> find(const std::uint64_t player_id);
 	player_record find_or_create(const std::uint64_t player_id);
+	void add_sneak_result(const std::uint64_t player_id, const std::int32_t point_add, const bool is_win);
 }

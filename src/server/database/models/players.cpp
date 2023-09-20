@@ -8,20 +8,27 @@
 #define TABLE_DEF R"(
 create table if not exists `players`
 (
-	id                  bigint unsigned	not null	auto_increment,
-	account_id          bigint unsigned	not null,
-	session_id          char(32)		default null,
-	login_password      char(32)		default null,
-	last_update         datetime		default null,
-	crypto_key			char(32)		default null,
-	smart_device_id		char(128)		default null,
-	currency			varchar(32)		default null,
-	ex_ip			    varchar(15)		default null,
-	in_ip			    varchar(15)		default null,
-	ex_port			    int unsigned	default 0,
-	in_port			    int unsigned	default 0,
-	nat					int unsigned	default 0,
-	creation_time		datetime        not null,
+	id						bigint unsigned	not null	auto_increment,
+	account_id				bigint unsigned	not null,
+	session_id				char(32)		default null,
+	login_password			char(32)		default null,
+	last_update				datetime		default null,
+	crypto_key				char(32)		default null,
+	smart_device_id			char(128)		default null,
+	currency				varchar(32)		default null,
+	ex_ip					varchar(15)		default null,
+	in_ip					varchar(15)		default null,
+	ex_port					int unsigned	default 0,
+	in_port					int unsigned	default 0,
+	nat						int unsigned	default 0,
+	creation_time			datetime        not null,
+	current_lock			int unsigned	not null		default 0,
+	current_sneak_mode		int unsigned	not null		default 0,
+	current_sneak_fob		bigint unsigned not null		default 0,
+	current_sneak_player	bigint unsigned not null		default 0,
+	current_sneak_platform	int unsigned	not null		default 0,
+	current_sneak_status	int unsigned	not null		default 0,
+	current_sneak_start 	datetime,
 	primary key (`id`)
 ))"
 
@@ -53,6 +60,20 @@ namespace database::players
 			"SYMMETRIC_UDP_FIREWALL",
 			"OPEN_INTERNET"
 		};
+
+		std::unordered_map<std::string, sneak_mode> sneak_mode_map =
+		{
+			{"VISIT", mode_visit},
+			{"SHAM", mode_sham},
+			{"ACTUAL", mode_actual},
+		};
+
+		bool is_session_expired(const player& player)
+		{
+			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::system_clock::now().time_since_epoch());
+			return (now - player.get_last_update()) > session_timeout;
+		}
 	}
 
 	std::uint32_t get_nat_type_id(const std::string& nat_type)
@@ -76,6 +97,33 @@ namespace database::players
 		}
 
 		return nat_types[0];
+	}
+
+	sneak_mode get_sneak_mode_id(const std::string& mode)
+	{
+		const auto iter = sneak_mode_map.find(mode);
+		if (iter == sneak_mode_map.end())
+		{
+			return mode_invalid;
+		}
+
+		return iter->second;
+	}
+
+	sneak_mode get_alt_sneak_mode(const sneak_mode mode)
+	{
+		auto alt_mode = database::players::mode_invalid;
+
+		if (mode == database::players::mode_actual)
+		{
+			alt_mode = database::players::mode_visit;
+		}
+		else if (mode == database::players::mode_visit)
+		{
+			alt_mode = database::players::mode_actual;
+		}
+
+		return alt_mode;
 	}
 
 	auto players_table = players_table_t();
@@ -127,13 +175,10 @@ namespace database::players
 			return {};
 		}
 
-		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-			std::chrono::system_clock::now().time_since_epoch());
-
 		const auto& row = results.front();
 		player player(row);
 
-		const auto expired = now - player.get_last_update() > session_timeout;
+		const auto expired = is_session_expired(player);
 		if (is_expired != nullptr)
 		{
 			*is_expired = expired;
@@ -213,12 +258,28 @@ namespace database::players
 		return crypto_key;
 	}
 
-	bool update_session(const std::uint64_t player_id)
+	bool update_session(const player& player)
 	{
-		const auto result = database::get()->operator()(
-			sqlpp::update(players_table)	
-				.set(players_table.last_update = std::chrono::system_clock::now())
-					.where(players_table.id == player_id));
+		size_t result = 0;
+		if (!is_session_expired(player))
+		{
+			result = database::get()->operator()(
+				sqlpp::update(players_table)	
+					.set(players_table.last_update = std::chrono::system_clock::now())
+						.where(players_table.id == player.get_id()));
+		}
+		else
+		{
+			result = database::get()->operator()(
+				sqlpp::update(players_table)	
+					.set(players_table.last_update = std::chrono::system_clock::now(),
+						 players_table.current_sneak_fob = 0,
+						 players_table.current_sneak_player = 0,
+						 players_table.current_sneak_platform = 0,
+						 players_table.current_sneak_status = 0,
+						 players_table.current_sneak_mode = 0)
+							.where(players_table.id == player.get_id()));
+		}
 
 		return result != 0;
 	}
@@ -253,6 +314,110 @@ namespace database::players
 		}
 
 		return list;
+	}
+
+	bool try_acquire_lock(const std::uint64_t from_id, const std::uint64_t player_id)
+	{
+		const auto result = database::get()->operator()(
+			sqlpp::update(players_table)
+				.set(players_table.current_lock = from_id)
+					.where(players_table.id == player_id && 
+						(players_table.current_lock == 0 || players_table.current_lock == from_id))
+			);
+
+		return result != 0;
+	}
+
+	void release_lock(const std::uint64_t from_id, const std::uint64_t player_id)
+	{
+		database::get()->operator()(
+			sqlpp::update(players_table)
+				.set(players_table.current_lock = 0)
+					.where(players_table.id == player_id && players_table.current_lock == from_id)
+			);
+	}
+
+	void abort_mother_base(const std::uint64_t player_id)
+	{
+		database::get()->operator()(
+			sqlpp::update(players_table)
+				.set(players_table.current_sneak_fob = 0,
+					 players_table.current_sneak_player = 0,
+					 players_table.current_sneak_platform = 0,
+					 players_table.current_sneak_status = 0,
+					 players_table.current_sneak_mode = 0)
+						.where(players_table.id == player_id)
+			);
+	}
+
+	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode, 
+		const std::uint32_t alt_mode)
+	{
+		auto results = database::get()->operator()(
+			sqlpp::select(
+				sqlpp::all_of(players_table))
+					.from(players_table)
+						.where((players_table.current_sneak_mode == mode || 
+							 players_table.current_sneak_mode == alt_mode) &&
+							 players_table.current_sneak_player == owner_id)
+			);
+		
+		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+			std::chrono::system_clock::now().time_since_epoch());
+
+		if (results.empty())
+		{
+			return {};
+		}
+
+		for (auto& row : results)
+		{
+			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+			{
+				return {sneak_info(row)};
+			}
+		}
+
+		return {};
+	}
+	
+	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
+		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status)
+	{
+		if (mode == mode_invalid)
+		{
+			return false;
+		}
+
+		const auto _0 = gsl::finally([=]
+		{
+			release_lock(player_id, owner_id);
+		});
+
+		if (!try_acquire_lock(player_id, owner_id))
+		{
+			return false;
+		}
+
+		const auto alt_mode = get_alt_sneak_mode(static_cast<sneak_mode>(mode));
+		const auto active_sneak = find_active_sneak(owner_id, mode, alt_mode);
+		
+		if (active_sneak.has_value())
+		{
+			return false;
+		}
+
+		database::get()->operator()(
+			sqlpp::update(players_table)
+				.set(players_table.current_sneak_fob = fob_id,
+					 players_table.current_sneak_player = owner_id,
+					 players_table.current_sneak_platform = platform,
+					 players_table.current_sneak_status = status,
+					 players_table.current_sneak_mode = mode)
+						.where(players_table.id == player_id)
+			);
+
+		return true;
 	}
 
 	class table final : public table_interface

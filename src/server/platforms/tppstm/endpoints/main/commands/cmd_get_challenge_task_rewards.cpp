@@ -6,15 +6,13 @@
 
 namespace tpp
 {
+	cmd_get_challenge_task_rewards::cmd_get_challenge_task_rewards()
+	{
+		this->list_ = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_CHALLENGE_TASK_REWARDS));
+	}
+
 	nlohmann::json cmd_get_challenge_task_rewards::execute(nlohmann::json& data, const std::string& session_key)
 	{
-		static const auto list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_CHALLENGE_TASK_REWARDS));
-
-		nlohmann::json result = list;
-
-		result["result"] = "NOERR";
-		result["xuid"] = {};
-
-		return result;
+		return this->list_;
 	}
 }

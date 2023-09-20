@@ -6,14 +6,13 @@
 
 namespace tpp
 {
+	cmd_get_fob_param::cmd_get_fob_param()
+	{
+		this->list_ = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_FOB_PARAM));
+	}
+
 	nlohmann::json cmd_get_fob_param::execute(nlohmann::json& data, const std::string& session_key)
 	{
-		static const auto list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_FOB_PARAM));
-
-		nlohmann::json result;
-		result["result"] = "NOERR";
-		result["params"] = list;
-
-		return result;
+		return this->list_;
 	}
 }

@@ -154,6 +154,11 @@ namespace database::items
 			this->develop_ = 0;
 		}
 
+#ifdef DEBUG
+		this->develop_ = 2;
+		this->open_ = 1;
+#endif
+
 		this->mb_coin_ = utils::tpp::calculate_mb_coins(this->left_second_);
 
 		this->open_ = this->left_second_ == 0;
