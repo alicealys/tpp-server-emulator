@@ -44,6 +44,12 @@
 #include "commands/cmd_sneak_mother_base.hpp"
 #include "commands/cmd_get_fob_param.hpp"
 #include "commands/cmd_get_online_prison_list.hpp"
+#include "commands/cmd_send_sneak_result.hpp"
+#include "commands/cmd_abort_mother_base.hpp"
+#include "commands/cmd_get_security_setting_param.hpp"
+#include "commands/cmd_get_security_info.hpp"
+#include "commands/cmd_get_fob_damage.hpp"
+#include "commands/cmd_get_fob_event_list.hpp"
 
 #include "database/database.hpp"
 #include "database/models/players.hpp"
@@ -102,6 +108,12 @@ namespace tpp
 		this->register_handler<cmd_sneak_mother_base>("CMD_SNEAK_MOTHER_BASE");
 		this->register_handler<cmd_get_fob_param>("CMD_GET_FOB_PARAM");
 		this->register_handler<cmd_get_online_prison_list>("CMD_GET_ONLINE_PRISON_LIST");
+		this->register_handler<cmd_send_sneak_result>("CMD_SEND_SNEAK_RESULT");
+		this->register_handler<cmd_abort_mother_base>("CMD_ABORT_MOTHER_BASE");
+		this->register_handler<cmd_get_security_setting_param>("CMD_GET_SECURITY_SETTING_PARAM");
+		this->register_handler<cmd_get_security_info>("CMD_GET_SECURITY_INFO");
+		this->register_handler<cmd_get_fob_damage>("CMD_GET_FOB_DAMAGE");
+		this->register_handler<cmd_get_fob_event_list>("CMD_GET_FOB_EVENT_LIST");
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)

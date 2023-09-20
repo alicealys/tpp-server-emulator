@@ -18,16 +18,48 @@ namespace database::players
 	DEFINE_FIELD(in_port, sqlpp::integer_unsigned);
 	DEFINE_FIELD(nat, sqlpp::integer_unsigned);
 	DEFINE_FIELD(creation_time, sqlpp::time_point);
+	DEFINE_FIELD(current_lock, sqlpp::integer_unsigned);
+	DEFINE_FIELD(current_sneak_mode, sqlpp::integer_unsigned);
+	DEFINE_FIELD(current_sneak_fob, sqlpp::integer_unsigned);
+	DEFINE_FIELD(current_sneak_player, sqlpp::integer_unsigned);
+	DEFINE_FIELD(current_sneak_platform, sqlpp::integer_unsigned);
+	DEFINE_FIELD(current_sneak_status, sqlpp::integer_unsigned);
+	DEFINE_FIELD(current_sneak_start, sqlpp::integer_unsigned);
 	DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t, 
 		login_password_field_t, crypto_key_field_t, smart_device_id_field_t, 
 		currency_field_t,last_update_field_t, ex_ip_field_t, ex_port_field_t, 
-		in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t);
+		in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t,
+		current_lock_field_t,
+		current_sneak_mode_field_t, current_sneak_fob_field_t, 
+		current_sneak_player_field_t, current_sneak_platform_field_t,
+		current_sneak_status_field_t, current_sneak_start_field_t);
 
 	std::uint32_t get_nat_type_id(const std::string& nat_type);
 	std::string get_nat_type(const std::uint32_t nat_type_id);
 
 	constexpr auto session_heartbeat = 60s;
 	constexpr auto session_timeout = 200s;
+
+	enum sneak_mode
+	{
+		mode_none = 0,
+		mode_visit = 1,
+		mode_sham = 2,
+		mode_actual = 3,
+		mode_invalid = 4,
+		mode_count
+	};
+
+	enum sneak_status
+	{
+		status_none = 0,
+		status_pre_game = 1,
+		status_active = 2,
+		status_count
+	};
+
+	sneak_mode get_sneak_mode_id(const std::string& mode);
+	sneak_mode get_alt_sneak_mode(const sneak_mode mode);
 
 	class player
 	{
@@ -106,12 +138,12 @@ namespace database::players
 			return get_nat_type(this->nat_);
 		}
 
-		std::chrono::microseconds get_last_update()
+		std::chrono::microseconds get_last_update() const
 		{
 			return this->last_update_;
 		}
 
-		std::chrono::microseconds get_creation_time()
+		std::chrono::microseconds get_creation_time() const
 		{
 			return this->creation_time_;
 		}
@@ -139,6 +171,46 @@ namespace database::players
 
 	};
 
+	class sneak_info
+	{
+	public:
+		template <typename ...Args>
+		sneak_info(const sqlpp::result_row_t<Args...>& row)
+		{
+			this->mode_ = static_cast<sneak_mode>(static_cast<std::uint32_t>(row.current_sneak_mode));
+			this->status_ = static_cast<sneak_status>(static_cast<std::uint32_t>(row.current_sneak_status));
+			this->player_id_ = row.id;
+			this->fob_id_ = row.current_sneak_fob;
+			this->owner_id_ = row.current_sneak_player;
+			this->platform_ = static_cast<std::uint32_t>(row.current_sneak_platform);
+		}
+
+		sneak_mode get_mode() const
+		{
+			return this->mode_;
+		}
+
+		sneak_status get_status() const
+		{
+			return this->status_;
+		}
+
+		std::uint64_t get_player_id() const
+		{
+			return this->player_id_;
+		}
+
+	private:
+		sneak_mode mode_;
+		sneak_status status_;
+		std::uint64_t player_id_;
+		std::uint64_t fob_id_;
+		std::uint64_t owner_id_;
+		std::uint32_t platform_;
+		std::chrono::microseconds start_time_;
+
+	};
+
 	std::optional<player> find(const std::uint64_t id);
 	std::optional<player> find_from_account(const std::uint64_t id);
 	std::optional<player> find_by_session_id(const std::string session_id, bool use_timeout = true, bool* is_expired = nullptr);
@@ -149,10 +221,18 @@ namespace database::players
 	std::string generate_session_id(const std::uint64_t account_id);
 	std::string generate_crypto_key(const std::uint64_t account_id);
 
-	bool update_session(const std::uint64_t player_id);
+	bool update_session(const player& player_id);
 
 	void set_ip_and_port(const std::uint64_t player_id, const std::string& ex_ip, const std::uint16_t ex_port,
 		const std::string& in_ip, const std::uint16_t in_port, const std::string& nat_type);
 
 	std::vector<player> get_player_list(const std::uint32_t limit = 10);
+
+	void abort_mother_base(const std::uint64_t player_id);
+
+	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
+		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status);
+
+	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,
+		const std::uint32_t alt_mode = mode_invalid);
 }

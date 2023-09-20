@@ -101,6 +101,7 @@ RESOURCE_ITEM_LIST        RCDATA "resources/data/item_list.json"
 RESOURCE_MINING_RESOURCE        RCDATA "resources/data/mining_resource.json"
 RESOURCE_AREA_LIST        RCDATA "resources/data/area_list.json"
 RESOURCE_FOB_PARAM        RCDATA "resources/data/fob_param.json"
+RESOURCE_SECURITY_SETTINGS_PARAM        RCDATA "resources/data/security_setting_param.json"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

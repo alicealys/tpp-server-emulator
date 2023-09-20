@@ -45,7 +45,18 @@ namespace tpp
 			result["result"] = "ERR_INVALIDARG";
 			return result;
 		}
-		
+
+		const auto mode_str = mode_j.get<std::string>();
+
+		const auto mode = database::players::get_sneak_mode_id(mode_str);
+		const auto alt_mode = database::players::get_alt_sneak_mode(mode);
+
+		if (mode == database::players::mode_invalid)
+		{
+			result["result"] = "ERR_INVALIDARG";
+			return result;
+		}
+
 		const auto platform = platform_j.get<std::uint32_t>();
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
@@ -73,6 +84,20 @@ namespace tpp
 		if (platform >= cluster_param.size())
 		{
 			result["result"] = "ERR_INVALIDARG";
+			return result;
+		}
+
+		const auto current_sneak = database::players::find_active_sneak(fob->get_id(), mode, alt_mode);
+		if (!current_sneak.has_value())
+		{
+			result["result"] = "ERR_DATABASE";
+			return result;
+		}
+
+		const auto sneak_player_id = current_sneak->get_player_id();
+		if (player->get_id() != sneak_player_id)
+		{
+			result["result"] = "ERR_DATABASE";
 			return result;
 		}
 
@@ -189,6 +214,9 @@ namespace tpp
 		}
 
 		result["wormhole_player_id"] = wormhole_player_id_j;
+
+		database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
+			database::players::status_active);
 
 		return result;
 	}

@@ -35,8 +35,8 @@ namespace tpp
 		const auto& mode_j = data["mode"];
 		const auto& mother_base_id_j = data["mother_base_id"];
 
-		if (!is_sneak_j.is_number_integer() || !is_event_j.is_number_integer() || !is_plus_j.is_number_integer()
-			|| !mode_j.is_string() || !mother_base_id_j.is_number_integer())
+		if (!is_sneak_j.is_number_integer() || !is_event_j.is_number_integer() || !is_plus_j.is_number_integer() ||
+			!mode_j.is_string() || !mother_base_id_j.is_number_integer())
 		{
 			result["result"] = "ERR_INVALIDARG";
 			return result;
@@ -45,6 +45,14 @@ namespace tpp
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 		auto fob = database::fobs::get_fob(mother_base_id);
 		if (!fob.has_value())
+		{
+			result["result"] = "ERR_INVALIDARG";
+			return result;
+		}
+
+		const auto mode_str = mode_j.get<std::string>();
+		const auto mode = database::players::get_sneak_mode_id(mode_str);
+		if (mode == database::players::mode_invalid)
 		{
 			result["result"] = "ERR_INVALIDARG";
 			return result;
@@ -137,6 +145,13 @@ namespace tpp
 		result["session"]["xnkey"] = {};
 		result["session"]["xnkid"] = {};
 		result["session"]["xuid"] = player->get_account_id();
+
+		if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
+			database::players::status_pre_game))
+		{
+			result["result"] = "ERR_ALREADY_SNEAK";
+			return result;
+		}
 
 		return result;
 	}

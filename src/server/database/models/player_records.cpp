@@ -77,6 +77,19 @@ namespace database::player_records
 		return found.value();
 	}
 
+	void add_sneak_result(const std::uint64_t player_id, const std::int32_t point_add, const bool is_win)
+	{
+		database::get()->operator()(
+			sqlpp::update(player_records_table)
+				.set(player_records_table.fob_point = player_records_table.fob_point + point_add,
+					 player_records_table.fob_sneak_win = player_records_table.fob_sneak_win 
+						+ static_cast<std::int32_t>(is_win),
+					 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose 
+						+ static_cast<std::int32_t>(!is_win))
+						.where(player_records_table.player_id == player_id)
+			);
+	}
+
 	class table final : public table_interface
 	{
 	public:
