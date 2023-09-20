@@ -299,6 +299,8 @@ namespace database::player_data
 		constexpr auto nuke_resource_id = 28;
 	}
 
+	player_data_table_t player_data_table;
+
 	std::vector<std::string> unit_names =
 	{
 		"combat",
@@ -339,8 +341,6 @@ namespace database::player_data
 	{
 		return decode_buffer(std::string{buffer.begin(), buffer.end()});
 	}
-
-	auto player_data_table = player_data_table_t();
 
 	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index)
 	{

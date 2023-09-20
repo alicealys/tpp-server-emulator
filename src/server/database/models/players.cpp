@@ -126,15 +126,15 @@ namespace database::players
 		return alt_mode;
 	}
 
-	auto players_table = players_table_t();
+	players_table_t players_table;
 
 	std::optional<player> find(const std::uint64_t id)
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
-				sqlpp::all_of(players_table))
-					.from(players_table)
-						.where(players_table.id == id));
+				sqlpp::all_of(players::players_table))
+					.from(players::players_table)
+						.where(players::players_table.id == id));
 
 		if (results.empty())
 		{
@@ -149,9 +149,9 @@ namespace database::players
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
-				sqlpp::all_of(players_table))
-					.from(players_table)
-						.where(players_table.account_id == id));
+				sqlpp::all_of(players::players_table))
+					.from(players::players_table)
+						.where(players::players_table.account_id == id));
 
 		if (results.empty())
 		{
@@ -166,9 +166,9 @@ namespace database::players
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
-				sqlpp::all_of(players_table))
-					.from(players_table)
-						.where(players_table.session_id == session_id));
+				sqlpp::all_of(players::players_table))
+					.from(players::players_table)
+						.where(players::players_table.session_id == session_id));
 
 		if (results.empty())
 		{
@@ -205,11 +205,11 @@ namespace database::players
 #pragma warning(push)
 #pragma warning(disable: 4127)
 		database::get()->operator()(
-			sqlpp::insert_into(players_table)
-				.set(players_table.account_id = account_id,
-					 players_table.currency = "EUR",
-					 players_table.smart_device_id = generate_data(80, true),
-					 players_table.last_update = std::chrono::system_clock::now()));
+			sqlpp::insert_into(players::players_table)
+				.set(players::players_table.account_id = account_id,
+					 players::players_table.currency = "EUR",
+					 players::players_table.smart_device_id = generate_data(80, true),
+					 players::players_table.last_update = std::chrono::system_clock::now()));
 #pragma warning(pop)
 
 		const auto found = find_from_account(account_id);
@@ -226,9 +226,9 @@ namespace database::players
 		const auto password = generate_data(16, false);
 
 		database::get()->operator()(
-			sqlpp::update(players_table)
-				.set(players_table.login_password = password)
-					.where(players_table.account_id == account_id));
+			sqlpp::update(players::players_table)
+				.set(players::players_table.login_password = password)
+					.where(players::players_table.account_id == account_id));
 
 		return password;
 	}
@@ -238,10 +238,10 @@ namespace database::players
 		const auto session_id = generate_data(16, false);
 
 		database::get()->operator()(
-			sqlpp::update(players_table)
-				.set(players_table.session_id = session_id,
-					 players_table.last_update = std::chrono::system_clock::now())
-						.where(players_table.account_id == account_id));
+			sqlpp::update(players::players_table)
+				.set(players::players_table.session_id = session_id,
+					 players::players_table.last_update = std::chrono::system_clock::now())
+						.where(players::players_table.account_id == account_id));
 
 		return session_id;
 	}
@@ -251,9 +251,9 @@ namespace database::players
 		const auto crypto_key = generate_data(16, true);
 
 		database::get()->operator()(
-			sqlpp::update(players_table)
-				.set(players_table.crypto_key = crypto_key)
-					.where(players_table.account_id == account_id));
+			sqlpp::update(players::players_table)
+				.set(players::players_table.crypto_key = crypto_key)
+					.where(players::players_table.account_id == account_id));
 
 		return crypto_key;
 	}
@@ -264,21 +264,21 @@ namespace database::players
 		if (!is_session_expired(player))
 		{
 			result = database::get()->operator()(
-				sqlpp::update(players_table)	
-					.set(players_table.last_update = std::chrono::system_clock::now())
-						.where(players_table.id == player.get_id()));
+				sqlpp::update(players::players_table)
+					.set(players::players_table.last_update = std::chrono::system_clock::now())
+						.where(players::players_table.id == player.get_id()));
 		}
 		else
 		{
 			result = database::get()->operator()(
-				sqlpp::update(players_table)	
-					.set(players_table.last_update = std::chrono::system_clock::now(),
-						 players_table.current_sneak_fob = 0,
-						 players_table.current_sneak_player = 0,
-						 players_table.current_sneak_platform = 0,
-						 players_table.current_sneak_status = 0,
-						 players_table.current_sneak_mode = 0)
-							.where(players_table.id == player.get_id()));
+				sqlpp::update(players::players_table)
+					.set(players::players_table.last_update = std::chrono::system_clock::now(),
+						 players::players_table.current_sneak_fob = 0,
+						 players::players_table.current_sneak_player = 0,
+						 players::players_table.current_sneak_platform = 0,
+						 players::players_table.current_sneak_status = 0,
+						 players::players_table.current_sneak_mode = 0)
+							.where(players::players_table.id == player.get_id()));
 		}
 
 		return result != 0;
@@ -289,21 +289,21 @@ namespace database::players
 	{
 		const auto nat_type_id = get_nat_type_id(nat_type);
 		database::get()->operator()(
-			sqlpp::update(players_table)	
-				.set(players_table.ex_ip = ex_ip,
-					 players_table.in_ip = in_ip,
-					 players_table.ex_port = ex_port,
-					 players_table.in_port = in_port,
-					 players_table.nat = nat_type_id)
-						.where(players_table.id == player_id));
+			sqlpp::update(players::players_table)
+				.set(players::players_table.ex_ip = ex_ip,
+					 players::players_table.in_ip = in_ip,
+					 players::players_table.ex_port = ex_port,
+					 players::players_table.in_port = in_port,
+					 players::players_table.nat = nat_type_id)
+						.where(players::players_table.id == player_id));
 	}
 
 	std::vector<player> get_player_list(const std::uint32_t limit)
 	{
 		auto results = database::get()->operator()(
 			sqlpp::select(
-				sqlpp::all_of(players_table))
-					.from(players_table)
+				sqlpp::all_of(players::players_table))
+					.from(players::players_table)
 						.unconditionally().limit(limit));
 
 		std::vector<player> list;
@@ -319,10 +319,10 @@ namespace database::players
 	bool try_acquire_lock(const std::uint64_t from_id, const std::uint64_t player_id)
 	{
 		const auto result = database::get()->operator()(
-			sqlpp::update(players_table)
-				.set(players_table.current_lock = from_id)
-					.where(players_table.id == player_id && 
-						(players_table.current_lock == 0 || players_table.current_lock == from_id))
+			sqlpp::update(players::players_table)
+				.set(players::players_table.current_lock = from_id)
+					.where(players::players_table.id == player_id &&
+						(players::players_table.current_lock == 0 || players::players_table.current_lock == from_id))
 			);
 
 		return result != 0;
@@ -331,7 +331,7 @@ namespace database::players
 	void release_lock(const std::uint64_t from_id, const std::uint64_t player_id)
 	{
 		database::get()->operator()(
-			sqlpp::update(players_table)
+			sqlpp::update(players::players_table)
 				.set(players_table.current_lock = 0)
 					.where(players_table.id == player_id && players_table.current_lock == from_id)
 			);

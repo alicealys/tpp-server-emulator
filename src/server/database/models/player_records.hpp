@@ -25,6 +25,8 @@ namespace database::player_records
 		fob_defense_lose_field_t, fob_sneak_win_field_t, fob_sneak_lose_field_t,
 		shield_date_field_t);
 
+	extern player_records_table_t player_records_table;
+
 	class player_record
 	{
 	public:

@@ -87,7 +87,7 @@ namespace tpp
 			return result;
 		}
 
-		const auto current_sneak = database::players::find_active_sneak(fob->get_id(), mode, alt_mode);
+		const auto current_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode);
 		if (!current_sneak.has_value())
 		{
 			result["result"] = "ERR_DATABASE";
@@ -95,7 +95,7 @@ namespace tpp
 		}
 
 		const auto sneak_player_id = current_sneak->get_player_id();
-		if (player->get_id() != sneak_player_id)
+		if (player->get_id() != sneak_player_id || fob->get_id() != current_sneak->get_fob_id())
 		{
 			result["result"] = "ERR_DATABASE";
 			return result;
