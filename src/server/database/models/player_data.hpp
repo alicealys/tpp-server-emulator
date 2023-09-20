@@ -34,6 +34,8 @@ namespace database::player_data
 		local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t, 
 		insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t);
 
+	extern player_data_table_t player_data_table;
+
 	enum resource_array_types
 	{
 		processed_local,
@@ -281,6 +283,8 @@ namespace database::player_data
 			this->insurance_gmp_ = static_cast<std::int32_t>(row.insurance_gmp);
 			this->injury_gmp_ = static_cast<std::int32_t>(row.injury_gmp);
 
+			this->player_id_ = row.player_id;
+
 			this->mb_coin_ = row.mb_coin;
 			this->last_sync_ = row.last_sync.value().time_since_epoch();
 			this->version_ = static_cast<std::uint32_t>(row.version);
@@ -372,6 +376,11 @@ namespace database::player_data
 		void copy_resources(resource_arrays_t& arrays) const
 		{
 			std::memcpy(arrays, this->resource_arrays_, sizeof(resource_arrays_t));
+		}
+
+		std::uint64_t get_player_id() const
+		{
+			return this->player_id_;
 		}
 
 		staff_fields_t get_staff(const std::uint32_t index) const
@@ -472,6 +481,8 @@ namespace database::player_data
 		}
 
 	private:
+		std::uint32_t player_id_;
+
 		resource_arrays_t resource_arrays_{};
 		std::uint32_t nuke_count_;
 

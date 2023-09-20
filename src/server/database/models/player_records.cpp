@@ -31,7 +31,7 @@ create table if not exists `player_record`
 
 namespace database::player_records
 {
-	auto player_records_table = player_records_table_t();
+	player_records_table_t player_records_table;
 
 	std::optional<player_record> find(const std::uint64_t player_id)
 	{

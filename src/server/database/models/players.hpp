@@ -40,6 +40,8 @@ namespace database::players
 	constexpr auto session_heartbeat = 60s;
 	constexpr auto session_timeout = 200s;
 
+	extern players_table_t players_table;
+
 	enum sneak_mode
 	{
 		mode_none = 0,
@@ -198,6 +200,11 @@ namespace database::players
 		std::uint64_t get_player_id() const
 		{
 			return this->player_id_;
+		}
+
+		std::uint64_t get_fob_id() const
+		{
+			return this->fob_id_;
 		}
 
 	private:
