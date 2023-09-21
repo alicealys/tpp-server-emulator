@@ -3,6 +3,8 @@
 #include "database.hpp"
 #include "models/players.hpp"
 
+#include "utils/config.hpp"
+
 #include <utils/string.hpp>
 #include <utils/cryptography.hpp>
 
@@ -32,11 +34,11 @@ namespace database
 	void connect(database_t& database)
 	{
 		sql::connection_config config;
-		config.user = "root";
-		config.password = "root";
-		config.host = "localhost";
-		config.port = 3306;
-		config.database = "mgstpp";
+		config.user = config::get<std::string>("database_user").value();
+		config.password = config::get<std::string>("database_password").value();
+		config.host = config::get<std::string>("database_host").value();
+		config.port = config::get<std::uint16_t>("database_port").value();
+		config.database = config::get<std::string>("database_name").value();
 #ifdef DEBUG
 		//config.debug = true;
 #endif
