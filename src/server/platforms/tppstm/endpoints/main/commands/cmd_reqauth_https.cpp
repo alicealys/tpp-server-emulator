@@ -42,6 +42,8 @@ namespace tpp
 			result["smart_device_id"] = auth_result.smart_device_id;
 			result["user_id"] = auth_result.player_id;
 			result["result"] = "NOERR";
+
+			database::players::abort_mother_base(auth_result.player_id);
 		}
 		else
 		{
