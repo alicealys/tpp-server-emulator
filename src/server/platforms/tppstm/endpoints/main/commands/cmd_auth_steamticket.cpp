@@ -15,7 +15,8 @@ namespace tpp
 		result["xuid"] = {};
 
 		const auto& steam_ticket_val = data["steam_ticket"];
-		if (!steam_ticket_val.is_string())
+		const auto& steam_ticket_size_j = data["steam_ticket_size"];
+		if (!steam_ticket_val.is_string() || !steam_ticket_size_j.is_number_unsigned())
 		{
 			result["result"] = "ERR_INVALID_TICKET";
 			return result;
@@ -24,7 +25,9 @@ namespace tpp
 		if (session_key.empty())
 		{
 			const auto steam_ticket = steam_ticket_val.get<std::string>();
-			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket);
+			const auto steam_ticket_size = steam_ticket_size_j.get<std::size_t>();
+
+			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket, steam_ticket_size);
 			if (!auth_result_opt.has_value())
 			{
 				result["result"] = "ERR_INVALID_TICKET";
