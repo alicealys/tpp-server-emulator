@@ -28,42 +28,42 @@ namespace database::sneak_results
 	void add_sneak_result(const std::uint64_t player_id, const std::uint64_t target_id,
 		const std::uint64_t fob_id, const nlohmann::json& data)
 	{
-#pragma warning(push)
-#pragma warning(disable: 4127)
-		database::get()->operator()(
-			sqlpp::insert_into(sneak_results_table)
-				.set(sneak_results_table.player_id = player_id,
-					 sneak_results_table.target_id = target_id,
-					 sneak_results_table.fob_id = fob_id,
-					 sneak_results_table.data = data.dump(),
-					 sneak_results_table.create_date = std::chrono::system_clock::now()
-			));
-#pragma warning(pop)
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::insert_into(sneak_results_table)
+					.set(sneak_results_table.player_id = player_id,
+						 sneak_results_table.target_id = target_id,
+						 sneak_results_table.fob_id = fob_id,
+						 sneak_results_table.data = data.dump(),
+						 sneak_results_table.create_date = std::chrono::system_clock::now()
+				));
+		});
 	}
 
 	std::vector<sneak_result> get_sneak_results(const std::uint64_t target_id, const std::uint32_t limit)
 	{
-#pragma warning(push)
-#pragma warning(disable: 4127)
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(sneak_results_table))
-					.from(sneak_results_table)
-						.where(sneak_results_table.target_id == target_id)
-							.order_by(sneak_results_table.create_date.desc())
-								.limit(limit));
-#pragma warning(pop)
-
-		std::vector<sneak_result> sneak_results;
-
-		for (const auto& row : results)
+		return database::access<std::vector<sneak_result>>([&](database::database_t& db)
 		{
-			sneak_results.emplace_back(row);
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(sneak_results_table))
+						.from(sneak_results_table)
+							.where(sneak_results_table.target_id == target_id)
+								.order_by(sneak_results_table.create_date.desc())
+									.limit(limit));
 
-		std::reverse(sneak_results.begin(), sneak_results.end());
+			std::vector<sneak_result> sneak_results;
 
-		return sneak_results;
+			for (const auto& row : results)
+			{
+				sneak_results.emplace_back(row);
+			}
+
+			std::reverse(sneak_results.begin(), sneak_results.end());
+
+			return sneak_results;
+		});
 	}
 
 	class table final : public table_interface

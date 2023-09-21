@@ -3,6 +3,7 @@
 #include <utils/concurrency.hpp>
 
 #pragma warning(push)
+#pragma warning(disable: 4127)
 #pragma warning(disable: 4267)
 #pragma warning(disable: 4018)
 #pragma warning(disable: 4996)
@@ -15,6 +16,18 @@ namespace sql = sqlpp::mysql;
 namespace database
 {
 	using database_t = std::unique_ptr<sql::connection>;
+	
+	constexpr auto max_connections = 100;
+
+	struct connection_t
+	{
+		database_t db;
+		std::atomic_bool in_use;
+		std::mutex mutex;
+		std::chrono::high_resolution_clock::time_point start;
+	};
+
+	extern std::array<connection_t, max_connections> connection_pool;
 
 	class table_interface
 	{
@@ -46,9 +59,25 @@ namespace database
 
 	using tables = std::vector<table_def>;
 	tables& get_tables();
+
+	void connect(database_t& database);
 	bool create_tables();
 
 	database_t& get();
+
+	connection_t& get_connection();
+
+	template <typename T = void, typename F>
+	T access(F&& accessor)
+	{
+		auto& conn = get_connection();
+		const auto _0 = gsl::finally([&]
+		{
+			conn.in_use = false;
+		});
+
+		return accessor(conn.db);
+	}
 }
 
 #define REGISTER_TABLE(name, ...)												\

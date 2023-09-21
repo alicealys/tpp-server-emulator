@@ -6,6 +6,12 @@
 
 namespace utils
 {
+	namespace
+	{
+		std::size_t thread_index{};
+		std::unordered_map<std::size_t, thread_data_t> thread_list;
+	}
+
 	http_connection::http_connection(mg_connection* c)
 		: conn_(c)
 	{
@@ -40,25 +46,22 @@ namespace utils
 			task->thread.join();
 		}
 
-		task->thread.~thread();
-		utils::memory::free(task->params.body);
-		utils::memory::free(task->params.headers);
-		utils::memory::free(task);
+		thread_list.erase(task->index);
 		std::memset(this->conn_->data, 0, MG_DATA_SIZE);
 	}
 
 	void http_connection::reply_async(const std::function<response_params()>& cb) const
 	{
-		auto thread_data = utils::memory::allocate<thread_data_t>();
+		const auto index = thread_index++;
+		auto thread_data = &thread_list[index];
 
-		thread_data->thread.operator=(std::thread([=]()
+		thread_data->index = index;
+		thread_data->thread = std::thread([=]()
 		{
 			const auto result = cb();
-			thread_data->params.body = utils::memory::duplicate_string(result.body);
-			thread_data->params.headers = utils::memory::duplicate_string(result.headers);
-			thread_data->params.code = result.code;
+			thread_data->params = result;
 			thread_data->done = true;
-		}));
+		});
 
 		this->set_data<thread_data_t>(thread_data);
 	}

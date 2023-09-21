@@ -21,17 +21,11 @@ namespace utils
 		std::string body;
 	};
 
-	struct mg_response_params
-	{
-		std::uint32_t code;
-		char* headers;
-		char* body;
-	};
-
 	struct thread_data_t
 	{
-		mg_response_params params;
+		response_params params;
 		std::thread thread;
+		std::size_t index;
 		bool done;
 	};
 

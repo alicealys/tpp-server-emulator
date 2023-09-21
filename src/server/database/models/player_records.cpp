@@ -35,19 +35,23 @@ namespace database::player_records
 
 	std::optional<player_record> find(const std::uint64_t player_id)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(player_records_table))
-					.from(player_records_table)
-						.where(player_records_table.player_id == player_id));
-
-		if (results.empty())
+		return database::access<std::optional<player_record>>([&](database::database_t& db)
+			-> std::optional<player_record>
 		{
-			return {};
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(player_records_table))
+						.from(player_records_table)
+							.where(player_records_table.player_id == player_id));
 
-		const auto& row = results.front();
-		return {player_record(row)};
+			if (results.empty())
+			{
+				return {};
+			}
+
+			const auto& row = results.front();
+			return {player_record(row)};
+		});
 	}
 
 	player_record find_or_create(const std::uint64_t player_id)
@@ -60,13 +64,13 @@ namespace database::player_records
 			}
 		}
 
-#pragma warning(push)
-#pragma warning(disable: 4127)
-		database::get()->operator()(
-			sqlpp::insert_into(player_records_table)
-				.set(player_records_table.player_id = player_id,
-					 player_records_table.shield_date = std::chrono::system_clock::now()));
-#pragma warning(pop)
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::insert_into(player_records_table)
+					.set(player_records_table.player_id = player_id,
+						 player_records_table.shield_date = std::chrono::system_clock::now()));
+		});
 
 		const auto found = find(player_id);
 		if (!found.has_value())
@@ -79,15 +83,18 @@ namespace database::player_records
 
 	void add_sneak_result(const std::uint64_t player_id, const std::int32_t point_add, const bool is_win)
 	{
-		database::get()->operator()(
-			sqlpp::update(player_records_table)
-				.set(player_records_table.fob_point = player_records_table.fob_point + point_add,
-					 player_records_table.fob_sneak_win = player_records_table.fob_sneak_win 
-						+ static_cast<std::int32_t>(is_win),
-					 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose 
-						+ static_cast<std::int32_t>(!is_win))
-						.where(player_records_table.player_id == player_id)
-			);
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(player_records_table)
+					.set(player_records_table.fob_point = player_records_table.fob_point + point_add,
+						 player_records_table.fob_sneak_win = player_records_table.fob_sneak_win 
+							+ static_cast<std::int32_t>(is_win),
+						 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose 
+							+ static_cast<std::int32_t>(!is_win))
+							.where(player_records_table.player_id == player_id)
+				);
+		});
 	}
 
 	class table final : public table_interface
