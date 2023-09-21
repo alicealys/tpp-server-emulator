@@ -64,7 +64,7 @@ namespace auth
 
 		return {account_id};
 #else
-		if (data.size() < 20)
+		if (auth_ticket.size() < 20)
 		{
 			return {};
 		}

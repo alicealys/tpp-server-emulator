@@ -130,66 +130,78 @@ namespace database::players
 
 	std::optional<player> find(const std::uint64_t id)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(players::players_table))
-					.from(players::players_table)
-						.where(players::players_table.id == id));
-
-		if (results.empty())
+		return database::access<std::optional<player>>([&](database::database_t& db)
+			-> std::optional<player>
 		{
-			return {};
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players::players_table))
+						.from(players::players_table)
+							.where(players::players_table.id == id));
 
-		const auto& row = results.front();
-		return {player(row)};
+			if (results.empty())
+			{
+				return {};
+			}
+
+			const auto& row = results.front();
+			return {player(row)};
+		});
 	}
 
 	std::optional<player> find_from_account(const std::uint64_t id)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(players::players_table))
-					.from(players::players_table)
-						.where(players::players_table.account_id == id));
-
-		if (results.empty())
+		return database::access<std::optional<player>>([&](database::database_t& db)
+			-> std::optional<player>
 		{
-			return {};
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players::players_table))
+						.from(players::players_table)
+							.where(players::players_table.account_id == id));
 
-		const auto& row = results.front();
-		return {player(row)};
+			if (results.empty())
+			{
+				return {};
+			}
+
+			const auto& row = results.front();
+			return {player(row)};
+		});
 	}
 
 	std::optional<player> find_by_session_id(const std::string session_id, bool use_timeout, bool* is_expired)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(players::players_table))
-					.from(players::players_table)
-						.where(players::players_table.session_id == session_id));
-
-		if (results.empty())
+		return database::access<std::optional<player>>([&](database::database_t& db)
+			-> std::optional<player>
 		{
-			return {};
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players::players_table))
+						.from(players::players_table)
+							.where(players::players_table.session_id == session_id));
 
-		const auto& row = results.front();
-		player player(row);
+			if (results.empty())
+			{
+				return {};
+			}
 
-		const auto expired = is_session_expired(player);
-		if (is_expired != nullptr)
-		{
-			*is_expired = expired;
-		}
+			const auto& row = results.front();
+			player player(row);
 
-		if (use_timeout && expired)
-		{
-			return {};
-		}
+			const auto expired = is_session_expired(player);
+			if (is_expired != nullptr)
+			{
+				*is_expired = expired;
+			}
 
-		return {player};
+			if (use_timeout && expired)
+			{
+				return {};
+			}
+
+			return {player};
+		});
 	}
 
 	player find_or_insert(const std::uint64_t account_id)
@@ -202,15 +214,15 @@ namespace database::players
 			}
 		}
 
-#pragma warning(push)
-#pragma warning(disable: 4127)
-		database::get()->operator()(
-			sqlpp::insert_into(players::players_table)
-				.set(players::players_table.account_id = account_id,
-					 players::players_table.currency = "EUR",
-					 players::players_table.smart_device_id = generate_data(80, true),
-					 players::players_table.last_update = std::chrono::system_clock::now()));
-#pragma warning(pop)
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::insert_into(players::players_table)
+					.set(players::players_table.account_id = account_id,
+						 players::players_table.currency = "EUR",
+						 players::players_table.smart_device_id = generate_data(80, true),
+						 players::players_table.last_update = std::chrono::system_clock::now()));
+		});
 
 		const auto found = find_from_account(account_id);
 		if (!found.has_value())
@@ -225,10 +237,13 @@ namespace database::players
 	{
 		const auto password = generate_data(16, false);
 
-		database::get()->operator()(
-			sqlpp::update(players::players_table)
-				.set(players::players_table.login_password = password)
-					.where(players::players_table.account_id == account_id));
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players::players_table)
+					.set(players::players_table.login_password = password)
+						.where(players::players_table.account_id == account_id));
+		});
 
 		return password;
 	}
@@ -237,11 +252,14 @@ namespace database::players
 	{
 		const auto session_id = generate_data(16, false);
 
-		database::get()->operator()(
-			sqlpp::update(players::players_table)
-				.set(players::players_table.session_id = session_id,
-					 players::players_table.last_update = std::chrono::system_clock::now())
-						.where(players::players_table.account_id == account_id));
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players::players_table)
+					.set(players::players_table.session_id = session_id,
+						 players::players_table.last_update = std::chrono::system_clock::now())
+							.where(players::players_table.account_id == account_id));
+		});
 
 		return session_id;
 	}
@@ -250,10 +268,13 @@ namespace database::players
 	{
 		const auto crypto_key = generate_data(16, true);
 
-		database::get()->operator()(
-			sqlpp::update(players::players_table)
-				.set(players::players_table.crypto_key = crypto_key)
-					.where(players::players_table.account_id == account_id));
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players::players_table)
+					.set(players::players_table.crypto_key = crypto_key)
+						.where(players::players_table.account_id == account_id));
+		});
 
 		return crypto_key;
 	}
@@ -263,22 +284,28 @@ namespace database::players
 		size_t result = 0;
 		if (!is_session_expired(player))
 		{
-			result = database::get()->operator()(
-				sqlpp::update(players::players_table)
-					.set(players::players_table.last_update = std::chrono::system_clock::now())
-						.where(players::players_table.id == player.get_id()));
+			database::access([&](database::database_t& db)
+			{
+				result = db->operator()(
+					sqlpp::update(players::players_table)
+						.set(players::players_table.last_update = std::chrono::system_clock::now())
+							.where(players::players_table.id == player.get_id()));
+			});
 		}
 		else
 		{
-			result = database::get()->operator()(
-				sqlpp::update(players::players_table)
-					.set(players::players_table.last_update = std::chrono::system_clock::now(),
-						 players::players_table.current_sneak_fob = 0,
-						 players::players_table.current_sneak_player = 0,
-						 players::players_table.current_sneak_platform = 0,
-						 players::players_table.current_sneak_status = 0,
-						 players::players_table.current_sneak_mode = 0)
-							.where(players::players_table.id == player.get_id()));
+			database::access([&](database::database_t& db)
+			{
+				result = db->operator()(
+					sqlpp::update(players::players_table)
+						.set(players::players_table.last_update = std::chrono::system_clock::now(),
+							 players::players_table.current_sneak_fob = 0,
+							 players::players_table.current_sneak_player = 0,
+							 players::players_table.current_sneak_platform = 0,
+							 players::players_table.current_sneak_status = 0,
+							 players::players_table.current_sneak_mode = 0)
+								.where(players::players_table.id == player.get_id()));
+			});
 		}
 
 		return result != 0;
@@ -288,97 +315,118 @@ namespace database::players
 		const std::string& in_ip, const std::uint16_t in_port, const std::string& nat_type)
 	{
 		const auto nat_type_id = get_nat_type_id(nat_type);
-		database::get()->operator()(
-			sqlpp::update(players::players_table)
-				.set(players::players_table.ex_ip = ex_ip,
-					 players::players_table.in_ip = in_ip,
-					 players::players_table.ex_port = ex_port,
-					 players::players_table.in_port = in_port,
-					 players::players_table.nat = nat_type_id)
-						.where(players::players_table.id == player_id));
+
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players::players_table)
+					.set(players::players_table.ex_ip = ex_ip,
+						 players::players_table.in_ip = in_ip,
+						 players::players_table.ex_port = ex_port,
+						 players::players_table.in_port = in_port,
+						 players::players_table.nat = nat_type_id)
+							.where(players::players_table.id == player_id));
+		});
 	}
 
 	std::vector<player> get_player_list(const std::uint32_t limit)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(players::players_table))
-					.from(players::players_table)
-						.unconditionally().limit(limit));
-
-		std::vector<player> list;
-
-		for (auto& row : results)
+		return database::access<std::vector<player>>([&](database::database_t& db)
+			-> std::vector<player>
 		{
-			list.emplace_back(row);
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players::players_table))
+						.from(players::players_table)
+							.unconditionally().limit(limit));
 
-		return list;
+			std::vector<player> list;
+
+			for (auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		});
 	}
 
 	bool try_acquire_lock(const std::uint64_t from_id, const std::uint64_t player_id)
 	{
-		const auto result = database::get()->operator()(
-			sqlpp::update(players::players_table)
-				.set(players::players_table.current_lock = from_id)
-					.where(players::players_table.id == player_id &&
-						(players::players_table.current_lock == 0 || players::players_table.current_lock == from_id))
-			);
+		return database::access<bool>([&](database::database_t& db)
+		{
+			const auto result = db->operator()(
+				sqlpp::update(players::players_table)
+					.set(players::players_table.current_lock = from_id)
+						.where(players::players_table.id == player_id &&
+							(players::players_table.current_lock == 0 || players::players_table.current_lock == from_id))
+				);
 
-		return result != 0;
+			return result != 0;
+		});
 	}
 
 	void release_lock(const std::uint64_t from_id, const std::uint64_t player_id)
 	{
-		database::get()->operator()(
-			sqlpp::update(players::players_table)
-				.set(players_table.current_lock = 0)
-					.where(players_table.id == player_id && players_table.current_lock == from_id)
-			);
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players::players_table)
+					.set(players_table.current_lock = 0)
+						.where(players_table.id == player_id && players_table.current_lock == from_id)
+				);
+		});
 	}
 
 	void abort_mother_base(const std::uint64_t player_id)
 	{
-		database::get()->operator()(
-			sqlpp::update(players_table)
-				.set(players_table.current_sneak_fob = 0,
-					 players_table.current_sneak_player = 0,
-					 players_table.current_sneak_platform = 0,
-					 players_table.current_sneak_status = 0,
-					 players_table.current_sneak_mode = 0)
-						.where(players_table.id == player_id)
-			);
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players_table)
+					.set(players_table.current_sneak_fob = 0,
+						 players_table.current_sneak_player = 0,
+						 players_table.current_sneak_platform = 0,
+						 players_table.current_sneak_status = 0,
+						 players_table.current_sneak_mode = 0)
+							.where(players_table.id == player_id)
+				);
+		});
 	}
 
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode, 
 		const std::uint32_t alt_mode)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(players_table))
-					.from(players_table)
-						.where((players_table.current_sneak_mode == mode || 
-							 players_table.current_sneak_mode == alt_mode) &&
-							 players_table.current_sneak_player == owner_id)
-			);
+		return database::access<std::optional<sneak_info>>([&](database::database_t& db)
+			-> std::optional<sneak_info>
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players_table))
+						.from(players_table)
+							.where((players_table.current_sneak_mode == mode || 
+								 players_table.current_sneak_mode == alt_mode) &&
+								 players_table.current_sneak_player == owner_id)
+				);
 		
-		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-			std::chrono::system_clock::now().time_since_epoch());
+			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::system_clock::now().time_since_epoch());
 
-		if (results.empty())
-		{
-			return {};
-		}
-
-		for (auto& row : results)
-		{
-			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+			if (results.empty())
 			{
-				return {sneak_info(row)};
+				return {};
 			}
-		}
 
-		return {};
+			for (auto& row : results)
+			{
+				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				{
+					return {sneak_info(row)};
+				}
+			}
+
+			return {};
+		});
 	}
 	
 	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
@@ -407,15 +455,18 @@ namespace database::players
 			return false;
 		}
 
-		database::get()->operator()(
-			sqlpp::update(players_table)
-				.set(players_table.current_sneak_fob = fob_id,
-					 players_table.current_sneak_player = owner_id,
-					 players_table.current_sneak_platform = platform,
-					 players_table.current_sneak_status = status,
-					 players_table.current_sneak_mode = mode)
-						.where(players_table.id == player_id)
-			);
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(players_table)
+					.set(players_table.current_sneak_fob = fob_id,
+						 players_table.current_sneak_player = owner_id,
+						 players_table.current_sneak_platform = platform,
+						 players_table.current_sneak_status = status,
+						 players_table.current_sneak_mode = mode)
+							.where(players_table.id == player_id)
+				);
+		});
 
 		return true;
 	}

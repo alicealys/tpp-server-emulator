@@ -211,83 +211,91 @@ namespace database::items
 
 	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(items_table))
-					.from(items_table)
-						.where(items_table.player_id == player_id));
-
-		std::unordered_map<std::uint32_t, item_status> list;
-
-		for (const auto& row : results)
+		return database::access<std::unordered_map<std::uint32_t, item_status>>([&](database::database_t& db)
+			-> std::unordered_map<std::uint32_t, item_status>
 		{
-			item_status status(row);
-			list.insert(std::make_pair(status.get_id(), status));
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(items_table))
+						.from(items_table)
+							.where(items_table.player_id == player_id));
 
-		auto p_data = player_data::find(player_id);
+			std::unordered_map<std::uint32_t, item_status> list;
 
-		const auto& static_list = get_static_list();
-		for (const auto& item : static_list)
-		{
-			const auto iter = list.find(item.id);
-			if (iter == list.end())
+			for (const auto& row : results)
 			{
-				item_status status(item.id, player_id);
-				status.set_data(item, p_data);
-				list.insert(std::make_pair(item.id, status));
+				item_status status(row);
+				list.insert(std::make_pair(status.get_id(), status));
 			}
-			else
-			{
-				iter->second.set_data(item, p_data);
-			}
-		}
 
-		return list;
+			auto p_data = player_data::find(player_id);
+
+			const auto& static_list = get_static_list();
+			for (const auto& item : static_list)
+			{
+				const auto iter = list.find(item.id);
+				if (iter == list.end())
+				{
+					item_status status(item.id, player_id);
+					status.set_data(item, p_data);
+					list.insert(std::make_pair(item.id, status));
+				}
+				else
+				{
+					iter->second.set_data(item, p_data);
+				}
+			}
+
+			return list;
+		});
 	}
 
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(items_table))
-					.from(items_table)
-						.where(items_table.player_id == player_id &&
-							   items_table.item_id == item_id));
-
-		const auto& static_map = get_static_map();
-		auto iter = static_map.find(item_id);
-		if (iter == static_map.end())
+		return database::access<item_status>([&](database::database_t& db)
+			-> item_status
 		{
-			return {};
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(items_table))
+						.from(items_table)
+							.where(items_table.player_id == player_id &&
+								   items_table.item_id == item_id));
 
-		auto p_data = player_data::find(player_id);
+			const auto& static_map = get_static_map();
+			auto iter = static_map.find(item_id);
+			if (iter == static_map.end())
+			{
+				return {};
+			}
 
-		if (results.empty())
-		{
-			item_status status(item_id, player_id);
+			auto p_data = player_data::find(player_id);
+
+			if (results.empty())
+			{
+				item_status status(item_id, player_id);
+				status.set_data(iter->second, p_data);
+				return status;
+			}
+
+			item_status status(results.front());
 			status.set_data(iter->second, p_data);
 			return status;
-		}
-
-		item_status status(results.front());
-		status.set_data(iter->second, p_data);
-		return status;
+		});
 	}
 
-#pragma warning(push)
-#pragma warning(disable: 4127)
 	void create(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		database::get()->operator()(
-			sqlpp::insert_into(items_table)
-				.set(items_table.player_id = player_id,
-					 items_table.item_id = item_id,
-					 items_table.create_date = std::chrono::system_clock::now()
-			));
+		database::access<void>([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::insert_into(items_table)
+					.set(items_table.player_id = player_id,
+						 items_table.item_id = item_id,
+						 items_table.create_date = std::chrono::system_clock::now()
+				));
+		});
 	}
-#pragma warning(pop)
 
 	class table final : public table_interface
 	{

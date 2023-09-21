@@ -49,39 +49,40 @@ namespace database::fobs
 
 	std::vector<fob> get_fob_list(const std::uint64_t player_id)
 	{
-#pragma warning(push)
-#pragma warning(disable: 4127)
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(fobs_table))
-					.from(fobs_table)
-						.where(fobs_table.player_id == player_id)
-							.order_by(fobs_table.create_date.asc()));
-#pragma warning(pop)
-
-		std::vector<fob> list;
-
-		for (const auto& row : results)
+		return database::access<std::vector<fob>>([&](database::database_t& db)
+			-> std::vector<fob>
 		{
-			list.emplace_back(row);
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(fobs_table))
+						.from(fobs_table)
+							.where(fobs_table.player_id == player_id)
+								.order_by(fobs_table.create_date.asc()));
 
-		return list;
+			std::vector<fob> list;
+
+			for (const auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		});
 	}
 
 	void create(const std::uint64_t player_id, const std::uint32_t area_id)
 	{
-#pragma warning(push)
-#pragma warning(disable: 4127)
-		database::get()->operator()(
-			sqlpp::insert_into(fobs_table)
-				.set(fobs_table.player_id = player_id,
-					 fobs_table.area_id = area_id,
-					 fobs_table.cluster_param = "[]",
-					 fobs_table.construct_param = 0,
-					 fobs_table.create_date = std::chrono::system_clock::now()
-			));
-#pragma warning(pop)
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::insert_into(fobs_table)
+					.set(fobs_table.player_id = player_id,
+						 fobs_table.area_id = area_id,
+						 fobs_table.cluster_param = "[]",
+						 fobs_table.construct_param = 0,
+						 fobs_table.create_date = std::chrono::system_clock::now()
+				));
+		});
 	}
 
 	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs)
@@ -124,13 +125,16 @@ namespace database::fobs
 
 			const auto cluster_param_str = cluster_param.dump();
 
-			database::get()->operator()(
-				sqlpp::update(fobs_table)
-					.set(fobs_table.security_rank = fob.get_security_rank(),
-						 fobs_table.platform_count = fob.get_platform_count(),
-						 fobs_table.construct_param = fob.get_construct_param(),
-						 fobs_table.cluster_param = cluster_param_str)
-							.where(fobs_table.player_id == player_id && fobs_table.id == server_fob.get_id()));
+			database::access([&](database::database_t& db)
+			{
+				db->operator()(
+					sqlpp::update(fobs_table)
+						.set(fobs_table.security_rank = fob.get_security_rank(),
+							 fobs_table.platform_count = fob.get_platform_count(),
+							 fobs_table.construct_param = fob.get_construct_param(),
+							 fobs_table.cluster_param = cluster_param_str)
+								.where(fobs_table.player_id == player_id && fobs_table.id == server_fob.get_id()));
+			});
 
 			++index;
 		}
@@ -138,18 +142,22 @@ namespace database::fobs
 
 	std::optional<fob> get_fob(const std::uint64_t id)
 	{
-		auto results = database::get()->operator()(
-			sqlpp::select(
-				sqlpp::all_of(fobs_table))
-					.from(fobs_table)
-						.where(fobs_table.id == id));
-
-		if (results.empty())
+		return database::access<std::optional<fob>>([&](database::database_t& db)
+			-> std::optional<fob>
 		{
-			return {};
-		}
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(fobs_table))
+						.from(fobs_table)
+							.where(fobs_table.id == id));
 
-		return fob(results.front());
+			if (results.empty())
+			{
+				return {};
+			}
+
+			return fob(results.front());
+		});
 	}
 
 	class table final : public table_interface

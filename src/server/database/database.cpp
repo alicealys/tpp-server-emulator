@@ -10,6 +10,8 @@
 
 namespace database
 {
+	std::array<connection_t, max_connections> connection_pool;
+
 	tables& get_tables()
 	{
 		static tables tables = {};
@@ -31,7 +33,7 @@ namespace database
 		});
 	}
 
-	void connect(database_t& database)
+	sql::connection_config load_config()
 	{
 		sql::connection_config config;
 		config.user = config::get<std::string>("database_user").value();
@@ -39,19 +41,56 @@ namespace database
 		config.host = config::get<std::string>("database_host").value();
 		config.port = config::get<std::uint16_t>("database_port").value();
 		config.database = config::get<std::string>("database_name").value();
-#ifdef DEBUG
-		//config.debug = true;
-#endif
+		return config;
+	}
 
+	sql::connection_config& get_config()
+	{
+		static auto config = load_config();
+		return config;
+	}
+
+	void connect(database_t& database)
+	{
 		try
 		{
-			database = std::make_unique<sql::connection>(config);
+			database = std::make_unique<sql::connection>(get_config());
 		}
 		catch (const std::exception& e)
 		{
 			printf("[Database] Error connecting to database %s\n", e.what());
 			throw std::runtime_error(e.what());
 		}
+	}
+
+	connection_t& get_connection()
+	{
+		for (auto& connection : connection_pool)
+		{
+			if (connection.in_use || !connection.mutex.try_lock())
+			{
+				continue;
+			}
+
+			const auto _0 = gsl::finally([&]
+			{
+				connection.mutex.unlock();
+			});
+
+			const auto now = std::chrono::high_resolution_clock::now();
+			const auto diff = now - connection.start;
+
+			connection.in_use = true;
+			if (!connection.db.get() || !connection.db->is_valid() || diff >= 1h)
+			{
+				connection.db = std::make_unique<sql::connection>(get_config());
+				connection.start = now;
+			}
+
+			return connection;
+		}
+
+		throw std::runtime_error("out of connections");
 	}
 
 	bool create_tables()
