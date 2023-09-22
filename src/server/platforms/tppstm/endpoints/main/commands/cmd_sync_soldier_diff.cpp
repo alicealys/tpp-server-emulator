@@ -40,6 +40,83 @@ namespace tpp
 			return result;
 		}
 
+		auto& remover_param = data["remover_param"];
+
+		std::string new_staff_array;
+		std::unordered_set<std::uint32_t> staff_indices;
+		auto update_staff = false;
+
+		if (remover_param.is_array())
+		{
+			std::vector<database::player_data::staff_t> remover_params;
+
+			for (auto i = 0; i < remover_param.size(); i++)
+			{
+				const auto& param = remover_param[i]["param"];
+				if (!param.is_array() || param.size() != 2 ||
+					!param[0].is_number_unsigned() || !param[1].is_number_unsigned())
+				{
+					continue;
+				}
+
+				const auto header = param[0].get<std::uint32_t>();
+				const auto seed = param[1].get<std::uint32_t>();
+
+				database::player_data::staff_t staff{};
+				staff.fields.packed_header = header;
+				staff.fields.packed_seed = seed;
+				remover_params.emplace_back(staff);
+			}
+
+			for (auto i = 0u; i < p_data->get_staff_count(); i++)
+			{
+				auto removed = false;
+				const auto staff = p_data->get_staff(i);
+
+				for (const auto& remover : remover_params)
+				{
+					if (staff.packed_header == remover.fields.packed_header && 
+						staff.packed_seed == remover.fields.packed_seed)
+					{
+						removed = true;
+						break;
+					}
+				}
+
+				if (!removed)
+				{
+					staff_indices.insert(i);
+				}
+				else
+				{
+					update_staff = true;
+				}
+			}
+		}
+
+		if (update_staff)
+		{
+			new_staff_array.reserve(staff_indices.size() * sizeof(database::player_data::staff_t));
+
+			for (const auto& idx : staff_indices)
+			{
+				const auto staff = p_data->get_staff(idx);
+				std::uint32_t params[6]{};
+				params[0] = _byteswap_ulong(staff.unk.data);
+				params[1] = _byteswap_ulong(staff.unk2.data);
+				params[2] = _byteswap_ulong(staff.packed_header);
+				params[3] = _byteswap_ulong(staff.packed_seed);
+				params[4] = _byteswap_ulong(staff.packed_status_sync);
+				params[5] = _byteswap_ulong(staff.packed_status_no_sync);
+				new_staff_array.append(reinterpret_cast<char*>(params), sizeof(params));
+			}
+		}
+
+		while (new_staff_array.size() < sizeof(database::player_data::staff_array_t))
+		{
+			new_staff_array += '\0';
+		}
+
 		database::player_data::unit_levels_t levels{};
 		database::player_data::unit_counts_t counts{};
 
@@ -57,7 +134,16 @@ namespace tpp
 			}
 		}
 
-		database::player_data::set_soldier_diff(player->get_id(), levels, counts);
+		if (update_staff)
+		{
+			database::player_data::set_soldier_data(player->get_id(), 
+				static_cast<std::uint32_t>(staff_indices.size()), 
+				new_staff_array, levels, counts);
+		}
+		else
+		{
+			database::player_data::set_soldier_diff(player->get_id(), levels, counts);
+		}
 
 		result["result"] = "NOERR";
 

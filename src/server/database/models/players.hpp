@@ -228,7 +228,7 @@ namespace database::players
 	std::string generate_session_id(const std::uint64_t account_id);
 	std::string generate_crypto_key(const std::uint64_t account_id);
 
-	bool update_session(const player& player_id);
+	bool update_session(const player& player);
 
 	void set_ip_and_port(const std::uint64_t player_id, const std::string& ex_ip, const std::uint16_t ex_port,
 		const std::string& in_ip, const std::uint16_t in_port, const std::string& nat_type);

@@ -39,9 +39,9 @@ namespace database
 				continue;
 			}
 
-			const auto now = std::chrono::high_resolution_clock::now();//
-			const auto diff = now - connection.start;
-			if (diff >= 1min)
+			const auto now = std::chrono::high_resolution_clock::now();
+			const auto diff = now - connection.last_access;
+			if (diff >= database::players::session_timeout)
 			{
 				connection.db.reset();
 			}

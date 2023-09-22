@@ -55,6 +55,8 @@ namespace tpp
 			result["loginid_password"] = player->get_login_password();
 			result["smart_device_id"] = player->get_smart_device_id();
 			result["result"] = "NOERR";
+
+			database::players::update_session(player.value());
 		}
 
 		return result;
