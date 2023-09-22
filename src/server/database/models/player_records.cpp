@@ -6,7 +6,7 @@
 #include <utils/string.hpp>
 
 #define TABLE_DEF R"(
-create table if not exists `player_record`
+create table if not exists `player_records`
 (
 	id							bigint unsigned	not null	auto_increment,
 	player_id					bigint unsigned	not null,

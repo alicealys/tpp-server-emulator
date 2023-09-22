@@ -221,7 +221,8 @@ namespace database::players
 					.set(players::players_table.account_id = account_id,
 						 players::players_table.currency = "EUR",
 						 players::players_table.smart_device_id = generate_data(80, true),
-						 players::players_table.last_update = std::chrono::system_clock::now()));
+						 players::players_table.last_update = std::chrono::system_clock::now(),
+						 players::players_table.creation_time = std::chrono::system_clock::now()));
 		});
 
 		const auto found = find_from_account(account_id);
