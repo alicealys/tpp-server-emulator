@@ -64,8 +64,10 @@ namespace utils
 	{
 	public:
 		http_server();
+		~http_server();
 
-		void start();
+		bool start();
+		void run_frame();
 		void shutdown();
 		void set_request_handler(const event_handler_t& handler);
 
@@ -89,8 +91,6 @@ namespace utils
 
 		std::uint16_t http_port_{};
 		std::uint16_t https_port_{};
-
-		std::atomic_bool killed_{};
 
 	};
 }

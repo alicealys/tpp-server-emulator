@@ -624,6 +624,8 @@ namespace database::player_data
 			database->execute(TABLE_DEF);
 
 			get_nuke_count();
+			get_nuke_count();
+			get_nuke_count();
 		}
 	};
 }

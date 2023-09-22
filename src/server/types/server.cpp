@@ -80,18 +80,18 @@ namespace tpp
 		});
 	}
 
-	void server::start()
+	bool server::start()
 	{
 		const auto http_port = config::get<std::uint16_t>("http_port");
 		const auto https_port = config::get<std::uint16_t>("https_port");
 		const auto cert_file = config::get<std::string>("cert_file");
 		const auto key_file = config::get<std::string>("key_file");
 
-		this->http_server.set_ports(http_port.value(), https_port.value());
+		this->http_server.set_ports(http_port, https_port);
 
-		if (key_file.has_value() && cert_file.has_value())
+		if (!key_file.empty() && !cert_file.empty())
 		{
-			this->http_server.set_tls(cert_file.value(), key_file.value());
+			this->http_server.set_tls(cert_file, key_file);
 		}
 
 		this->http_server.set_request_handler([&](
@@ -100,6 +100,11 @@ namespace tpp
 			this->request_handler(conn, params);
 		});
 
-		this->http_server.start();
+		return this->http_server.start();
+	}
+
+	void server::run_frame()
+	{
+		this->http_server.run_frame();
 	}
 }

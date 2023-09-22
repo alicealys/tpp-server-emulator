@@ -12,7 +12,7 @@ namespace config
 	std::optional<nlohmann::json> get_default_value(const std::string& key);
 
 	template <typename T>
-	std::optional<T> get(const std::string& key)
+	T get(const std::string& key)
 	{
 		const auto cfg = read_config();
 		if (!cfg.is_object() || !cfg.contains(key))
@@ -20,14 +20,14 @@ namespace config
 			const auto default_value = get_default_value(key);
 			if (default_value.has_value())
 			{
-				return {default_value.value()};
+				return default_value.value();
 			}
 
-			return {};
+			throw std::runtime_error("config field default value not defined");
 		}
 
 		const auto value = validate_config_field(key, cfg[key]);
-		return {value.get<T>()};
+		return value.get<T>();
 	}
 
 	nlohmann::json get_raw(const std::string& key);

@@ -33,6 +33,9 @@ namespace config
 			{define_field("database_host", field_type::string, "localhost")},
 			{define_field("database_port", field_type::number_unsigned, 3306)},
 			{define_field("database_name", field_type::string, "mgstpp")},
+			{define_field("use_konami_auth", field_type::boolean, true)},
+			{define_field("cert_file", field_type::string, "")},
+			{define_field("key_file", field_type::string, "")},
 		};
 
 		std::string get_config_file_path()

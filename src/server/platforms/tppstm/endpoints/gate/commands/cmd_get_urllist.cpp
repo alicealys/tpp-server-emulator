@@ -122,16 +122,11 @@ namespace tpp
 	cmd_get_urllist::cmd_get_urllist()
 	{
 		const auto base_url = config::get<std::string>("base_url");
-		if (!base_url.has_value())
-		{
-			return;
-		}
-
 		for (auto& url : url_list)
 		{
 			if (url.replace_hostname)
 			{
-				url.url = std::format("{}/{}", base_url.value(), url.url);
+				url.url = std::format("{}/{}", base_url, url.url);
 			}
 		}
 	}
