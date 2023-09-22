@@ -26,7 +26,8 @@ namespace tpp
 	public:
 		server();
 
-		void start();
+		bool start();
+		void run_frame();
 
 		void request_handler(const utils::http_connection& conn, const utils::request_params& params);
 

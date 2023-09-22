@@ -5,15 +5,54 @@
 
 namespace tpp
 {
+	std::atomic_bool killed;
+
 	int start_server()
 	{
-		if (!database::create_tables())
+		std::vector<std::thread> threads;
+
+		try
 		{
+			database::create_tables();
+		}
+		catch (const std::exception& e)
+		{
+			printf("%s\n", e.what());
 			return 0;
 		}
 
 		server s;
-		s.start();
+		if (!s.start())
+		{
+			printf("failed to start server\n");
+			return 0;
+		}
+
+		threads.emplace_back([&]
+		{
+			while (!killed)
+			{
+				s.run_frame();
+			}
+		});
+
+		threads.emplace_back([]
+		{
+			while (!killed)
+			{
+				database::cleanup_connections();
+				std::this_thread::sleep_for(100ms);
+			}
+		});
+
+		for (auto& thread : threads)
+		{
+			if (thread.joinable())
+			{
+				thread.join();
+			}
+		}
+
 		return 0;
 	}
 }

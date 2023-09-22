@@ -71,6 +71,11 @@ namespace utils
 		this->set_ports(80, 443);
 	}
 
+	http_server::~http_server()
+	{
+		this->shutdown();
+	}
+
 	void http_server::set_request_handler(const event_handler_t& handler)
 	{
 		this->request_handler.emplace(handler);
@@ -151,11 +156,9 @@ namespace utils
 		this->using_tls_ = true;
 	}
 
-	void http_server::start()
+	bool http_server::start()
 	{
 		mg_mgr_init(&this->manager_);
-
-		//mg_log_set(3);
 
 		if (this->using_tls_)
 		{
@@ -163,18 +166,17 @@ namespace utils
 			mg_http_listen(&this->manager_, this->https_url_.data(), http_server::event_handler, this);
 		}
 
-		mg_http_listen(&this->manager_, this->http_url_.data(), http_server::event_handler, this);
+		const auto conn = mg_http_listen(&this->manager_, this->http_url_.data(), http_server::event_handler, this);
+		return conn != nullptr;
+	}
 
-		while (!this->killed_)
-		{
-			mg_mgr_poll(&this->manager_, 1);
-		}
-
-		mg_mgr_free(&this->manager_);
+	void http_server::run_frame()
+	{
+		mg_mgr_poll(&this->manager_, 1);
 	}
 
 	void http_server::shutdown()
 	{
-		this->killed_ = true;
+		mg_mgr_free(&this->manager_);
 	}
 }

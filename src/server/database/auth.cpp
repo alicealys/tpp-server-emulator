@@ -7,19 +7,17 @@
 
 #include "utils/tpp_client.hpp"
 #include "utils/encoding.hpp"
+#include "utils/config.hpp"
 
 #include <utils/string.hpp>
 #include <utils/cryptography.hpp>
-
-#define USE_KONAMI_AUTH
 
 namespace auth
 {
 	utils::tpp::tpp_client client;
 
-	std::optional<std::uint64_t> verify_ticket(const std::string& auth_ticket, const size_t ticket_size)
+	std::optional<std::uint64_t> verify_ticket_konami(const std::string& auth_ticket, const size_t ticket_size)
 	{
-#ifdef USE_KONAMI_AUTH
 		nlohmann::json data;
 		data["steam_ticket"] = utils::encoding::split_into_lines(auth_ticket);
 		data["steam_ticket_size"] = ticket_size;
@@ -63,7 +61,10 @@ namespace auth
 		}
 
 		return {account_id};
-#else
+	}
+
+	std::optional<std::uint64_t> verify_ticket_offline(const std::string& auth_ticket, const size_t ticket_size)
+	{
 		if (auth_ticket.size() < 20)
 		{
 			return {};
@@ -73,7 +74,19 @@ namespace auth
 		const auto data_ptr = reinterpret_cast<size_t>(data.data());
 		const auto account_id = *reinterpret_cast<std::uint64_t*>(data_ptr + 12);
 		return {account_id};
-#endif
+	}
+
+	std::optional<std::uint64_t> verify_ticket(const std::string& auth_ticket, const size_t ticket_size)
+	{
+		static const auto use_konami_auth = config::get<bool>("use_konami_auth");
+		if (use_konami_auth)
+		{
+			return verify_ticket_konami(auth_ticket, ticket_size);
+		}
+		else
+		{
+			return verify_ticket_offline(auth_ticket, ticket_size);
+		}
 	}
 
 	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket, const size_t ticket_size)
@@ -85,7 +98,6 @@ namespace auth
 		}
 
 		const auto account_id = account_id_opt.value();
-
 		const auto player = database::players::find_or_insert(account_id);
 
 		auth_ticket_response response{};
