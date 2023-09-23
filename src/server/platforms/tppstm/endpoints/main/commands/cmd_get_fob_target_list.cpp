@@ -15,13 +15,29 @@ namespace tpp
 	{
 		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_pickup_list(const database::players::player& player, const std::uint32_t limit)
 		{
-			const auto list = database::players::get_player_list(std::min(limit, 30u));
+			const auto list = database::player_records::find_same_rank_players(player.get_id(), std::min(limit, 30u));
 			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
+
 			for (const auto& row : list)
 			{
 				nlohmann::json data;
-				player_ids.push_back(std::make_pair(row.get_id(), data));
+				player_ids.push_back(std::make_pair(row.get_player_id(), data));
 			}
+
+			return player_ids;
+		}
+
+		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_pickup_high_list(const database::players::player& player, const std::uint32_t limit)
+		{
+			const auto list = database::player_records::find_higher_rank_players(player.get_id(), std::min(limit, 30u));
+			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
+
+			for (const auto& row : list)
+			{
+				nlohmann::json data;
+				player_ids.push_back(std::make_pair(row.get_player_id(), data));
+			}
+
 			return player_ids;
 		}
 
@@ -29,6 +45,7 @@ namespace tpp
 		{
 			auto list = database::sneak_results::get_sneak_results(player.get_id(), std::min(limit, 10u));
 			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
+
 			for (auto& row : list)
 			{
 				nlohmann::json data;
@@ -41,15 +58,19 @@ namespace tpp
 				{
 					const auto header_val = sneak_data["injure_soldier_id"][i]["param"][0].get<std::uint32_t>();
 					database::player_data::staff_header_t header{};
+
 					std::memcpy(&header, &header_val, sizeof(database::player_data::staff_header_t));
 					auto& value = data["owner_fob_record"]["injury_staff_count"][header.peak_rank];
+
 					const auto current = value.get<std::uint32_t>();
 					value = current + 1;
 				}
 
 				data["owner_fob_record"]["date_time"] = row.get_date();
+
 				player_ids.emplace_back(std::make_pair(row.get_player_id(), data));
 			}
+
 			return player_ids;
 		}
 
@@ -57,6 +78,7 @@ namespace tpp
 		std::unordered_map<std::string, target_callback_t> target_callbacks =
 		{
 			{"PICKUP", get_pickup_list},
+			{"PICKUP_HIGH", get_pickup_high_list},
 			{"INJURY", get_injury_list},
 		};
 
@@ -212,17 +234,17 @@ namespace tpp
 			target["owner_detail_record"]["insurance"] = 0;
 			target["owner_detail_record"]["is_security_challenge"] = 0;
 
-			target["owner_detail_record"]["league_rank"]["grade"] = 0;
-			target["owner_detail_record"]["league_rank"]["rank"] = 0;
-			target["owner_detail_record"]["league_rank"]["score"] = 0;
+			target["owner_detail_record"]["league_rank"]["grade"] = target_stats->get_league_grade();
+			target["owner_detail_record"]["league_rank"]["rank"] = target_stats->get_league_rank();
+			target["owner_detail_record"]["league_rank"]["score"] = target_stats->get_league_point();
 
 			target["owner_detail_record"]["name_plate_id"] = target_mother_base["name_plate_id"];
 			target["owner_detail_record"]["nuclear"] = target_data->get_nuke_count();
 			target["owner_detail_record"]["online"] = 0;
 
-			target["owner_detail_record"]["sneak_rank"]["grade"] = 0;
-			target["owner_detail_record"]["sneak_rank"]["rank"] = 0;
-			target["owner_detail_record"]["sneak_rank"]["score"] = 0;
+			target["owner_detail_record"]["sneak_rank"]["grade"] = target_stats->get_fob_grade();
+			target["owner_detail_record"]["sneak_rank"]["rank"] = target_stats->get_fob_rank();
+			target["owner_detail_record"]["sneak_rank"]["score"] = target_stats->get_fob_point();
 			
 			target["owner_detail_record"]["staff_count"] = target_data->get_usable_staff_count();
 
