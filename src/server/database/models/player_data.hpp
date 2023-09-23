@@ -475,13 +475,13 @@ namespace database::player_data
 			return this->last_sync_;
 		}
 
-		std::uint32_t get_nuke_count()
+		std::uint32_t get_nuke_count() const
 		{
 			return this->nuke_count_;
 		}
 
 	private:
-		std::uint32_t player_id_;
+		std::uint64_t player_id_;
 
 		resource_arrays_t resource_arrays_{};
 		std::uint32_t nuke_count_;
