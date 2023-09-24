@@ -58,4 +58,15 @@ namespace database
 			}
 		});
 	}
+
+	void run_tasks()
+	{
+		database::access([](database_t& db)
+		{
+			for (const auto& table : get_tables())
+			{
+				table.inst->run_tasks(db);
+			}
+		});
+	}
 }

@@ -53,4 +53,6 @@ namespace database
 	}
 
 	void cleanup_connections();
+
+	void run_tasks();
 }

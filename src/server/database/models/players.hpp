@@ -18,6 +18,7 @@ namespace database::players
 	DEFINE_FIELD(in_port, sqlpp::integer_unsigned);
 	DEFINE_FIELD(nat, sqlpp::integer_unsigned);
 	DEFINE_FIELD(creation_time, sqlpp::time_point);
+	DEFINE_FIELD(security_challenge, sqlpp::boolean);
 	DEFINE_FIELD(current_lock, sqlpp::integer_unsigned);
 	DEFINE_FIELD(current_sneak_mode, sqlpp::integer_unsigned);
 	DEFINE_FIELD(current_sneak_fob, sqlpp::integer_unsigned);
@@ -30,6 +31,7 @@ namespace database::players
 		currency_field_t,last_update_field_t, ex_ip_field_t, ex_port_field_t, 
 		in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t,
 		current_lock_field_t,
+		security_challenge_field_t,
 		current_sneak_mode_field_t, current_sneak_fob_field_t, 
 		current_sneak_player_field_t, current_sneak_platform_field_t,
 		current_sneak_status_field_t, current_sneak_start_field_t);
@@ -83,6 +85,7 @@ namespace database::players
 			this->nat_ = static_cast<std::uint32_t>(row.nat);
 			this->last_update_ = row.last_update.value().time_since_epoch();
 			this->creation_time_ = row.creation_time.value().time_since_epoch();
+			this->security_challenge_ = row.security_challenge;
 		}
 
 		std::uint64_t get_id() const
@@ -150,6 +153,11 @@ namespace database::players
 			return this->creation_time_;
 		}
 
+		int is_security_challenge_enabled() const
+		{
+			return this->security_challenge_;
+		}
+
 	private:
 		std::uint64_t id_;
 		std::uint64_t account_id_;
@@ -170,6 +178,8 @@ namespace database::players
 
 		std::chrono::microseconds last_update_;
 		std::chrono::microseconds creation_time_;
+
+		bool security_challenge_;
 
 	};
 
@@ -242,4 +252,8 @@ namespace database::players
 
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,
 		const std::uint32_t alt_mode = mode_invalid);
+
+	bool set_security_challenge(const std::uint64_t player_id, bool enabled);
+
+	std::vector<player> find_with_security_challenge(const std::uint32_t limit);
 }

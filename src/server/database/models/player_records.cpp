@@ -115,53 +115,69 @@ namespace database::player_records
 		});
 	}
 
-	void update_fob_ranking()
+	void update_fob_ranking(database_t& db)
 	{
-		database::access([&](database::database_t& db)
+		static std::chrono::steady_clock::time_point last_update{};
+		const auto now = std::chrono::high_resolution_clock::now();
+		if (now - last_update < 10min)
 		{
-			db->execute("set @r=0;");
-			db->execute("update player_records set fob_rank= @r:= (@r + 1) where fob_point > 0 order by fob_point desc;");
+			return;
+		}
 
-			static std::vector<std::pair<std::uint32_t, std::uint32_t>> rank_ranges =
-			{
-				{0, 0},				// 0
-				{100, 200},			// 1
-				{200, 400},			// 2
-				{400, 800},			// 3
-				{800, 1500},		// 4
-				{1500, 3000},		// 5
-				{3000, 4000},		// 6
-				{4000, 7000},		// 7
-				{7000, 10000},		// 8
-				{10000, 50000},		// 9
-				{50000, 500000},	// 9
-				{500000, 0},		// 9
-			};
+		last_update = now;
 
-			for (auto i = 0; i < rank_ranges.size(); i++)
+		db->execute(R"(
+			with ranked_players as (
+				select player_id, fob_point, 
+					   (select count(distinct fob_point) + 1 
+						from player_records pr2 
+						where pr2.fob_point > pr1.fob_point) as new_rank
+				from player_records pr1
+			)
+			update player_records record
+			join ranked_players ranked_player on record.player_id = ranked_player.player_id
+			set record.fob_rank = ranked_player.new_rank where record.fob_point > 0;
+		)");
+
+		static std::vector<std::pair<std::uint32_t, std::uint32_t>> rank_ranges =
+		{
+			{0, 0},				// 0
+			{1, 2},				// 1
+			{2, 4},				// 2
+			{5, 10},			// 3
+			{10, 50},			// 4
+			{50, 100},			// 5
+			{100, 500},			// 6
+			{500, 2000},		// 7
+			{2000, 10000},		// 8
+			{10000, 100000},	// 9
+			{100000, 1000000},	// 10
+			{1000000, 1000000},	// 11
+		};
+
+		for (auto i = 0; i < rank_ranges.size(); i++)
+		{
+			const auto& range = rank_ranges[i];
+			if (i == rank_ranges.size() - 1)
 			{
-				const auto& range = rank_ranges[i];
-				if (i == rank_ranges.size() - 1)
-				{
-					db->operator()(
-						sqlpp::update(player_records_table)
-							.set(player_records_table.fob_grade = i)
-								.where(player_records_table.fob_point >= range.first)
-						);
-				}
-				else
-				{
-					db->operator()(
-						sqlpp::update(player_records_table)
-							.set(player_records_table.fob_grade = i)
-								.where(player_records_table.fob_point >= range.first && player_records_table.fob_point < range.second)
-						);
-				}
+				db->operator()(
+					sqlpp::update(player_records_table)
+						.set(player_records_table.fob_grade = i)
+							.where(player_records_table.fob_point >= range.first)
+					);
 			}
-		});
+			else
+			{
+				db->operator()(
+					sqlpp::update(player_records_table)
+						.set(player_records_table.fob_grade = i)
+							.where(player_records_table.fob_point >= range.first && player_records_table.fob_point < range.second)
+					);
+			}
+		}
 	}
 
-	std::vector<player_record> find_players_of_rank(const std::uint64_t player_id, const std::uint32_t rank ,const std::uint32_t limit)
+	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)
 	{
 		return database::access<std::vector<player_record>>([&](database::database_t& db)
 			-> std::vector<player_record>
@@ -170,7 +186,7 @@ namespace database::player_records
 				sqlpp::select(
 					sqlpp::all_of(player_records_table))
 						.from(player_records_table)
-							.where(player_records_table.fob_rank == rank)
+							.where(player_records_table.fob_grade == grade)
 								.order_by(sqlpp::verbatim("rand()").asc())
 									.limit(limit));
 
@@ -184,7 +200,7 @@ namespace database::player_records
 		});
 	}
 
-	std::vector<player_record> find_same_rank_players(const std::uint64_t player_id, const std::uint32_t limit)
+	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit)
 	{
 		return database::access<std::vector<player_record>>([&](database::database_t& db)
 			-> std::vector<player_record>
@@ -195,11 +211,11 @@ namespace database::player_records
 				return {};
 			}
 
-			return find_players_of_rank(player_id, record->get_fob_rank(), limit);
+			return find_players_of_grade(player_id, record->get_fob_grade(), limit);
 		});
 	}
 
-	std::vector<player_record> find_higher_rank_players(const std::uint64_t player_id, const std::uint32_t limit)
+	std::vector<player_record> find_higher_grade_players(const std::uint64_t player_id, const std::uint32_t limit)
 	{
 		return database::access<std::vector<player_record>>([&](database::database_t& db)
 			-> std::vector<player_record>
@@ -210,10 +226,10 @@ namespace database::player_records
 				return {};
 			}
 
-			const auto rank = record->get_fob_rank();
-			const auto higher_rank = rank == highest_rank ? rank : rank + 1;
+			const auto grade = record->get_fob_grade();
+			const auto higher_grade = grade == highest_grade ? grade : grade + 1;
 
-			return find_players_of_rank(player_id, higher_rank, limit);
+			return find_players_of_grade(player_id, higher_grade, limit);
 		});
 	}
 
@@ -223,7 +239,11 @@ namespace database::player_records
 		void create(database_t& database) override
 		{
 			database->execute(TABLE_DEF);
-			update_fob_ranking();
+		}
+
+		void run_tasks(database_t& database)
+		{
+			update_fob_ranking(database);
 		}
 	};
 }

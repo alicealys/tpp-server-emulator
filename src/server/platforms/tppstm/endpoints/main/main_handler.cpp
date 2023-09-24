@@ -47,6 +47,7 @@
 #include "commands/cmd_send_ipandport.hpp"
 #include "commands/cmd_send_sneak_result.hpp"
 #include "commands/cmd_set_currentplayer.hpp"
+#include "commands/cmd_set_security_challenge.hpp"
 #include "commands/cmd_sneak_mother_base.hpp"
 #include "commands/cmd_sync_emblem.hpp"
 #include "commands/cmd_sync_loadout.hpp"
@@ -116,6 +117,7 @@ namespace tpp
 		this->register_handler<cmd_send_ipandport>("CMD_SEND_IPANDPORT");
 		this->register_handler<cmd_send_sneak_result>("CMD_SEND_SNEAK_RESULT");
 		this->register_handler<cmd_set_currentplayer>("CMD_SET_CURRENTPLAYER");
+		this->register_handler<cmd_set_security_challenge>("CMD_SET_SECURITY_CHALLENGE");
 		this->register_handler<cmd_sneak_mother_base>("CMD_SNEAK_MOTHER_BASE");
 		this->register_handler<cmd_sync_emblem>("CMD_SYNC_EMBLEM");
 		this->register_handler<cmd_sync_loadout>("CMD_SYNC_LOADOUT");

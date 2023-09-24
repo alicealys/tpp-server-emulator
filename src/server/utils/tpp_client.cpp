@@ -137,8 +137,6 @@ namespace utils::tpp
 
 			const auto data_json = nlohmann::json::parse(data);
 			json["data"] = data_json;
-			const auto str = json.dump(4);
-			printf("%s\n", str.data());
 
 			return {json};
 		}

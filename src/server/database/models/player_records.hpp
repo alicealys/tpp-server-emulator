@@ -32,8 +32,8 @@ namespace database::player_records
 
 	extern player_records_table_t player_records_table;
 
-	constexpr auto lowest_rank = 0;
-	constexpr auto highest_rank = 11;
+	constexpr auto lowest_grade = 0;
+	constexpr auto highest_grade = 11;
 
 	class player_record
 	{
@@ -194,9 +194,7 @@ namespace database::player_records
 	void add_sneak_result(const std::uint64_t player_id, const std::int32_t point_add, const bool is_win);
 	void sync_prev_values(const std::uint64_t player_id);
 
-	std::vector<player_record> find_players_of_rank(const std::uint64_t player_id, const std::uint32_t rank, const std::uint32_t limit);
-	std::vector<player_record> find_same_rank_players(const std::uint64_t player_id, const std::uint32_t limit);
-	std::vector<player_record> find_higher_rank_players(const std::uint64_t player_id, const std::uint32_t limit);
-
-	void update_fob_ranking();
+	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit);
+	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit);
+	std::vector<player_record> find_higher_grade_players(const std::uint64_t player_id, const std::uint32_t limit);
 }

@@ -15,7 +15,7 @@ namespace tpp
 	{
 		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_pickup_list(const database::players::player& player, const std::uint32_t limit)
 		{
-			const auto list = database::player_records::find_same_rank_players(player.get_id(), std::min(limit, 30u));
+			const auto list = database::player_records::find_same_grade_players(player.get_id(), std::min(limit, 30u));
 			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
 
 			for (const auto& row : list)
@@ -29,7 +29,7 @@ namespace tpp
 
 		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_pickup_high_list(const database::players::player& player, const std::uint32_t limit)
 		{
-			const auto list = database::player_records::find_higher_rank_players(player.get_id(), std::min(limit, 30u));
+			const auto list = database::player_records::find_higher_grade_players(player.get_id(), std::min(limit, 30u));
 			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
 
 			for (const auto& row : list)
@@ -74,12 +74,36 @@ namespace tpp
 			return player_ids;
 		}
 
+		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_challenge_list(const database::players::player& player, const std::uint32_t limit)
+		{
+			auto list = database::players::find_with_security_challenge(std::min(limit, 10u));
+			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
+
+			nlohmann::json data;
+
+			if (player.is_security_challenge_enabled())
+			{
+				player_ids.emplace_back(std::make_pair(player.get_id(), data));
+			}
+
+			for (auto& row : list)
+			{
+				if (row.get_id() != player.get_id())
+				{
+					player_ids.emplace_back(std::make_pair(row.get_id(), data));
+				}
+			}
+
+			return player_ids;
+		}
+
 		using target_callback_t = std::function<std::vector<std::pair<std::uint64_t, nlohmann::json>>(const database::players::player&, const std::uint32_t)>;
 		std::unordered_map<std::string, target_callback_t> target_callbacks =
 		{
 			{"PICKUP", get_pickup_list},
 			{"PICKUP_HIGH", get_pickup_high_list},
 			{"INJURY", get_injury_list},
+			{"CHALLENGE", get_challenge_list},
 		};
 
 		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_target_list(const database::players::player& player,
@@ -153,7 +177,7 @@ namespace tpp
 		const auto type = type_j.get<std::string>();
 		const auto num = num_j.get<std::uint32_t>();
 
-		result["enable_security_challenge"] = 0;
+		result["enable_security_challenge"] = player->is_security_challenge_enabled();
 		result["esp_point"] = stats->get_fob_point();
 		result["event_point"] = 0;
 
@@ -232,7 +256,7 @@ namespace tpp
 			target["owner_detail_record"]["help"] = 0;
 			target["owner_detail_record"]["hero"] = 0;
 			target["owner_detail_record"]["insurance"] = 0;
-			target["owner_detail_record"]["is_security_challenge"] = 0;
+			target["owner_detail_record"]["is_security_challenge"] = target_player->is_security_challenge_enabled();
 
 			target["owner_detail_record"]["league_rank"]["grade"] = target_stats->get_league_grade();
 			target["owner_detail_record"]["league_rank"]["rank"] = target_stats->get_league_rank();
@@ -311,7 +335,7 @@ namespace tpp
 			target["owner_info"]["npid"]["handler"]["term"] = 0;
 			target["owner_info"]["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
 			target["owner_info"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
-			target["owner_info"]["player_id"] = player->get_id();
+			target["owner_info"]["player_id"] = target_player->get_id();
 			target["owner_info"]["player_name"] = std::format("{}_player01", target_player->get_account_id());
 			target["owner_info"]["ugc"] = 1;
 			target["owner_info"]["xuid"] = target_player->get_account_id();
