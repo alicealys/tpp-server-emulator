@@ -90,9 +90,17 @@ namespace database::player_records
 	{
 		database::access([&](database::database_t& db)
 		{
+			const auto record = find(player_id);
+			if (!record.has_value())
+			{
+				return;
+			}
+
+			const auto points = std::max(0, record->get_fob_point() + point_add);
+
 			db->operator()(
 				sqlpp::update(player_records_table)
-					.set(player_records_table.fob_point = player_records_table.fob_point + point_add,
+					.set(player_records_table.fob_point = points,
 						 player_records_table.fob_sneak_win = player_records_table.fob_sneak_win 
 							+ static_cast<std::int32_t>(is_win),
 						 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose 

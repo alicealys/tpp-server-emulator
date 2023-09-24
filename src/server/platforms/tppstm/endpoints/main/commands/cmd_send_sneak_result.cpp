@@ -52,7 +52,20 @@ namespace tpp
 				return result;
 			}
 
-			if (mode == database::players::mode_actual)
+			const auto active_sneak = database::players::find_active_sneak_from_player(player->get_id());
+			if (!active_sneak.has_value())
+			{
+				result["result"] = "ERR_DATABSE";
+				return result;
+			}
+
+			if (active_sneak->get_mode() != mode)
+			{
+				result["result"] = "ERR_DATABSE";
+				return result;
+			}
+
+			if (active_sneak->get_mode() == database::players::mode_actual)
 			{
 				nlohmann::json sneak_data = data;
 				sneak_data.erase("msgid");

@@ -131,26 +131,67 @@ namespace tpp
 		result["event_clear_bit"] = 0;
 		result["is_restrict"] = 0;
 
-		result["session"]["ip"] = player->get_ex_ip();
-		result["session"]["is_invalid"] = 0;
+		result["session"]["ip"] = "0.0.0.0";
+		result["session"]["is_invalid"] = 1;
 		result["session"]["npid"]["handler"]["data"] = "";
 		result["session"]["npid"]["handler"]["dummy"] = {0, 0, 0};
 		result["session"]["npid"]["handler"]["term"] = 0;
 		result["session"]["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
 		result["session"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
-		result["session"]["port"] = player->get_ex_port();
+		result["session"]["port"] = 0;
 		result["session"]["secure_device_address"] = "NotImplement";
-		result["session"]["steamid"] = player->get_account_id();
+		result["session"]["steamid"] = 0;
 		result["session"]["xnaddr"] = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		result["session"]["xnkey"] = {};
 		result["session"]["xnkid"] = {};
-		result["session"]["xuid"] = player->get_account_id();
+		result["session"]["xuid"] = 0;
 
-		if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
-			database::players::status_pre_game))
+		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
+		if (is_sneak)
 		{
-			result["result"] = "ERR_ALREADY_SNEAK";
-			return result;
+			result["session"]["ip"] = player->get_ex_ip();
+			result["session"]["is_invalid"] = 0;
+			result["session"]["port"] = player->get_ex_port();
+			result["session"]["steamid"] = player->get_account_id();
+			result["session"]["xuid"] = player->get_account_id();
+
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
+				database::players::status_pre_game, true))
+			{
+				result["result"] = "ERR_ALREADY_SNEAK";
+				return result;
+			}
+		}
+		else
+		{
+			const auto active_sneak = database::players::get_active_sneak(mother_base_id);
+			if (!active_sneak.has_value())
+			{
+				result["result"] = "ERR_DATABASE";
+				return result;
+			}
+
+			const auto attacker = database::players::find(active_sneak->get_player_id());
+			if (!attacker.has_value())
+			{
+				result["result"] = "ERR_DATABASE";
+				return result;
+			}
+
+			detail["platform"] = active_sneak->get_platform();
+
+			result["session"]["ip"] = attacker->get_ex_ip();
+			result["session"]["is_invalid"] = 0;
+			result["session"]["port"] = attacker->get_ex_port();
+			result["session"]["steamid"] = attacker->get_account_id();
+			result["session"]["xuid"] = attacker->get_account_id();
+
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
+				database::players::status_pre_game, false))
+			{
+				result["result"] = "ERR_ALREADY_SNEAK";
+				return result;
+			}
 		}
 
 		return result;

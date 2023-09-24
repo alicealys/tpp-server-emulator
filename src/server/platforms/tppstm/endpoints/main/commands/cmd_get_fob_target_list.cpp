@@ -97,6 +97,39 @@ namespace tpp
 			return player_ids;
 		}
 
+		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_emergency_list(const database::players::player& player, const std::uint32_t limit)
+		{
+			const auto active_sneak = database::players::find_active_sneak(player.get_id(), true, true);
+			if (!active_sneak.has_value())
+			{
+				return {};
+			}
+
+			std::vector<std::pair<std::uint64_t, nlohmann::json>> player_ids;
+
+			nlohmann::json data;
+
+			const auto attacker = database::players::find(active_sneak->get_player_id());
+			const auto attacker_record = database::player_records::find(active_sneak->get_player_id());
+			const auto attacker_data = database::player_data::find(active_sneak->get_player_id(), false, false, true);
+
+			data["attacker_emblem"] = attacker_data->get_emblem();
+			data["attacker_espionage"]["win"] = attacker_record->get_sneak_win();
+			data["attacker_espionage"]["lose"] = attacker_record->get_sneak_lose();
+			data["attacker_espionage"]["score"] = attacker_record->get_fob_point();
+			data["attacker_espionage"]["section"] = 0;
+
+			data["attacker_info"]["player_id"] = attacker->get_id();
+			data["attacker_info"]["player_name"] = std::format("{}_player01", attacker->get_account_id());
+			data["attacker_info"]["xuid"] = attacker->get_id();
+
+			data["attacker_sneak_rank_grade"] = attacker_record->get_fob_grade();
+
+			player_ids.emplace_back(std::make_pair(player.get_id(), data));
+
+			return player_ids;
+		}
+
 		using target_callback_t = std::function<std::vector<std::pair<std::uint64_t, nlohmann::json>>(const database::players::player&, const std::uint32_t)>;
 		std::unordered_map<std::string, target_callback_t> target_callbacks =
 		{
@@ -104,6 +137,7 @@ namespace tpp
 			{"PICKUP_HIGH", get_pickup_high_list},
 			{"INJURY", get_injury_list},
 			{"CHALLENGE", get_challenge_list},
+			{"EMERGENCY", get_emergency_list},
 		};
 
 		std::vector<std::pair<std::uint64_t, nlohmann::json>> get_target_list(const database::players::player& player,
@@ -227,6 +261,8 @@ namespace tpp
 			target["attacker_info"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
 			target["attacker_info"]["player_id"] = 0;
 			target["attacker_info"]["player_name"] = "NotImplement";
+			target["attacker_info"]["ugc"] = 1;
+			target["attacker_info"]["xuid"] = 0;
 
 			target["attacker_sneak_rank_grade"] = 0;
 			target["cluster"] = 0;
@@ -339,6 +375,8 @@ namespace tpp
 			target["owner_info"]["player_name"] = std::format("{}_player01", target_player->get_account_id());
 			target["owner_info"]["ugc"] = 1;
 			target["owner_info"]["xuid"] = target_player->get_account_id();
+
+			target["sneak_mode"] = 0;
 
 			merge_json(target, extra_data);
 
