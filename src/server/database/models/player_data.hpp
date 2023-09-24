@@ -261,7 +261,7 @@ namespace database::player_data
 		damage_param_num_anti_theft_device = 4,
 		damage_param_num_cameras = 5,
 		damage_param_num_claymores = 6,
-		damage_param_num_guards2 = 7,
+		damage_param_num_decoy = 7,
 		damage_param_anti_reflex_research = 8,
 		damage_param_reinforcements = 9,
 		damage_param_num_drones = 10,

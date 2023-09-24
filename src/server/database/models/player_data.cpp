@@ -38,6 +38,8 @@ namespace database::player_data
 {
 	namespace
 	{
+		constexpr auto nuke_resource_id = 28;
+
 		std::array<std::uint32_t, resource_type_count> local_processed_resource_caps =
 		{
 			500000,
@@ -296,8 +298,6 @@ namespace database::player_data
 			const std::string str = {reinterpret_cast<char*>(&value), sizeof(T)};
 			return utils::cryptography::base64::encode(str);
 		}
-
-		constexpr auto nuke_resource_id = 28;
 	}
 
 	std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps =
@@ -308,9 +308,9 @@ namespace database::player_data
 		{damage_param_num_sensors, 4},
 		{damage_param_num_anti_theft_device, 8},
 		{damage_param_num_cameras, 6},
-		{damage_param_num_guards2, 7},
-		{damage_param_num_guards2, 7},
-		{damage_param_anti_reflex_research, 8},
+		{damage_param_num_claymores, 8},
+		{damage_param_num_decoy, 8},
+		{damage_param_anti_reflex_research, 3},
 		{damage_param_reinforcements, 1},
 		{damage_param_num_drones, 2},
 	};
@@ -416,38 +416,85 @@ namespace database::player_data
 		auto& deploy_damage_params = deploy_damage.value();
 		auto& damage_values = deploy_damage_params["damage_values"];
 		auto& cluster_index_j = deploy_damage_params["cluster_index"];
-		if (damage_values.is_array() && damage_values.size() >= database::player_data::damage_param_count &&
-			cluster_index_j.is_number_unsigned())
+		if (!damage_values.is_array() || damage_values.size() < database::player_data::damage_param_count || 
+			!cluster_index_j.is_number_unsigned())
 		{
-			const auto cluster_index = cluster_index_j.get<std::uint32_t>();
-			if (cluster_index >= cluster_param.size())
+			return;
+		}
+
+		const auto cluster_index = cluster_index_j.get<std::uint32_t>();
+		if (cluster_index >= cluster_param.size())
+		{
+			return;
+		}
+
+		auto& param = cluster_param[cluster_index];
+		const auto& cluster_security_j = param["cluster_security"];
+
+		if (cluster_security_j.is_number_unsigned())
+		{
+			database::player_data::cluster_security cluster_security{};
+			cluster_security.packed = cluster_security_j.get<std::uint32_t>();
+			const auto& grade_damage_j = damage_values[database::player_data::damage_param_num_grade];
+
+			if (grade_damage_j.is_number_unsigned())
+			{
+				const auto grade_damage = grade_damage_j.get<std::uint32_t>();
+				if (cluster_security.fields.grade > grade_damage)
+				{
+					cluster_security.fields.grade = std::max(1u, cluster_security.fields.grade - grade_damage);
+				}
+				else
+				{
+					cluster_security.fields.grade = 1u;
+				}
+
+				param["cluster_security"] = cluster_security.packed;
+			}
+		}
+
+		static std::vector<std::string> platform_keys =
+		{
+			{"common3_security"},
+			{"common2_security"},
+			{"common1_security"},
+			{"unique_security"},
+		};
+
+		const auto decrement_value = [&](const std::string& name, const nlohmann::json& total_j, const std::int32_t per_platform)
+		{
+			if (!total_j.is_number_unsigned())
 			{
 				return;
 			}
 
-			const auto& cluster_security_j = cluster_param[cluster_index]["cluster_security"];
-			if (cluster_security_j.is_number_unsigned())
+			auto amount_left = total_j.get<std::int32_t>();
+			for (auto& platform : platform_keys)
 			{
-				database::player_data::cluster_security cluster_security{};
-				cluster_security.packed = cluster_security_j.get<std::uint32_t>();
-				const auto& grade_damage_j = damage_values[database::player_data::damage_param_num_grade];
-
-				if (grade_damage_j.is_number_unsigned())
+				const auto& value_j = param[platform][name];
+				if (!value_j.is_number_unsigned())
 				{
-					const auto grade_damage = grade_damage_j.get<std::uint32_t>();
-					if (cluster_security.fields.grade > grade_damage)
-					{
-						cluster_security.fields.grade = std::max(4u, cluster_security.fields.grade - grade_damage);
-					}
-					else
-					{
-						cluster_security.fields.grade = 4u;
-					}
+					continue;
+				}
 
-					cluster_param[cluster_index]["cluster_security"] = cluster_security.packed;
+				const auto value = value_j.get<std::int32_t>();
+				param[platform][name] = value - std::min(amount_left, per_platform);
+				amount_left -= per_platform;
+
+				if (amount_left <= 0)
+				{
+					break;
 				}
 			}
-		}
+		};
+
+		decrement_value("antitheft", damage_values[database::player_data::damage_param_num_anti_theft_device], 2);
+		decrement_value("camera", damage_values[database::player_data::damage_param_num_cameras], 2);
+		decrement_value("decoy", damage_values[database::player_data::damage_param_num_decoy], 2);
+		decrement_value("ir_sensor", damage_values[database::player_data::damage_param_num_sensors], 1);
+		decrement_value("mine", damage_values[database::player_data::damage_param_num_claymores], 2);
+		decrement_value("soldier", damage_values[database::player_data::damage_param_num_guards], 6);
+		decrement_value("uav", damage_values[database::player_data::damage_param_num_drones], 1);
 	}
 
 	void create(const std::uint64_t player_id)
