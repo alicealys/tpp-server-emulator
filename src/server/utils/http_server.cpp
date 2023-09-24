@@ -25,8 +25,6 @@ namespace utils
 	void http_connection::reply(const std::uint32_t code, const char* headers, const char* data) const
 	{
 		mg_http_reply(this->conn_, code, headers, "%s", data);
-		this->conn_->is_resp = FALSE;
-		this->conn_->is_draining = TRUE;
 	}
 
 	void http_connection::reply(const std::function<response_params()>& cb) const

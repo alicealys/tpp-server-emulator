@@ -28,9 +28,11 @@ namespace tpp
 			return result;
 		}
 
+		const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);
+
 		result["result"] = "NOERR";
 		result["fob_index"] = -1;
-		result["is_rescue"] = 0;
+		result["is_rescue"] = static_cast<int>(active_sneak.has_value());
 		result["is_reward"] = 0;
 		result["kill_count"] = 0;
 		result["sneak_mode"] = -1;

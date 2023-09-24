@@ -5,6 +5,8 @@
 #include "commands/cmd_abort_mother_base.hpp"
 #include "commands/cmd_auth_steamticket.hpp"
 #include "commands/cmd_calc_cost_time_reduction.hpp"
+#include "commands/cmd_check_defence_motherbase.hpp"
+#include "commands/cmd_check_server_item_correct.hpp"
 #include "commands/cmd_consume_reserve.hpp"
 #include "commands/cmd_create_player.hpp"
 #include "commands/cmd_develop_server_item.hpp"
@@ -75,6 +77,8 @@ namespace tpp
 		this->register_handler<cmd_abort_mother_base>("CMD_ABORT_MOTHER_BASE");
 		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
 		this->register_handler<cmd_calc_cost_time_reduction>("CMD_CALC_COST_TIME_REDUCTION");
+		this->register_handler<cmd_check_defence_motherbase>("CMD_CHECK_DEFENCE_MOTHERBASE");
+		this->register_handler<cmd_check_server_item_correct>("CMD_CHECK_SERVER_ITEM_CORRECT");
 		this->register_handler<cmd_consume_reserve>("CMD_CONSUME_RESERVE");
 		this->register_handler<cmd_create_player>("CMD_CREATE_PLAYER");
 		this->register_handler<cmd_develop_server_item>("CMD_DEVELOP_SERVER_ITEM");

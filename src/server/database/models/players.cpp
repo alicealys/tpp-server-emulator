@@ -29,6 +29,7 @@ create table if not exists `players`
 	current_sneak_player	bigint unsigned not null		default 0,
 	current_sneak_platform	int unsigned	not null		default 0,
 	current_sneak_status	int unsigned	not null		default 0,
+	current_sneak_is_sneak	boolean			not null		default 0,
 	current_sneak_start 	datetime,
 	primary key (`id`)
 ))"
@@ -390,14 +391,32 @@ namespace database::players
 						 players_table.current_sneak_player = 0,
 						 players_table.current_sneak_platform = 0,
 						 players_table.current_sneak_status = 0,
-						 players_table.current_sneak_mode = 0)
+						 players_table.current_sneak_mode = 0,
+						 players_table.current_sneak_is_sneak = false)
 							.where(players_table.id == player_id)
 				);
 		});
 	}
 
+	bool is_sneak_in_game(const sneak_info& info)
+	{
+		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+			std::chrono::system_clock::now().time_since_epoch());
+		if (info.get_status() != status_in_game)
+		{
+			return false;
+		}
+
+		if ((now - info.get_start_time()) < 60s)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode, 
-		const std::uint32_t alt_mode)
+		const std::uint32_t alt_mode, bool is_sneak, bool in_game_only)
 	{
 		return database::access<std::optional<sneak_info>>([&](database::database_t& db)
 			-> std::optional<sneak_info>
@@ -408,7 +427,197 @@ namespace database::players
 						.from(players_table)
 							.where((players_table.current_sneak_mode == mode || 
 								 players_table.current_sneak_mode == alt_mode) &&
+								 players_table.current_sneak_is_sneak == is_sneak && 
 								 players_table.current_sneak_player == owner_id)
+				);
+		
+			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::system_clock::now().time_since_epoch());
+
+			if (results.empty())
+			{
+				return {};
+			}
+
+			for (auto& row : results)
+			{
+				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				{
+					sneak_info info(row);
+
+					if (in_game_only && !is_sneak_in_game(info))
+					{
+						return {};
+					}
+
+					return {info};
+				}
+			}
+
+			return {};
+		});
+	}
+	
+	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, bool is_sneak, bool in_game_only)
+	{
+		return database::access<std::optional<sneak_info>>([&](database::database_t& db)
+			-> std::optional<sneak_info>
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players_table))
+						.from(players_table)
+							.where(players_table.current_sneak_player == owner_id &&
+								   players_table.current_sneak_is_sneak == is_sneak)
+				);
+		
+			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::system_clock::now().time_since_epoch());
+
+			if (results.empty())
+			{
+				return {};
+			}
+
+			for (auto& row : results)
+			{
+				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				{
+					sneak_info info(row);
+
+					if (in_game_only && !is_sneak_in_game(info))
+					{
+						return {};
+					}
+
+					return {info};
+				}
+			}
+
+			return {};
+		});
+	}
+
+	std::optional<sneak_info> get_active_sneak(const std::uint64_t fob_id)
+	{
+		return database::access<std::optional<sneak_info>>([&](database::database_t& db)
+			-> std::optional<sneak_info>
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players_table))
+						.from(players_table)
+							.where(players_table.current_sneak_fob == fob_id)
+				);
+		
+			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::system_clock::now().time_since_epoch());
+
+			if (results.empty())
+			{
+				return {};
+			}
+
+			for (auto& row : results)
+			{
+				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				{
+					sneak_info info(row);
+
+					if (!is_sneak_in_game(info))
+					{
+						return {};
+					}
+
+					return {info};
+				}
+			}
+
+			return {};
+		});
+	}
+
+	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
+		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak)
+	{
+		if (mode == mode_invalid)
+		{
+			return false;
+		}
+
+		const auto _0 = gsl::finally([=]
+		{
+			release_lock(player_id, owner_id);
+		});
+
+		if (!try_acquire_lock(player_id, owner_id))
+		{
+			return false;
+		}
+
+		const auto alt_mode = get_alt_sneak_mode(static_cast<sneak_mode>(mode));
+		const auto active_sneak = find_active_sneak(owner_id, mode, alt_mode, is_sneak, false);
+
+		if (active_sneak.has_value())
+		{
+			if (status < static_cast<std::uint32_t>(active_sneak->get_status()) || active_sneak->get_player_id() != player_id)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (status != status_pre_game)
+			{
+				return false;
+			}
+		}
+
+		database::access([&](database::database_t& db)
+		{
+			if (status == status_in_game)
+			{
+				db->operator()(
+					sqlpp::update(players_table)
+						.set(players_table.current_sneak_fob = fob_id,
+							 players_table.current_sneak_player = owner_id,
+							 players_table.current_sneak_platform = platform,
+							 players_table.current_sneak_status = status,
+							 players_table.current_sneak_mode = mode,
+							 players_table.current_sneak_is_sneak = is_sneak,
+							 players_table.current_sneak_start = std::chrono::system_clock::now())
+								.where(players_table.id == player_id)
+					);
+			}
+			else
+			{
+				db->operator()(
+					sqlpp::update(players_table)
+						.set(players_table.current_sneak_fob = fob_id,
+							 players_table.current_sneak_player = owner_id,
+							 players_table.current_sneak_platform = platform,
+							 players_table.current_sneak_status = status,
+							 players_table.current_sneak_mode = mode,
+							 players_table.current_sneak_is_sneak = is_sneak)
+								.where(players_table.id == player_id)
+					);
+			}
+		});
+
+		return true;
+	}
+
+	std::optional<sneak_info> find_active_sneak_from_player(const std::uint64_t player_id)
+	{
+		return database::access<std::optional<sneak_info>>([&](database::database_t& db)
+			-> std::optional<sneak_info>
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players_table))
+						.from(players_table)
+							.where(players_table.id == player_id &&
+								   players_table.current_sneak_status == static_cast<int>(status_active))
 				);
 		
 			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -429,48 +638,6 @@ namespace database::players
 
 			return {};
 		});
-	}
-	
-	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
-		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status)
-	{
-		if (mode == mode_invalid)
-		{
-			return false;
-		}
-
-		const auto _0 = gsl::finally([=]
-		{
-			release_lock(player_id, owner_id);
-		});
-
-		if (!try_acquire_lock(player_id, owner_id))
-		{
-			return false;
-		}
-
-		const auto alt_mode = get_alt_sneak_mode(static_cast<sneak_mode>(mode));
-		const auto active_sneak = find_active_sneak(owner_id, mode, alt_mode);
-		
-		if (active_sneak.has_value())
-		{
-			return false;
-		}
-
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(players_table)
-					.set(players_table.current_sneak_fob = fob_id,
-						 players_table.current_sneak_player = owner_id,
-						 players_table.current_sneak_platform = platform,
-						 players_table.current_sneak_status = status,
-						 players_table.current_sneak_mode = mode)
-							.where(players_table.id == player_id)
-				);
-		});
-
-		return true;
 	}
 
 	bool set_security_challenge(const std::uint64_t player_id, bool enabled)

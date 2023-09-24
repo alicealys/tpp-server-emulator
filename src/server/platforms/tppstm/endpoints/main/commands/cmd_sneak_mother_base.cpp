@@ -46,6 +46,7 @@ namespace tpp
 			return result;
 		}
 
+		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
 		const auto mode_str = mode_j.get<std::string>();
 
 		const auto mode = database::players::get_sneak_mode_id(mode_str);
@@ -87,7 +88,7 @@ namespace tpp
 			return result;
 		}
 
-		const auto current_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode);
+		const auto current_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode, is_sneak);
 		if (!current_sneak.has_value())
 		{
 			result["result"] = "ERR_DATABASE";
@@ -159,6 +160,8 @@ namespace tpp
 
 		stage_param["build"] = {16385, 16385, 16385, 16385, 16385, 16385, 16385};
 		stage_param["cluster_param"] = cluster_param[platform];
+		stage_param["cluster_param"]["build"] = 0;
+
 		stage_param["construct_param"] = fob->get_construct_param();
 
 		stage_param["fob_index"] = fob_index;
@@ -215,8 +218,33 @@ namespace tpp
 
 		result["wormhole_player_id"] = wormhole_player_id_j;
 
-		database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
-			database::players::status_active);
+		if (!is_sneak)
+		{
+			const auto active_sneak = database::players::get_active_sneak(mother_base_id);
+			if (!active_sneak.has_value())
+			{
+				result["result"] = "ERR_DATABASE";
+				return result;
+			}
+
+			stage_param["platform"] = active_sneak->get_platform();
+
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
+				database::players::status_active, is_sneak))
+			{
+				result["result"] = "ERR_DATABASE";
+				return result;
+			}
+		}
+		else
+		{
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
+				database::players::status_active, is_sneak))
+			{
+				result["result"] = "ERR_DATABASE";
+				return result;
+			}
+		}
 
 		return result;
 	}

@@ -11,7 +11,6 @@ namespace tpp
 	nlohmann::json cmd_update_session::execute(nlohmann::json& data, const std::string& session_key)
 	{
 		nlohmann::json result;
-		result["xuid"] = {};
 
 		const auto player = database::players::find_by_session_id(session_key);
 		if (!player.has_value())
@@ -26,9 +25,12 @@ namespace tpp
 			return result;
 		}
 
-		result["result"] = "NOERR";
-		result["fob_index"] = -1;
-		result["sneak_mode"] = -1;
+		const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);
+		auto sneak_mode = active_sneak.has_value() ? 0 : -1;
+		auto fob_index = active_sneak.has_value() ? 0 : -1;
+
+		result["fob_index"] = sneak_mode;
+		result["sneak_mode"] = fob_index;
 
 		return result;
 	}

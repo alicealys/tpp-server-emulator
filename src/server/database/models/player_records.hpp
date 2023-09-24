@@ -8,7 +8,7 @@ namespace database::player_records
 	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(fob_grade, sqlpp::integer_unsigned);
 	DEFINE_FIELD(prev_fob_grade, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_point, sqlpp::integer_unsigned);
+	DEFINE_FIELD(fob_point, sqlpp::integer);
 	DEFINE_FIELD(fob_rank, sqlpp::integer_unsigned);
 	DEFINE_FIELD(prev_fob_rank, sqlpp::integer_unsigned);
 	DEFINE_FIELD(is_insurance, sqlpp::boolean);
@@ -45,7 +45,7 @@ namespace database::player_records
 			this->player_id_ = row.player_id;
 			this->fob_grade_ = static_cast<std::uint32_t>(row.fob_grade);
 			this->prev_fob_grade_ = static_cast<std::uint32_t>(row.prev_fob_grade);
-			this->fob_point_ = static_cast<std::uint32_t>(row.fob_point);
+			this->fob_point_ = static_cast<std::int32_t>(row.fob_point);
 			this->fob_rank_ = static_cast<std::uint32_t>(row.fob_rank);
 			this->prev_fob_rank_ = static_cast<std::uint32_t>(row.prev_fob_rank);
 			this->is_insurance_ = static_cast<std::uint32_t>(row.is_insurance);
@@ -78,7 +78,7 @@ namespace database::player_records
 			return this->prev_fob_grade_;
 		}
 
-		std::uint32_t get_fob_point() const
+		std::int32_t get_fob_point() const
 		{
 			return this->fob_point_;
 		}
@@ -169,7 +169,7 @@ namespace database::player_records
 		std::uint64_t player_id_;
 		std::uint32_t fob_grade_;
 		std::uint32_t prev_fob_grade_;
-		std::uint32_t fob_point_;
+		std::int32_t fob_point_;
 		std::uint32_t fob_rank_;
 		std::uint32_t prev_fob_rank_;
 		std::uint32_t is_insurance_;
