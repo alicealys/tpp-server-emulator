@@ -11,6 +11,7 @@ create table if not exists `fobs`
 (
 	id                  bigint unsigned	not null	auto_increment,
 	player_id	        bigint unsigned	not null,
+	fob_index			bigint unsigned	not null,
 	platform_count		int	unsigned	not null default 0,
 	security_rank		int unsigned	not null default 0,
 	area_id	            int unsigned	not null default 0,
@@ -74,10 +75,14 @@ namespace database::fobs
 	{
 		database::access([&](database::database_t& db)
 		{
+			const auto list = get_fob_list(player_id);
+			const auto index = list.size();
+
 			db->operator()(
 				sqlpp::insert_into(fobs_table)
 					.set(fobs_table.player_id = player_id,
 						 fobs_table.area_id = area_id,
+						 fobs_table.fob_index = index,
 						 fobs_table.cluster_param = "[]",
 						 fobs_table.construct_param = 0,
 						 fobs_table.create_date = std::chrono::system_clock::now()

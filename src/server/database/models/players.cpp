@@ -617,7 +617,7 @@ namespace database::players
 					sqlpp::all_of(players_table))
 						.from(players_table)
 							.where(players_table.id == player_id &&
-								   players_table.current_sneak_status == static_cast<int>(status_active))
+								   players_table.current_sneak_status >= static_cast<int>(status_active))
 				);
 		
 			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(

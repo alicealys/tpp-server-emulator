@@ -4,11 +4,13 @@
 
 #include "commands/cmd_abort_mother_base.hpp"
 #include "commands/cmd_auth_steamticket.hpp"
+#include "commands/cmd_calc_cost_fob_deploy_replace.hpp"
 #include "commands/cmd_calc_cost_time_reduction.hpp"
 #include "commands/cmd_check_defence_motherbase.hpp"
 #include "commands/cmd_check_server_item_correct.hpp"
 #include "commands/cmd_consume_reserve.hpp"
 #include "commands/cmd_create_player.hpp"
+#include "commands/cmd_deploy_fob_assist.hpp"
 #include "commands/cmd_develop_server_item.hpp"
 #include "commands/cmd_gdpr_check.hpp"
 #include "commands/cmd_get_abolition_count.hpp"
@@ -17,6 +19,7 @@
 #include "commands/cmd_get_combat_deploy_result.hpp"
 #include "commands/cmd_get_daily_reward.hpp"
 #include "commands/cmd_get_fob_damage.hpp"
+#include "commands/cmd_get_fob_deploy_list.hpp"
 #include "commands/cmd_get_fob_event_list.hpp"
 #include "commands/cmd_get_fob_notice.hpp"
 #include "commands/cmd_get_fob_param.hpp"
@@ -76,11 +79,13 @@ namespace tpp
 
 		this->register_handler<cmd_abort_mother_base>("CMD_ABORT_MOTHER_BASE");
 		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
+		this->register_handler<cmd_calc_cost_fob_deploy_replace>("CMD_CALC_COST_FOB_DEPLOY_REPLACE");
 		this->register_handler<cmd_calc_cost_time_reduction>("CMD_CALC_COST_TIME_REDUCTION");
 		this->register_handler<cmd_check_defence_motherbase>("CMD_CHECK_DEFENCE_MOTHERBASE");
 		this->register_handler<cmd_check_server_item_correct>("CMD_CHECK_SERVER_ITEM_CORRECT");
 		this->register_handler<cmd_consume_reserve>("CMD_CONSUME_RESERVE");
 		this->register_handler<cmd_create_player>("CMD_CREATE_PLAYER");
+		this->register_handler<cmd_deploy_fob_assist>("CMD_DEPLOY_FOB_ASSIST");
 		this->register_handler<cmd_develop_server_item>("CMD_DEVELOP_SERVER_ITEM");
 		this->register_handler<cmd_gdpr_check>("CMD_GDPR_CHECK");
 		this->register_handler<cmd_get_abolition_count>("CMD_GET_ABOLITION_COUNT");
@@ -89,6 +94,7 @@ namespace tpp
 		this->register_handler<cmd_get_combat_deploy_result>("CMD_GET_COMBAT_DEPLOY_RESULT");
 		this->register_handler<cmd_get_daily_reward>("CMD_GET_DAILY_REWARD");
 		this->register_handler<cmd_get_fob_damage>("CMD_GET_FOB_DAMAGE");
+		this->register_handler<cmd_get_fob_deploy_list>("CMD_GET_FOB_DEPLOY_LIST");
 		this->register_handler<cmd_get_fob_event_list>("CMD_GET_FOB_EVENT_LIST");
 		this->register_handler<cmd_get_fob_notice>("CMD_GET_FOB_NOTICE");
 		this->register_handler<cmd_get_fob_param>("CMD_GET_FOB_PARAM");

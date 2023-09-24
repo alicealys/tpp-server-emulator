@@ -29,10 +29,12 @@ namespace database::player_data
 	DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
 	DEFINE_FIELD(last_sync, sqlpp::time_point);
 	DEFINE_FIELD(version, sqlpp::integer_unsigned);
+	DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
 	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
 		resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, 
 		local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t, 
-		insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t);
+		insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t,
+		fob_deploy_damage_param_field_t);
 
 	extern player_data_table_t player_data_table;
 
@@ -129,6 +131,20 @@ namespace database::player_data
 	{
 		staff_fields_t fields;
 		std::uint32_t packed[6];
+	};
+
+	struct cluster_security_fields
+	{
+		std::uint32_t unk1 : 2;
+		std::uint32_t grade : 4;
+		std::uint32_t unk2 : 13;
+		std::uint32_t unk3 : 13;
+	};
+
+	union cluster_security
+	{
+		cluster_security_fields fields;
+		std::uint32_t packed;
 	};
 
 	static_assert(sizeof(staff_t) == 24);
@@ -236,6 +252,24 @@ namespace database::player_data
 		stat_dist_special_character = 0b111111,
 	};
 
+	enum deploy_damage_params
+	{
+		damage_param_unknown = 0,
+		damage_param_num_guards = 1,
+		damage_param_num_grade = 2,
+		damage_param_num_sensors = 3,
+		damage_param_num_anti_theft_device = 4,
+		damage_param_num_cameras = 5,
+		damage_param_num_claymores = 6,
+		damage_param_num_guards2 = 7,
+		damage_param_anti_reflex_research = 8,
+		damage_param_reinforcements = 9,
+		damage_param_num_drones = 10,
+		damage_param_count
+	};
+
+	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
+
 	extern std::vector<std::string> unit_names;
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
 
@@ -298,6 +332,30 @@ namespace database::player_data
 			}
 
 			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
+
+			if (!row.fob_deploy_damage_param.is_null())
+			{
+				this->fob_deploy_damage_param_.emplace(nlohmann::json::parse(row.fob_deploy_damage_param.value()));
+				if (!this->fob_deploy_damage_param_->is_object())
+				{
+					this->fob_deploy_damage_param_.reset();
+				}
+				else
+				{
+					auto& value = this->fob_deploy_damage_param_.value();
+					const auto& expire = value["expiration_date"];
+					if (!expire.is_number_unsigned())
+					{
+						this->fob_deploy_damage_param_.reset();
+					}
+
+					const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
+					if (now.count() > expire.get<std::uint32_t>())
+					{
+						this->fob_deploy_damage_param_.reset();
+					}
+				}
+			}
 		}
 
 		template <typename ...Args>
@@ -480,6 +538,11 @@ namespace database::player_data
 			return this->nuke_count_;
 		}
 
+		std::optional<nlohmann::json> get_fob_deploy_damage_param() const
+		{
+			return this->fob_deploy_damage_param_;
+		}
+
 	private:
 		std::uint64_t player_id_;
 
@@ -495,6 +558,7 @@ namespace database::player_data
 		nlohmann::json loadout_{};
 		nlohmann::json motherbase_{};
 		nlohmann::json emblem_{};
+		std::optional<nlohmann::json> fob_deploy_damage_param_{};
 
 		std::uint32_t mb_coin_{};
 
@@ -513,6 +577,8 @@ namespace database::player_data
 	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value);
 
 	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index);
+
+	void apply_deploy_damage_params(nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
 	void create(const std::uint64_t player_id);
 	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
@@ -534,4 +600,6 @@ namespace database::player_data
 	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value);
 
 	std::uint32_t get_nuke_count();
+
+	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param);
 }

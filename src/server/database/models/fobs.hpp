@@ -10,14 +10,15 @@ namespace database::fobs
 {
 	DEFINE_FIELD(id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+	DEFINE_FIELD(fob_index, sqlpp::integer_unsigned);
 	DEFINE_FIELD(area_id, sqlpp::integer_unsigned);
 	DEFINE_FIELD(platform_count, sqlpp::integer_unsigned);
 	DEFINE_FIELD(security_rank, sqlpp::integer_unsigned);
 	DEFINE_FIELD(cluster_param, sqlpp::text);
 	DEFINE_FIELD(construct_param, sqlpp::integer_unsigned);
 	DEFINE_FIELD(create_date, sqlpp::time_point);
-	DEFINE_TABLE(fobs, id_field_t, player_id_field_t, area_id_field_t, 
-		platform_count_field_t, security_rank_field_t,
+	DEFINE_TABLE(fobs, id_field_t, player_id_field_t, fob_index_field_t,
+		area_id_field_t, platform_count_field_t, security_rank_field_t,
 		cluster_param_field_t, construct_param_field_t, create_date_field_t);
 
 	nlohmann::json& get_area_list();
@@ -40,6 +41,7 @@ namespace database::fobs
 
 			this->id_ = row.id;
 			this->player_id_ = row.player_id;
+			this->index_ = row.fob_index;
 			this->area_id_ = static_cast<std::uint32_t>(row.area_id);
 			this->construct_param_ = static_cast<std::uint32_t>(row.construct_param);
 			this->create_date_ = row.create_date.value().time_since_epoch();
@@ -95,9 +97,15 @@ namespace database::fobs
 			return this->cluster_param_;
 		}
 
+		std::uint64_t get_index()
+		{
+			return this->index_;
+		}
+
 	private:
 		std::uint64_t id_;
 		std::uint64_t player_id_;
+		std::uint64_t index_;
 		std::uint32_t area_id_;
 		std::uint32_t platform_count_;
 		std::uint32_t security_rank_;

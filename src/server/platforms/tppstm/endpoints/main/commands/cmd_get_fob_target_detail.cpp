@@ -21,6 +21,13 @@ namespace tpp
 			result["result"] = "ERR_INVALID_SESSION";
 			return result;
 		}
+
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.get())
+		{
+			result["result"] = "ERR_INVALIDARG";
+			return result;
+		}
 		
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
@@ -58,7 +65,6 @@ namespace tpp
 			return result;
 		}
 
-		const auto player_data = database::player_data::find(fob->get_player_id());
 		auto& detail = result["detail"];
 
 		detail["captured_rank_bottom"] = 0;
@@ -67,13 +73,16 @@ namespace tpp
 		detail["captured_rank_bottom"] = 0;
 
 		detail["mother_base_param"]["area_id"] = 0;
-		detail["mother_base_param"]["fob_index"] = 0;
+		detail["mother_base_param"]["fob_index"] = fob->get_index();
 		detail["mother_base_param"]["platform_count"] = 0;
 		detail["mother_base_param"]["price"] = 0;
 		detail["mother_base_param"]["security_rank"] = 0;
 		detail["mother_base_param"]["cluster_param"] = fob->get_cluster_param();
 		detail["mother_base_param"]["construct_param"] = fob->get_construct_param();
 		detail["mother_base_param"]["mother_base_id"] = fob->get_id();
+
+		auto damage_params = player_data->get_fob_deploy_damage_param();
+		database::player_data::apply_deploy_damage_params(detail["mother_base_param"]["cluster_param"], damage_params);
 
 		detail["owner_player_id"] = fob->get_player_id();
 
