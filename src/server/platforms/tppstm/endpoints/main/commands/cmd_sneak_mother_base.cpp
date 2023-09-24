@@ -62,26 +62,25 @@ namespace tpp
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 		auto fob = database::fobs::get_fob(mother_base_id);
-		const auto fob_list = database::fobs::get_fob_list(fob->get_player_id());
-		if (!fob.has_value() || fob_list.size() == 0)
+
+		if (!fob.has_value())
 		{
 			result["result"] = "ERR_INVALIDARG";
 			return result;
 		}
 
-		auto fob_index = 0;
-		for (auto i = 0; i < fob_list.size(); i++)
+		const auto attacker_data = database::player_data::find(player->get_id(), true);
+		const auto player_data = database::player_data::find(fob->get_player_id(), true);
+
+		if (!attacker_data.get() || !player_data.get())
 		{
-			if (fob_list[i].get_id() == fob->get_id())
-			{
-				fob_index = i;
-			}
+			result["result"] = "ERR_INVALIDARG";
+			return result;
 		}
 
-		const auto player_data = database::player_data::find(fob->get_player_id(), true);
 		auto mother_base = player_data->get_motherbase();
 
-		const auto& cluster_param = fob->get_cluster_param();
+		auto& cluster_param = fob->get_cluster_param();
 		if (platform >= cluster_param.size())
 		{
 			result["result"] = "ERR_INVALIDARG";
@@ -105,13 +104,21 @@ namespace tpp
 		result["damage_param"] = nlohmann::json::array();
 		result["event_fob_params"] = {0, 0, 0, 0, 0};
 
-		result["fob_deploy_damage_param"]["cluster_index"] = 0;
-		result["fob_deploy_damage_param"]["expiration_date"] = 0;
-		result["fob_deploy_damage_param"]["motherbase_id"] = 0;
-
-		for (auto i = 0; i < 16; i++)
+		auto damage_params = attacker_data->get_fob_deploy_damage_param();
+		if (damage_params.has_value())
 		{
-			result["fob_deploy_damage_param"]["damage_values"][i] = 0;
+			result["fob_deploy_damage_param"] = damage_params.value();
+		}
+		else
+		{
+			result["fob_deploy_damage_param"]["cluster_index"] = 0;
+			result["fob_deploy_damage_param"]["expiration_date"] = 0;
+			result["fob_deploy_damage_param"]["motherbase_id"] = 0;
+
+			for (auto i = 0; i < 16; i++)
+			{
+				result["fob_deploy_damage_param"]["damage_values"][i] = 0;
+			}
 		}
 
 		result["is_event"] = 0;
@@ -158,13 +165,15 @@ namespace tpp
 
 		auto& stage_param = result["stage_param"];
 
+		database::player_data::apply_deploy_damage_params(cluster_param, damage_params);
+
 		stage_param["build"] = {16385, 16385, 16385, 16385, 16385, 16385, 16385};
 		stage_param["cluster_param"] = cluster_param[platform];
 		stage_param["cluster_param"]["build"] = 0;
 
 		stage_param["construct_param"] = fob->get_construct_param();
 
-		stage_param["fob_index"] = fob_index;
+		stage_param["fob_index"] = fob->get_index();
 		stage_param["mother_base_id"] = fob->get_id();
 		stage_param["nuclear"] = player_data->get_nuke_count();
 		stage_param["owner_player_id"] = player->get_id();

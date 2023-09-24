@@ -648,6 +648,13 @@ namespace utils::cryptography
 		return result;
 	}
 
+	uint32_t random::get_integer(const std::uint32_t min, const std::uint32_t max)
+	{
+		const auto range = max - min + 1;
+		const auto value = random::get_integer();
+		return value % range + min;
+	}
+
 	std::string random::get_challenge()
 	{
 		std::string result;

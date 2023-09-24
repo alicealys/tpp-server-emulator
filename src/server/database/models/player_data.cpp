@@ -28,6 +28,7 @@ create table if not exists `player_data`
 	last_sync				datetime default null,
 	mb_coin					int default 0,
 	version 				bigint unsigned default 0,
+	fob_deploy_damage_param json,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)
@@ -299,6 +300,21 @@ namespace database::player_data
 		constexpr auto nuke_resource_id = 28;
 	}
 
+	std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps =
+	{
+		{damage_param_unknown, 0},
+		{damage_param_num_guards, 7},
+		{damage_param_num_grade, 5},
+		{damage_param_num_sensors, 4},
+		{damage_param_num_anti_theft_device, 8},
+		{damage_param_num_cameras, 6},
+		{damage_param_num_guards2, 7},
+		{damage_param_num_guards2, 7},
+		{damage_param_anti_reflex_research, 8},
+		{damage_param_reinforcements, 1},
+		{damage_param_num_drones, 2},
+	};
+
 	player_data_table_t player_data_table;
 
 	std::vector<std::string> unit_names =
@@ -388,6 +404,50 @@ namespace database::player_data
 	bool is_usable_staff(const staff_t& staff)
 	{
 		return is_usable_staff(staff.fields);
+	}
+
+	void apply_deploy_damage_params(nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage)
+	{
+		if (!deploy_damage.has_value())
+		{
+			return;
+		}
+
+		auto& deploy_damage_params = deploy_damage.value();
+		auto& damage_values = deploy_damage_params["damage_values"];
+		auto& cluster_index_j = deploy_damage_params["cluster_index"];
+		if (damage_values.is_array() && damage_values.size() >= database::player_data::damage_param_count &&
+			cluster_index_j.is_number_unsigned())
+		{
+			const auto cluster_index = cluster_index_j.get<std::uint32_t>();
+			if (cluster_index >= cluster_param.size())
+			{
+				return;
+			}
+
+			const auto& cluster_security_j = cluster_param[cluster_index]["cluster_security"];
+			if (cluster_security_j.is_number_unsigned())
+			{
+				database::player_data::cluster_security cluster_security{};
+				cluster_security.packed = cluster_security_j.get<std::uint32_t>();
+				const auto& grade_damage_j = damage_values[database::player_data::damage_param_num_grade];
+
+				if (grade_damage_j.is_number_unsigned())
+				{
+					const auto grade_damage = grade_damage_j.get<std::uint32_t>();
+					if (cluster_security.fields.grade > grade_damage)
+					{
+						cluster_security.fields.grade = std::max(4u, cluster_security.fields.grade - grade_damage);
+					}
+					else
+					{
+						cluster_security.fields.grade = 4u;
+					}
+
+					cluster_param[cluster_index]["cluster_security"] = cluster_security.packed;
+				}
+			}
+		}
 	}
 
 	void create(const std::uint64_t player_id)
@@ -613,6 +673,17 @@ namespace database::player_data
 			}
 
 			return static_cast<std::uint32_t>(result.front().sum.value());
+		});
+	}
+
+	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
+	{
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(player_data_table)
+					.set(player_data_table.fob_deploy_damage_param = param.dump())	
+						.where(player_data_table.player_id == player_id));
 		});
 	}
 

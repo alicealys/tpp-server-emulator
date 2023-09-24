@@ -30,6 +30,13 @@ namespace tpp
 			return result;
 		}
 
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.get())
+		{
+			result["result"] = "ERR_INVALIDARG";
+			return result;
+		}
+
 		try
 		{
 			const auto sneak_result = data["sneak_result"].get<std::string>();
@@ -73,6 +80,19 @@ namespace tpp
 
 				database::player_records::add_sneak_result(player->get_id(), sneak_point, is_win);
 				database::sneak_results::add_sneak_result(player->get_id(), fob->get_player_id(), fob->get_id(), sneak_data);
+
+				if (active_sneak->is_sneak())
+				{
+					auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
+					if (deploy_damage_opt.has_value())
+					{
+						auto& deploy_damage = deploy_damage_opt.value();
+						if (deploy_damage["motherbase_id"] == fob->get_id())
+						{
+							database::player_data::set_fob_deploy_damage_param(player->get_id(), {});
+						}
+					}
+				}
 			}
 
 			database::players::abort_mother_base(player->get_id());
