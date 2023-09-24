@@ -41,9 +41,20 @@ namespace tpp
 			while (!killed)
 			{
 				database::cleanup_connections();
+				database::run_tasks();
 				std::this_thread::sleep_for(100ms);
 			}
 		});
+
+		while (!killed)
+		{
+			std::string cmd;
+			std::getline(std::cin, cmd);
+			if (cmd == "quit")
+			{
+				killed = true;
+			}
+		}
 
 		for (auto& thread : threads)
 		{

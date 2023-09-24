@@ -20,7 +20,11 @@ namespace database
 	class table_interface
 	{
 	public:
-		virtual void create(database_t& table)
+		virtual void create(database_t& db)
+		{
+		}
+
+		virtual void run_tasks(database_t& db)
 		{
 		}
 	};

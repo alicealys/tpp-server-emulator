@@ -62,6 +62,8 @@ namespace tpp
 				database::sneak_results::add_sneak_result(player->get_id(), fob->get_player_id(), fob->get_id(), sneak_data);
 			}
 
+			database::players::abort_mother_base(player->get_id());
+
 			const auto new_stats = database::player_records::find(player->get_id());
 			if (!new_stats.has_value())
 			{

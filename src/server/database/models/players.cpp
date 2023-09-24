@@ -9,8 +9,8 @@
 create table if not exists `players`
 (
 	id						bigint unsigned	not null	auto_increment,
-	account_id				bigint unsigned	not null,
-	session_id				char(32)		default null,
+	account_id				bigint unsigned	not null	 unique,
+	session_id				char(32)		default null unique,
 	login_password			char(32)		default null,
 	last_update				datetime		default null,
 	crypto_key				char(32)		default null,
@@ -22,7 +22,8 @@ create table if not exists `players`
 	in_port					int unsigned	default 0,
 	nat						int unsigned	default 0,
 	creation_time			datetime        not null,
-	current_lock			int unsigned	not null		default 0,
+	security_challenge		boolean			not null default false,
+	current_lock			bigint unsigned	not null		default 0,
 	current_sneak_mode		int unsigned	not null		default 0,
 	current_sneak_fob		bigint unsigned not null		default 0,
 	current_sneak_player	bigint unsigned not null		default 0,
@@ -470,6 +471,43 @@ namespace database::players
 		});
 
 		return true;
+	}
+
+	bool set_security_challenge(const std::uint64_t player_id, bool enabled)
+	{
+		return database::access<bool>([&](database::database_t& db)
+		{
+			const auto result = db->operator()(
+				sqlpp::update(players_table)
+					.set(players_table.security_challenge = enabled)
+							.where(players_table.id == player_id)
+				);
+
+			return result != 0;
+		});
+	}
+
+	std::vector<player> find_with_security_challenge(const std::uint32_t limit)
+	{
+		return database::access<std::vector<player>>([&](database::database_t& db)
+			-> std::vector<player>
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::all_of(players_table))
+						.from(players_table)
+							.where((players_table.security_challenge == true))
+				);
+
+			std::vector<player> list;
+
+			for (auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		});
 	}
 
 	class table final : public table_interface
