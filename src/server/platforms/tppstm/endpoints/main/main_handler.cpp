@@ -3,6 +3,7 @@
 #include "main_handler.hpp"
 
 #include "commands/cmd_abort_mother_base.hpp"
+#include "commands/cmd_active_sneak_mother_base.hpp"
 #include "commands/cmd_auth_steamticket.hpp"
 #include "commands/cmd_calc_cost_fob_deploy_replace.hpp"
 #include "commands/cmd_calc_cost_time_reduction.hpp"
@@ -78,6 +79,7 @@ namespace tpp
 		blow_.set_key(utils::tpp::get_static_key(), utils::tpp::get_static_key_len());
 
 		this->register_handler<cmd_abort_mother_base>("CMD_ABORT_MOTHER_BASE");
+		this->register_handler<cmd_active_sneak_mother_base>("CMD_ACTIVE_SNEAK_MOTHER_BASE");
 		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
 		this->register_handler<cmd_calc_cost_fob_deploy_replace>("CMD_CALC_COST_FOB_DEPLOY_REPLACE");
 		this->register_handler<cmd_calc_cost_time_reduction>("CMD_CALC_COST_TIME_REDUCTION");

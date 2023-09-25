@@ -79,10 +79,11 @@ namespace tpp
 				sneak_data.erase("rqid");
 
 				database::player_records::add_sneak_result(player->get_id(), sneak_point, is_win);
-				database::sneak_results::add_sneak_result(player->get_id(), fob->get_player_id(), fob->get_id(), sneak_data);
 
 				if (active_sneak->is_sneak())
 				{
+					database::sneak_results::add_sneak_result(player->get_id(), fob->get_player_id(), fob->get_id(), sneak_data);
+
 					auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
 					if (deploy_damage_opt.has_value())
 					{

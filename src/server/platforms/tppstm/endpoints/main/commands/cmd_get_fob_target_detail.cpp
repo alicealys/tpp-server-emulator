@@ -165,7 +165,7 @@ namespace tpp
 			result["session"]["xuid"] = player->get_account_id();
 
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
-				database::players::status_pre_game, true))
+				database::players::status_menu, true))
 			{
 				result["result"] = "ERR_ALREADY_SNEAK";
 				return result;
@@ -195,8 +195,8 @@ namespace tpp
 			result["session"]["steamid"] = attacker->get_account_id();
 			result["session"]["xuid"] = attacker->get_account_id();
 
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
-				database::players::status_pre_game, false))
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
+				database::players::status_menu, false))
 			{
 				result["result"] = "ERR_ALREADY_SNEAK";
 				return result;

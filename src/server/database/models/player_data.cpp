@@ -315,6 +315,17 @@ namespace database::player_data
 		{damage_param_num_drones, 2},
 	};
 
+	std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map =
+	{
+		{0, 0},
+		{1, 1},
+		{2, 2},
+		{3, 4},
+		{4, 6},
+		{5, 5},
+		{6, 3},
+	};
+
 	player_data_table_t player_data_table;
 
 	std::vector<std::string> unit_names =
@@ -428,7 +439,8 @@ namespace database::player_data
 			return;
 		}
 
-		auto& param = cluster_param[cluster_index];
+		const auto mapped_index = cluster_index_map[cluster_index];
+		auto& param = cluster_param[mapped_index];
 		const auto& cluster_security_j = param["cluster_security"];
 
 		if (cluster_security_j.is_number_unsigned())
@@ -442,11 +454,11 @@ namespace database::player_data
 				const auto grade_damage = grade_damage_j.get<std::uint32_t>();
 				if (cluster_security.fields.grade > grade_damage)
 				{
-					cluster_security.fields.grade = std::max(1u, cluster_security.fields.grade - grade_damage);
+					cluster_security.fields.grade = std::max(4u, cluster_security.fields.grade - grade_damage);
 				}
 				else
 				{
-					cluster_security.fields.grade = 1u;
+					cluster_security.fields.grade = 4u;
 				}
 
 				param["cluster_security"] = cluster_security.packed;
@@ -476,15 +488,15 @@ namespace database::player_data
 				{
 					continue;
 				}
-
-				const auto value = value_j.get<std::int32_t>();
-				param[platform][name] = value - std::min(amount_left, per_platform);
-				amount_left -= per_platform;
-
+				
 				if (amount_left <= 0)
 				{
 					break;
 				}
+
+				const auto value = value_j.get<std::int32_t>();
+				param[platform][name] = value - std::min(amount_left, per_platform);
+				amount_left -= per_platform;
 			}
 		};
 
