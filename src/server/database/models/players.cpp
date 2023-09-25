@@ -402,12 +402,17 @@ namespace database::players
 	{
 		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
 			std::chrono::system_clock::now().time_since_epoch());
-		if (info.get_status() != status_in_game)
+		if (info.get_status() < status_in_game)
 		{
 			return false;
 		}
 
-		if ((now - info.get_start_time()) < 60s)
+		if (info.get_status() >= status_in_game_alert)
+		{
+			return true;
+		}
+
+		if ((now - info.get_start_time()) < 30s)
 		{
 			return false;
 		}
@@ -439,19 +444,17 @@ namespace database::players
 				return {};
 			}
 
-			for (auto& row : results)
+			const auto& row = results.front();
+			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
 			{
-				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				sneak_info info(row);
+
+				if (in_game_only && !is_sneak_in_game(info))
 				{
-					sneak_info info(row);
-
-					if (in_game_only && !is_sneak_in_game(info))
-					{
-						return {};
-					}
-
-					return {info};
+					return {};
 				}
+
+				return {info};
 			}
 
 			return {};
@@ -479,19 +482,17 @@ namespace database::players
 				return {};
 			}
 
-			for (auto& row : results)
+			const auto& row = results.front();
+			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
 			{
-				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				sneak_info info(row);
+
+				if (in_game_only && !is_sneak_in_game(info))
 				{
-					sneak_info info(row);
-
-					if (in_game_only && !is_sneak_in_game(info))
-					{
-						return {};
-					}
-
-					return {info};
+					return {};
 				}
+
+				return {info};
 			}
 
 			return {};
@@ -507,7 +508,8 @@ namespace database::players
 				sqlpp::select(
 					sqlpp::all_of(players_table))
 						.from(players_table)
-							.where(players_table.current_sneak_fob == fob_id)
+							.where(players_table.current_sneak_fob == fob_id && 
+								   players_table.current_sneak_is_sneak == true)
 				);
 		
 			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -518,19 +520,17 @@ namespace database::players
 				return {};
 			}
 
-			for (auto& row : results)
+			const auto& row = results.front();
+			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
 			{
-				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+				sneak_info info(row);
+
+				if (!is_sneak_in_game(info))
 				{
-					sneak_info info(row);
-
-					if (!is_sneak_in_game(info))
-					{
-						return {};
-					}
-
-					return {info};
+					return {};
 				}
+
+				return {info};
 			}
 
 			return {};
@@ -567,7 +567,7 @@ namespace database::players
 		}
 		else
 		{
-			if (status != status_pre_game)
+			if (status != status_menu)
 			{
 				return false;
 			}
@@ -575,7 +575,7 @@ namespace database::players
 
 		database::access([&](database::database_t& db)
 		{
-			if (status == status_in_game)
+			if (status >= status_in_game)
 			{
 				db->operator()(
 					sqlpp::update(players_table)
@@ -617,7 +617,7 @@ namespace database::players
 					sqlpp::all_of(players_table))
 						.from(players_table)
 							.where(players_table.id == player_id &&
-								   players_table.current_sneak_status >= static_cast<int>(status_active))
+								   players_table.current_sneak_status >= static_cast<int>(status_pre_game))
 				);
 		
 			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(

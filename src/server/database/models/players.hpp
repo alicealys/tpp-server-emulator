@@ -59,9 +59,10 @@ namespace database::players
 	enum sneak_status
 	{
 		status_none = 0,
-		status_pre_game = 1,
-		status_active = 2,
+		status_menu = 1,
+		status_pre_game = 2,
 		status_in_game = 3,
+		status_in_game_alert = 4,
 		status_count
 	};
 

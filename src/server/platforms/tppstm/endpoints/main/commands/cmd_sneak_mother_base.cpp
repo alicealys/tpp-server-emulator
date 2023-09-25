@@ -69,7 +69,20 @@ namespace tpp
 			return result;
 		}
 
-		const auto attacker_data = database::player_data::find(player->get_id(), true);
+		auto attacker_id = player->get_id();
+		if (!is_sneak)
+		{
+			const auto attacker_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode, true);
+			if (!attacker_sneak.has_value())
+			{
+				result["result"] = "ERR_DATABASE";
+				return result;
+			}
+
+			attacker_id = attacker_sneak->get_player_id();
+		}
+
+		const auto attacker_data = database::player_data::find(attacker_id, true);
 		const auto player_data = database::player_data::find(fob->get_player_id(), true);
 
 		if (!attacker_data.get() || !player_data.get())
@@ -167,8 +180,10 @@ namespace tpp
 
 		database::player_data::apply_deploy_damage_params(cluster_param, damage_params);
 
+		const auto mapped_index = database::player_data::cluster_index_map[platform];
+
 		stage_param["build"] = {16385, 16385, 16385, 16385, 16385, 16385, 16385};
-		stage_param["cluster_param"] = cluster_param[platform];
+		stage_param["cluster_param"] = cluster_param[mapped_index];
 		stage_param["cluster_param"]["build"] = 0;
 
 		stage_param["construct_param"] = fob->get_construct_param();
@@ -239,7 +254,7 @@ namespace tpp
 			stage_param["platform"] = active_sneak->get_platform();
 
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_active, is_sneak))
+				database::players::status_pre_game, is_sneak))
 			{
 				result["result"] = "ERR_DATABASE";
 				return result;
@@ -248,7 +263,7 @@ namespace tpp
 		else
 		{
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
-				database::players::status_active, is_sneak))
+				database::players::status_pre_game, is_sneak))
 			{
 				result["result"] = "ERR_DATABASE";
 				return result;

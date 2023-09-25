@@ -270,6 +270,8 @@ namespace database::player_data
 
 	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
 
+	extern std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map;
+
 	extern std::vector<std::string> unit_names;
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
 
