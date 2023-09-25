@@ -12,12 +12,11 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_playerlist::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_playerlist::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
 		result["xuid"] = {};
 
-		const auto player = database::players::find_by_session_id(session_key);
 		if (!player.has_value())
 		{
 			result["result"] = "ERR_INVALID_SESSION";

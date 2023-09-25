@@ -13,7 +13,7 @@ namespace tpp
 		this->list_ = database::fobs::get_area_list();
 	}
 
-	nlohmann::json cmd_get_purchasable_area_list::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_purchasable_area_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		return this->list_;
 	}

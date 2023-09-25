@@ -9,7 +9,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_reqauth_https::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_reqauth_https::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
 
@@ -27,7 +27,7 @@ namespace tpp
 		result["heartbeat_sec"] = std::chrono::duration_cast<std::chrono::seconds>(database::players::session_heartbeat).count();
 		result["inquiry_id"] = 0;
 
-		if (session_key.empty())
+		if (!player.has_value())
 		{
 			const auto auth_result_opt = auth::authenticate_user(account_id_val, hash);
 			if (!auth_result_opt.has_value())
@@ -48,8 +48,10 @@ namespace tpp
 		else
 		{
 			auto expired = false;
-			const auto player = database::players::find_by_session_id(session_key, false, &expired);
-			if (!player.has_value())
+			const auto session_key = player->get_session_id();
+			const auto player_found = database::players::find_by_session_id(session_key, false, &expired);
+
+			if (!player_found.has_value())
 			{
 				result["result"] = "ERR_INVALID_SESSION";
 				return result;
@@ -57,13 +59,13 @@ namespace tpp
 
 			if (expired)
 			{
-				database::players::update_session(player.value());
+				database::players::update_session(player_found.value());
 			}
 
-			result["crypto_key"] = player->get_crypto_key();
+			result["crypto_key"] = player_found->get_crypto_key();
 			result["session"] = session_key;
-			result["smart_device_id"] = player->get_smart_device_id();
-			result["user_id"] = player->get_id();
+			result["smart_device_id"] = player_found->get_smart_device_id();
+			result["user_id"] = player_found->get_id();
 		}
 
 		return result;
