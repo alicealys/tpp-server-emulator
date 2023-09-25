@@ -9,6 +9,6 @@ namespace tpp
 	public:
 		cmd_get_urllist();
 
-		nlohmann::json execute(nlohmann::json& data, const std::string& session_key) override;
+		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};
 }

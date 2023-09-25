@@ -13,7 +13,7 @@ namespace tpp
 		this->list_ = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_LOGIN_PARAM));
 	}
 
-	nlohmann::json cmd_get_login_param::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_login_param::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result = this->list_;
 		//result["server_product_params"] = database::items::get_static_list_json();

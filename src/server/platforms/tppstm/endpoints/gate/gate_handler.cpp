@@ -23,7 +23,7 @@ namespace tpp
 		this->register_handler<cmd_get_svrtime>("CMD_GET_SVRTIME");
 	}
 
-	std::optional<nlohmann::json> gate_handler::decrypt_request(const std::string& data)
+	std::optional<nlohmann::json> gate_handler::decrypt_request(const std::string& data, std::optional<database::players::player>&)
 	{
 		if (!data.starts_with("httpMsg="))
 		{
@@ -104,7 +104,8 @@ namespace tpp
 		return true;
 	}
 
-	std::optional<std::string> gate_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data)
+	std::optional<std::string> gate_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data, 
+		const std::optional<database::players::player>&)
 	{
 		data["crypto_type"] = "COMMON";
 		data["flowid"] = {};

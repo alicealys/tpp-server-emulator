@@ -11,7 +11,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_player_platform_list::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_player_platform_list::execute(nlohmann::json& data, const std::optional<database::players::player>&)
 	{
 		nlohmann::json result;
 

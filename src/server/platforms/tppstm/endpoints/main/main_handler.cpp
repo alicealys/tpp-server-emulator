@@ -140,7 +140,7 @@ namespace tpp
 		this->register_handler<cmd_update_session>("CMD_UPDATE_SESSION");
 	}
 
-	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data)
+	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data, std::optional<database::players::player>& player)
 	{
 		if (!data.starts_with("httpMsg="))
 		{
@@ -171,7 +171,7 @@ namespace tpp
 		if (session_crypto.is_boolean() && session_crypto.get<bool>())
 		{
 			const auto session_key = json["session_key"].get<std::string>();
-			const auto player = database::players::find_by_session_id(session_key, false);
+			player = database::players::find_by_session_id(session_key, false);
 			if (!player.has_value())
 			{
 				json["data"] = {};
@@ -238,7 +238,6 @@ namespace tpp
 		const auto& msgid = data["msgid"];
 		const auto& rq_id = data["rqid"];
 
-
 		if (!msgid.is_string() || !rq_id.is_number_integer())
 		{
 			return false;
@@ -247,7 +246,8 @@ namespace tpp
 		return true;
 	}
 
-	std::optional<std::string> main_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data)
+	std::optional<std::string> main_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data, 
+		const std::optional<database::players::player>& player)
 	{
 		const auto& session_crypto_val = request["session_crypto"];
 		const auto session_crypto = session_crypto_val.is_boolean() && session_crypto_val.get<bool>();
@@ -282,9 +282,6 @@ namespace tpp
 		}
 		else
 		{
-			const auto session_key = request["session_key"].get<std::string>();
-			const auto player = database::players::find_by_session_id(session_key, false);
-
 			if (!player.has_value())
 			{
 				return {};

@@ -9,10 +9,9 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_auth_steamticket::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_auth_steamticket::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["xuid"] = {};
 
 		const auto& steam_ticket_val = data["steam_ticket"];
 		const auto& steam_ticket_size_j = data["steam_ticket_size"];
@@ -22,7 +21,7 @@ namespace tpp
 			return result;
 		}
 
-		if (session_key.empty())
+		if (!player.has_value())
 		{
 			const auto steam_ticket = steam_ticket_val.get<std::string>();
 			const auto steam_ticket_size = steam_ticket_size_j.get<std::size_t>();
@@ -43,13 +42,6 @@ namespace tpp
 		}
 		else
 		{
-			const auto player = database::players::find_by_session_id(session_key, false);
-			if (!player.has_value())
-			{
-				result["result"] = "ERR_INVALID_SESSION";
-				return result;
-			}
-
 			result["account_id"] = std::to_string(player->get_account_id());
 			result["currency"] = player->get_currency();
 			result["loginid_password"] = player->get_login_password();

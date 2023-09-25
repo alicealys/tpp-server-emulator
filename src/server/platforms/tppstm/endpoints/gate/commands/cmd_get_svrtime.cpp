@@ -6,7 +6,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_svrtime::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_svrtime::execute(nlohmann::json& data, const std::optional<database::players::player>&)
 	{
 		nlohmann::json result;
 

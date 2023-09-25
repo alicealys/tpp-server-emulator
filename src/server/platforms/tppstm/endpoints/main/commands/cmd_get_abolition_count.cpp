@@ -8,7 +8,7 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_get_abolition_count::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_abolition_count::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
 		result["result"] = "NOERR";

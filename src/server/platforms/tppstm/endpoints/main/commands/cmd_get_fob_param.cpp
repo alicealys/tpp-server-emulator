@@ -11,7 +11,7 @@ namespace tpp
 		this->list_ = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_FOB_PARAM));
 	}
 
-	nlohmann::json cmd_get_fob_param::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_get_fob_param::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		return this->list_;
 	}

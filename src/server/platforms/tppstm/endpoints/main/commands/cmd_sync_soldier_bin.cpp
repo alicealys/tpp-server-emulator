@@ -12,9 +12,15 @@
 
 namespace tpp
 {
-	nlohmann::json cmd_sync_soldier_bin::execute(nlohmann::json& data, const std::string& session_key)
+	nlohmann::json cmd_sync_soldier_bin::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
+
+		if (!player.has_value())
+		{
+			result["result"] = "ERR_INVALID_SESSION";
+			return result;
+		}
 
 		const auto& soldier_num_val = data["soldier_num"];
 		const auto& soldier_param_val = data["soldier_param"];
@@ -65,13 +71,6 @@ namespace tpp
 			{
 				counts[i] = section_soldier[key].get<std::uint32_t>();
 			}
-		}
-
-		const auto player = database::players::find_by_session_id(session_key);
-		if (!player.has_value())
-		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
 		}
 
 		auto soldier_count = 0;

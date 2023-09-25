@@ -72,6 +72,8 @@ namespace database::players
 	class player
 	{
 	public:
+		player() = default;
+
 		template <typename ...Args>
 		player(const sqlpp::result_row_t<Args...>& row)
 		{
@@ -160,6 +162,16 @@ namespace database::players
 		int is_security_challenge_enabled() const
 		{
 			return this->security_challenge_;
+		}
+
+		std::string get_session_id() const
+		{
+			return this->session_id_;
+		}
+
+		void set_session_id(const std::string& session_id)
+		{
+			this->session_id_ = session_id;
 		}
 
 	private:
