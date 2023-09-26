@@ -59,6 +59,8 @@ namespace tpp
 		mb_data["tape_flag"] = data["tape_flag"];
 
 		database::player_data::sync_motherbase(player->get_id(), mb_data);
+		
+		result["version"] = 0;
 
 		return result;
 	}

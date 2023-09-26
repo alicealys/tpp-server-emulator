@@ -144,19 +144,19 @@ namespace database::items
 		}
 
 	private:
-		bool open_;
-		bool created_;
-		bool valid_;
-		std::uint64_t player_id_;
-		std::uint32_t id_;
-		std::uint32_t gmp_;
-		std::uint32_t develop_;
-		std::uint32_t mb_coin_;
-		std::uint32_t left_second_;
-		std::uint32_t max_second_;
-		std::uint32_t resource_ids_[2];
-		std::uint32_t resource_values_[2];
-		std::chrono::system_clock::time_point create_date_;
+		bool open_{};
+		bool created_{};
+		bool valid_{};
+		std::uint64_t player_id_{};
+		std::uint32_t id_{};
+		std::uint32_t gmp_{};
+		std::uint32_t develop_{};
+		std::uint32_t mb_coin_{};
+		std::uint32_t left_second_{};
+		std::uint32_t max_second_{};
+		std::uint32_t resource_ids_[2]{};
+		std::uint32_t resource_values_[2]{};
+		std::chrono::system_clock::time_point create_date_{};
 
 	};
 

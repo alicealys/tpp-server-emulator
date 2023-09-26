@@ -186,6 +186,17 @@ namespace database::player_data
 		des_count,
 	};
 
+	enum units_t
+	{
+		unit_combat = 0,
+		unit_rnd = 1,
+		unit_base_dev = 2,
+		unit_support = 3,
+		unit_intel = 4,
+		unit_medical = 5,
+		unit_security = 6,
+	};
+
 	enum stat_distribution_t
 	{
 		stat_dist_none_1 = 0b11010,

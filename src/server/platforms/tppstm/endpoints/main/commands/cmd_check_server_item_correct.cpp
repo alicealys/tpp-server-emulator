@@ -43,17 +43,7 @@ namespace tpp
 				break;
 			}
 		}
-
-		if (check_result == 0)
-		{
-			const auto active_sneak = database::players::find_active_sneak_from_player(player->get_id());
-			if (active_sneak.has_value())
-			{
-				database::players::set_active_sneak(player->get_id(), active_sneak->get_fob_id(), active_sneak->get_owner_id(), active_sneak->get_platform(),
-					active_sneak->get_mode(), database::players::status_in_game, active_sneak->is_sneak());
-			}
-		}
-
+		
 		result["check_result"] = check_result;
 
 		return result;
