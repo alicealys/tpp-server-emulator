@@ -407,16 +407,6 @@ namespace database::players
 			return false;
 		}
 
-		if (info.get_status() >= status_in_game_alert)
-		{
-			return true;
-		}
-
-		if ((now - info.get_start_time()) < 30s)
-		{
-			return false;
-		}
-
 		return true;
 	}
 

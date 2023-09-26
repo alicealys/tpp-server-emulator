@@ -62,7 +62,6 @@ namespace database::players
 		status_menu = 1,
 		status_pre_game = 2,
 		status_in_game = 3,
-		status_in_game_alert = 4,
 		status_count
 	};
 

@@ -10,16 +10,16 @@ namespace utils::encoding
 	{
 		std::string encoded;
 
-		for (auto i = 0; i < string.size(); i++)
+		for (size_t i = 0; i < string.size(); i++)
 		{
 			encoded += string[i];
 			if (((i + 1) % chars_per_line) == 0)
 			{
-				encoded += "\r\n";
+				encoded.append("\r\n");
 			}
 		}
 
-		encoded += "\r\n";
+		encoded.append("\r\n");
 
 		return encoded;
 	}

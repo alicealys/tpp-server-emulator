@@ -181,7 +181,7 @@ namespace tpp
 
 		const auto mapped_index = database::player_data::cluster_index_map[platform];
 
-		stage_param["build"] = {16385, 16385, 16385, 16385, 16385, 16385, 16385};
+		stage_param["build"] = mother_base["local_base_param"];
 		stage_param["cluster_param"] = cluster_param[mapped_index];
 		stage_param["cluster_param"]["build"] = 0;
 
@@ -190,7 +190,7 @@ namespace tpp
 		stage_param["fob_index"] = fob->get_index();
 		stage_param["mother_base_id"] = fob->get_id();
 		stage_param["nuclear"] = player_data->get_nuke_count();
-		stage_param["owner_player_id"] = player->get_id();
+		stage_param["owner_player_id"] = fob->get_player_id();
 
 		static std::vector<std::string> resource_names =
 		{

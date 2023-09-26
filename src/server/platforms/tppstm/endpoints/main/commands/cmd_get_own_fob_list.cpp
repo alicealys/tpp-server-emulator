@@ -20,8 +20,9 @@ namespace tpp
 			result["result"] = "ERR_INVALID_SESSION";
 			return result;
 		}
-		
+
 		result["fob"] = nlohmann::json::array();
+		result["enable_security_challenge"] = player->is_security_challenge_enabled();
 
 		auto fob_list = database::fobs::get_fob_list(player->get_id());
 		auto index = 0;
@@ -30,7 +31,7 @@ namespace tpp
 			auto area_opt = database::fobs::get_area(fob.get_area_id());
 			auto& area = area_opt.value();
 			result["fob"][index]["area_id"] = fob.get_area_id();
-			result["fob"][index]["cluster_param"] = fob.get_cluster_param();
+			result["fob"][index]["cluster_param"] = nlohmann::json::array();
 			result["fob"][index]["construct_param"] = fob.get_construct_param();
 			result["fob"][index]["fob_index"] = index;
 			result["fob"][index]["mother_base_id"] = fob.get_id();

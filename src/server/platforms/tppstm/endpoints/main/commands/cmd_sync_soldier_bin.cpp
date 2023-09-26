@@ -22,6 +22,13 @@ namespace tpp
 			return result;
 		}
 
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.get())
+		{
+			result["result"] = "ERR_INVALID_SESSION";
+			return result;
+		}
+
 		const auto& soldier_num_val = data["soldier_num"];
 		const auto& soldier_param_val = data["soldier_param"];
 
@@ -96,10 +103,9 @@ namespace tpp
 		}
 
 		result["result"] = "NOERR";
-		result["flag"] = "SYNC";
-		result["force_sync"] = 0;
 		result["soldier_num"] = soldier_count;
 		result["soldier_param"] = utils::cryptography::base64::encode(soldier_bin_resp);
+		result["version"] = player_data->get_version();
 
 		return result;
 	}

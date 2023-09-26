@@ -134,7 +134,7 @@ namespace tpp
 			detail["section_staff"][staff.header.peak_rank][key] = 1 + value.get<std::uint32_t>();
 		}
 
-		detail["security_section_rank"] = player_data->get_unit_level(database::player_data::des_security);
+		detail["security_section_rank"] = player_data->get_unit_level(database::player_data::unit_security);
 
 		result["event_clear_bit"] = 0;
 		result["is_restrict"] = 0;
