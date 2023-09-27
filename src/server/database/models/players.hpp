@@ -173,6 +173,11 @@ namespace database::players
 			this->session_id_ = session_id;
 		}
 
+		std::string get_name() const
+		{
+			return std::format("{}_player01", this->get_account_id());
+		}
+
 	private:
 		std::uint64_t id_;
 		std::uint64_t account_id_;

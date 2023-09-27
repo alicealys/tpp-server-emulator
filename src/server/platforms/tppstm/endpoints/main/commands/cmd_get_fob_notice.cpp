@@ -35,7 +35,7 @@ namespace tpp
 			return result;
 		}
 
-		result["active_event_server_text"] = "mb_fob_event_name_01";
+		result["active_event_server_text"] = "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 		result["common_server_text"] = "NotImplement";
 		result["common_server_text_title"] = "NotImplement";
@@ -60,7 +60,7 @@ namespace tpp
 		result["point_exchange_event_server_text"] = "NotImplement";
 
 		result["record"]["defense"]["lose"] = player_record->get_defense_lose();
-		result["record"]["defense"]["win"] = player_record->get_defense_lose();
+		result["record"]["defense"]["win"] = player_record->get_defense_win();
 		result["record"]["insurance"] = 0;
 		result["record"]["score"] = 0;
 		result["record"]["shield_date"] = player_record->get_shield_date();

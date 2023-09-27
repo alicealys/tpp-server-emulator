@@ -77,12 +77,22 @@ namespace tpp
 				sneak_data.erase("msgid");
 				sneak_data.erase("rqid");
 
-				database::player_records::add_sneak_result(player->get_id(), sneak_point, is_win);
+				sneak_data["event"]["attacker_info"] = {};
+				sneak_data["event"]["attacker_info"]["npid"]["handler"]["data"] = "";
+				sneak_data["event"]["attacker_info"]["npid"]["handler"]["dummy"] = {0, 0, 0};
+				sneak_data["event"]["attacker_info"]["npid"]["handler"]["term"] = 0;
+				sneak_data["event"]["attacker_info"]["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
+				sneak_data["event"]["attacker_info"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
+				sneak_data["event"]["attacker_info"]["player_id"] = player->get_id();
+				sneak_data["event"]["attacker_info"]["player_name"] = player->get_name();
+				sneak_data["event"]["attacker_info"]["ugc"] = 1;
+				sneak_data["event"]["attacker_info"]["xuid"] = player->get_account_id();
 
-				if (active_sneak->is_sneak())
+				const auto is_sneak = active_sneak->is_sneak();
+				database::player_records::add_sneak_result(player->get_id(), fob->get_player_id(), sneak_point, is_win, is_sneak);
+
+				if (is_sneak)
 				{
-					database::sneak_results::add_sneak_result(player->get_id(), fob->get_player_id(), fob->get_id(), sneak_data);
-
 					auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
 					if (deploy_damage_opt.has_value())
 					{
@@ -91,6 +101,12 @@ namespace tpp
 						{
 							database::player_data::set_fob_deploy_damage_param(player->get_id(), {});
 						}
+					}
+
+					auto& active_sneak_val = active_sneak.value();
+					if (!database::sneak_results::add_sneak_result(player.value(), fob.value(), active_sneak_val, is_win, sneak_data))
+					{
+						result["result"] = "ERR_DATABASE";
 					}
 				}
 			}
