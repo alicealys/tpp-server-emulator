@@ -30,8 +30,8 @@ create table if not exists `players`
 	current_sneak_platform				int unsigned	not null		default 0,
 	current_sneak_status				int unsigned	not null		default 0,
 	current_sneak_is_sneak				tinyint			not null		default 0,
-	current_sneak_start 				datetime,
 	current_sneak_security_challenge 	tinyint			not null		default 0,
+	current_sneak_start 				datetime,
 	primary key (`id`)
 ))"
 
