@@ -6,6 +6,8 @@
 
 #include "utils/tpp.hpp"
 
+#define ITEM_DEBUG
+
 namespace database::items
 {
 	DEFINE_FIELD(id, sqlpp::integer_unsigned);
@@ -33,7 +35,7 @@ namespace database::items
 		std::uint32_t use_resource_ids[2];
 	};
 
-#ifdef DEBUG
+#ifdef ITEM_DEBUG
 	constexpr auto dev_limit = 999;
 #else
 	constexpr auto dev_limit = 4;
@@ -56,7 +58,7 @@ namespace database::items
 			this->created_ = true;
 			this->valid_ = true;
 
-#ifdef DEBUG
+#ifdef ITEM_DEBUG
 			this->develop_ = 2;
 			this->open_ = 1;
 			this->left_second_ = 0;

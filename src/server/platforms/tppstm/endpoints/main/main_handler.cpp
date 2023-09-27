@@ -277,7 +277,7 @@ namespace tpp
 		const auto original_size = data_dump.size();
 
 		data_dump = utils::compression::zlib::compress(data_dump);
-		data_dump.append("0");
+		data_dump += '\0';
 
 		if (!session_crypto)
 		{
