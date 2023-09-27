@@ -113,6 +113,13 @@ namespace tpp
 			return result;
 		}
 
+		const auto owner = database::players::find(fob->get_player_id());
+		if (!owner.has_value())
+		{
+			result["result"] = "ERR_DATABASE";
+			return result;
+		}
+
 		result["damage_param"] = nlohmann::json::array();
 		result["event_fob_params"] = {0, 0, 0, 0, 0};
 
@@ -253,7 +260,7 @@ namespace tpp
 			stage_param["platform"] = active_sneak->get_platform();
 
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_pre_game, is_sneak))
+				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
 			{
 				result["result"] = "ERR_DATABASE";
 				return result;
@@ -261,8 +268,10 @@ namespace tpp
 		}
 		else
 		{
+			database::player_records::clear_shield_date(player->get_id());
+
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
-				database::players::status_pre_game, is_sneak))
+				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
 			{
 				result["result"] = "ERR_DATABASE";
 				return result;

@@ -36,7 +36,7 @@ namespace tpp
 		}
 
 		if (!database::players::set_active_sneak(player->get_id(), active_sneak->get_fob_id(), active_sneak->get_owner_id(), 
-			active_sneak->get_platform(), active_sneak->get_mode(), database::players::status_in_game, active_sneak->is_sneak()))
+			active_sneak->get_platform(), active_sneak->get_mode(), database::players::status_in_game, active_sneak->is_sneak(), false))
 		{
 			result["result"] = "ERR_DATABASE";
 			return result;

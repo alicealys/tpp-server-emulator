@@ -8,29 +8,30 @@
 #define TABLE_DEF R"(
 create table if not exists `players`
 (
-	id						bigint unsigned	not null	auto_increment,
-	account_id				bigint unsigned	not null	 unique,
-	session_id				char(32)		default null unique,
-	login_password			char(32)		default null,
-	last_update				datetime		default null,
-	crypto_key				char(32)		default null,
-	smart_device_id			char(128)		default null,
-	currency				varchar(32)		default null,
-	ex_ip					varchar(15)		default null,
-	in_ip					varchar(15)		default null,
-	ex_port					int unsigned	default 0,
-	in_port					int unsigned	default 0,
-	nat						int unsigned	default 0,
-	creation_time			datetime        not null,
-	security_challenge		boolean			not null default false,
-	current_lock			bigint unsigned	not null		default 0,
-	current_sneak_mode		int unsigned	not null		default 0,
-	current_sneak_fob		bigint unsigned not null		default 0,
-	current_sneak_player	bigint unsigned not null		default 0,
-	current_sneak_platform	int unsigned	not null		default 0,
-	current_sneak_status	int unsigned	not null		default 0,
-	current_sneak_is_sneak	boolean			not null		default 0,
-	current_sneak_start 	datetime,
+	id									bigint unsigned	not null	auto_increment,
+	account_id							bigint unsigned	not null	 unique,
+	session_id							char(32)		default null unique,
+	login_password						char(32)		default null,
+	last_update							datetime		default null,
+	crypto_key							char(32)		default null,
+	smart_device_id						char(128)		default null,
+	currency							varchar(32)		default null,
+	ex_ip								varchar(15)		default null,
+	in_ip								varchar(15)		default null,
+	ex_port								int unsigned	default 0,
+	in_port								int unsigned	default 0,
+	nat									int unsigned	default 0,
+	creation_time						datetime        not null,
+	security_challenge					boolean			not null default false,
+	current_lock						bigint unsigned	not null		default 0,
+	current_sneak_mode					int unsigned	not null		default 0,
+	current_sneak_fob					bigint unsigned not null		default 0,
+	current_sneak_player				bigint unsigned not null		default 0,
+	current_sneak_platform				int unsigned	not null		default 0,
+	current_sneak_status				int unsigned	not null		default 0,
+	current_sneak_is_sneak				tinyint			not null		default 0,
+	current_sneak_start 				datetime,
+	current_sneak_security_challenge 	tinyint			not null		default 0,
 	primary key (`id`)
 ))"
 
@@ -528,7 +529,7 @@ namespace database::players
 	}
 
 	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
-		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak)
+		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak, bool is_security_challenge)
 	{
 		if (mode == mode_invalid)
 		{
@@ -575,6 +576,7 @@ namespace database::players
 							 players_table.current_sneak_status = status,
 							 players_table.current_sneak_mode = mode,
 							 players_table.current_sneak_is_sneak = is_sneak,
+							 players_table.current_sneak_security_challenge = active_sneak->is_security_challenge(),
 							 players_table.current_sneak_start = std::chrono::system_clock::now())
 								.where(players_table.id == player_id)
 					);
@@ -588,6 +590,7 @@ namespace database::players
 							 players_table.current_sneak_platform = platform,
 							 players_table.current_sneak_status = status,
 							 players_table.current_sneak_mode = mode,
+							 players_table.current_sneak_security_challenge = is_security_challenge,
 							 players_table.current_sneak_is_sneak = is_sneak)
 								.where(players_table.id == player_id)
 					);

@@ -735,6 +735,27 @@ namespace database::player_data
 		});
 	}
 
+	std::uint32_t get_player_nuke_count(const std::uint64_t player_id)
+	{
+		return database::access<std::uint32_t>([&](database::database_t& db)
+			-> std::uint32_t
+		{
+			const auto result = db->operator()(
+				sqlpp::select(
+					sqlpp::sum(player_data_table.nuke_count))
+						.from(player_data_table)
+							.where(player_data_table.player_id == player_id)
+			);
+
+			if (result.empty())
+			{
+				return 0u;
+			}
+
+			return static_cast<std::uint32_t>(result.front().sum.value());
+		});
+	}
+
 	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
 	{
 		database::access([&](database::database_t& db)
