@@ -27,6 +27,7 @@ namespace database::players
 	DEFINE_FIELD(current_sneak_status, sqlpp::integer_unsigned);
 	DEFINE_FIELD(current_sneak_is_sneak, sqlpp::boolean);
 	DEFINE_FIELD(current_sneak_start, sqlpp::time_point);
+	DEFINE_FIELD(current_sneak_security_challenge, sqlpp::boolean);
 	DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t, 
 		login_password_field_t, crypto_key_field_t, smart_device_id_field_t, 
 		currency_field_t,last_update_field_t, ex_ip_field_t, ex_port_field_t, 
@@ -36,7 +37,7 @@ namespace database::players
 		current_sneak_mode_field_t, current_sneak_fob_field_t, 
 		current_sneak_player_field_t, current_sneak_platform_field_t,
 		current_sneak_status_field_t, current_sneak_is_sneak_field_t,
-		current_sneak_start_field_t);
+		current_sneak_start_field_t, current_sneak_security_challenge_field_t);
 
 	std::uint32_t get_nat_type_id(const std::string& nat_type);
 	std::string get_nat_type(const std::uint32_t nat_type_id);
@@ -160,7 +161,7 @@ namespace database::players
 
 		int is_security_challenge_enabled() const
 		{
-			return this->security_challenge_;
+			return static_cast<int>(this->security_challenge_);
 		}
 
 		std::string get_session_id() const
@@ -217,6 +218,7 @@ namespace database::players
 			this->platform_ = static_cast<std::uint32_t>(row.current_sneak_platform);
 			this->is_sneak_ = row.current_sneak_is_sneak;
 			this->start_time_ = row.current_sneak_start.value().time_since_epoch();
+			this->is_security_challenge_ = row.current_sneak_security_challenge;
 		}
 
 		sneak_mode get_mode() const
@@ -259,6 +261,11 @@ namespace database::players
 			return this->start_time_;
 		}
 
+		bool is_security_challenge() const
+		{
+			return this->is_security_challenge_;
+		}
+
 	private:
 		sneak_mode mode_;
 		sneak_status status_;
@@ -266,6 +273,7 @@ namespace database::players
 		std::uint64_t fob_id_;
 		std::uint64_t owner_id_;
 		std::uint32_t platform_;
+		bool is_security_challenge_;
 		bool is_sneak_;
 		std::chrono::microseconds start_time_;
 
@@ -291,7 +299,8 @@ namespace database::players
 	void abort_mother_base(const std::uint64_t player_id);
 
 	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
-		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak);
+		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak,
+		bool is_security_challenge);
 
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,
 		const std::uint32_t alt_mode = mode_invalid, bool is_sneak = true, bool in_game_only = false);

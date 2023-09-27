@@ -91,4 +91,6 @@ namespace database::wormholes
 
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id,
 		const wormhole_flag flag, const std::uint32_t retaliate_point);
+
+	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id);
 }

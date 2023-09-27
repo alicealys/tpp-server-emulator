@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "player_records.hpp"
+#include "player_data.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -252,6 +253,52 @@ namespace database::player_records
 			const auto higher_grade = grade == highest_grade ? grade : grade + 1;
 
 			return find_players_of_grade(player_id, higher_grade, limit);
+		});
+	}
+
+	void set_shield_date(const std::uint64_t player_id, const bool is_win)
+	{
+		auto date = std::chrono::system_clock::now();
+		const auto nuke_count = player_data::get_player_nuke_count(player_id);
+		const auto frac = static_cast<float>(nuke_count) / 16.f;
+		const auto extra_days = static_cast<std::uint32_t>(frac * 7);
+
+		if (nuke_count != 0)
+		{
+			date += 24h * extra_days;
+		}
+		else
+		{
+			if (!is_win)
+			{
+				date += 6h;
+			}
+			else
+			{
+				date += 24h;
+			}
+		}
+
+		database::access([&](database::database_t& db)
+		{
+			db->operator()(
+				sqlpp::update(player_records_table)
+					.set(player_records_table.shield_date = date)
+						.where(player_records_table.player_id == player_id)
+				);
+		});
+	}
+
+	void clear_shield_date(const std::uint64_t player_id)
+	{
+		database::access([&](database::database_t& db)
+		{
+			std::chrono::system_clock::time_point date{};
+			db->operator()(
+				sqlpp::update(player_records_table)
+					.set(player_records_table.shield_date = date)
+						.where(player_records_table.player_id == player_id)
+				);
 		});
 	}
 

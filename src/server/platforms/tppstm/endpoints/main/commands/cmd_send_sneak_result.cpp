@@ -25,16 +25,21 @@ namespace tpp
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
+			result["result"] = "ERR_DATABASE";
 			return result;
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			result["result"] = "ERR_INVALIDARG";
+			result["result"] = "ERR_DATABASE";
 			return result;
 		}
+
+		const auto _0 = gsl::finally([&]
+		{
+			database::players::abort_mother_base(player->get_id());
+		});
 
 		try
 		{
@@ -47,7 +52,7 @@ namespace tpp
 			const auto fob = database::fobs::get_fob(mother_base_id);
 			if (!fob.has_value())
 			{
-				result["result"] = "ERR_INVALIDARG";
+				result["result"] = "ERR_DATABASE";
 				return result;
 			}
 
@@ -93,6 +98,11 @@ namespace tpp
 
 				if (is_sneak)
 				{
+					if (!active_sneak->is_security_challenge())
+					{
+						database::player_records::set_shield_date(active_sneak->get_owner_id(), is_win);
+					}
+
 					auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
 					if (deploy_damage_opt.has_value())
 					{
@@ -110,8 +120,6 @@ namespace tpp
 					}
 				}
 			}
-
-			database::players::abort_mother_base(player->get_id());
 
 			const auto new_stats = database::player_records::find(player->get_id());
 			if (!new_stats.has_value())

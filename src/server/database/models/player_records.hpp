@@ -60,7 +60,7 @@ namespace database::player_records
 			this->fob_defense_lose_ = static_cast<std::uint32_t>(row.fob_defense_lose);
 			this->fob_sneak_win_ = static_cast<std::uint32_t>(row.fob_sneak_win);
 			this->fob_sneak_lose_ = static_cast<std::uint32_t>(row.fob_sneak_lose);
-			this->shield_date_ = row.shield_date.value().time_since_epoch();
+			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
 		}
 
 		std::uint64_t get_player_id() const
@@ -155,13 +155,18 @@ namespace database::player_records
 
 		std::int64_t get_shield_date() const
 		{
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch());
+			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 			if (now > this->shield_date_)
 			{
 				return 0u;
 			}
 
 			return this->shield_date_.count();
+		}
+
+		int is_shield_active() const
+		{
+			return this->get_shield_date() != 0;
 		}
 
 	private:
@@ -185,7 +190,7 @@ namespace database::player_records
 		std::uint32_t fob_sneak_win_;
 		std::uint32_t fob_sneak_lose_;
 
-		std::chrono::microseconds shield_date_;
+		std::chrono::seconds shield_date_;
 
 	};
 
@@ -198,4 +203,7 @@ namespace database::player_records
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit);
 	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit);
 	std::vector<player_record> find_higher_grade_players(const std::uint64_t player_id, const std::uint32_t limit);
+
+	void set_shield_date(const std::uint64_t player_id, const bool is_win);
+	void clear_shield_date(const std::uint64_t player_id);
 }

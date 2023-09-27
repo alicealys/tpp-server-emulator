@@ -85,6 +85,20 @@ namespace tpp
 
 		detail["owner_player_id"] = fob->get_player_id();
 
+		const auto owner = database::players::find(fob->get_player_id());
+		if (!owner.has_value())
+		{
+			result["result"] = "ERR_DATABASE";
+			return result;
+		}
+
+		const auto owner_record = database::player_records::find(fob->get_player_id());
+		if (!owner_record.has_value())
+		{
+			result["result"] = "ERR_DATABASE";
+			return result;
+		}
+
 		static std::vector<std::string> resource_names =
 		{
 			"emplacement_gun_east",
@@ -137,7 +151,7 @@ namespace tpp
 		detail["security_section_rank"] = player_data->get_unit_level(database::player_data::unit_security);
 
 		result["event_clear_bit"] = 0;
-		result["is_restrict"] = 0;
+		result["is_restrict"] = stats->is_shield_active();
 
 		result["session"]["ip"] = "0.0.0.0";
 		result["session"]["is_invalid"] = 1;
@@ -154,6 +168,12 @@ namespace tpp
 		result["session"]["xnkid"] = {};
 		result["session"]["xuid"] = 0;
 
+		if (owner_record->is_shield_active())
+		{
+			result["result"] = "ERR_SNEAK_RESTRICTION";
+			return result;
+		}
+
 		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
 		if (is_sneak)
 		{
@@ -164,7 +184,7 @@ namespace tpp
 			result["session"]["xuid"] = player->get_account_id();
 
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
-				database::players::status_menu, true))
+				database::players::status_menu, true, owner->is_security_challenge_enabled()))
 			{
 				result["result"] = "ERR_ALREADY_SNEAK";
 				return result;
@@ -195,7 +215,7 @@ namespace tpp
 			result["session"]["xuid"] = attacker->get_account_id();
 
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_menu, false))
+				database::players::status_menu, false, owner->is_security_challenge_enabled()))
 			{
 				result["result"] = "ERR_ALREADY_SNEAK";
 				return result;

@@ -58,6 +58,11 @@ namespace database::wormholes
 		});
 	}
 
+	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id)
+	{
+		return {};
+	}
+
 	class table final : public table_interface
 	{
 	public:
