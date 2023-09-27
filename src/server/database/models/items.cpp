@@ -158,7 +158,7 @@ namespace database::items
 
 		this->open_ = this->left_second_ == 0;
 
-#ifdef DEBUG
+#ifdef ITEM_DEBUG
 		this->develop_ = 2;
 		this->open_ = 1;
 		this->left_second_ = 0;
