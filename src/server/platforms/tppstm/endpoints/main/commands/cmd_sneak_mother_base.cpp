@@ -184,7 +184,7 @@ namespace tpp
 
 		auto& stage_param = result["stage_param"];
 
-		database::player_data::apply_deploy_damage_params(cluster_param, damage_params);
+		database::player_data::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
 
 		const auto mapped_index = database::player_data::cluster_index_map[platform];
 

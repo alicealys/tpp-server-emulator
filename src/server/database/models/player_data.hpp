@@ -591,7 +591,7 @@ namespace database::player_data
 
 	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index);
 
-	void apply_deploy_damage_params(nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
+	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
 	void create(const std::uint64_t player_id);
 	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);

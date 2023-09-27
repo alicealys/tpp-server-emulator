@@ -417,7 +417,7 @@ namespace database::player_data
 		return is_usable_staff(staff.fields);
 	}
 
-	void apply_deploy_damage_params(nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage)
+	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage)
 	{
 		if (!deploy_damage.has_value())
 		{
@@ -427,8 +427,16 @@ namespace database::player_data
 		auto& deploy_damage_params = deploy_damage.value();
 		auto& damage_values = deploy_damage_params["damage_values"];
 		auto& cluster_index_j = deploy_damage_params["cluster_index"];
-		if (!damage_values.is_array() || damage_values.size() < database::player_data::damage_param_count || 
+		auto& mother_base_id_j = deploy_damage_params["motherbase_id"];
+		if (!mother_base_id_j.is_number_unsigned() || !damage_values.is_array() || 
+			damage_values.size() < database::player_data::damage_param_count ||
 			!cluster_index_j.is_number_unsigned())
+		{
+			return;
+		}
+
+		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
+		if (mother_base_id != fob_id)
 		{
 			return;
 		}
