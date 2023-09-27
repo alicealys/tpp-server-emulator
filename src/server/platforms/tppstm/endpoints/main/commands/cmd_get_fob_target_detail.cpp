@@ -81,7 +81,7 @@ namespace tpp
 		detail["mother_base_param"]["mother_base_id"] = fob->get_id();
 
 		auto damage_params = player_data->get_fob_deploy_damage_param();
-		database::player_data::apply_deploy_damage_params(detail["mother_base_param"]["cluster_param"], damage_params);
+		database::player_data::apply_deploy_damage_params(fob->get_id(), detail["mother_base_param"]["cluster_param"], damage_params);
 
 		detail["owner_player_id"] = fob->get_player_id();
 

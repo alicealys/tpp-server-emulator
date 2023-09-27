@@ -159,6 +159,29 @@ namespace tpp
 			const auto attacker = database::players::find(active_sneak->get_player_id());
 			const auto attacker_record = database::player_records::find(active_sneak->get_player_id());
 			const auto attacker_data = database::player_data::find(active_sneak->get_player_id(), false, false, true);
+			const auto fob_list = database::fobs::get_fob_list(active_sneak->get_owner_id());
+
+			for (auto i = 0; i < fob_list.size(); i++)
+			{
+				auto& fob = fob_list[i];
+				target.extra_data["mother_base_param"][i + 1]["area_id"] = 0;
+				target.extra_data["mother_base_param"][i + 1]["construct_param"] = fob.get_construct_param();
+				target.extra_data["mother_base_param"][i + 1]["fob_index"] = fob.get_index();
+				target.extra_data["mother_base_param"][i + 1]["mother_base_id"] = fob.get_id();
+				target.extra_data["mother_base_param"][i + 1]["platform_count"] = fob.get_platform_count();
+				target.extra_data["mother_base_param"][i + 1]["price"] = 0;
+				target.extra_data["mother_base_param"][i + 1]["security_rank"] = fob.get_security_rank();
+
+				if (i == 0)
+				{
+					target.extra_data["mother_base_param"][0] = target.extra_data["mother_base_param"][1];
+				}
+
+				if (fob.get_id() == active_sneak->get_fob_id())
+				{
+					target.extra_data["mother_base_param"][0] = target.extra_data["mother_base_param"][i + 1];
+				}
+			}
 
 			target.extra_data["attacker_emblem"] = attacker_data->get_emblem();
 			target.extra_data["attacker_espionage"]["win"] = attacker_record->get_sneak_win();
