@@ -97,7 +97,7 @@ namespace database::fobs
 			return this->cluster_param_;
 		}
 
-		std::uint64_t get_index()
+		std::uint64_t get_index() const
 		{
 			return this->index_;
 		}

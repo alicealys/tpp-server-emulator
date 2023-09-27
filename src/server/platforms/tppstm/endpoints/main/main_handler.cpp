@@ -21,6 +21,7 @@
 #include "commands/cmd_get_daily_reward.hpp"
 #include "commands/cmd_get_fob_damage.hpp"
 #include "commands/cmd_get_fob_deploy_list.hpp"
+#include "commands/cmd_get_fob_event_detail.hpp"
 #include "commands/cmd_get_fob_event_list.hpp"
 #include "commands/cmd_get_fob_notice.hpp"
 #include "commands/cmd_get_fob_param.hpp"
@@ -97,6 +98,7 @@ namespace tpp
 		this->register_handler<cmd_get_daily_reward>("CMD_GET_DAILY_REWARD");
 		this->register_handler<cmd_get_fob_damage>("CMD_GET_FOB_DAMAGE");
 		this->register_handler<cmd_get_fob_deploy_list>("CMD_GET_FOB_DEPLOY_LIST");
+		this->register_handler<cmd_get_fob_event_detail>("CMD_GET_FOB_EVENT_DETAIL");
 		this->register_handler<cmd_get_fob_event_list>("CMD_GET_FOB_EVENT_LIST");
 		this->register_handler<cmd_get_fob_notice>("CMD_GET_FOB_NOTICE");
 		this->register_handler<cmd_get_fob_param>("CMD_GET_FOB_PARAM");

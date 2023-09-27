@@ -86,7 +86,8 @@ namespace database::player_records
 		return found.value();
 	}
 
-	void add_sneak_result(const std::uint64_t player_id, const std::int32_t point_add, const bool is_win)
+	void add_sneak_result(const std::uint64_t player_id, const std::uint64_t owner_id, 
+		const std::int32_t point_add, const bool is_win, const bool is_sneak)
 	{
 		database::access([&](database::database_t& db)
 		{
@@ -100,13 +101,26 @@ namespace database::player_records
 
 			db->operator()(
 				sqlpp::update(player_records_table)
-					.set(player_records_table.fob_point = points,
-						 player_records_table.fob_sneak_win = player_records_table.fob_sneak_win 
-							+ static_cast<std::int32_t>(is_win),
-						 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose 
-							+ static_cast<std::int32_t>(!is_win))
+					.set(player_records_table.fob_point = points)
 							.where(player_records_table.player_id == player_id)
 				);
+
+			if (is_sneak)
+			{
+				db->operator()(
+					sqlpp::update(player_records_table)
+						.set(player_records_table.fob_defense_win = player_records_table.fob_defense_win + static_cast<std::int32_t>(!is_win),
+							 player_records_table.fob_defense_lose = player_records_table.fob_defense_lose + static_cast<std::int32_t>(is_win))
+								.where(player_records_table.player_id == owner_id)
+					);
+
+				db->operator()(
+					sqlpp::update(player_records_table)
+						.set(player_records_table.fob_sneak_win = player_records_table.fob_sneak_win + static_cast<std::int32_t>(is_win),
+							 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose + static_cast<std::int32_t>(!is_win))
+								.where(player_records_table.player_id == player_id)
+					);
+			}
 		});
 	}
 
