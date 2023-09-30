@@ -5,6 +5,7 @@
 #include "database/models/fobs.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
+#include "database/models/wormholes.hpp"
 
 #include <utils/nt.hpp>
 
@@ -168,7 +169,9 @@ namespace tpp
 		result["session"]["xnkid"] = {};
 		result["session"]["xuid"] = 0;
 
-		if (owner_record->is_shield_active())
+		const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), fob->get_player_id());
+
+		if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
 		{
 			result["result"] = "ERR_SNEAK_RESTRICTION";
 			return result;

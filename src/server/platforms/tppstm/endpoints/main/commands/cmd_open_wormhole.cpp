@@ -40,9 +40,10 @@ namespace tpp
 		}
 		
 		const auto to_player_id = to_player_id_j.get<std::uint64_t>();
-		const auto retaliate_score = to_player_id_j.get<std::uint32_t>();
+		const auto retaliate_score = retaliate_score_j.get<std::uint32_t>();
 		const auto flag = flag_j.get<std::string>();
 		const auto flag_id = database::wormholes::get_flag_id(flag);
+		const auto is_open = data["is_open"] == 1;
 
 		if (flag_id == database::wormholes::wormhole_flag_invalid)
 		{
@@ -50,7 +51,7 @@ namespace tpp
 			return result;
 		}
 
-		database::wormholes::add_wormhole(player->get_id(), to_player_id, flag_id, retaliate_score);
+		database::wormholes::add_wormhole(player->get_id(), to_player_id, flag_id, is_open, retaliate_score);
 
 		return result;
 	}
