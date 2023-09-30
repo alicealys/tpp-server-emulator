@@ -3,6 +3,7 @@
 #include "cmd_set_security_challenge.hpp"
 
 #include "database/models/players.hpp"
+#include "database/models/player_records.hpp"
 
 #include <utils/nt.hpp>
 
@@ -23,6 +24,8 @@ namespace tpp
 		{
 			result["result"] = "ERR_DATABASE";
 		}
+
+		database::player_records::clear_shield_date(player->get_id());
 
 		return result;
 	}

@@ -16,7 +16,7 @@ namespace database::wormholes
 	DEFINE_FIELD(is_open, sqlpp::boolean);
 	DEFINE_FIELD(create_date, sqlpp::time_point);
 	DEFINE_TABLE(wormholes, id_field_t, player_id_field_t, to_player_id_field_t, 
-		retaliate_score_field_t, flag_field_t, create_date_field_t);
+		retaliate_score_field_t, flag_field_t, is_open_field_t, create_date_field_t);
 
 	enum wormhole_flag
 	{
@@ -25,6 +25,8 @@ namespace database::wormholes
 		wormhole_flag_friendly,
 		wormhole_flag_count
 	};
+
+	constexpr auto wormhole_duration = 24h * 31;
 
 	class wormhole
 	{
@@ -36,7 +38,7 @@ namespace database::wormholes
 			this->player_id_ = row.player_id;
 			this->to_player_id_ = row.to_player_id;
 			this->retaliate_score_ = static_cast<std::uint32_t>(row.retaliate_score);
-			this->flag_ = static_cast<wormhole_flag>(row.flag);
+			this->flag_ = static_cast<wormhole_flag>(static_cast<std::uint32_t>(row.flag));
 			this->is_open_ = row.is_open;
 			this->create_date_ = row.create_date.value().time_since_epoch();
 		}
@@ -87,10 +89,22 @@ namespace database::wormholes
 
 	};
 
+	struct wormhole_status
+	{
+		std::uint64_t player_id;
+		std::uint64_t to_player_id;
+		std::uint32_t score;
+		bool open;
+		bool first;
+		std::chrono::microseconds expire;
+	};
+
 	wormhole_flag get_flag_id(const std::string& flag);
 
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id,
-		const wormhole_flag flag, const std::uint32_t retaliate_point);
+		const wormhole_flag flag, const bool is_open, const std::uint32_t retaliate_point);
 
-	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id);
+	std::unordered_map<std::uint64_t, wormhole_status> find_active_wormholes(const std::uint64_t player_id);
+
+	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id);
 }
