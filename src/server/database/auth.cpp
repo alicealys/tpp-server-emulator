@@ -65,12 +65,12 @@ namespace auth
 
 	std::optional<std::uint64_t> verify_ticket_offline(const std::string& auth_ticket, const size_t ticket_size)
 	{
-		if (auth_ticket.size() < 20)
+		const auto data = utils::cryptography::base64::decode(auth_ticket);
+		if (data.size() < 20)
 		{
 			return {};
 		}
 
-		const auto data = utils::cryptography::base64::decode(auth_ticket);
 		const auto data_ptr = reinterpret_cast<size_t>(data.data());
 		const auto account_id = *reinterpret_cast<std::uint64_t*>(data_ptr + 12);
 		return {account_id};
