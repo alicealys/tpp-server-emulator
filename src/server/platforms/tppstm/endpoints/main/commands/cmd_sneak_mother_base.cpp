@@ -57,8 +57,6 @@ namespace tpp
 			return result;
 		}
 
-		const auto platform = platform_j.get<std::uint32_t>();
-
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 		auto fob = database::fobs::get_fob(mother_base_id);
 
@@ -91,6 +89,13 @@ namespace tpp
 		}
 
 		auto mother_base = player_data->get_motherbase();
+
+		const auto active_sneak = database::players::get_active_sneak(mother_base_id);
+		auto platform = platform_j.get<std::uint32_t>();
+		if (active_sneak.has_value())
+		{
+			platform = active_sneak->get_platform();
+		}
 
 		auto& cluster_param = fob->get_cluster_param();
 		if (platform >= cluster_param.size())
@@ -250,7 +255,6 @@ namespace tpp
 
 		if (!is_sneak)
 		{
-			const auto active_sneak = database::players::get_active_sneak(mother_base_id);
 			if (!active_sneak.has_value())
 			{
 				result["result"] = "ERR_DATABASE";
