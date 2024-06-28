@@ -24,6 +24,7 @@ namespace auth
 		std::optional<std::unordered_set<std::uint64_t>> parse_allow_list()
 		{
 			std::string data;
+			console::log("Parsing allow list...\n");
 			if (!utils::io::read_file("allow_list.json", &data))
 			{
 				return {};
@@ -48,9 +49,9 @@ namespace auth
 			return {list};
 		}
 
-		std::optional<std::unordered_set<std::uint64_t>> get_allow_list()
+		std::optional<std::unordered_set<std::uint64_t>>& get_allow_list()
 		{
-			static const auto list = parse_allow_list();
+			static auto list = parse_allow_list();
 			return list;
 		}
 
