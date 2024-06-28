@@ -311,4 +311,7 @@ namespace database::players
 	bool set_security_challenge(const std::uint64_t player_id, bool enabled);
 
 	std::vector<player> find_with_security_challenge(const std::uint32_t limit);
+
+	std::uint64_t get_player_count();
+	std::uint64_t get_online_player_count(const std::chrono::milliseconds within = session_timeout);
 }
