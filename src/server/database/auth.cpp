@@ -40,7 +40,9 @@ namespace auth
 
 			for (const auto& steam_id : json_list)
 			{
-				list.insert(steam_id.get<std::uint64_t>());
+				const auto id = steam_id.get<std::uint64_t>();
+				console::log("Adding user \"%lli\" to allow list\n", id);
+				list.insert(id);
 			}
 
 			return {list};
@@ -62,6 +64,11 @@ namespace auth
 
 			return allow_list->contains(steam_id);
 		}
+	}
+
+	void reload_allow_list()
+	{
+		get_allow_list() = parse_allow_list();
 	}
 
 	std::optional<std::uint64_t> verify_ticket_konami(const std::string& auth_ticket, const size_t ticket_size)

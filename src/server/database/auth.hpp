@@ -19,6 +19,8 @@ namespace auth
 		std::string smart_device_id;
 	};
 
+	void reload_allow_list();
+
 	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket, const size_t ticket_size);
 	std::optional<auth_response> authenticate_user(const std::string& account_id, const std::string& password);
 }

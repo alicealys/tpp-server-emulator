@@ -5,6 +5,7 @@
 #include "../server.hpp"
 
 #include "database/database.hpp"
+#include "database/auth.hpp"
 
 #include <utils/io.hpp>
 #include <utils/string.hpp>
@@ -109,6 +110,14 @@ namespace command
 	{
 		console::log("Registering console command \"%s\"\n", name.data());
 		commands.insert(std::make_pair(name, cb));
+	}
+
+	void add(const std::string& name, const callback_narg& cb)
+	{
+		add(name, [cb](const command::params&)
+		{
+			cb();
+		});
 	}
 
 	class component final : public component_interface
@@ -267,6 +276,8 @@ namespace command
 					}
 				});
 			});
+
+			add("reload_allow_list", auth::reload_allow_list);
 		}
 	};
 }

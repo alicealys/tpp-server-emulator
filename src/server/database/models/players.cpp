@@ -77,6 +77,8 @@ namespace database::players
 				std::chrono::system_clock::now().time_since_epoch());
 			return (now - player.get_last_update()) > session_timeout;
 		}
+
+#define IS_ACTIVE_EXPR players_table.last_update >= std::chrono::system_clock::now() - session_timeout
 	}
 
 	std::uint32_t get_nat_type_id(const std::string& nat_type)
@@ -421,34 +423,25 @@ namespace database::players
 				sqlpp::select(
 					sqlpp::all_of(players_table))
 						.from(players_table)
-							.where((players_table.current_sneak_mode == mode || 
+							.where(((players_table.current_sneak_mode == mode || 
 								 players_table.current_sneak_mode == alt_mode) &&
 								 players_table.current_sneak_is_sneak == is_sneak && 
-								 players_table.current_sneak_player == owner_id)
+								 players_table.current_sneak_player == owner_id) && IS_ACTIVE_EXPR)
 				);
 		
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
 			if (results.empty())
 			{
 				return {};
 			}
 
-			const auto& row = results.front();
-			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+			sneak_info info(results.front());
+
+			if (in_game_only && !is_sneak_in_game(info))
 			{
-				sneak_info info(row);
-
-				if (in_game_only && !is_sneak_in_game(info))
-				{
-					return {};
-				}
-
-				return {info};
+				return {};
 			}
 
-			return {};
+			return {info};
 		});
 	}
 	
@@ -461,32 +454,23 @@ namespace database::players
 				sqlpp::select(
 					sqlpp::all_of(players_table))
 						.from(players_table)
-							.where(players_table.current_sneak_player == owner_id &&
-								   players_table.current_sneak_is_sneak == is_sneak)
+							.where((players_table.current_sneak_player == owner_id &&
+								   players_table.current_sneak_is_sneak == is_sneak) && IS_ACTIVE_EXPR)
 				);
 		
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
 			if (results.empty())
 			{
 				return {};
 			}
 
-			const auto& row = results.front();
-			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+			sneak_info info(results.front());
+
+			if (in_game_only && !is_sneak_in_game(info))
 			{
-				sneak_info info(row);
-
-				if (in_game_only && !is_sneak_in_game(info))
-				{
-					return {};
-				}
-
-				return {info};
+				return {};
 			}
 
-			return {};
+			return {info};
 		});
 	}
 
@@ -499,32 +483,24 @@ namespace database::players
 				sqlpp::select(
 					sqlpp::all_of(players_table))
 						.from(players_table)
-							.where(players_table.current_sneak_fob == fob_id && 
-								   players_table.current_sneak_is_sneak == true)
+							.where((players_table.current_sneak_fob == fob_id && 
+								   players_table.current_sneak_is_sneak == true) &&
+								   IS_ACTIVE_EXPR)
 				);
 		
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
 			if (results.empty())
 			{
 				return {};
 			}
 
-			const auto& row = results.front();
-			if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
+			sneak_info info(results.front());
+
+			if (!is_sneak_in_game(info))
 			{
-				sneak_info info(row);
-
-				if (!is_sneak_in_game(info))
-				{
-					return {};
-				}
-
-				return {info};
+				return {};
 			}
 
-			return {};
+			return {info};
 		});
 	}
 
@@ -609,27 +585,16 @@ namespace database::players
 				sqlpp::select(
 					sqlpp::all_of(players_table))
 						.from(players_table)
-							.where(players_table.id == player_id &&
-								   players_table.current_sneak_status >= static_cast<int>(status_pre_game))
+							.where((players_table.id == player_id &&
+								   players_table.current_sneak_status >= static_cast<int>(status_pre_game)) && IS_ACTIVE_EXPR)
 				);
 		
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
 			if (results.empty())
 			{
 				return {};
 			}
 
-			for (auto& row : results)
-			{
-				if ((now - row.last_update.value().time_since_epoch()) <= session_timeout)
-				{
-					return {sneak_info(row)};
-				}
-			}
-
-			return {};
+			return {sneak_info(results.front())};
 		});
 	}
 
