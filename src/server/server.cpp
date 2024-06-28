@@ -4,6 +4,7 @@
 
 #include "types/server.hpp"
 #include "database/database.hpp"
+#include "database/auth.hpp"
 
 #include "component/console.hpp"
 #include "component/command.hpp"
@@ -39,6 +40,8 @@ namespace tpp
 			console::error("Failed to create tables: %s\n", e.what());
 			return;
 		}
+
+		auth::initialize_lists();
 
 		server s;
 		if (!s.start())
