@@ -20,9 +20,11 @@ namespace command
 	};
 
 	using callback = std::function<void(const params& args)>;
+	using callback_narg = std::function<void()>;
 
 	void run_frame();
 
 	void execute(const std::string& cmd);
 	void add(const std::string& name, const callback& cb);
+	void add(const std::string& name, const callback_narg& cb);
 }
