@@ -277,7 +277,7 @@ namespace command
 				});
 			});
 
-			add("reload_allow_list", auth::reload_allow_list);
+			add("reload_lists", auth::reload_lists);
 		}
 	};
 }

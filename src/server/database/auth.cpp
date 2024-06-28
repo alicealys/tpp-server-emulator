@@ -21,11 +21,14 @@ namespace auth
 	{
 		utils::tpp::tpp_client client;
 
-		std::optional<std::unordered_set<std::uint64_t>> parse_allow_list()
+		constexpr auto allow_list_file = "allow_list.json";
+		constexpr auto deny_list_file = "deny_list.json";
+
+		std::optional<std::unordered_set<std::uint64_t>> parse_list(const std::string& file)
 		{
 			std::string data;
-			console::log("Parsing allow list...\n");
-			if (!utils::io::read_file("allow_list.json", &data))
+			console::log("Parsing %s...\n", file.data());
+			if (!utils::io::read_file(file, &data))
 			{
 				return {};
 			}
@@ -35,14 +38,14 @@ namespace auth
 			const auto json_list = nlohmann::json::parse(data, {}, false);
 			if (json_list.is_discarded() || !json_list.is_array())
 			{
-				console::error("Error parsing allow list, must be a valid int64 array\n");
+				console::error("Error parsing list, must be a valid int64 array\n");
 				return {list};
 			}
 
 			for (const auto& steam_id : json_list)
 			{
 				const auto id = steam_id.get<std::uint64_t>();
-				console::log("Adding user \"%lli\" to allow list\n", id);
+				console::log("Adding user \"%lli\" to list\n", id);
 				list.insert(id);
 			}
 
@@ -51,13 +54,20 @@ namespace auth
 
 		std::optional<std::unordered_set<std::uint64_t>>& get_allow_list()
 		{
-			static auto list = parse_allow_list();
+			static auto list = parse_list(allow_list_file);
+			return list;
+		}
+
+		std::optional<std::unordered_set<std::uint64_t>>& get_deny_list()
+		{
+			static auto list = parse_list(deny_list_file);
 			return list;
 		}
 
 		bool is_steam_id_allowed(const std::uint64_t steam_id)
 		{
-			const auto allow_list = get_allow_list();
+			const auto& allow_list = get_allow_list();
+
 			if (!allow_list.has_value())
 			{
 				return true;
@@ -65,11 +75,35 @@ namespace auth
 
 			return allow_list->contains(steam_id);
 		}
+
+		bool is_steam_id_denied(const std::uint64_t steam_id)
+		{
+			const auto& deny_list = get_deny_list();
+
+			if (!deny_list.has_value())
+			{
+				return false;
+			}
+
+			return deny_list->contains(steam_id);
+		}
+
+		bool can_authenticate(const std::uint64_t steam_id)
+		{
+			return !is_steam_id_denied(steam_id) && is_steam_id_allowed(steam_id);
+		}
 	}
 
-	void reload_allow_list()
+	void initialize_lists()
 	{
-		get_allow_list() = parse_allow_list();
+		get_allow_list();
+		get_deny_list();
+	}
+
+	void reload_lists()
+	{
+		get_allow_list() = parse_list(allow_list_file);
+		get_deny_list() = parse_list(deny_list_file);
 	}
 
 	std::optional<std::uint64_t> verify_ticket_konami(const std::string& auth_ticket, const size_t ticket_size)
@@ -154,7 +188,7 @@ namespace auth
 		}
 
 		const auto account_id = account_id_opt.value();
-		if (!is_steam_id_allowed(account_id))
+		if (!can_authenticate(account_id))
 		{
 			console::log("Denying user \"%lli\"\n", account_id);
 			return {};
