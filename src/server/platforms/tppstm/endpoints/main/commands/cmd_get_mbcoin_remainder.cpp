@@ -15,15 +15,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto p_data = database::player_data::find(player->get_id());
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		result["remainder"] = p_data->get_mb_coin();

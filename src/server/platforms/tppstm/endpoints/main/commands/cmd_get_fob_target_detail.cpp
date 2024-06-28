@@ -18,22 +18,19 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 		
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& is_sneak_j = data["is_sneak"];
@@ -45,24 +42,21 @@ namespace tpp
 		if (!is_sneak_j.is_number_integer() || !is_event_j.is_number_integer() || !is_plus_j.is_number_integer() ||
 			!mode_j.is_string() || !mother_base_id_j.is_number_integer())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 		auto fob = database::fobs::get_fob(mother_base_id);
 		if (!fob.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto mode_str = mode_j.get<std::string>();
 		const auto mode = database::players::get_sneak_mode_id(mode_str);
 		if (mode == database::players::mode_invalid)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		auto& detail = result["detail"];
@@ -89,15 +83,13 @@ namespace tpp
 		const auto owner = database::players::find(fob->get_player_id());
 		if (!owner.has_value())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		const auto owner_record = database::player_records::find(fob->get_player_id());
 		if (!owner_record.has_value())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		static std::vector<std::string> resource_names =
@@ -173,8 +165,7 @@ namespace tpp
 
 		if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
 		{
-			result["result"] = "ERR_SNEAK_RESTRICTION";
-			return result;
+			return error(ERR_SNEAK_RESTRICTION);
 		}
 
 		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
@@ -189,8 +180,7 @@ namespace tpp
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
 				database::players::status_menu, true, owner->is_security_challenge_enabled()))
 			{
-				result["result"] = "ERR_ALREADY_SNEAK";
-				return result;
+				return error(ERR_ALREADY_SNEAK);
 			}
 		}
 		else
@@ -198,15 +188,13 @@ namespace tpp
 			const auto active_sneak = database::players::get_active_sneak(mother_base_id);
 			if (!active_sneak.has_value())
 			{
-				result["result"] = "ERR_DATABASE";
-				return result;
+				return error(ERR_DATABASE);
 			}
 
 			const auto attacker = database::players::find(active_sneak->get_player_id());
 			if (!attacker.has_value())
 			{
-				result["result"] = "ERR_DATABASE";
-				return result;
+				return error(ERR_DATABASE);
 			}
 
 			detail["platform"] = active_sneak->get_platform();
@@ -220,8 +208,7 @@ namespace tpp
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
 				database::players::status_menu, false, owner->is_security_challenge_enabled()))
 			{
-				result["result"] = "ERR_ALREADY_SNEAK";
-				return result;
+				return error(ERR_ALREADY_SNEAK);
 			}
 		}
 

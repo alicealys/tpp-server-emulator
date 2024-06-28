@@ -16,8 +16,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& player_id_j = data["player_id"];
@@ -29,14 +28,12 @@ namespace tpp
 		if (!player_id_j.is_number_unsigned() || !to_player_id_j.is_number_unsigned() || 
 			!retaliate_score_j.is_number_unsigned() || !flag_j.is_string() || !is_open_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		if (player_id_j != player->get_id())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 		
 		const auto to_player_id = to_player_id_j.get<std::uint64_t>();
@@ -47,8 +44,7 @@ namespace tpp
 
 		if (flag_id == database::wormholes::wormhole_flag_invalid)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		database::wormholes::add_wormhole(player->get_id(), to_player_id, flag_id, is_open, retaliate_score);

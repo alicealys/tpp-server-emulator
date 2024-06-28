@@ -308,22 +308,19 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 		
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& type_j = data["type"];
@@ -331,8 +328,7 @@ namespace tpp
 
 		if (!type_j.is_string() || !num_j.is_number_integer())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto type = type_j.get<std::string>();

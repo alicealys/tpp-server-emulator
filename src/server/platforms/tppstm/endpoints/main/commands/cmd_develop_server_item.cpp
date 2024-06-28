@@ -15,22 +15,19 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto p_data = database::player_data::find(player->get_id());
 		if (!p_data.get())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& item_id_j = data["id"];
 		if (!item_id_j.is_number_integer())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto item_id = item_id_j.get<std::uint32_t>();
@@ -47,12 +44,12 @@ namespace tpp
 			{
 				if (status.second.is_created())
 				{
-					return error("ERR_SERVERITEM_ALREADY_DEVELOPED");
+					return error(ERR_SERVERITEM_ALREADY_DEVELOPED);
 				}
 
 				if (!status.second.is_open())
 				{
-					return error("ERR_SERVERITEM_UNOPENFLAG");
+					return error(ERR_SERVERITEM_UNOPENFLAG);
 				}
 			}
 		}
@@ -73,7 +70,7 @@ namespace tpp
 		database::items::create(player->get_id(), item_id);
 		database::player_data::set_resources(player->get_id(), resource_arrays, p_data->get_local_gmp(), server_gmp);
 
-		result["result"] = "NOERR";
+		result["result"] = utils::tpp::get_error(NOERR);
 		result["xuid"] = {};
 
 		return result;

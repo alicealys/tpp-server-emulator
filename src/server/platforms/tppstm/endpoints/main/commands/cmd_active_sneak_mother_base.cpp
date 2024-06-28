@@ -15,15 +15,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& mother_base_id_j = data["mother_base_id"];
 		if (!mother_base_id_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
@@ -31,15 +29,13 @@ namespace tpp
 
 		if (!active_sneak.has_value() || active_sneak->get_fob_id() != mother_base_id)
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		if (!database::players::set_active_sneak(player->get_id(), active_sneak->get_fob_id(), active_sneak->get_owner_id(), 
 			active_sneak->get_platform(), active_sneak->get_mode(), database::players::status_in_game, active_sneak->is_sneak(), false))
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		return result;

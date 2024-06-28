@@ -16,7 +16,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			return error("ERR_INVALID_SESSION");
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& num_j = data["num"];
@@ -25,19 +25,19 @@ namespace tpp
 
 		if (!num_j.is_number_integer() || !resource_id_j.is_number_integer() || !unit_price_j.is_number_integer())
 		{
-			return error("ERR_INVALIDARG");
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto resource_id = resource_id_j.get<std::uint32_t>();
 		if (resource_id > database::player_data::resource_type_count)
 		{
-			return error("ERR_INVALIDARG");
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			return error("ERR_PLAYER_NOTFOUND");
+			return error(ERR_PLAYER_NOTFOUND);
 		}
 
 		const auto num = num_j.get<std::uint32_t>();
@@ -48,7 +48,7 @@ namespace tpp
 
 		if (resource_arrays[database::player_data::processed_server][resource_id] < num)
 		{
-			return error("ERR_INVALIDARG");
+			return error(ERR_INVALIDARG);
 		}
 
 		resource_arrays[database::player_data::processed_server][resource_id] -= num;

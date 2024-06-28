@@ -16,8 +16,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& use_mb_coin_j = data["use_mb_coin"];
@@ -25,24 +24,21 @@ namespace tpp
 		auto& deploy_exec_info = data["deploy_exec_info"];
 		if (!mb_coin_pay_j.is_number_unsigned() || !use_mb_coin_j.is_number_unsigned() || !deploy_exec_info.is_object())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& win_rate_j = deploy_exec_info["win_rate"];
 		const auto& mother_base_id_j = deploy_exec_info["mother_base_id"];
 		if (!win_rate_j.is_number_unsigned() || !mother_base_id_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint32_t>();
 		const auto fob = database::fobs::get_fob(mother_base_id);
 		if (!fob.has_value())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		const auto win_rate = win_rate_j.get<std::uint32_t>();

@@ -16,15 +16,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);

@@ -15,8 +15,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 		
 		const auto& kind_j = data["kind"];
@@ -24,8 +23,7 @@ namespace tpp
 
 		if (!kind_j.is_string() || !remaining_time_j.is_number_integer())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		return result;

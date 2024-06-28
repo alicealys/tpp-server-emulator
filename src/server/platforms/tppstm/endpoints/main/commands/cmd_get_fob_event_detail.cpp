@@ -15,15 +15,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& event_index_j = data["event_index"];
 		if (!event_index_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto event_id = event_index_j.get<std::uint64_t>();
@@ -31,8 +29,7 @@ namespace tpp
 
 		if (!sneak_result.has_value())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		auto& sneak_data = sneak_result->get_data();
@@ -40,8 +37,7 @@ namespace tpp
 		const auto attacker_record = database::player_records::find(sneak_result->get_player_id());
 		if (!attacker_record.has_value())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		result["event_index"] = event_id;

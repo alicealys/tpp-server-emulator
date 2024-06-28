@@ -17,8 +17,7 @@ namespace tpp
 		const auto& account_id_val = data["user_name"];
 		if (!hash_val.is_string() || !account_id_val.is_string())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto hash = hash_val.get<std::string>();
@@ -32,8 +31,7 @@ namespace tpp
 			const auto auth_result_opt = auth::authenticate_user(account_id_val, hash);
 			if (!auth_result_opt.has_value())
 			{
-				result["result"] = "ERR_INVALID_ACCOUNT";
-				return result;
+				return error(ERR_INVALID_ACCOUNT);
 			}
 
 			const auto& auth_result = auth_result_opt.value();
@@ -53,8 +51,7 @@ namespace tpp
 
 			if (!player_found.has_value())
 			{
-				result["result"] = "ERR_INVALID_SESSION";
-				return result;
+				return error(ERR_INVALID_SESSION);
 			}
 
 			if (expired)

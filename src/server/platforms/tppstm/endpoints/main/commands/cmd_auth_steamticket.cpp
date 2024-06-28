@@ -17,8 +17,7 @@ namespace tpp
 		const auto& steam_ticket_size_j = data["steam_ticket_size"];
 		if (!steam_ticket_val.is_string() || !steam_ticket_size_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_INVALID_TICKET";
-			return result;
+			return error(ERR_INVALID_TICKET);
 		}
 
 		if (!player.has_value())
@@ -29,8 +28,7 @@ namespace tpp
 			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket, steam_ticket_size);
 			if (!auth_result_opt.has_value())
 			{
-				result["result"] = "ERR_INVALID_TICKET";
-				return result;
+				return error(ERR_INVALID_TICKET);
 			}
 
 			const auto& auth_result = auth_result_opt.value();

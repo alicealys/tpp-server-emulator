@@ -16,8 +16,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		auto& mother_base_param = data["mother_base_param"];
@@ -32,8 +31,7 @@ namespace tpp
 					!param["security_rank"].is_number_integer() ||
 					!param["cluster_param"].is_array())
 				{
-					result["result"] = "ERR_INVALIDARG";
-					return result;
+					return error(ERR_INVALIDARG);
 				}
 
 				fobs.emplace_back(param);

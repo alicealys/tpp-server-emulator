@@ -14,14 +14,12 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		if (!database::players::update_session(player.value()))
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);

@@ -18,15 +18,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& soldier_num_val = data["soldier_num"];
@@ -34,8 +32,7 @@ namespace tpp
 
 		if (!soldier_num_val.is_number_integer() || !soldier_param_val.is_string())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto soldier_param = soldier_param_val.get<std::string>();
@@ -43,14 +40,12 @@ namespace tpp
 
 		if (soldier_bin.empty())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		if (soldier_bin.size() > sizeof(database::player_data::staff_array_t) || (soldier_bin.size() % 24) != 0)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& section = data["section"];
@@ -59,8 +54,7 @@ namespace tpp
 		if (!section.is_object() || section.size() != database::player_data::unit_count ||
 			!section_soldier.is_object() || section_soldier.size() != database::player_data::unit_count)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		database::player_data::unit_levels_t levels{};

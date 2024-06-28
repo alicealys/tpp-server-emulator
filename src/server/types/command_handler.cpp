@@ -4,5 +4,17 @@
 
 namespace tpp
 {
+	nlohmann::json error(const std::string& id)
+	{
+		nlohmann::json result;
+		result["result"] = id;
+		return result;
+	}
 
+	nlohmann::json error(const std::uint32_t id)
+	{
+		nlohmann::json result;
+		result["result"] = utils::tpp::get_error(id);
+		return result;
+	}
 }

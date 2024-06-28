@@ -18,8 +18,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 		
 		database::players::abort_mother_base(player->get_id());
