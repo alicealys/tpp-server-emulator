@@ -17,15 +17,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& owner_player_id_j = data["owner_player_id"];
 		if (!owner_player_id_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto owner_player_id = owner_player_id_j.get<std::uint64_t>();

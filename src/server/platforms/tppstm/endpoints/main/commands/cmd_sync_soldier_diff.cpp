@@ -18,15 +18,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto p_data = database::player_data::find(player->get_id());
 		if (!p_data.get())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& section = data["section"];
@@ -35,8 +33,7 @@ namespace tpp
 		if (!section.is_object() || section.size() != database::player_data::unit_count ||
 			!section_soldier.is_object() || section_soldier.size() != database::player_data::unit_count)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		auto& remover_param = data["remover_param"];

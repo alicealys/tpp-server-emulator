@@ -15,14 +15,13 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto enabled = data["status"] == "ENABLE";
 		if (!database::players::set_security_challenge(player->get_id(), enabled))
 		{
-			result["result"] = "ERR_DATABASE";
+			return error(ERR_DATABASE);
 		}
 
 		database::player_records::clear_shield_date(player->get_id());

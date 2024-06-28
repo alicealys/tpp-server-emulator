@@ -14,8 +14,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		auto sneak_results = database::sneak_results::get_sneak_results(player->get_id(), 10);

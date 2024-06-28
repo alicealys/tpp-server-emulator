@@ -16,8 +16,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& diff_resource_1 = data["diff_resource1"];
@@ -29,15 +28,13 @@ namespace tpp
 			diff_resource_1.size() < database::player_data::resource_type_count ||
 			diff_resource_2.size() < database::player_data::resource_type_count)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		database::player_data::resource_arrays_t resource_arrays{};

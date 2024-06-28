@@ -451,11 +451,4 @@ namespace tpp
 		const auto encoded = utils::encoding::split_into_lines(str);
 		return {encoded};
 	}
-
-	nlohmann::json error(const std::string& id)
-	{
-		nlohmann::json result;
-		result["result"] = id;
-		return result;
-	}
 }

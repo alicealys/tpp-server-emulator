@@ -18,22 +18,19 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 		
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.get())
 		{
-			result["result"] = "ERR_DATABASE";
-			return result;
+			return error(ERR_DATABASE);
 		}
 
 		const auto _0 = gsl::finally([&]
@@ -52,28 +49,24 @@ namespace tpp
 			const auto fob = database::fobs::get_fob(mother_base_id);
 			if (!fob.has_value())
 			{
-				result["result"] = "ERR_DATABASE";
-				return result;
+				return error(ERR_DATABASE);
 			}
 
 			const auto mode = database::players::get_sneak_mode_id(mode_str);
 			if (mode == database::players::mode_invalid)
 			{
-				result["result"] = "ERR_INVALIDARG";
-				return result;
+				return error(ERR_INVALIDARG);
 			}
 
 			const auto active_sneak = database::players::find_active_sneak_from_player(player->get_id());
 			if (!active_sneak.has_value())
 			{
-				result["result"] = "ERR_DATABSE";
-				return result;
+				return error(ERR_DATABASE);
 			}
 
 			if (active_sneak->get_mode() != mode)
 			{
-				result["result"] = "ERR_DATABSE";
-				return result;
+				return error(ERR_DATABASE);
 			}
 
 			if (active_sneak->get_mode() == database::players::mode_actual)
@@ -116,7 +109,7 @@ namespace tpp
 					auto& active_sneak_val = active_sneak.value();
 					if (!database::sneak_results::add_sneak_result(player.value(), fob.value(), active_sneak_val, is_win, sneak_data))
 					{
-						result["result"] = "ERR_DATABASE";
+						result["result"] = utils::tpp::get_error(ERR_DATABASE);
 					}
 				}
 			}
@@ -124,8 +117,7 @@ namespace tpp
 			const auto new_stats = database::player_records::find(player->get_id());
 			if (!new_stats.has_value())
 			{
-				result["result"] = "ERR_DATABASE";
-				return result;
+				return error(ERR_DATABASE);
 			}
 
 			result["sneak_point"] = new_stats->get_fob_point();
@@ -135,8 +127,7 @@ namespace tpp
 		}
 		catch (const std::exception&)
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		return result;

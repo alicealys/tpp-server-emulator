@@ -15,8 +15,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 
 		const auto& ex_ip_j = data["ex_ip"];
@@ -28,8 +27,7 @@ namespace tpp
 		if (!ex_ip_j.is_string() || !in_ip_j.is_string() || !nat_j.is_string() ||
 			!ex_port_j.is_number_unsigned() || !in_port_j.is_number_unsigned())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto ex_ip = ex_ip_j.get<std::string>();

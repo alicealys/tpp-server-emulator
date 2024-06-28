@@ -21,6 +21,4 @@ namespace tpp
 		utils::cryptography::blowfish blow_;
 
 	};
-
-	nlohmann::json error(const std::string& id);
 }

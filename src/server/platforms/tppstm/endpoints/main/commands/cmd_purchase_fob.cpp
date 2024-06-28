@@ -17,8 +17,7 @@ namespace tpp
 
 		if (!player.has_value())
 		{
-			result["result"] = "ERR_INVALID_SESSION";
-			return result;
+			return error(ERR_INVALID_SESSION);
 		}
 		
 		const auto& area_id_j = data["area_id"];
@@ -28,16 +27,14 @@ namespace tpp
 
 		if (!p_data.get() || fob_list.size() >= 4 || fob_list.size() < 1 || !area_id_j.is_number_integer())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto area_id = area_id_j.get<std::uint32_t>();
 		const auto area_opt = database::fobs::get_area(area_id);
 		if (!area_opt.has_value())
 		{
-			result["result"] = "ERR_INVALIDARG";
-			return result;
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto& area = area_opt.value();
@@ -49,7 +46,7 @@ namespace tpp
 		}
 		else
 		{
-			result["result"] = "ERR_MBCOIN_SHORTAGE";
+			result["result"] = utils::tpp::get_error(ERR_MBCOIN_SHORTAGE);
 		}
 		
 		return result;
