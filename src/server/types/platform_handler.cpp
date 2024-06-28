@@ -2,6 +2,8 @@
 
 #include "platform_handler.hpp"
 
+#include "component/console.hpp"
+
 namespace tpp
 {
 	std::optional<std::string> platform_handler::handle_endpoint(const utils::request_params& params, const std::string& endpoint, const std::string& data)
@@ -18,8 +20,13 @@ namespace tpp
 		}
 		catch (const std::exception& e)
 		{
-			printf("error handling command: %s\n", e.what());
+			console::error("Error handling command: %s\n", e.what());
 			return {};
 		}
+	}
+
+	void platform_handler::print_handler_name([[ maybe_unused ]] const std::string& name)
+	{
+		console::log("Registering endpoint \"%s\"\n", name.data());
 	}
 }

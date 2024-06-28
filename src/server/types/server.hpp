@@ -39,6 +39,4 @@ namespace tpp
 		utils::http_server http_server;
 
 	};
-
-	int start_server();
 }

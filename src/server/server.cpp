@@ -1,14 +1,33 @@
 #include <std_include.hpp>
 
+#include "loader/component_loader.hpp"
+
 #include "types/server.hpp"
 #include "database/database.hpp"
 
+#include "component/console.hpp"
+#include "component/command.hpp"
+
 namespace tpp
 {
-	std::atomic_bool killed;
-
-	int start_server()
+	namespace
 	{
+		std::atomic_bool killed;
+	}
+
+	void stop_server()
+	{
+		killed = true;
+	}
+
+	void start_server()
+	{
+		const auto _0 = gsl::finally(&component_loader::pre_destroy);
+		component_loader::pre_start();
+
+		const auto current_path = std::filesystem::current_path().generic_string();
+		console::log("Working dir: %s\n", current_path.data());
+
 		std::vector<std::thread> threads;
 
 		try
@@ -17,15 +36,15 @@ namespace tpp
 		}
 		catch (const std::exception& e)
 		{
-			printf("%s\n", e.what());
-			return 0;
+			console::error("Failed to create tables: %s\n", e.what());
+			return;
 		}
 
 		server s;
 		if (!s.start())
 		{
-			printf("failed to start server\n");
-			return 0;
+			console::error("Failed to start server\n");
+			return;
 		}
 
 		threads.emplace_back([&]
@@ -46,14 +65,12 @@ namespace tpp
 			}
 		});
 
+		component_loader::post_start();
+
 		while (!killed)
 		{
-			std::string cmd;
-			std::getline(std::cin, cmd);
-			if (cmd == "quit")
-			{
-				killed = true;
-			}
+			command::run_frame();
+			std::this_thread::sleep_for(1ms);
 		}
 
 		for (auto& thread : threads)
@@ -63,7 +80,5 @@ namespace tpp
 				thread.join();
 			}
 		}
-
-		return 0;
 	}
 }

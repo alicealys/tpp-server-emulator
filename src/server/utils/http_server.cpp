@@ -2,6 +2,8 @@
 
 #include "http_server.hpp"
 
+#include "component/console.hpp"
+
 #include <utils/io.hpp>
 
 namespace utils
@@ -9,7 +11,6 @@ namespace utils
 	namespace
 	{
 		std::size_t thread_index{};
-		std::unordered_map<std::size_t, thread_data_t> thread_list;
 	}
 
 	http_connection::http_connection(mg_connection* c)
@@ -35,7 +36,7 @@ namespace utils
 
 	void http_connection::clear_task()
 	{
-		const auto task = this->get_data<thread_data_t>();
+		const auto task = this->get_data<task_data_t>();
 		if (task == nullptr)
 		{
 			return;
@@ -46,24 +47,32 @@ namespace utils
 			task->thread.join();
 		}
 
-		thread_list.erase(task->index);
+		delete task;
 		std::memset(this->conn_->data, 0, MG_DATA_SIZE);
 	}
 
 	void http_connection::reply_async(const std::function<response_params()>& cb) const
 	{
 		const auto index = thread_index++;
-		auto thread_data = &thread_list[index];
+		auto task = new task_data_t{};
 
-		thread_data->index = index;
-		thread_data->thread = std::thread([=]()
+#ifdef HTTP_DEBUG
+		task->start = std::chrono::high_resolution_clock::now();
+		console::debug("[HTTP Server] [Request %lli] Started\n", index);
+#endif
+		task->thread = std::thread([=]()
 		{
 			const auto result = cb();
-			thread_data->params = result;
-			thread_data->done = true;
+			task->params = result;
+			task->done = true;
+#ifdef HTTP_DEBUG
+			const auto now = std::chrono::high_resolution_clock::now();
+			console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index,
+				std::chrono::duration_cast<std::chrono::milliseconds>(now - task->start).count());
+#endif
 		});
 
-		this->set_data<thread_data_t>(thread_data);
+		this->set_data<task_data_t>(task);
 	}
 
 	http_server::http_server()
@@ -85,7 +94,7 @@ namespace utils
 	{
 		const auto inst = reinterpret_cast<http_server*>(fn_data);
 		http_connection conn = c;
-		const auto response = conn.get_data<thread_data_t>();
+		const auto task = conn.get_data<task_data_t>();
 
 		switch (ev)
 		{
@@ -111,14 +120,14 @@ namespace utils
 		}
 		case MG_EV_POLL:
 		{
-			if (response == nullptr || !response->done)
+			if (task == nullptr || !task->done)
 			{
 				return;
 			}
 
 			try
 			{
-				conn.reply(response->params.code, response->params.headers, response->params.body);
+				conn.reply(task->params.code, task->params.headers, task->params.body);
 			}
 			catch (const std::exception& e)
 			{

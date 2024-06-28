@@ -25,5 +25,7 @@ namespace tpp
 		}
 
 		virtual std::optional<std::string> handle_command(const utils::request_params& params, const std::string& data);
+
+		void print_handler_name([[ maybe_unused ]] const std::string& name) override;
 	};
 }

@@ -2,6 +2,8 @@
 
 #include "endpoint_handler.hpp"
 
+#include "component/console.hpp"
+
 namespace tpp
 {
 	std::optional<std::string> endpoint_handler::handle_command([[maybe_unused]] const utils::request_params& params, 
@@ -34,9 +36,26 @@ namespace tpp
 			return {};
 		}
 
-		printf("[Endpoint] Handling command \"%s\"\n", msgid_str.data());
+#ifdef DEBUG
+		static std::atomic_int64_t exec_id = 0;
+		auto id = exec_id++;
+		const auto start = std::chrono::high_resolution_clock::now();
+		const auto _0 = gsl::finally([=]
+		{
+			const auto end = std::chrono::high_resolution_clock::now();
+			const auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+			console::debug("[Endpoint] Took %lli msec (%lli)", diff, id);
+		});
+
+		console::debug("[Endpoint] Handling command \"%s\" (%lli)\n", msgid_str.data(), id);
+#endif
 
 		const auto json_res = handler->second->execute(json_req["data"], player);
 		return this->encrypt_response(json_req, json_res, player);
+	}
+
+	void endpoint_handler::print_handler_name([[ maybe_unused ]] const std::string& name)
+	{
+		console::log("Registering command \"%s\"\n", name.data());
 	}
 }
