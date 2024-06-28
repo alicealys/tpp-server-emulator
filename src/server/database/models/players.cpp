@@ -669,6 +669,33 @@ namespace database::players
 			return list;
 		});
 	}
+	
+	std::uint64_t get_player_count()
+	{
+		return database::access<std::uint64_t>([&](database::database_t& db)
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::count(1))
+						.from(players_table).unconditionally());
+
+			return results.front().count.value();
+		});
+	}
+
+	std::uint64_t get_online_player_count(const std::chrono::milliseconds within)
+	{
+		return database::access<std::uint64_t>([&](database::database_t& db)
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::count(1))
+						.from(players_table)
+							.where(players_table.last_update >= std::chrono::system_clock::now() - within));
+
+			return results.front().count.value();
+		});
+	}
 
 	class table final : public table_interface
 	{
