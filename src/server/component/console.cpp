@@ -352,7 +352,7 @@ namespace console
 	public:
 		void pre_start() override
 		{
-			SetConsoleTitle("website");
+			SetConsoleTitle("tpp-server-emulator");
 
 			SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
 

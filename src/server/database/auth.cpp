@@ -3,6 +3,8 @@
 #include "auth.hpp"
 #include "database.hpp"
 
+#include "component/console.hpp"
+
 #include "models/players.hpp"
 
 #include "utils/tpp_client.hpp"
@@ -11,10 +13,56 @@
 
 #include <utils/string.hpp>
 #include <utils/cryptography.hpp>
+#include <utils/io.hpp>
 
 namespace auth
 {
-	utils::tpp::tpp_client client;
+	namespace
+	{
+		utils::tpp::tpp_client client;
+
+		std::optional<std::unordered_set<std::uint64_t>> parse_allow_list()
+		{
+			std::string data;
+			if (!utils::io::read_file("allow_list.json", &data))
+			{
+				return {};
+			}
+
+			std::unordered_set<std::uint64_t> list;
+
+			const auto json_list = nlohmann::json::parse(data, {}, false);
+			if (json_list.is_discarded() || !json_list.is_array())
+			{
+				console::error("Error parsing allow list, must be a valid int64 array\n");
+				return {list};
+			}
+
+			for (const auto& steam_id : json_list)
+			{
+				list.insert(steam_id.get<std::uint64_t>());
+			}
+
+			return {list};
+		}
+
+		std::optional<std::unordered_set<std::uint64_t>> get_allow_list()
+		{
+			static const auto list = parse_allow_list();
+			return list;
+		}
+
+		bool is_steam_id_allowed(const std::uint64_t steam_id)
+		{
+			const auto allow_list = get_allow_list();
+			if (!allow_list.has_value())
+			{
+				return true;
+			}
+
+			return allow_list->contains(steam_id);
+		}
+	}
 
 	std::optional<std::uint64_t> verify_ticket_konami(const std::string& auth_ticket, const size_t ticket_size)
 	{
@@ -98,6 +146,14 @@ namespace auth
 		}
 
 		const auto account_id = account_id_opt.value();
+		if (!is_steam_id_allowed(account_id))
+		{
+			console::log("Denying user \"%lli\"\n", account_id);
+			return {};
+		}
+
+		console::log("Allowing user \"%lli\"\n", account_id);
+
 		const auto player = database::players::find_or_insert(account_id);
 
 		auth_ticket_response response{};
