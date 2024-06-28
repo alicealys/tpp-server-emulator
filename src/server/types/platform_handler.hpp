@@ -9,5 +9,7 @@ namespace tpp
 	{
 	public:
 		std::optional<std::string> handle_endpoint(const utils::request_params& params, const std::string& endpoint, const std::string& body);
+
+		void print_handler_name([[ maybe_unused ]] const std::string& name) override;
 	};
 }

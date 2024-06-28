@@ -2,5 +2,6 @@
 
 namespace tpp
 {
-	int start_server();
+	void stop_server();
+	void start_server();
 }

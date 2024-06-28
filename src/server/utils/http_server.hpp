@@ -5,6 +5,8 @@
 
 #include <mongoose.h>
 
+#define HTTP_DEBUG
+
 namespace utils
 {
 	struct request_params
@@ -21,8 +23,11 @@ namespace utils
 		std::string body;
 	};
 
-	struct thread_data_t
+	struct task_data_t
 	{
+#ifdef HTTP_DEBUG
+		std::chrono::high_resolution_clock::time_point start;
+#endif
 		response_params params;
 		std::thread thread;
 		std::size_t index;
