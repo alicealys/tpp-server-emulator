@@ -69,8 +69,6 @@ namespace database::sneak_results
 		}
 	}
 
-	auto sneak_results_table = sneak_results_table_t();
-
 	bool add_sneak_result(const players::player& player, const fobs::fob& fob, const players::sneak_info& sneak, 
 		const bool is_win, nlohmann::json& data)
 	{
@@ -82,15 +80,15 @@ namespace database::sneak_results
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::insert_into(sneak_results_table)
-					.set(sneak_results_table.player_id = player.get_id(),
-						 sneak_results_table.target_id = fob.get_player_id(),
-						 sneak_results_table.fob_id = fob.get_id(),
-						 sneak_results_table.fob_index = fob.get_index(),
-						 sneak_results_table.data = data.dump(),
-						 sneak_results_table.is_win = is_win,
-						 sneak_results_table.platform = sneak.get_platform(),
-						 sneak_results_table.create_date = std::chrono::system_clock::now()
+				sqlpp::insert_into(sneak_result::table)
+					.set(sneak_result::table.player_id = player.get_id(),
+						 sneak_result::table.target_id = fob.get_player_id(),
+						 sneak_result::table.fob_id = fob.get_id(),
+						 sneak_result::table.fob_index = fob.get_index(),
+						 sneak_result::table.data = data.dump(),
+						 sneak_result::table.is_win = is_win,
+						 sneak_result::table.platform = sneak.get_platform(),
+						 sneak_result::table.create_date = std::chrono::system_clock::now()
 				));
 		});
 
@@ -103,10 +101,10 @@ namespace database::sneak_results
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(sneak_results_table))
-						.from(sneak_results_table)
-							.where(sneak_results_table.target_id == target_id)
-								.order_by(sneak_results_table.create_date.desc())
+					sqlpp::all_of(sneak_result::table))
+						.from(sneak_result::table)
+							.where(sneak_result::table.target_id == target_id)
+								.order_by(sneak_result::table.create_date.desc())
 									.limit(limit));
 
 			std::vector<sneak_result> sneak_results;
@@ -129,10 +127,10 @@ namespace database::sneak_results
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(sneak_results_table))
-						.from(sneak_results_table)
-							.where(sneak_results_table.player_id == player_id && 
-								   sneak_results_table.id == event_id));
+					sqlpp::all_of(sneak_result::table))
+						.from(sneak_result::table)
+							.where(sneak_result::table.player_id == player_id && 
+								   sneak_result::table.id == event_id));
 
 			if (results.empty())
 			{

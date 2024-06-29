@@ -23,8 +23,6 @@ create table if not exists `wormholes`
 
 namespace database::wormholes
 {
-	auto wormholes_table = wormholes_table_t();
-
 	wormhole_flag get_flag_id(const std::string& flag)
 	{
 		static std::unordered_map<std::string, wormhole_flag> flag_map =
@@ -48,13 +46,13 @@ namespace database::wormholes
 		database::access([&](database_t& db)
 		{
 			db->operator()(
-				sqlpp::insert_into(wormholes_table)
-					.set(wormholes_table.player_id = player_id,
-						 wormholes_table.to_player_id = to_player_id,
-						 wormholes_table.flag = static_cast<std::uint32_t>(flag),
-						 wormholes_table.retaliate_score = retaliate_point,
-						 wormholes_table.is_open = is_open,
-						 wormholes_table.create_date = std::chrono::system_clock::now())
+				sqlpp::insert_into(wormhole::table)
+					.set(wormhole::table.player_id = player_id,
+						 wormhole::table.to_player_id = to_player_id,
+						 wormhole::table.flag = static_cast<std::uint32_t>(flag),
+						 wormhole::table.retaliate_score = retaliate_point,
+						 wormhole::table.is_open = is_open,
+						 wormhole::table.create_date = std::chrono::system_clock::now())
 				);
 		});
 	}
@@ -64,11 +62,11 @@ namespace database::wormholes
 		return database::access<std::vector<wormhole>>([&](database_t& db)
 		{
 			auto results = db->operator()(
-				sqlpp::select(sqlpp::all_of(wormholes_table))
-					.from(wormholes_table)
-						.where(wormholes_table.is_open == true && wormholes_table.retaliate_score > 0 &&
-							   ((wormholes_table.player_id == player_id && wormholes_table.to_player_id == other_player_id) ||
-								(wormholes_table.player_id == other_player_id && wormholes_table.to_player_id == player_id)))
+				sqlpp::select(sqlpp::all_of(wormhole::table))
+					.from(wormhole::table)
+						.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
+							   ((wormhole::table.player_id == player_id && wormhole::table.to_player_id == other_player_id) ||
+								(wormhole::table.player_id == other_player_id && wormhole::table.to_player_id == player_id)))
 				);
 
 			std::vector<wormhole> list;
@@ -97,10 +95,10 @@ namespace database::wormholes
 		return database::access<std::unordered_map<std::uint64_t, wormhole_status>>([&](database_t& db)
 		{
 			auto results = db->operator()(
-				sqlpp::select(sqlpp::all_of(wormholes_table))
-					.from(wormholes_table)
-						.where(wormholes_table.is_open == true && wormholes_table.retaliate_score > 0 &&
-							   wormholes_table.player_id == player_id || wormholes_table.to_player_id == player_id)
+				sqlpp::select(sqlpp::all_of(wormhole::table))
+					.from(wormhole::table)
+						.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
+							   wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id)
 				);
 
 			std::unordered_map<std::uint64_t, wormhole_status> list;

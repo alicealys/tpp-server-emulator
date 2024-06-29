@@ -10,12 +10,6 @@
 
 namespace database::items
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(item_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(create_date, sqlpp::time_point);
-	DEFINE_TABLE(items, id_field_t, player_id_field_t, item_id_field_t, create_date_field_t);
-
 	struct item_t
 	{
 		std::uint32_t dev_coin;
@@ -49,6 +43,14 @@ namespace database::items
 	class item_status
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(item_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(create_date, sqlpp::time_point);
+		DEFINE_TABLE(items, id_field_t, player_id_field_t, item_id_field_t, create_date_field_t);
+
+		inline static table_t table;
+
 		template <typename ...Args>
 		item_status(const sqlpp::result_row_t<Args...>& row)
 		{

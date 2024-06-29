@@ -326,8 +326,6 @@ namespace database::player_data
 		{6, 3},
 	};
 
-	player_data_table_t player_data_table;
-
 	std::vector<std::string> unit_names =
 	{
 		"combat",
@@ -522,17 +520,17 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::insert_into(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.staff_count = 0,
-						 player_data_table.loadout = "{}",
-						 player_data_table.motherbase = "{}",
-						 player_data_table.emblem = "{}",
-						 player_data_table.local_gmp = 0,
-						 player_data_table.server_gmp = 0,
-						 player_data_table.loadout_gmp = 0,
-						 player_data_table.insurance_gmp = 0,
-						 player_data_table.injury_gmp = 0
+				sqlpp::insert_into(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.staff_count = 0,
+						 player_data::table.loadout = "{}",
+						 player_data::table.motherbase = "{}",
+						 player_data::table.emblem = "{}",
+						 player_data::table.local_gmp = 0,
+						 player_data::table.server_gmp = 0,
+						 player_data::table.loadout_gmp = 0,
+						 player_data::table.insurance_gmp = 0,
+						 player_data::table.injury_gmp = 0
 				));
 		});
 	}
@@ -544,9 +542,9 @@ namespace database::player_data
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(player_data_table))
-						.from(player_data_table)
-							.where(player_data_table.player_id == player_id));
+					sqlpp::all_of(player_data::table))
+						.from(player_data::table)
+							.where(player_data::table.player_id == player_id));
 
 			if (results.empty())
 			{
@@ -591,10 +589,10 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.staff_count = staff_count,
-						 player_data_table.staff_bin = encode_buffer(data))
-							.where(player_data_table.player_id == player_id
+				sqlpp::update(player_data::table)
+					.set(player_data::table.staff_count = staff_count,
+						 player_data::table.staff_bin = encode_buffer(data))
+							.where(player_data::table.player_id == player_id
 				));
 		});
 	}
@@ -605,12 +603,12 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.staff_count = staff_count,
-						 player_data_table.staff_bin = encode_buffer(data),
-						 player_data_table.unit_levels = encode(levels),
-						 player_data_table.unit_counts = encode(counts))
-							.where(player_data_table.player_id == player_id
+				sqlpp::update(player_data::table)
+					.set(player_data::table.staff_count = staff_count,
+						 player_data::table.staff_bin = encode_buffer(data),
+						 player_data::table.unit_levels = encode(levels),
+						 player_data::table.unit_counts = encode(counts))
+							.where(player_data::table.player_id == player_id
 				));
 		});
 	}
@@ -620,10 +618,10 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.unit_levels = encode(levels),
-						 player_data_table.unit_counts = encode(counts))
-							.where(player_data_table.player_id == player_id
+				sqlpp::update(player_data::table)
+					.set(player_data::table.unit_levels = encode(levels),
+						 player_data::table.unit_counts = encode(counts))
+							.where(player_data::table.player_id == player_id
 				));
 		});
 	}
@@ -637,14 +635,14 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.resource_arrays = encode_buffer(resource_buf),
-						 player_data_table.local_gmp = local_gmp,
-						 player_data_table.server_gmp = server_gmp,
-						 player_data_table.nuke_count = nuke_count,
-						 player_data_table.version = player_data_table.version + 1)
-							.where(player_data_table.player_id == player_id
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.resource_arrays = encode_buffer(resource_buf),
+						 player_data::table.local_gmp = local_gmp,
+						 player_data::table.server_gmp = server_gmp,
+						 player_data::table.nuke_count = nuke_count,
+						 player_data::table.version = player_data::table.version + 1)
+							.where(player_data::table.player_id == player_id
 				));
 		});
 	}
@@ -656,14 +654,14 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.resource_arrays = encode_buffer(resource_buf),
-						 player_data_table.local_gmp = local_gmp,
-						 player_data_table.server_gmp = server_gmp,
-						 player_data_table.last_sync = std::chrono::system_clock::now(),
-						 player_data_table.version = player_data_table.version + 1)
-							.where(player_data_table.player_id == player_id
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.resource_arrays = encode_buffer(resource_buf),
+						 player_data::table.local_gmp = local_gmp,
+						 player_data::table.server_gmp = server_gmp,
+						 player_data::table.last_sync = std::chrono::system_clock::now(),
+						 player_data::table.version = player_data::table.version + 1)
+							.where(player_data::table.player_id == player_id
 				));
 		});
 	}
@@ -673,10 +671,10 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.motherbase = motherbase.dump())
-							.where(player_data_table.player_id == player_id)
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.motherbase = motherbase.dump())
+							.where(player_data::table.player_id == player_id)
 				);
 		});
 	}
@@ -686,10 +684,10 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.loadout = loadout.dump())
-							.where(player_data_table.player_id == player_id)
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.loadout = loadout.dump())
+							.where(player_data::table.player_id == player_id)
 				);
 		});
 	}
@@ -699,10 +697,10 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.emblem = emblem.dump())
-							.where(player_data_table.player_id == player_id)
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.emblem = emblem.dump())
+							.where(player_data::table.player_id == player_id)
 				);
 		});
 	}
@@ -712,11 +710,11 @@ namespace database::player_data
 		return database::access<bool>([&](database::database_t& db)
 		{
 			const auto result = db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.player_id = player_id,
-						 player_data_table.mb_coin = player_data_table.mb_coin - value)
-							.where(player_data_table.player_id == player_id &&
-								   player_data_table.mb_coin >= value)
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						 player_data::table.mb_coin = player_data::table.mb_coin - value)
+							.where(player_data::table.player_id == player_id &&
+								   player_data::table.mb_coin >= value)
 				);
 
 			return result != 0;
@@ -730,8 +728,8 @@ namespace database::player_data
 		{
 			const auto result = db->operator()(
 				sqlpp::select(
-					sqlpp::sum(player_data_table.nuke_count))
-						.from(player_data_table).unconditionally()
+					sqlpp::sum(player_data::table.nuke_count))
+						.from(player_data::table).unconditionally()
 			);
 
 			if (result.empty())
@@ -750,9 +748,9 @@ namespace database::player_data
 		{
 			const auto result = db->operator()(
 				sqlpp::select(
-					sqlpp::sum(player_data_table.nuke_count))
-						.from(player_data_table)
-							.where(player_data_table.player_id == player_id)
+					sqlpp::sum(player_data::table.nuke_count))
+						.from(player_data::table)
+							.where(player_data::table.player_id == player_id)
 			);
 
 			if (result.empty())
@@ -769,9 +767,9 @@ namespace database::player_data
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_data_table)
-					.set(player_data_table.fob_deploy_damage_param = param.dump())	
-						.where(player_data_table.player_id == player_id));
+				sqlpp::update(player_data::table)
+					.set(player_data::table.fob_deploy_damage_param = param.dump())	
+						.where(player_data::table.player_id == player_id));
 		});
 	}
 

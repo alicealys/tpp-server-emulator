@@ -4,48 +4,11 @@
 
 namespace database::players
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(account_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(session_id, sqlpp::text);
-	DEFINE_FIELD(login_password, sqlpp::text);
-	DEFINE_FIELD(crypto_key, sqlpp::text);
-	DEFINE_FIELD(smart_device_id, sqlpp::text);
-	DEFINE_FIELD(currency, sqlpp::text);
-	DEFINE_FIELD(last_update, sqlpp::time_point);
-	DEFINE_FIELD(ex_ip, sqlpp::text);
-	DEFINE_FIELD(ex_port, sqlpp::integer_unsigned);
-	DEFINE_FIELD(in_ip, sqlpp::text);
-	DEFINE_FIELD(in_port, sqlpp::integer_unsigned);
-	DEFINE_FIELD(nat, sqlpp::integer_unsigned);
-	DEFINE_FIELD(creation_time, sqlpp::time_point);
-	DEFINE_FIELD(security_challenge, sqlpp::boolean);
-	DEFINE_FIELD(current_lock, sqlpp::integer_unsigned);
-	DEFINE_FIELD(current_sneak_mode, sqlpp::integer_unsigned);
-	DEFINE_FIELD(current_sneak_fob, sqlpp::integer_unsigned);
-	DEFINE_FIELD(current_sneak_player, sqlpp::integer_unsigned);
-	DEFINE_FIELD(current_sneak_platform, sqlpp::integer_unsigned);
-	DEFINE_FIELD(current_sneak_status, sqlpp::integer_unsigned);
-	DEFINE_FIELD(current_sneak_is_sneak, sqlpp::boolean);
-	DEFINE_FIELD(current_sneak_start, sqlpp::time_point);
-	DEFINE_FIELD(current_sneak_security_challenge, sqlpp::boolean);
-	DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t, 
-		login_password_field_t, crypto_key_field_t, smart_device_id_field_t, 
-		currency_field_t,last_update_field_t, ex_ip_field_t, ex_port_field_t, 
-		in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t,
-		current_lock_field_t,
-		security_challenge_field_t,
-		current_sneak_mode_field_t, current_sneak_fob_field_t, 
-		current_sneak_player_field_t, current_sneak_platform_field_t,
-		current_sneak_status_field_t, current_sneak_is_sneak_field_t,
-		current_sneak_start_field_t, current_sneak_security_challenge_field_t);
-
 	std::uint32_t get_nat_type_id(const std::string& nat_type);
 	std::string get_nat_type(const std::uint32_t nat_type_id);
 
 	constexpr auto session_heartbeat = 60s;
 	constexpr auto session_timeout = 200s;
-
-	extern players_table_t players_table;
 
 	enum sneak_mode
 	{
@@ -72,6 +35,43 @@ namespace database::players
 	class player
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(account_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(session_id, sqlpp::text);
+		DEFINE_FIELD(login_password, sqlpp::text);
+		DEFINE_FIELD(crypto_key, sqlpp::text);
+		DEFINE_FIELD(smart_device_id, sqlpp::text);
+		DEFINE_FIELD(currency, sqlpp::text);
+		DEFINE_FIELD(last_update, sqlpp::time_point);
+		DEFINE_FIELD(ex_ip, sqlpp::text);
+		DEFINE_FIELD(ex_port, sqlpp::integer_unsigned);
+		DEFINE_FIELD(in_ip, sqlpp::text);
+		DEFINE_FIELD(in_port, sqlpp::integer_unsigned);
+		DEFINE_FIELD(nat, sqlpp::integer_unsigned);
+		DEFINE_FIELD(creation_time, sqlpp::time_point);
+		DEFINE_FIELD(security_challenge, sqlpp::boolean);
+		DEFINE_FIELD(current_lock, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_mode, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_fob, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_player, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_platform, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_status, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_is_sneak, sqlpp::boolean);
+		DEFINE_FIELD(current_sneak_start, sqlpp::time_point);
+		DEFINE_FIELD(current_sneak_security_challenge, sqlpp::boolean);
+		DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t,
+			login_password_field_t, crypto_key_field_t, smart_device_id_field_t,
+			currency_field_t, last_update_field_t, ex_ip_field_t, ex_port_field_t,
+			in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t,
+			current_lock_field_t,
+			security_challenge_field_t,
+			current_sneak_mode_field_t, current_sneak_fob_field_t,
+			current_sneak_player_field_t, current_sneak_platform_field_t,
+			current_sneak_status_field_t, current_sneak_is_sneak_field_t,
+			current_sneak_start_field_t, current_sneak_security_challenge_field_t);
+
+		inline static table_t table;
+
 		player() = default;
 
 		template <typename ...Args>

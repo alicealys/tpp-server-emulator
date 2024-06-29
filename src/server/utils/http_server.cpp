@@ -169,6 +169,12 @@ namespace utils
 	{
 		mg_mgr_init(&this->manager_);
 
+#ifdef DEBUG
+		mg_log_set(MG_LL_DEBUG);
+#else
+		mg_log_set(MG_LL_NONE);
+#endif
+
 		if (this->using_tls_)
 		{
 			mg_tls_ctx_init(&this->manager_, &this->tls_options_);

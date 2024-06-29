@@ -88,8 +88,6 @@ namespace database::items
 		}
 	}
 
-	auto items_table = items_table_t();
-
 	nlohmann::json get_static_list_json()
 	{
 		static const auto data = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_ITEM_LIST));
@@ -217,9 +215,9 @@ namespace database::items
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(items_table))
-						.from(items_table)
-							.where(items_table.player_id == player_id));
+					sqlpp::all_of(item_status::table))
+						.from(item_status::table)
+							.where(item_status::table.player_id == player_id));
 
 			std::unordered_map<std::uint32_t, item_status> list;
 
@@ -258,10 +256,10 @@ namespace database::items
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(items_table))
-						.from(items_table)
-							.where(items_table.player_id == player_id &&
-								   items_table.item_id == item_id));
+					sqlpp::all_of(item_status::table))
+						.from(item_status::table)
+							.where(item_status::table.player_id == player_id &&
+								   item_status::table.item_id == item_id));
 
 			const auto& static_map = get_static_map();
 			auto iter = static_map.find(item_id);
@@ -290,10 +288,10 @@ namespace database::items
 		database::access<void>([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::insert_into(items_table)
-					.set(items_table.player_id = player_id,
-						 items_table.item_id = item_id,
-						 items_table.create_date = std::chrono::system_clock::now()
+				sqlpp::insert_into(item_status::table)
+					.set(item_status::table.player_id = player_id,
+						 item_status::table.item_id = item_id,
+						 item_status::table.create_date = std::chrono::system_clock::now()
 				));
 		});
 	}

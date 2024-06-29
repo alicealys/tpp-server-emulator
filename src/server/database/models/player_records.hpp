@@ -4,40 +4,40 @@
 
 namespace database::player_records
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_grade, sqlpp::integer_unsigned);
-	DEFINE_FIELD(prev_fob_grade, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_point, sqlpp::integer);
-	DEFINE_FIELD(fob_rank, sqlpp::integer_unsigned);
-	DEFINE_FIELD(prev_fob_rank, sqlpp::integer_unsigned);
-	DEFINE_FIELD(is_insurance, sqlpp::boolean);
-	DEFINE_FIELD(league_grade, sqlpp::integer_unsigned);
-	DEFINE_FIELD(prev_league_grade, sqlpp::integer_unsigned);
-	DEFINE_FIELD(league_rank, sqlpp::integer_unsigned);
-	DEFINE_FIELD(prev_league_rank, sqlpp::integer_unsigned);
-	DEFINE_FIELD(league_point, sqlpp::integer_unsigned);
-	DEFINE_FIELD(playtime, sqlpp::integer_unsigned);
-	DEFINE_FIELD(point, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_defense_win, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_defense_lose, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_sneak_win, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
-	DEFINE_FIELD(shield_date, sqlpp::time_point);
-	DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
-		fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t, 
-		league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t,
-		playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t, 
-		fob_sneak_lose_field_t, shield_date_field_t);
-
-	extern player_records_table_t player_records_table;
-
 	constexpr auto lowest_grade = 0;
 	constexpr auto highest_grade = 11;
 
 	class player_record
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_grade, sqlpp::integer_unsigned);
+		DEFINE_FIELD(prev_fob_grade, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_point, sqlpp::integer);
+		DEFINE_FIELD(fob_rank, sqlpp::integer_unsigned);
+		DEFINE_FIELD(prev_fob_rank, sqlpp::integer_unsigned);
+		DEFINE_FIELD(is_insurance, sqlpp::boolean);
+		DEFINE_FIELD(league_grade, sqlpp::integer_unsigned);
+		DEFINE_FIELD(prev_league_grade, sqlpp::integer_unsigned);
+		DEFINE_FIELD(league_rank, sqlpp::integer_unsigned);
+		DEFINE_FIELD(prev_league_rank, sqlpp::integer_unsigned);
+		DEFINE_FIELD(league_point, sqlpp::integer_unsigned);
+		DEFINE_FIELD(playtime, sqlpp::integer_unsigned);
+		DEFINE_FIELD(point, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_defense_win, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_defense_lose, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_sneak_win, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
+		DEFINE_FIELD(shield_date, sqlpp::time_point);
+		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
+			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t,
+			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t,
+			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
+			fob_sneak_lose_field_t, shield_date_field_t);
+
+		inline static table_t table;
+
 		template <typename ...Args>
 		player_record(const sqlpp::result_row_t<Args...>& row)
 		{

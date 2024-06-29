@@ -8,25 +8,27 @@
 
 namespace database::fobs
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_index, sqlpp::integer_unsigned);
-	DEFINE_FIELD(area_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(platform_count, sqlpp::integer_unsigned);
-	DEFINE_FIELD(security_rank, sqlpp::integer_unsigned);
-	DEFINE_FIELD(cluster_param, sqlpp::text);
-	DEFINE_FIELD(construct_param, sqlpp::integer_unsigned);
-	DEFINE_FIELD(create_date, sqlpp::time_point);
-	DEFINE_TABLE(fobs, id_field_t, player_id_field_t, fob_index_field_t,
-		area_id_field_t, platform_count_field_t, security_rank_field_t,
-		cluster_param_field_t, construct_param_field_t, create_date_field_t);
-
 	nlohmann::json& get_area_list();
 	std::optional<nlohmann::json> get_area(const std::uint32_t area_id);
 
 	class fob
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_index, sqlpp::integer_unsigned);
+		DEFINE_FIELD(area_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(platform_count, sqlpp::integer_unsigned);
+		DEFINE_FIELD(security_rank, sqlpp::integer_unsigned);
+		DEFINE_FIELD(cluster_param, sqlpp::text);
+		DEFINE_FIELD(construct_param, sqlpp::integer_unsigned);
+		DEFINE_FIELD(create_date, sqlpp::time_point);
+		DEFINE_TABLE(fobs, id_field_t, player_id_field_t, fob_index_field_t,
+			area_id_field_t, platform_count_field_t, security_rank_field_t,
+			cluster_param_field_t, construct_param_field_t, create_date_field_t);
+
+		inline static table_t table;
+
 		template <typename ...Args>
 		fob(const sqlpp::result_row_t<Args...>& row)
 		{

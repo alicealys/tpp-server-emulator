@@ -37,8 +37,6 @@ create table if not exists `player_records`
 
 namespace database::player_records
 {
-	player_records_table_t player_records_table;
-
 	std::optional<player_record> find(const std::uint64_t player_id)
 	{
 		return database::access<std::optional<player_record>>([&](database::database_t& db)
@@ -46,9 +44,9 @@ namespace database::player_records
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(player_records_table))
-						.from(player_records_table)
-							.where(player_records_table.player_id == player_id));
+					sqlpp::all_of(player_record::table))
+						.from(player_record::table)
+							.where(player_record::table.player_id == player_id));
 
 			if (results.empty())
 			{
@@ -73,9 +71,9 @@ namespace database::player_records
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::insert_into(player_records_table)
-					.set(player_records_table.player_id = player_id,
-						 player_records_table.shield_date = std::chrono::system_clock::now()));
+				sqlpp::insert_into(player_record::table)
+					.set(player_record::table.player_id = player_id,
+						 player_record::table.shield_date = std::chrono::system_clock::now()));
 		});
 
 		const auto found = find(player_id);
@@ -101,25 +99,25 @@ namespace database::player_records
 			const auto points = std::max(0, record->get_fob_point() + point_add);
 
 			db->operator()(
-				sqlpp::update(player_records_table)
-					.set(player_records_table.fob_point = points)
-							.where(player_records_table.player_id == player_id)
+				sqlpp::update(player_record::table)
+					.set(player_record::table.fob_point = points)
+							.where(player_record::table.player_id == player_id)
 				);
 
 			if (is_sneak)
 			{
 				db->operator()(
-					sqlpp::update(player_records_table)
-						.set(player_records_table.fob_defense_win = player_records_table.fob_defense_win + static_cast<std::int32_t>(!is_win),
-							 player_records_table.fob_defense_lose = player_records_table.fob_defense_lose + static_cast<std::int32_t>(is_win))
-								.where(player_records_table.player_id == owner_id)
+					sqlpp::update(player_record::table)
+						.set(player_record::table.fob_defense_win = player_record::table.fob_defense_win + static_cast<std::int32_t>(!is_win),
+							 player_record::table.fob_defense_lose = player_record::table.fob_defense_lose + static_cast<std::int32_t>(is_win))
+								.where(player_record::table.player_id == owner_id)
 					);
 
 				db->operator()(
-					sqlpp::update(player_records_table)
-						.set(player_records_table.fob_sneak_win = player_records_table.fob_sneak_win + static_cast<std::int32_t>(is_win),
-							 player_records_table.fob_sneak_lose = player_records_table.fob_sneak_lose + static_cast<std::int32_t>(!is_win))
-								.where(player_records_table.player_id == player_id)
+					sqlpp::update(player_record::table)
+						.set(player_record::table.fob_sneak_win = player_record::table.fob_sneak_win + static_cast<std::int32_t>(is_win),
+							 player_record::table.fob_sneak_lose = player_record::table.fob_sneak_lose + static_cast<std::int32_t>(!is_win))
+								.where(player_record::table.player_id == player_id)
 					);
 			}
 		});
@@ -130,10 +128,10 @@ namespace database::player_records
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_records_table)
-					.set(player_records_table.prev_fob_grade = player_records_table.fob_grade,
-						 player_records_table.prev_fob_rank = player_records_table.fob_rank)
-							.where(player_records_table.player_id == player_id)
+				sqlpp::update(player_record::table)
+					.set(player_record::table.prev_fob_grade = player_record::table.fob_grade,
+						 player_record::table.prev_fob_rank = player_record::table.fob_rank)
+							.where(player_record::table.player_id == player_id)
 				);
 		});
 	}
@@ -184,17 +182,17 @@ namespace database::player_records
 			if (i == rank_ranges.size() - 1)
 			{
 				db->operator()(
-					sqlpp::update(player_records_table)
-						.set(player_records_table.fob_grade = i)
-							.where(player_records_table.fob_point >= range.first)
+					sqlpp::update(player_record::table)
+						.set(player_record::table.fob_grade = i)
+							.where(player_record::table.fob_point >= range.first)
 					);
 			}
 			else
 			{
 				db->operator()(
-					sqlpp::update(player_records_table)
-						.set(player_records_table.fob_grade = i)
-							.where(player_records_table.fob_point >= range.first && player_records_table.fob_point < range.second)
+					sqlpp::update(player_record::table)
+						.set(player_record::table.fob_grade = i)
+							.where(player_record::table.fob_point >= range.first && player_record::table.fob_point < range.second)
 					);
 			}
 		}
@@ -207,9 +205,9 @@ namespace database::player_records
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(player_records_table))
-						.from(player_records_table)
-							.where(player_records_table.fob_grade == grade)
+					sqlpp::all_of(player_record::table))
+						.from(player_record::table)
+							.where(player_record::table.fob_grade == grade)
 								.order_by(sqlpp::verbatim("rand()").asc())
 									.limit(limit));
 
@@ -282,9 +280,9 @@ namespace database::player_records
 		database::access([&](database::database_t& db)
 		{
 			db->operator()(
-				sqlpp::update(player_records_table)
-					.set(player_records_table.shield_date = date)
-						.where(player_records_table.player_id == player_id)
+				sqlpp::update(player_record::table)
+					.set(player_record::table.shield_date = date)
+						.where(player_record::table.player_id == player_id)
 				);
 		});
 	}
@@ -295,9 +293,9 @@ namespace database::player_records
 		{
 			std::chrono::system_clock::time_point date{};
 			db->operator()(
-				sqlpp::update(player_records_table)
-					.set(player_records_table.shield_date = date)
-						.where(player_records_table.player_id == player_id)
+				sqlpp::update(player_record::table)
+					.set(player_record::table.shield_date = date)
+						.where(player_record::table.player_id == player_id)
 				);
 		});
 	}

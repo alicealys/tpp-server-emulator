@@ -10,22 +10,24 @@
 
 namespace database::sneak_results
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(target_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_index, sqlpp::integer_unsigned);
-	DEFINE_FIELD(data, sqlpp::text);
-	DEFINE_FIELD(is_win, sqlpp::boolean);
-	DEFINE_FIELD(platform, sqlpp::integer_unsigned);
-	DEFINE_FIELD(create_date, sqlpp::time_point);
-	DEFINE_TABLE(sneak_results, id_field_t, player_id_field_t, target_id_field_t, 
-		fob_id_field_t, fob_index_field_t, data_field_t, is_win_field_t, platform_field_t,
-		create_date_field_t);
-
 	class sneak_result
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(target_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_index, sqlpp::integer_unsigned);
+		DEFINE_FIELD(data, sqlpp::text);
+		DEFINE_FIELD(is_win, sqlpp::boolean);
+		DEFINE_FIELD(platform, sqlpp::integer_unsigned);
+		DEFINE_FIELD(create_date, sqlpp::time_point);
+		DEFINE_TABLE(sneak_results, id_field_t, player_id_field_t, target_id_field_t,
+			fob_id_field_t, fob_index_field_t, data_field_t, is_win_field_t, platform_field_t,
+			create_date_field_t);
+
+		inline static table_t table;
+
 		template <typename ...Args>
 		sneak_result(const sqlpp::result_row_t<Args...>& row)
 		{

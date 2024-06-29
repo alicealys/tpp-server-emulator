@@ -24,8 +24,6 @@ create table if not exists `fobs`
 
 namespace database::fobs
 {
-	auto fobs_table = fobs_table_t();
-
 	nlohmann::json& get_area_list()
 	{
 		static auto list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_AREA_LIST));
@@ -55,10 +53,10 @@ namespace database::fobs
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(fobs_table))
-						.from(fobs_table)
-							.where(fobs_table.player_id == player_id)
-								.order_by(fobs_table.create_date.asc()));
+					sqlpp::all_of(fob::table))
+						.from(fob::table)
+							.where(fob::table.player_id == player_id)
+								.order_by(fob::table.create_date.asc()));
 
 			std::vector<fob> list;
 
@@ -79,13 +77,13 @@ namespace database::fobs
 			const auto index = list.size();
 
 			db->operator()(
-				sqlpp::insert_into(fobs_table)
-					.set(fobs_table.player_id = player_id,
-						 fobs_table.area_id = area_id,
-						 fobs_table.fob_index = index,
-						 fobs_table.cluster_param = "[]",
-						 fobs_table.construct_param = 0,
-						 fobs_table.create_date = std::chrono::system_clock::now()
+				sqlpp::insert_into(fob::table)
+					.set(fob::table.player_id = player_id,
+						 fob::table.area_id = area_id,
+						 fob::table.fob_index = index,
+						 fob::table.cluster_param = "[]",
+						 fob::table.construct_param = 0,
+						 fob::table.create_date = std::chrono::system_clock::now()
 				));
 		});
 	}
@@ -133,12 +131,12 @@ namespace database::fobs
 			database::access([&](database::database_t& db)
 			{
 				db->operator()(
-					sqlpp::update(fobs_table)
-						.set(fobs_table.security_rank = fob.get_security_rank(),
-							 fobs_table.platform_count = fob.get_platform_count(),
-							 fobs_table.construct_param = fob.get_construct_param(),
-							 fobs_table.cluster_param = cluster_param_str)
-								.where(fobs_table.player_id == player_id && fobs_table.id == server_fob.get_id()));
+					sqlpp::update(fob::table)
+						.set(fob::table.security_rank = fob.get_security_rank(),
+							 fob::table.platform_count = fob.get_platform_count(),
+							 fob::table.construct_param = fob.get_construct_param(),
+							 fob::table.cluster_param = cluster_param_str)
+								.where(fob::table.player_id == player_id && fob::table.id == server_fob.get_id()));
 			});
 
 			++index;
@@ -152,9 +150,9 @@ namespace database::fobs
 		{
 			auto results = db->operator()(
 				sqlpp::select(
-					sqlpp::all_of(fobs_table))
-						.from(fobs_table)
-							.where(fobs_table.id == id));
+					sqlpp::all_of(fob::table))
+						.from(fob::table)
+							.where(fob::table.id == id));
 
 			if (results.empty())
 			{
