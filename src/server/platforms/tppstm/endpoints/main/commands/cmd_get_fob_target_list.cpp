@@ -314,6 +314,27 @@ namespace tpp
 			return targets;
 		}
 
+		target_list_t get_nuclear_list(CALLBACK_ARGS)
+		{
+			target_list_t targets;
+
+			const auto players = database::player_data::find_with_nukes(std::min(limit, 10u));
+
+			for (const auto& id : players)
+			{
+				if (id == player.get_id())
+				{
+					continue;
+				}
+
+				target_data_t data{};
+				data.player_id = id;
+				targets.emplace_back(data);
+			}
+
+			return targets;
+		}
+
 		target_list_t get_unimplemented(CALLBACK_ARGS)
 		{
 			return {};
@@ -328,7 +349,7 @@ namespace tpp
 			{"INJURY", get_injury_list},
 			{"FR_ENEMY", get_unimplemented}, ///
 			{"PICKUP_HIGH", get_pickup_high_list},
-			{"NUCLEAR", get_unimplemented}, ///
+			{"NUCLEAR", get_nuclear_list},
 			{"TRIAL", get_trial_list},
 			{"PICKUP", get_pickup_list},
 			{"FOLLOWER", get_follower_list},

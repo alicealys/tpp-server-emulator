@@ -773,6 +773,39 @@ namespace database::player_data
 		});
 	}
 
+	std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit)
+	{
+		return database::access<std::vector<std::uint64_t>>([&](database::database_t& db)
+			-> std::vector<std::uint64_t>
+		{
+			auto results = db->operator()(
+				sqlpp::select(player_data::table.player_id)
+						.from(player_data::table)
+							.where((player_data::table.nuke_count > 0))
+				);
+
+			std::vector<std::uint64_t> list;
+
+			const auto should_add = []()
+			{
+				constexpr auto ceil = 100;
+				const auto random = utils::cryptography::random::get_integer(0, ceil);
+				const auto probability = vars.nuclear_find_probability * ceil;
+				return random < probability;
+			};
+
+			for (auto& row : results)
+			{
+				if (should_add())
+				{
+					list.emplace_back(row.player_id);
+				}
+			}
+
+			return list;
+		});
+	}
+
 	class table final : public table_interface
 	{
 	public:
