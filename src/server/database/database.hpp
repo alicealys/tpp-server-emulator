@@ -4,6 +4,7 @@
 #include "table_loader.hpp"
 
 #include "utils/config.hpp"
+#include "utils/resources.hpp"
 #include "vars.hpp"
 
 namespace sql = sqlpp::mysql;

@@ -21,4 +21,5 @@ namespace tpp
 
 	nlohmann::json error(const std::string& id);
 	nlohmann::json error(const std::uint32_t id);
+	nlohmann::json resource(const std::uint32_t id);
 }

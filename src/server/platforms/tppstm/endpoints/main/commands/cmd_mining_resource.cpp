@@ -10,7 +10,7 @@ namespace tpp
 {
 	cmd_mining_resource::cmd_mining_resource()
 	{
-		this->list_ = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_MINING_RESOURCE));
+		this->list_ = resource(RESOURCE_MINING_RESOURCE);
 	}
 
 	nlohmann::json cmd_mining_resource::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

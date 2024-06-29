@@ -707,6 +707,11 @@ namespace database::player_data
 
 	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value)
 	{
+		if (value == 0)
+		{
+			return true;
+		}
+
 		return database::access<bool>([&](database::database_t& db)
 		{
 			const auto result = db->operator()(

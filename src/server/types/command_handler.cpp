@@ -17,4 +17,11 @@ namespace tpp
 		result["result"] = utils::tpp::get_error(id);
 		return result;
 	}
+
+	nlohmann::json resource(const std::uint32_t id)
+	{
+		auto resource = utils::resources::load_json(id);
+		resource["result"] = utils::tpp::get_error(NOERR);
+		return resource;
+	}
 }

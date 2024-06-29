@@ -90,7 +90,7 @@ namespace database::items
 
 	nlohmann::json get_static_list_json()
 	{
-		static const auto data = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_ITEM_LIST));
+		static const auto data = utils::resources::load_json(RESOURCE_ITEM_LIST);
 		return data;
 	}
 

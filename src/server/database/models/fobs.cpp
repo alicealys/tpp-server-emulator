@@ -26,7 +26,7 @@ namespace database::fobs
 {
 	nlohmann::json& get_area_list()
 	{
-		static auto list = nlohmann::json::parse(utils::nt::load_resource(RESOURCE_AREA_LIST));
+		static auto list = utils::resources::load_json(RESOURCE_AREA_LIST);
 		return list;
 	}
 
