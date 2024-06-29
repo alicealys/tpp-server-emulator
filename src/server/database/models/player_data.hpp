@@ -124,10 +124,6 @@ namespace database::player_data
 	constexpr auto unit_count = 7;
 	constexpr auto resource_type_count = 59;
 	constexpr auto max_staff_count = 3500u;
-	constexpr auto max_server_gmp = 25000000;
-	constexpr auto max_local_gmp = 5000000;
-	constexpr auto gmp_ratio = static_cast<float>(database::player_data::max_local_gmp) / 
-		static_cast<float>(database::player_data::max_server_gmp + database::player_data::max_local_gmp);
 
 	using resource_array_t = std::uint32_t[resource_type_count];
 	using resource_arrays_t = resource_array_t[resource_array_types::count];

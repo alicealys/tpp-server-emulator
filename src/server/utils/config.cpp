@@ -8,8 +8,6 @@ namespace config
 {
 	namespace
 	{
-		using validate_callback_t = std::function<bool(const field_value&)>;
-
 		struct field_definition_t
 		{
 			field_type type;
@@ -43,7 +41,31 @@ namespace config
 			return "config.json";
 		}
 	}
-	
+
+	std::optional<nlohmann::json> get_value(const std::string& key)
+	{
+		const auto cfg = read_config();
+		if (!cfg.is_object())
+		{
+			return {};
+		}
+
+		const auto nodes = utils::string::split(key, '.');
+		auto obj = &cfg;
+		for (auto i = 0; i < nodes.size(); i++)
+		{
+			const auto& node = nodes[i];
+			if (!obj->contains(nodes[i]))
+			{
+				return {};
+			}
+
+			obj = &obj->at(node);
+		}
+
+		return {*obj};
+	}
+
 	nlohmann::json validate_config_field(const std::string& key, const nlohmann::json& value)
 	{
 		const auto iter = field_definitions.find(key);

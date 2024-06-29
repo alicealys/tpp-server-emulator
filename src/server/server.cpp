@@ -33,11 +33,11 @@ namespace tpp
 
 		try
 		{
-			database::create_tables();
+			database::initialize();
 		}
 		catch (const std::exception& e)
 		{
-			console::error("Failed to create tables: %s\n", e.what());
+			console::error("Failed to initialize database: %s\n", e.what());
 			return;
 		}
 

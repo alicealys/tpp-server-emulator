@@ -34,7 +34,7 @@ namespace stats
 
 			command::add("player_count", [](const command::params& params)
 			{
-				std::chrono::seconds within = database::players::session_timeout;
+				std::chrono::seconds within = database::vars.session_timeout;
 
 				if (params.size() > 1)
 				{

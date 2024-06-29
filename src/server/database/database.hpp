@@ -3,6 +3,9 @@
 #include <utils/concurrency.hpp>
 #include "table_loader.hpp"
 
+#include "utils/config.hpp"
+#include "vars.hpp"
+
 namespace sql = sqlpp::mysql;
 
 namespace database
@@ -21,7 +24,7 @@ namespace database
 
 	extern std::array<connection_t, max_connections> connection_pool;
 
-	void create_tables();
+	void initialize();
 
 	sql::connection_config& get_config();
 

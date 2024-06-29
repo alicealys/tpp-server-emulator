@@ -118,7 +118,7 @@ namespace database::wormholes
 				status.player_id = player_id;
 				status.to_player_id = to_player_id;
 
-				if (now - w.get_create_date() > wormhole_duration)
+				if (now - w.get_create_date() > vars.wormhole_duration)
 				{
 					continue;
 				}
@@ -144,7 +144,7 @@ namespace database::wormholes
 				if (i->second.score > 0)
 				{
 					i->second.open = true;
-					i->second.expire += wormhole_duration;
+					i->second.expire += vars.wormhole_duration;
 					++i;
 				}
 				else
@@ -182,7 +182,7 @@ namespace database::wormholes
 			}
 		}
 
-		status.expire += wormhole_duration;
+		status.expire += vars.wormhole_duration;
 		status.open = status.score > 0;
 
 		return status;

@@ -73,7 +73,7 @@ namespace tpp
 		};
 
 		auto server_gmp = player_data->get_server_gmp();
-		auto local_gmp = std::min(database::player_data::max_local_gmp, gmp_j.get<std::int32_t>());
+		auto local_gmp = std::min(database::vars.max_local_gmp, gmp_j.get<std::int32_t>());
 
 		const auto now = std::chrono::system_clock::now();
 		const auto now_epoc = now.time_since_epoch();
@@ -86,8 +86,8 @@ namespace tpp
 		if (should_sync)
 		{
 			const auto total_gmp = local_gmp + server_gmp;
-			local_gmp = std::min(database::player_data::max_local_gmp, static_cast<std::int32_t>(database::player_data::gmp_ratio * total_gmp));
-			server_gmp = std::min(database::player_data::max_server_gmp, total_gmp - local_gmp);
+			local_gmp = std::min(database::vars.max_local_gmp, static_cast<std::int32_t>(database::vars.gmp_ratio * total_gmp));
+			server_gmp = std::min(database::vars.max_server_gmp, total_gmp - local_gmp);
 
 			database::player_data::set_resources_as_sync(player->get_id(), resource_arrays, local_gmp, server_gmp);
 			result["version"] = player_data->get_version() + 1;

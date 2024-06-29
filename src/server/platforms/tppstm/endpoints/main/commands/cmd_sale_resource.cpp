@@ -59,14 +59,14 @@ namespace tpp
 		const auto total_profit = num * unit_price;
 		server_gmp += total_profit;
 
-		const auto left = (server_gmp - database::player_data::max_server_gmp);
+		const auto left = (server_gmp - database::vars.max_server_gmp);
 
 		if (left > 0)
 		{
 			server_gmp -= left;
 			local_gmp += left;
 
-			const auto local_left = (local_gmp - database::player_data::max_local_gmp);
+			const auto local_left = (local_gmp - database::vars.max_local_gmp);
 			if (local_left > 0)
 			{
 				local_gmp -= local_left;

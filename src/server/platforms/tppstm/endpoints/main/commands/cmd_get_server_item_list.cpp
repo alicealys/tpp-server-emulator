@@ -36,7 +36,7 @@ namespace tpp
 		}
 
 		result["item_num"] = status_list.size();
-		result["develop_limit"] = database::items::dev_limit;
+		result["develop_limit"] = database::vars.item_dev_limit;
 
 		result["result"] = "NOERR";
 		result["xuid"] = {};

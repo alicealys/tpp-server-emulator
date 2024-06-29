@@ -16,8 +16,6 @@ namespace database::wormholes
 		wormhole_flag_count
 	};
 
-	constexpr auto wormhole_duration = 24h * 31;
-
 	class wormhole
 	{
 	public:
