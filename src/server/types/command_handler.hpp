@@ -12,6 +12,11 @@ namespace tpp
 		{
 			throw std::runtime_error("unimplemented command");
 		};
+
+		virtual bool needs_player()
+		{
+			return false;
+		}
 	};
 
 	nlohmann::json error(const std::string& id);

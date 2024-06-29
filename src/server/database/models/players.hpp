@@ -280,6 +280,7 @@ namespace database::players
 	};
 
 	std::optional<player> find(const std::uint64_t id);
+	bool exists(const std::uint64_t id);
 	std::optional<player> find_from_account(const std::uint64_t id);
 	std::optional<player> find_by_session_id(const std::string session_id, bool use_timeout = true, bool* is_expired = nullptr);
 

@@ -28,6 +28,7 @@ namespace tpp
 
 		result["fob_index"] = sneak_mode;
 		result["sneak_mode"] = fob_index;
+		result["result"] = utils::tpp::get_error(NOERR);
 
 		return result;
 	}
