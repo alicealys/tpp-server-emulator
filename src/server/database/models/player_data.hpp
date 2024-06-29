@@ -612,4 +612,6 @@ namespace database::player_data
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id);
 
 	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param);
+
+	std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit);
 }
