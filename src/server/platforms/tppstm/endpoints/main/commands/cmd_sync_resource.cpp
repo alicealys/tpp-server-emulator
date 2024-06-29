@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "cmd_sync_resource.hpp"
+#include "cmd_create_nuclear.hpp"
 
 #include "database/models/player_data.hpp"
 #include "database/models/players.hpp"
@@ -18,6 +19,8 @@ namespace tpp
 		{
 			return error(ERR_INVALID_SESSION);
 		}
+
+		create_nuclear(player);
 
 		const auto& diff_resource_1 = data["diff_resource1"];
 		const auto& diff_resource_2 = data["diff_resource2"];

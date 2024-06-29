@@ -20,5 +20,7 @@ namespace database
 			static_cast<float>(vars.max_server_gmp + vars.max_local_gmp);
 
 		vars.item_dev_limit = config::get_or<std::uint32_t>("vars.item_dev_limit", vars.item_dev_limit);
+
+		vars.unlock_all_items = config::get_or<bool>("vars.unlock_all_items", vars.unlock_all_items);
 	}
 }

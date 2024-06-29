@@ -20,6 +20,8 @@ namespace database
 		float gmp_ratio = 1.f;
 
 		std::uint32_t item_dev_limit = 4;
+
+		bool unlock_all_items = false;
 	};
 	
 	extern vars_t vars;

@@ -28,6 +28,18 @@ namespace database::items
 		std::uint32_t use_resource_values[2];
 		std::uint32_t use_resource_ids[2];
 	};
+	
+	enum item_id
+	{
+		nuclear = 39001
+	};
+
+	enum develop_status
+	{
+		undeveloped = 0,
+		indev = 1,
+		developed = 2
+	};
 
 	nlohmann::json get_static_list_json();
 	std::vector<item_t>& get_static_list();
@@ -160,5 +172,6 @@ namespace database::items
 
 	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id);
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id);
-	void create(const std::uint64_t player_id, const std::uint32_t item_id);
+	bool create(const std::uint64_t player_id, const std::uint32_t item_id);
+	bool remove(const std::uint64_t player_id, const std::uint32_t item_id);
 }

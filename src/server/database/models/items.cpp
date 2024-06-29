@@ -156,11 +156,12 @@ namespace database::items
 
 		this->open_ = this->left_second_ == 0;
 
-#ifdef ITEM_DEBUG
-		this->develop_ = 2;
-		this->open_ = 1;
-		this->left_second_ = 0;
-#endif
+		if (vars.unlock_all_items && this->id_ != item_id::nuclear)
+		{
+			this->develop_ = 2;
+			this->open_ = 1;
+			this->left_second_ = 0;
+		}
 
 		if (!this->open_ && p_data.get())
 		{
@@ -283,16 +284,32 @@ namespace database::items
 		});
 	}
 
-	void create(const std::uint64_t player_id, const std::uint32_t item_id)
+	bool create(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		database::access<void>([&](database::database_t& db)
+		return database::access<bool>([&](database::database_t& db)
 		{
-			db->operator()(
+			const auto result = db->operator()(
 				sqlpp::insert_into(item_status::table)
 					.set(item_status::table.player_id = player_id,
 						 item_status::table.item_id = item_id,
 						 item_status::table.create_date = std::chrono::system_clock::now()
 				));
+
+			return result != 0;
+		});
+	}
+	
+	bool remove(const std::uint64_t player_id, const std::uint32_t item_id)
+	{
+		return database::access<bool>([&](database::database_t& db)
+		{
+			const auto result = db->operator()(
+				sqlpp::remove_from(item_status::table)
+					.where(item_status::table.player_id == player_id &&
+						   item_status::table.item_id == item_id)
+				);
+
+			return result != 0;
 		});
 	}
 

@@ -36,7 +36,7 @@ namespace tpp
 
 			const auto item_id = item_list[i].get<std::uint32_t>();
 			const auto& iter = server_item_list.find(item_id);
-			if (iter != server_item_list.end() && iter->second.get_develop() != 2)
+			if (iter != server_item_list.end() && iter->second.get_develop() != database::items::developed)
 			{
 				check_result = 1;
 				break;

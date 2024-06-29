@@ -121,8 +121,13 @@ namespace database::player_data
 
 	static_assert(sizeof(staff_t) == 24);
 
+	enum resource_type
+	{
+		nuclear = 28,
+		resource_type_count = 59
+	};
+
 	constexpr auto unit_count = 7;
-	constexpr auto resource_type_count = 59;
 	constexpr auto max_staff_count = 3500u;
 
 	using resource_array_t = std::uint32_t[resource_type_count];
