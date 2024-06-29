@@ -2,7 +2,7 @@
 
 #include "cmd_spend_server_wallet.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

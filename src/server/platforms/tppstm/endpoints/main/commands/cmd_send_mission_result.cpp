@@ -2,7 +2,7 @@
 
 #include "cmd_send_mission_result.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

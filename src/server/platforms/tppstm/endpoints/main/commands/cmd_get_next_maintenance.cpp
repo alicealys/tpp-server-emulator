@@ -2,7 +2,7 @@
 
 #include "cmd_get_next_maintenance.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

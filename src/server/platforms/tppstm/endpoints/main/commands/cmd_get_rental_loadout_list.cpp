@@ -2,7 +2,7 @@
 
 #include "cmd_get_rental_loadout_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

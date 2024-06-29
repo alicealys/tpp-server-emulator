@@ -2,7 +2,7 @@
 
 #include "cmd_send_suspicion_play_data.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_resources_processing.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

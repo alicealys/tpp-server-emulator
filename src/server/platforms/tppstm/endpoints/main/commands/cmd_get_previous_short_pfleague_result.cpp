@@ -2,7 +2,7 @@
 
 #include "cmd_get_previous_short_pfleague_result.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

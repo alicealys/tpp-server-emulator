@@ -2,7 +2,7 @@
 
 #include "cmd_send_heartbeat.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

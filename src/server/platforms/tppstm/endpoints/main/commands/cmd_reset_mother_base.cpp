@@ -2,7 +2,7 @@
 
 #include "cmd_reset_mother_base.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

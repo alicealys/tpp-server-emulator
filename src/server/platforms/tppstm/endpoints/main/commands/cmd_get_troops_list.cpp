@@ -2,7 +2,7 @@
 
 #include "cmd_get_troops_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

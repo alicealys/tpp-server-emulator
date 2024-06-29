@@ -2,7 +2,7 @@
 
 #include "cmd_get_wormhole_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

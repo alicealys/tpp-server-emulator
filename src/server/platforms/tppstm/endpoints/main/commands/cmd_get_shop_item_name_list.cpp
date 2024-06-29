@@ -2,7 +2,7 @@
 
 #include "cmd_get_shop_item_name_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

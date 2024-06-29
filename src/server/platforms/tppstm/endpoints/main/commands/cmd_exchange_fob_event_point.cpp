@@ -2,7 +2,7 @@
 
 #include "cmd_exchange_fob_event_point.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

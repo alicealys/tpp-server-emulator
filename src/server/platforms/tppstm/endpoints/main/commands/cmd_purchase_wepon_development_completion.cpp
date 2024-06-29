@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_wepon_development_completion.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

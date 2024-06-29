@@ -2,7 +2,7 @@
 
 #include "cmd_get_pay_item_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

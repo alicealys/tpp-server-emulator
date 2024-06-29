@@ -2,7 +2,7 @@
 
 #include "cmd_destruct_online_nuclear.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

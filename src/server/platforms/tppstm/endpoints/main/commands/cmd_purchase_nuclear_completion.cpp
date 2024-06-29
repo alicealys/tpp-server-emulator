@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_nuclear_completion.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

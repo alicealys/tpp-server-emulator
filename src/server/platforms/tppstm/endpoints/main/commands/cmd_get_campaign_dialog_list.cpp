@@ -2,7 +2,7 @@
 
 #include "cmd_get_campaign_dialog_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

@@ -2,7 +2,7 @@
 
 #include "cmd_exchange_league_point2.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

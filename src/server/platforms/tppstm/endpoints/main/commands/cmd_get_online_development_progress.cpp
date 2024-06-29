@@ -2,7 +2,7 @@
 
 #include "cmd_get_online_development_progress.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

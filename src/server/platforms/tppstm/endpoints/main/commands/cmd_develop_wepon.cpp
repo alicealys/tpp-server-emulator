@@ -2,7 +2,7 @@
 
 #include "cmd_develop_wepon.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

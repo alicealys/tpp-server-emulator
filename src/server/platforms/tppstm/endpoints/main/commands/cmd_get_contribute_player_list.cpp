@@ -2,7 +2,7 @@
 
 #include "cmd_get_contribute_player_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

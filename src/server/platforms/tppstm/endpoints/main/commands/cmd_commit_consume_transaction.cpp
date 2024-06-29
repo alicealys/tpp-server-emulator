@@ -2,7 +2,7 @@
 
 #include "cmd_commit_consume_transaction.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

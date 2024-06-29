@@ -2,7 +2,7 @@
 
 #include "cmd_cancel_short_pfleague.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

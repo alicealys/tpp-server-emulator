@@ -2,7 +2,7 @@
 
 #include "cmd_extend_platform.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

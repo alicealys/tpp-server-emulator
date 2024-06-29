@@ -2,7 +2,7 @@
 
 #include "cmd_get_combat_deploy_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_security_service.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

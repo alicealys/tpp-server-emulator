@@ -2,7 +2,7 @@
 
 #include "cmd_notice_sneak_mother_base.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

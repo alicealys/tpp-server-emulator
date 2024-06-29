@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_online_development_completion.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

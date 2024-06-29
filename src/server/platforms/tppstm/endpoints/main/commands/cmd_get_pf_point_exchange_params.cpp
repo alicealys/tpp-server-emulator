@@ -2,7 +2,7 @@
 
 #include "cmd_get_pf_point_exchange_params.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

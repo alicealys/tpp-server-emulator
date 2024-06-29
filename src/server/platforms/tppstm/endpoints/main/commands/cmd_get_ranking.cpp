@@ -2,7 +2,7 @@
 
 #include "cmd_get_ranking.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

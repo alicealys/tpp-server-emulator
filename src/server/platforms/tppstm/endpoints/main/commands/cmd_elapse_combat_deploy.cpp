@@ -2,7 +2,7 @@
 
 #include "cmd_elapse_combat_deploy.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {
