@@ -50,7 +50,28 @@ namespace tpp
 		console::debug("[Endpoint] Handling command \"%s\" (%lli)\n", msgid_str.data(), id);
 #endif
 
-		const auto json_res = handler->second->execute(json_req["data"], player);
+		nlohmann::json json_res;
+		if (handler->second->needs_player() && !player.has_value())
+		{
+			json_res = error(ERR_INVALID_SESSION);
+		}
+		else
+		{
+			json_res = handler->second->execute(json_req["data"], player);
+		}
+
+#ifdef DEBUG
+		if (json_res["result"].is_string())
+		{
+			const auto result = json_res["result"].get<std::string>();
+			console::debug("[Endpoint] Command \"%s\" (%lli) result: %s\n", msgid_str.data(), id, result.data());
+		}
+		else
+		{
+			console::warning("[Endpoint] Command \"%s\" has no result set\n", msgid_str.data());
+		}
+#endif
+
 		return this->encrypt_response(json_req, json_res, player);
 	}
 

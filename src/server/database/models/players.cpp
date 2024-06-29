@@ -152,6 +152,20 @@ namespace database::players
 		});
 	}
 
+	bool exists(const std::uint64_t id)
+	{
+		return database::access<bool>([&](database::database_t& db)
+		{
+			auto results = db->operator()(
+				sqlpp::select(
+					sqlpp::count(1))
+						.from(player::table)
+							.where(player::table.id == id));
+
+			return results.front().count.value() > 0;
+		});
+	}
+
 	std::optional<player> find_from_account(const std::uint64_t id)
 	{
 		return database::access<std::optional<player>>([&](database::database_t& db)

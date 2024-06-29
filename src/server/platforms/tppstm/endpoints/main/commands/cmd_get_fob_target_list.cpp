@@ -5,6 +5,7 @@
 #include "database/models/fobs.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
+#include "database/models/player_follows.hpp"
 #include "database/models/sneak_results.hpp"
 #include "database/models/wormholes.hpp"
 
@@ -140,6 +141,8 @@ namespace tpp
 
 		target_list_t get_challenge_list(CALLBACK_ARGS)
 		{
+			const auto follows = database::player_follows::get_follows(player.get_id());
+
 			const auto list = database::players::find_with_security_challenge(std::min(limit, 10u));
 			target_list_t targets;
 
@@ -152,7 +155,7 @@ namespace tpp
 
 			for (auto& row : list)
 			{
-				if (row.get_id() != player.get_id())
+				if (row.get_id() != player.get_id() && !follows.contains(row.get_id()))
 				{
 					target_data_t target{};
 					target.player_id = row.get_id();
@@ -250,16 +253,88 @@ namespace tpp
 			return targets;
 		}
 
+		target_list_t get_follow_list(CALLBACK_ARGS)
+		{
+			target_list_t targets;
+
+			const auto players = database::player_follows::get_follows(player.get_id());
+			const auto followers = database::player_follows::get_followers(player.get_id());
+
+			for (const auto& id : players)
+			{
+				target_data_t data{};
+				data.player_id = id;
+				data.extra_data["owner_detail_record"]["follower"] = followers.contains(id);
+				data.extra_data["owner_detail_record"]["follow"] = 1;
+				targets.emplace_back(data);
+			}
+
+			return targets;
+		}
+
+		target_list_t get_trial_list(CALLBACK_ARGS)
+		{
+			target_list_t targets;
+
+			const auto follows = database::player_follows::get_follows(player.get_id());
+			const auto followers = database::player_follows::get_followers(player.get_id());
+
+			target_data_t self{};
+			self.player_id = player.get_id();
+			targets.emplace_back(self);
+
+			for (const auto& id : follows)
+			{
+				target_data_t data{};
+				data.player_id = id;
+				data.extra_data["owner_detail_record"]["follower"] = followers.contains(id);
+				data.extra_data["owner_detail_record"]["follow"] = 1;
+				targets.emplace_back(data);
+			}
+
+			return targets;
+		}
+
+		target_list_t get_follower_list(CALLBACK_ARGS)
+		{
+			target_list_t targets;
+
+			const auto follows = database::player_follows::get_follows(player.get_id());
+			const auto followers = database::player_follows::get_followers(player.get_id());
+
+			for (const auto& id : followers)
+			{
+				target_data_t data{};
+				data.player_id = id;
+				data.extra_data["owner_detail_record"]["follower"] = 1;
+				data.extra_data["owner_detail_record"]["follow"] = follows.contains(id);
+				targets.emplace_back(data);
+			}
+
+			return targets;
+		}
+
+		target_list_t get_unimplemented(CALLBACK_ARGS)
+		{
+			return {};
+		}
+
 		using target_callback_t = std::function<target_list_t(CALLBACK_ARGS)>;
 		std::unordered_map<std::string, target_callback_t> target_callbacks =
 		{
-			{"PICKUP", get_pickup_list},
-			{"PICKUP_HIGH", get_pickup_high_list},
-			{"ENEMY", get_enemy_list},
-			{"INJURY", get_injury_list},
-			{"CHALLENGE", get_challenge_list},
 			{"DEPLOYED", get_deployed_list},
+			{"CHALLENGE", get_challenge_list},
+			{"EVENT", get_unimplemented}, ///
+			{"INJURY", get_injury_list},
+			{"FR_ENEMY", get_unimplemented}, ///
+			{"PICKUP_HIGH", get_pickup_high_list},
+			{"NUCLEAR", get_unimplemented}, ///
+			{"TRIAL", get_trial_list},
+			{"PICKUP", get_pickup_list},
+			{"FOLLOWER", get_follower_list},
+			{"FOLLOW", get_follow_list},
 			{"EMERGENCY", get_emergency_list},
+			{"ENEMY", get_enemy_list},
 		};
 
 		target_list_t get_target_list(const std::string& type, CALLBACK_ARGS)
@@ -354,7 +429,6 @@ namespace tpp
 				result["fob_deploy_damage_param"]["damage_values"][i] = 0;
 			}
 		}
-
 
 		result["win"] = stats->get_sneak_win();
 		result["lose"] = stats->get_sneak_lose();
