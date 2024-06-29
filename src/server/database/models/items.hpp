@@ -29,12 +29,6 @@ namespace database::items
 		std::uint32_t use_resource_ids[2];
 	};
 
-#ifdef ITEM_DEBUG
-	constexpr auto dev_limit = 999;
-#else
-	constexpr auto dev_limit = 4;
-#endif
-
 	nlohmann::json get_static_list_json();
 	std::vector<item_t>& get_static_list();
 	std::unordered_map<std::uint32_t, item_t>& get_static_map();

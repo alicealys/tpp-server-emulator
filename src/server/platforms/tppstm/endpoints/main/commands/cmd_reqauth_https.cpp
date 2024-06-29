@@ -22,8 +22,8 @@ namespace tpp
 
 		const auto hash = hash_val.get<std::string>();
 
-		result["timeout_sec"] = std::chrono::duration_cast<std::chrono::seconds>(database::players::session_timeout).count();
-		result["heartbeat_sec"] = std::chrono::duration_cast<std::chrono::seconds>(database::players::session_heartbeat).count();
+		result["timeout_sec"] = database::vars.session_timeout.count();
+		result["heartbeat_sec"] = database::vars.session_heartbeat.count();
 		result["inquiry_id"] = 0;
 
 		if (!player.has_value())

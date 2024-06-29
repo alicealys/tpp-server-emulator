@@ -7,9 +7,6 @@ namespace database::players
 	std::uint32_t get_nat_type_id(const std::string& nat_type);
 	std::string get_nat_type(const std::uint32_t nat_type_id);
 
-	constexpr auto session_heartbeat = 60s;
-	constexpr auto session_timeout = 200s;
-
 	enum sneak_mode
 	{
 		mode_none = 0,
@@ -314,5 +311,6 @@ namespace database::players
 	std::vector<player> find_with_security_challenge(const std::uint32_t limit);
 
 	std::uint64_t get_player_count();
-	std::uint64_t get_online_player_count(const std::chrono::milliseconds within = session_timeout);
+	std::uint64_t get_online_player_count();
+	std::uint64_t get_online_player_count(const std::chrono::milliseconds within);
 }

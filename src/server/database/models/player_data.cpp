@@ -779,10 +779,6 @@ namespace database::player_data
 		void create(database_t& database) override
 		{
 			database->execute(TABLE_DEF);
-
-			get_nuke_count();
-			get_nuke_count();
-			get_nuke_count();
 		}
 	};
 }

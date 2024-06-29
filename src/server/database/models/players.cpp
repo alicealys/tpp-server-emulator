@@ -75,10 +75,10 @@ namespace database::players
 		{
 			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
 				std::chrono::system_clock::now().time_since_epoch());
-			return (now - player.get_last_update()) > session_timeout;
+			return (now - player.get_last_update()) > database::vars.session_timeout;
 		}
 
-#define IS_ACTIVE_EXPR player::table.last_update >= std::chrono::system_clock::now() - session_timeout
+#define IS_ACTIVE_EXPR player::table.last_update >= std::chrono::system_clock::now() - database::vars.session_timeout
 	}
 
 	std::uint32_t get_nat_type_id(const std::string& nat_type)
@@ -672,6 +672,11 @@ namespace database::players
 
 			return results.front().count.value();
 		});
+	}
+
+	std::uint64_t get_online_player_count()
+	{
+		return get_online_player_count(database::vars.session_timeout);
 	}
 
 	class table final : public table_interface

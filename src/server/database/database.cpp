@@ -41,7 +41,7 @@ namespace database
 
 			const auto now = std::chrono::high_resolution_clock::now();
 			const auto diff = now - connection.last_access;
-			if (diff >= database::players::session_timeout)
+			if (diff >= database::vars.session_timeout)
 			{
 				connection.db.reset();
 			}
@@ -68,5 +68,11 @@ namespace database
 				table.inst->run_tasks(db);
 			}
 		});
+	}
+
+	void initialize()
+	{
+		initialize_vars();
+		create_tables();
 	}
 }

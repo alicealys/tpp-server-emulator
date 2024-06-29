@@ -32,7 +32,7 @@ namespace tpp
 
 		const auto item_id = item_id_j.get<std::uint32_t>();
 		auto item_list = database::items::get_item_list(player->get_id());
-		auto dev_count = 0;
+		auto dev_count = 0u;
 		for (const auto& status : item_list)
 		{
 			if (status.second.get_develop() == 1)
@@ -54,7 +54,7 @@ namespace tpp
 			}
 		}
 
-		if (dev_count >= database::items::dev_limit)
+		if (dev_count >= database::vars.item_dev_limit)
 		{
 			return error("ERR_SERVERITEM_DEVLIMIT"); // made up error
 		}
