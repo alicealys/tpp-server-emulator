@@ -8,16 +8,6 @@
 
 namespace database::wormholes
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(to_player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(retaliate_score, sqlpp::integer_unsigned);
-	DEFINE_FIELD(flag, sqlpp::integer_unsigned);
-	DEFINE_FIELD(is_open, sqlpp::boolean);
-	DEFINE_FIELD(create_date, sqlpp::time_point);
-	DEFINE_TABLE(wormholes, id_field_t, player_id_field_t, to_player_id_field_t, 
-		retaliate_score_field_t, flag_field_t, is_open_field_t, create_date_field_t);
-
 	enum wormhole_flag
 	{
 		wormhole_flag_invalid,
@@ -31,6 +21,18 @@ namespace database::wormholes
 	class wormhole
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(to_player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(retaliate_score, sqlpp::integer_unsigned);
+		DEFINE_FIELD(flag, sqlpp::integer_unsigned);
+		DEFINE_FIELD(is_open, sqlpp::boolean);
+		DEFINE_FIELD(create_date, sqlpp::time_point);
+		DEFINE_TABLE(wormholes, id_field_t, player_id_field_t, to_player_id_field_t,
+			retaliate_score_field_t, flag_field_t, is_open_field_t, create_date_field_t);
+
+		inline static table_t table;
+
 		template <typename ...Args>
 		wormhole(const sqlpp::result_row_t<Args...>& row)
 		{

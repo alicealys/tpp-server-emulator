@@ -10,34 +10,6 @@
 
 namespace database::player_data
 {
-	DEFINE_FIELD(id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-	DEFINE_FIELD(unit_counts, sqlpp::blob);
-	DEFINE_FIELD(unit_levels, sqlpp::blob);
-	DEFINE_FIELD(resource_arrays, sqlpp::mediumblob);
-	DEFINE_FIELD(nuke_count, sqlpp::integer_unsigned);
-	DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
-	DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
-	DEFINE_FIELD(loadout, sqlpp::text);
-	DEFINE_FIELD(motherbase, sqlpp::text);
-	DEFINE_FIELD(emblem, sqlpp::text);
-	DEFINE_FIELD(local_gmp, sqlpp::integer);
-	DEFINE_FIELD(server_gmp, sqlpp::integer);
-	DEFINE_FIELD(loadout_gmp, sqlpp::integer);
-	DEFINE_FIELD(insurance_gmp, sqlpp::integer);
-	DEFINE_FIELD(injury_gmp, sqlpp::integer);
-	DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
-	DEFINE_FIELD(last_sync, sqlpp::time_point);
-	DEFINE_FIELD(version, sqlpp::integer_unsigned);
-	DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
-	DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-		resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t, 
-		local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t, 
-		insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t,
-		fob_deploy_damage_param_field_t);
-
-	extern player_data_table_t player_data_table;
-
 	enum resource_array_types
 	{
 		processed_local,
@@ -295,6 +267,34 @@ namespace database::player_data
 	class player_data
 	{
 	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(unit_counts, sqlpp::blob);
+		DEFINE_FIELD(unit_levels, sqlpp::blob);
+		DEFINE_FIELD(resource_arrays, sqlpp::mediumblob);
+		DEFINE_FIELD(nuke_count, sqlpp::integer_unsigned);
+		DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
+		DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
+		DEFINE_FIELD(loadout, sqlpp::text);
+		DEFINE_FIELD(motherbase, sqlpp::text);
+		DEFINE_FIELD(emblem, sqlpp::text);
+		DEFINE_FIELD(local_gmp, sqlpp::integer);
+		DEFINE_FIELD(server_gmp, sqlpp::integer);
+		DEFINE_FIELD(loadout_gmp, sqlpp::integer);
+		DEFINE_FIELD(insurance_gmp, sqlpp::integer);
+		DEFINE_FIELD(injury_gmp, sqlpp::integer);
+		DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
+		DEFINE_FIELD(last_sync, sqlpp::time_point);
+		DEFINE_FIELD(version, sqlpp::integer_unsigned);
+		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
+		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
+			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t,
+			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
+			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t,
+			fob_deploy_damage_param_field_t);
+
+		inline static table_t table;
+
 		template <typename ...Args>
 		player_data(const sqlpp::result_row_t<Args...>& row)
 		{

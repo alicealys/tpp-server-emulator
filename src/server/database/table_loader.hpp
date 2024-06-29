@@ -85,7 +85,7 @@ struct field_name##_field_t														\
 };																				\
 
 #define DEFINE_TABLE(table_name, ...)											\
-struct table_name##_table_t : sqlpp::table_t<table_name##_table_t, ##__VA_ARGS__>\
+struct table_t : sqlpp::table_t<table_t, ##__VA_ARGS__>\
 {																				\
 	struct _alias_t																\
 	{																			\
