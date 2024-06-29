@@ -2,7 +2,7 @@
 
 #include "cmd_get_security_product_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

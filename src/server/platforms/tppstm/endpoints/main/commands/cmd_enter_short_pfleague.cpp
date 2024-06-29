@@ -2,7 +2,7 @@
 
 #include "cmd_enter_short_pfleague.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

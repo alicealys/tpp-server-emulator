@@ -2,7 +2,7 @@
 
 #include "cmd_delete_troops_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

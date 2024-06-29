@@ -2,7 +2,7 @@
 
 #include "cmd_get_platform_construction_progress.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

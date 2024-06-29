@@ -2,7 +2,7 @@
 
 #include "cmd_request_relief.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

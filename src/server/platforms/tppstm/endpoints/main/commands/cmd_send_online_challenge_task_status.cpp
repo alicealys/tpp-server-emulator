@@ -2,7 +2,7 @@
 
 #include "cmd_send_online_challenge_task_status.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

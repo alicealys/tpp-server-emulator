@@ -2,7 +2,7 @@
 
 #include "cmd_reqauth_sessionsvr.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

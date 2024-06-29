@@ -2,7 +2,7 @@
 
 #include "cmd_use_pf_item.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

@@ -2,7 +2,7 @@
 
 #include "cmd_send_deploy_injure.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

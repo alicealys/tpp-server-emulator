@@ -2,7 +2,7 @@
 
 #include "cmd_deploy_mission.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

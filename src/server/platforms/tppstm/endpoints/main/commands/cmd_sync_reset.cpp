@@ -2,7 +2,7 @@
 
 #include "cmd_sync_reset.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

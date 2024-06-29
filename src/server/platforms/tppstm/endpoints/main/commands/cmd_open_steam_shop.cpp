@@ -2,7 +2,7 @@
 
 #include "cmd_open_steam_shop.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

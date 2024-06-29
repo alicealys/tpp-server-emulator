@@ -2,7 +2,7 @@
 
 #include "cmd_delete_follow.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

@@ -2,7 +2,7 @@
 
 #include "cmd_relocate_fob.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

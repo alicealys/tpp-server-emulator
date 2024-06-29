@@ -2,7 +2,7 @@
 
 #include "cmd_send_troops.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

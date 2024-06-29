@@ -2,7 +2,7 @@
 
 #include "cmd_get_sneak_target_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

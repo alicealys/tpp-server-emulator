@@ -2,7 +2,7 @@
 
 #include "cmd_get_entitlement_id_list.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

@@ -2,7 +2,7 @@
 
 #include "cmd_send_nuclear.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

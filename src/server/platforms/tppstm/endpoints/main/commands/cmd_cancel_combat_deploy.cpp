@@ -2,7 +2,7 @@
 
 #include "cmd_cancel_combat_deploy.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

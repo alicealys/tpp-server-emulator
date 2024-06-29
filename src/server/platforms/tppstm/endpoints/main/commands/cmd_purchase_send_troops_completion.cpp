@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_send_troops_completion.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {

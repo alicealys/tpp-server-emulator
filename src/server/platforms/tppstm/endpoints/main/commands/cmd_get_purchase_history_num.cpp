@@ -2,7 +2,7 @@
 
 #include "cmd_get_purchase_history_num.hpp"
 
-// unimplemeted
+// unimplemented
 
 namespace tpp
 {
