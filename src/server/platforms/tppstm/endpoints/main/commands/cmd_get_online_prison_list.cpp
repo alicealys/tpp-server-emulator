@@ -15,6 +15,7 @@ namespace tpp
 		result["rescue_num"] = 0;
 		result["soldier_num"] = 0;
 		result["total_num"] = 0;
+		result["result"] = utils::tpp::get_error(NOERR);
 
 		return result;
 	}

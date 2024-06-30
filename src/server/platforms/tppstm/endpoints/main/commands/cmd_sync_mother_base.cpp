@@ -59,6 +59,7 @@ namespace tpp
 		database::player_data::sync_motherbase(player->get_id(), mb_data);
 		
 		result["version"] = 0;
+		result["result"] = utils::tpp::get_error(NOERR);
 
 		return result;
 	}

@@ -45,6 +45,6 @@ namespace tpp
 		
 		result["check_result"] = check_result;
 
-		return result;
+		return error(NOERR);
 	}
 }
