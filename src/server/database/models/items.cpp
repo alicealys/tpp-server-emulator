@@ -152,7 +152,7 @@ namespace database::items
 			this->develop_ = 0;
 		}
 
-		this->mb_coin_ = utils::tpp::calculate_mb_coins(this->left_second_);
+		this->mb_coin_ = utils::tpp::calculate_mb_coins(this->left_second_, database::vars.cost_factor_item_dev);
 
 		this->open_ = this->left_second_ == 0;
 
@@ -307,6 +307,21 @@ namespace database::items
 				sqlpp::remove_from(item_status::table)
 					.where(item_status::table.player_id == player_id &&
 						   item_status::table.item_id == item_id)
+				);
+
+			return result != 0;
+		});
+	}
+
+	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id)
+	{
+		return database::access<bool>([&](database::database_t& db)
+		{
+			const auto result = db->operator()(
+				sqlpp::update(item_status::table)
+					.set(item_status::table.create_date = std::chrono::system_clock::from_time_t({}))
+						.where(item_status::table.player_id == player_id &&
+							   item_status::table.item_id == item_id)
 				);
 
 			return result != 0;

@@ -2,6 +2,8 @@
 
 #include "tpp.hpp"
 
+#include "database/vars.hpp"
+
 #include <utils/string.hpp>
 
 namespace utils::tpp
@@ -132,8 +134,8 @@ namespace utils::tpp
 		return sizeof(static_key);
 	}
 
-	std::uint32_t calculate_mb_coins(const std::uint32_t seconds)
+	std::uint32_t calculate_mb_coins(const std::uint32_t seconds, float factor)
 	{
-		return static_cast<std::uint32_t>(static_cast<float>(seconds) * 0.01565f);
+		return static_cast<std::uint32_t>(static_cast<float>(seconds) * factor);
 	}
 }

@@ -22,6 +22,10 @@ namespace database
 		std::uint32_t item_dev_limit = 4;
 
 		bool unlock_all_items = false;
+
+		float cost_factor_generic = 0.01565f;
+		float cost_factor_item_dev = 1.f;
+		float cost_factor_platform_construction = 1.f;
 	};
 	
 	extern vars_t vars;

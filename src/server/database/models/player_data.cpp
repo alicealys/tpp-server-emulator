@@ -726,6 +726,26 @@ namespace database::player_data
 		});
 	}
 
+	bool add_coins(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		if (value == 0)
+		{
+			return true;
+		}
+
+		return database::access<bool>([&](database::database_t& db)
+		{
+			const auto result = db->operator()(
+				sqlpp::update(player_data::table)
+					.set(player_data::table.player_id = player_id,
+						player_data::table.mb_coin = player_data::table.mb_coin + value)
+							.where(player_data::table.player_id == player_id)
+				);
+
+			return result != 0;
+		});
+	}
+
 	std::uint32_t get_nuke_count()
 	{
 		return database::access<std::uint32_t>([&](database::database_t& db)

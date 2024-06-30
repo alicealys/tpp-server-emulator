@@ -21,6 +21,7 @@ namespace utils::resources
 			{RESOURCE_FOB_PARAM, "resources/data/fob_param.json"},
 			{RESOURCE_SECURITY_SETTINGS_PARAM, "resources/data/security_setting_param.json"},
 			{RESOURCE_FOB_DEPLOY_LIST, "resources/data/fob_deploy_list.json"},
+			{RESOURCE_STEAM_SHOP_ITEM_LIST, "resources/data/steam_shop_item_list.json"},
 		};
 	}
 

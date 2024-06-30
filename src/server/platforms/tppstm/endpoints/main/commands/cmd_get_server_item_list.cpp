@@ -31,7 +31,7 @@ namespace tpp
 			result["item_list"][i]["id"] = item_status.second.get_id();
 			result["item_list"][i]["left_second"] = item_status.second.get_left_second();
 			result["item_list"][i]["max_second"] = item_status.second.get_max_second();
-			result["item_list"][i]["mb_coin"] = utils::tpp::calculate_mb_coins(item_status.second.get_max_second());
+			result["item_list"][i]["mb_coin"] = utils::tpp::calculate_mb_coins(item_status.second.get_max_second(), database::vars.cost_factor_item_dev);
 			result["item_list"][i]["open"] = item_status.second.is_open();
 		}
 

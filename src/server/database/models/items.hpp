@@ -174,4 +174,5 @@ namespace database::items
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id);
 	bool create(const std::uint64_t player_id, const std::uint32_t item_id);
 	bool remove(const std::uint64_t player_id, const std::uint32_t item_id);
+	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id);
 }
