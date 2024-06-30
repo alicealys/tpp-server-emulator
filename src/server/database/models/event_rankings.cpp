@@ -224,16 +224,20 @@ namespace database::event_rankings
 		last_update = now;
 
 		db->execute(R"(
-			with ranked_players as (
-				select player_id, value, 
-					   (select count(distinct value) + 1 
-						from event_rankings pr2 
-						where pr2.value > pr1.value) as new_rank
-				from event_rankings pr1
-			)
-			update event_rankings record
-			join ranked_players ranked_player on record.player_id = ranked_player.player_id
-			set record.player_rank = ranked_player.new_rank where record.value > 0;
+			update event_rankings event_ranking
+			join (
+				select
+					player_id,
+					event_id,
+					value,
+					case 
+						when value = 0 then 0 
+						else rank() over (partition by event_id order by value desc)
+					end as new_rank
+				from event_rankings
+			) ranked
+			on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
+			set event_ranking.player_rank = ranked.new_rank;
 		)");
 	}
 

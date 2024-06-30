@@ -38,7 +38,7 @@ namespace tpp
 		const auto event_id = event_id_opt.value();
 
 		const auto lookup_type = lookup_type_opt.value();
-		auto offset = index_j.get<std::uint64_t>() - 1;
+		auto offset = 0ull;
 
 		if (lookup_type == database::event_rankings::lookup_around)
 		{
@@ -46,7 +46,15 @@ namespace tpp
 			if (player_rank.has_value())
 			{
 				const auto page_start = player_rank.value() - (player_rank.value() % num);
-				offset += page_start;
+				offset = page_start - 1;
+			}
+		}
+		else
+		{
+			offset = index_j.get<std::uint64_t>();
+			if (offset > 0)
+			{
+				offset--;
 			}
 		}
 
@@ -59,12 +67,12 @@ namespace tpp
 			const auto& entry = entries[i];
 			auto& json_entry = result["ranking_list"][i];
 
-			json_entry["disp_rank"] = 1;
+			json_entry["disp_rank"] = 0;
 			json_entry["rank"] = entry.get_rank();
 			json_entry["fob_grade"] = entry.get_fob_grade();
 			json_entry["league_grade"] = entry.get_league_grade();
 			json_entry["score"] = entry.get_value();
-			json_entry["is_grade_top"] = 0;
+			json_entry["is_grade_top"] = lookup_type == database::event_rankings::lookup_best && offset == 0 && i == 0;
 			json_entry["player_info"] = player_info(entry.get_player_id(), entry.get_account_id());
 		}
 
