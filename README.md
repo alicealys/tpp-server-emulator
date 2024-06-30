@@ -69,6 +69,9 @@ Example config
 | vars.max_server_gmp | maximum server gmp | 25000000 |
 | vars.item_dev_limit | maximum number of concurrent items in development | 4 |
 | vars.unlock_all_items | unlock all items | false |
+| vars.cost_factor_generic | factor to calculate mb coins to reduce dev time (remaning_seconds * factor) | 0.01565 |
+| vars.cost_factor_item_dev | factor to calculate mb coins to reduce dev time of **items** | vars.cost_factor_generic |
+| vars.cost_factor_platform_construction | factor to calculate mb coins to reduce dev time of **platform construction** | vars.cost_factor_generic |
 
 ## Resource files
 
