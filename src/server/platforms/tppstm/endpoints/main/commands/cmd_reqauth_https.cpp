@@ -4,6 +4,7 @@
 
 #include "database/auth.hpp"
 #include "database/models/players.hpp"
+#include "database/models/event_rankings.hpp"
 
 #include <utils/nt.hpp>
 

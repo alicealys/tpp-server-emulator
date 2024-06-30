@@ -107,3 +107,15 @@ struct table_t : sqlpp::table_t<table_t, ##__VA_ARGS__>\
 	};																			\
 };																				\
 
+#define GET_FIELD_H(__type__, __name__) \
+public: \
+	__type__ get_##__name__() const; \
+private: \
+	__type__ __name__##_; \
+public: \
+
+#define GET_FIELD_C(__class__, __type__, __name__) \
+	__type__ __class__::get_##__name__() const \
+	{ \
+		return this->##__name__##_; \
+	} \

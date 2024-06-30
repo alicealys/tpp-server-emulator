@@ -2,6 +2,7 @@
 
 #include "player_records.hpp"
 #include "player_data.hpp"
+#include "event_rankings.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -96,7 +97,13 @@ namespace database::player_records
 				return;
 			}
 
+			// idk abt this
+			static std::mutex update_mutex;
+			std::lock_guard _0(update_mutex);
+
 			const auto points = std::max(0, record->get_fob_point() + point_add);
+
+			event_rankings::set_event_value(player_id, event_rankings::ep_earned, points);
 
 			db->operator()(
 				sqlpp::update(player_record::table)

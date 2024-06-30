@@ -9,8 +9,8 @@ namespace tpp
 {
 	nlohmann::json cmd_add_follow::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		auto& steam_id_j = data["steam_id"];
-		auto& player_id_j = data["player_id"];
+		const auto& steam_id_j = data["steam_id"];
+		const auto& player_id_j = data["player_id"];
 
 		if (!steam_id_j.is_number_unsigned() && !player_id_j.is_number_unsigned())
 		{

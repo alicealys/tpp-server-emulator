@@ -7,6 +7,7 @@
 #include "database/models/players.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/player_data.hpp"
+#include "database/models/event_rankings.hpp"
 
 #include <utils/nt.hpp>
 
@@ -24,6 +25,7 @@ namespace tpp
 
 		database::player_records::find_or_create(player->get_id());
 		database::player_data::find_or_create(player->get_id());
+		database::event_rankings::create_entries(player->get_id());
 
 		result["player_id"] = player->get_id();
 		result["result"] = "NOERR";

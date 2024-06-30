@@ -24,4 +24,31 @@ namespace tpp
 		resource["result"] = utils::tpp::get_error(NOERR);
 		return resource;
 	}
+
+	nlohmann::json player_info(const std::uint64_t player_id, const std::uint64_t account_id)
+	{
+		nlohmann::json info;
+
+		info["npid"]["handler"]["data"] = "";
+		info["npid"]["handler"]["dummy"] = {0, 0, 0};
+		info["npid"]["handler"]["term"] = 0;
+		info["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
+		info["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
+		info["player_id"] = player_id;
+		info["player_name"] = account_id == 0 ? "NotImplement" : std::format("{}_player01", account_id);
+		info["ugc"] = 1;
+		info["xuid"] = account_id;
+
+		return info;
+	}
+
+	nlohmann::json player_info(const database::players::player& player)
+	{
+		return player_info(player.get_id(), player.get_account_id());
+	}
+
+	nlohmann::json player_info(const std::optional<database::players::player>& player)
+	{
+		return player_info(*player);
+	}
 }

@@ -481,15 +481,7 @@ namespace tpp
 			target["attacker_espionage"]["score"] = 0;
 			target["attacker_espionage"]["section"] = 0;
 
-			target["attacker_info"]["npid"]["handler"]["data"] = "";
-			target["attacker_info"]["npid"]["handler"]["dummy"] = {0, 0, 0};
-			target["attacker_info"]["npid"]["handler"]["term"] = 0;
-			target["attacker_info"]["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
-			target["attacker_info"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
-			target["attacker_info"]["player_id"] = 0;
-			target["attacker_info"]["player_name"] = "NotImplement";
-			target["attacker_info"]["ugc"] = 1;
-			target["attacker_info"]["xuid"] = 0;
+			target["attacker_info"] = player_info(0, 0);
 
 			target["attacker_sneak_rank_grade"] = 0;
 			target["cluster"] = 0;
@@ -593,15 +585,7 @@ namespace tpp
 			target["owner_fob_record"]["usable_resource"]["minor_metal"] = 0;
 			target["owner_fob_record"]["usable_resource"]["precious_metal"] = 0;
 
-			target["owner_info"]["npid"]["handler"]["data"] = "";
-			target["owner_info"]["npid"]["handler"]["dummy"] = {0, 0, 0};
-			target["owner_info"]["npid"]["handler"]["term"] = 0;
-			target["owner_info"]["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
-			target["owner_info"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
-			target["owner_info"]["player_id"] = target_player->get_id();
-			target["owner_info"]["player_name"] = std::format("{}_player01", target_player->get_account_id());
-			target["owner_info"]["ugc"] = 1;
-			target["owner_info"]["xuid"] = target_player->get_account_id();
+			target["owner_info"] = player_info(target_player);
 
 			target["sneak_mode"] = 0;
 

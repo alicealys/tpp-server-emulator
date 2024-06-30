@@ -9,7 +9,7 @@ namespace tpp
 {
 	nlohmann::json cmd_delete_follow::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		auto& player_id_j = data["player_id"];
+		const auto& player_id_j = data["player_id"];
 
 		if (!player_id_j.is_number_unsigned())
 		{

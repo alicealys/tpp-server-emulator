@@ -11,8 +11,6 @@ namespace tpp
 {
 	nlohmann::json cmd_active_sneak_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		nlohmann::json result;
-
 		if (!player.has_value())
 		{
 			return error(ERR_INVALID_SESSION);
@@ -38,6 +36,6 @@ namespace tpp
 			return error(ERR_DATABASE);
 		}
 
-		return result;
+		return error(NOERR);
 	}
 }
