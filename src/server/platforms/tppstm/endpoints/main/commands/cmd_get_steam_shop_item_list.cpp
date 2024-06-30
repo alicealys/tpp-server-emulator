@@ -4,13 +4,13 @@
 
 namespace tpp
 {
+	cmd_get_steam_shop_item_list::cmd_get_steam_shop_item_list()
+	{
+		this->list_ = resource(RESOURCE_STEAM_SHOP_ITEM_LIST);
+	}
+
 	nlohmann::json cmd_get_steam_shop_item_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		nlohmann::json result;
-		
-		result["list"] = nlohmann::json::array();
-		result["result"] = utils::tpp::get_error(NOERR);
-
-		return result;
+		return this->list_;
 	}
 }

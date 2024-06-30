@@ -11,13 +11,25 @@ namespace tpp
 {
 	nlohmann::json cmd_purchase_platform_construction::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		nlohmann::json result;
+		const auto& remaining_time_j = data["remaining_time"];
 
-		if (!player.has_value())
+		if (!remaining_time_j.is_number_unsigned())
 		{
-			return error(ERR_INVALID_SESSION);
+			return error(ERR_INVALIDARG);
+		}
+
+		const auto remaining_time = remaining_time_j.get<std::uint32_t>();
+		const auto cost = utils::tpp::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
+		if (!database::player_data::spend_coins(player->get_id(), cost))
+		{
+			return error(ERR_MBCOIN_SHORTAGE);
 		}
 		
-		return result;
+		return error(NOERR);
+	}
+
+	bool cmd_purchase_platform_construction::needs_player()
+	{
+		return true;
 	}
 }

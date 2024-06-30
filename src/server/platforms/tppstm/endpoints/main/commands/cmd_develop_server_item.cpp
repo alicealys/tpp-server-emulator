@@ -35,7 +35,7 @@ namespace tpp
 		auto dev_count = 0u;
 		for (const auto& status : item_list)
 		{
-			if (status.second.get_develop() == database::items::indev)
+			if (status.second.get_develop() == database::items::indev && status.second.get_id() != database::items::nuclear)
 			{
 				++dev_count;
 			}

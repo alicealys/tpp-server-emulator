@@ -82,4 +82,9 @@ namespace tpp
 
 		return result;
 	}
+
+	bool cmd_get_ranking::needs_player()
+	{
+		return true;
+	}
 }

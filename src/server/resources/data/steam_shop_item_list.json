@@ -1,0 +1,29 @@
+{
+    "list": [
+        {
+            "product_name": "100 MB Coins",
+            "steam_item_id": 1,
+            "mb_coins": 100
+        },
+        {
+            "product_name": "550 MB Coins",
+            "steam_item_id": 2,
+            "mb_coins": 550
+        },
+        {
+            "product_name": "1150 MB Coins",
+            "steam_item_id": 3,
+            "mb_coins": 1150
+        },
+        {
+            "product_name": "3500 MB Coins",
+            "steam_item_id": 4,
+            "mb_coins": 3500
+        },
+        {
+            "product_name": "6000 MB Coins",
+            "steam_item_id": 5,
+            "mb_coins": 6000
+        }
+    ]
+}

@@ -103,6 +103,7 @@ RESOURCE_AREA_LIST        RCDATA "resources/data/area_list.json"
 RESOURCE_FOB_PARAM        RCDATA "resources/data/fob_param.json"
 RESOURCE_SECURITY_SETTINGS_PARAM        RCDATA "resources/data/security_setting_param.json"
 RESOURCE_FOB_DEPLOY_LIST        RCDATA "resources/data/fob_deploy_list.json"
+RESOURCE_STEAM_SHOP_ITEM_LIST        RCDATA "resources/data/steam_shop_item_list.json"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
