@@ -93,6 +93,10 @@ END
 // Data
 //
 
+RESOURCE_DLL_LIBMYSQL       RCDATA "../../deps/mysql/lib/libmysql.dll"
+RESOURCE_DLL_LIBCRYPTO      RCDATA "../../deps/mysql/bin/libcrypto-3-x64.dll"
+RESOURCE_DLL_LIBSSL         RCDATA "../../deps/mysql/bin/libssl-3-x64.dll"
+
 RESOURCE_GDPR_CHECK        RCDATA "resources/data/gdpr_check.json"
 RESOURCE_CHALLENGE_TASK_REWARDS        RCDATA "resources/data/challenge_task_rewards.json"
 RESOURCE_LOGIN_PARAM        RCDATA "resources/data/login_param.json"

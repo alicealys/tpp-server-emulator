@@ -87,6 +87,7 @@
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "Crypt32.lib")
 #pragma comment(lib, "libmysql.lib")
+#pragma comment(lib, "delayimp.lib")
 
 #include "resource.hpp"
 

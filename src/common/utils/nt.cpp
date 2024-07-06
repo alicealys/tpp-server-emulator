@@ -251,4 +251,15 @@ namespace utils::nt
 	{
 		TerminateProcess(GetCurrentProcess(), code);
 	}
+
+	std::string get_temp_folder()
+	{
+		char path[MAX_PATH] = {0};
+		if (!GetTempPathA(sizeof(path), path))
+		{
+			throw std::runtime_error("Unable to get temp path");
+		}
+
+		return path;
+	}
 }
