@@ -29,6 +29,8 @@ function mysql.install()
 end
 
 function mysql.import()
+	linkoptions {"/DELAYLOAD:libmysql.dll"}
+
 	mysql.install()
 	mysql.includes()
 end

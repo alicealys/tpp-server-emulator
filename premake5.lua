@@ -220,107 +220,96 @@ newaction {
 dependencies.load()
 
 workspace "tpp-server-emulator"
-startproject "server"
-location "./build"
-objdir "%{wks.location}/obj"
-targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
+	startproject "server"
+		location "./build"
+		objdir "%{wks.location}/obj"
+		targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 
-configurations {"Debug", "Release"}
+		configurations {"Debug", "Release"}
 
-language "C++"
-cppdialect "C++latest"
+		language "C++"
+		cppdialect "C++latest"
 
-architecture "x86_64"
-platforms "x64"
+		architecture "x86_64"
+		platforms "x64"
 
-systemversion "latest"
-symbols "On"
-staticruntime "On"
-editandcontinue "Off"
-warnings "Extra"
-characterset "ASCII"
+		systemversion "latest"
+		symbols "On"
+		staticruntime "On"
+		editandcontinue "Off"
+		warnings "Extra"
+		characterset "ASCII"
 
-if _OPTIONS["dev-build"] then
-	defines {"DEV_BUILD"}
-end
+		if _OPTIONS["dev-build"] then
+			defines {"DEV_BUILD"}
+		end
 
-if os.getenv("CI") then
-	defines {"CI"}
-end
+		if os.getenv("CI") then
+			defines {"CI"}
+		end
 
-flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
+		flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
 
-filter "platforms:x64"
-	defines {"_WINDOWS", "WIN32"}
-filter {}
+		filter "platforms:x64"
+			defines {"_WINDOWS", "WIN32"}
+		filter {}
 
-filter "configurations:Release"
-	optimize "Size"
-	buildoptions {"/GL"}
-	linkoptions {"/IGNORE:4702", "/LTCG"}
-	defines {"NDEBUG"}
-	flags {"FatalCompileWarnings"}
-filter {}
+		filter "configurations:Release"
+			optimize "Size"
+			buildoptions {"/GL"}
+			linkoptions {"/IGNORE:4702", "/LTCG"}
+			defines {"NDEBUG"}
+			flags {"FatalCompileWarnings"}
+		filter {}
 
-filter "configurations:Debug"
-	optimize "Debug"
-	buildoptions {"/bigobj"}
-	defines {"DEBUG", "_DEBUG"}
-filter {}
+		filter "configurations:Debug"
+			optimize "Debug"
+			buildoptions {"/bigobj"}
+			defines {"DEBUG", "_DEBUG"}
+		filter {}
 
-project "common"
-kind "StaticLib"
-language "C++"
+		project "common"
+		kind "StaticLib"
+		language "C++"
 
-files {"./src/common/**.hpp", "./src/common/**.cpp"}
+		files {"./src/common/**.hpp", "./src/common/**.cpp"}
 
-includedirs {"./src/common", "%{prj.location}/src"}
+		includedirs {"./src/common", "%{prj.location}/src"}
 
-resincludedirs {"$(ProjectDir)src"}
+		resincludedirs {"$(ProjectDir)src"}
 
-dependencies.imports()
+		dependencies.imports()
 
-project "server"
-kind "ConsoleApp"
-language "C++"
+		project "server"
+			kind "ConsoleApp"
+			language "C++"
 
-targetname "tpp-server-emulator"
+			targetname "tpp-server-emulator"
 
-pchheader "std_include.hpp"
-pchsource "src/server/std_include.cpp"
+			pchheader "std_include.hpp"
+			pchsource "src/server/std_include.cpp"
 
-linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
+			linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
 
-files {"./src/server/**.rc", "./src/server/**.hpp", "./src/server/**.cpp"}
+			files {"./src/server/**.rc", "./src/server/**.hpp", "./src/server/**.cpp"}
 
-includedirs {"./src/server", "./src/common", "%{prj.location}/src", "./deps/mysql/include"}
+			includedirs {"./src/server", "./src/common", "%{prj.location}/src", "./deps/mysql/include"}
 
-libdirs {"./deps/mysql/lib"}
+			libdirs {"./deps/mysql/lib"}
 
-resincludedirs {"$(ProjectDir)src"}
+			resincludedirs {"$(ProjectDir)src"}
 
-dependson {"tlsdll"}
+			dependson {"tlsdll"}
 
-links {"common"}
+			links {"common"}
 
-prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "tools\\premake5 generate-buildinfo", "popd"}
+			prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "tools\\premake5 generate-buildinfo", "popd"}
 
-local requiredlibs = {
-	"libcrypto-3-x64.dll",
-	"libssl-3-x64.dll",
-}
+			if _OPTIONS["copy-to"] then
+				postbuildcommands {"copy /y \"$(TargetPath)\" \"" .. _OPTIONS["copy-to"] .. "\""}
+			end
 
-postbuildcommands {"copy /y \"$(ProjectDir)\\..\\deps\\mysql\\lib\\libmysql.dll\" \"$(TargetDir)\""}
-for i = 1, #requiredlibs do
-	postbuildcommands {string.format("copy /y \"$(ProjectDir)\\..\\deps\\mysql\\bin\\%s\" \"$(TargetDir)\"", requiredlibs[i])}
-end
+			dependencies.imports()
 
-if _OPTIONS["copy-to"] then
-	postbuildcommands {"copy /y \"$(TargetDir)\\*.dll\"" .. _OPTIONS["copy-to"] .. "\""}
-	postbuildcommands {"copy /y \"$(TargetPath)\" \"" .. _OPTIONS["copy-to"] .. "\""}
-end
-
-dependencies.imports()
-
-group "Dependencies"
-dependencies.projects()
+		group "Dependencies"
+			dependencies.projects()

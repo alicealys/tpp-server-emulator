@@ -10,6 +10,8 @@ namespace utils
 		binary_resource(int id, std::string file);
 
 		std::string get_extracted_file(bool fatal_if_overwrite_fails = false);
+		void write_extracted_file(const bool fatal_if_overwrite_fails = false);
+
 		const std::string& get_data() const;
 
 	private:
