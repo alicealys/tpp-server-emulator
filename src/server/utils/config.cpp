@@ -35,6 +35,7 @@ namespace config
 			{define_field("cert_file", field_type::string, "")},
 			{define_field("key_file", field_type::string, "")},
 			{define_field("use_tmp_folder", field_type::boolean, true)},
+			{define_field("use_lua_scripts", field_type::boolean, false)},
 		};
 
 		std::string get_config_file_path()
