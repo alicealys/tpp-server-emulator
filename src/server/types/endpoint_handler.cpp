@@ -4,6 +4,8 @@
 
 #include "component/console.hpp"
 
+#include "scripting/engine.hpp"
+
 namespace tpp
 {
 	std::optional<std::string> endpoint_handler::handle_command([[maybe_unused]] const utils::request_params& params, 
@@ -50,15 +52,25 @@ namespace tpp
 		console::debug("[Endpoint] Handling command \"%s\" (%lli)\n", msgid_str.data(), id);
 #endif
 
-		nlohmann::json json_res;
-		if (handler->second->needs_player() && !player.has_value())
+		const auto get_json_response = [&]
 		{
-			json_res = error(ERR_INVALID_SESSION);
-		}
-		else
-		{
-			json_res = handler->second->execute(json_req["data"], player);
-		}
+			const auto json_opt = scripting::engine::execute_command_hook(msgid_str, json_req["data"], player);
+			if (json_opt.has_value())
+			{
+				return json_opt.value();
+			}
+
+			if (handler->second->needs_player() && !player.has_value())
+			{
+				return error(ERR_INVALID_SESSION);
+			}
+			else
+			{
+				return handler->second->execute(json_req["data"], player);
+			}
+		};
+
+		const auto json_res = get_json_response();
 
 #ifdef DEBUG
 		if (json_res["result"].is_string())
