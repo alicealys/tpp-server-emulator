@@ -3,6 +3,7 @@
 #include "config.hpp"
 
 #include <utils/io.hpp>
+#include <utils/flags.hpp>
 
 namespace config
 {
@@ -40,7 +41,8 @@ namespace config
 
 		std::string get_config_file_path()
 		{
-			return "config.json";
+			const auto config_flag = utils::flags::get_flag("config");
+			return config_flag.value_or("config.json");
 		}
 	}
 

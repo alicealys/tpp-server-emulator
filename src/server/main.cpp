@@ -8,6 +8,7 @@
 #include <utils/binary_resource.hpp>
 #include <utils/nt.hpp>
 #include <utils/io.hpp>
+#include <utils/flags.hpp>
 
 namespace
 {
@@ -41,10 +42,21 @@ namespace
 			}
 		}
 	}
+
+	void set_working_dir()
+	{
+		const auto default_path = std::filesystem::current_path().generic_string();
+		const auto working_dir_flag = utils::flags::get_flag("working_dir");
+		const auto working_dir = working_dir_flag.value_or(default_path);
+
+		std::filesystem::current_path(working_dir);
+		console::log("Working dir: %s\n", working_dir.data());
+	}
 }
 
 int main()
 {
+	set_working_dir();
 	write_dlls();
 	tpp::start_server();
 	return 0;

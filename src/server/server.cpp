@@ -26,9 +26,6 @@ namespace tpp
 		const auto _0 = gsl::finally(&component_loader::pre_destroy);
 		component_loader::pre_start();
 
-		const auto current_path = std::filesystem::current_path().generic_string();
-		console::log("Working dir: %s\n", current_path.data());
-
 		std::vector<std::thread> threads;
 
 		try
