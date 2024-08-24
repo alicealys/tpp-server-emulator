@@ -1,8 +1,8 @@
 # tpp-server-emulator
 
-![license](https://img.shields.io/github/license/fedddddd/tpp-server-emulator.svg)
-[![open bugs](https://img.shields.io/github/issues/fedddddd/tpp-server-emulator/bug?label=bugs)](https://github.com/fedddddd/tpp-server-emulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Build](https://github.com/fedddddd/tpp-server-emulator/workflows/Build/badge.svg)](https://github.com/fedddddd/tpp-server-emulator/actions)
+![license](https://img.shields.io/github/license/alicealys/tpp-server-emulator.svg)
+[![open bugs](https://img.shields.io/github/issues/alicealys/tpp-server-emulator/bug?label=bugs)](https://github.com/alicealys/tpp-server-emulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![Build](https://github.com/alicealys/tpp-server-emulator/workflows/Build/badge.svg)](https://github.com/alicealys/tpp-server-emulator/actions)
 
 Reimplementation of **Metal Gear Solid V: The Phantom Pain**'s backend server
 
@@ -16,7 +16,7 @@ Reimplementation of **Metal Gear Solid V: The Phantom Pain**'s backend server
     * `database_port`: (default: `3306`)
     * `database_name`: (default: `"mgstpp"`)
 - Change the string `"https://mgstpp-game.konamionline.com/tppstm/gate"` in mgsvtpp.exe to `"{your base url}/tppstm/gate"`.  
-  Alternatively, run [tpp-mod](https://github.com/fedddddd/tpp-mod) with the `-custom-server url` flag.
+  Alternatively, run [tpp-mod](https://github.com/alicealys/tpp-mod) with the `-custom-server url` flag.
 
 ## Config
 
