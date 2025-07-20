@@ -6,6 +6,9 @@
 
 Reimplementation of **Metal Gear Solid V: The Phantom Pain**'s backend server
 
+discord server
+https://discord.gg/hYfW9MEEGF
+
 ## Usage
 
 - Setup a mysql server with a database called `mgstpp`.
@@ -75,7 +78,7 @@ Example config
 
 ## Resource files
 
-Files in https://github.com/fedddddd/tpp-server-emulator/tree/main/src/server/resources/data can be overridden if they exist on the disk.  
+Files in https://github.com/alicealys/tpp-server-emulator/tree/main/src/server/resources/data can be overridden if they exist on the disk.  
 These files contain data that is sent to the client, such as item lists, fob area lists, ...  
 Example file structure:
 
