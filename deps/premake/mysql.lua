@@ -5,7 +5,7 @@ end
 mysql = {
 	source = path.join(dependencies.basePath, "mysql"),
 	version = "8.1.0",
-	download = "https://dev.mysql.com/get/Downloads/MySQL-8.1/mysql-8.1.0-winx64.zip",
+	download = "http://cdn.alicent.cat/deps/mysql-8.1.0-winx64.zip",
 }
 
 function mysql.install()
