@@ -18,7 +18,7 @@
 #define SOL_PRINT_ERRORS 0
 #include <sol/sol.hpp>
 
-namespace scripting::engine
+namespace tpp::scripting::engine
 {
 	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, const std::optional<database::players::player>& player);
 }

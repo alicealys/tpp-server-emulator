@@ -2,9 +2,11 @@
 
 #include "engine.hpp"
 
+#include "../types/command_handler.hpp"
+
 #include <utils/io.hpp>
 
-namespace scripting::engine
+namespace tpp::scripting::engine
 {
 	namespace
 	{
@@ -189,7 +191,43 @@ namespace scripting::engine
 
 	void initialize_state(sol::state& state)
 	{
+		state["error"] = [&](const std::uint32_t id)
+		{
+			return json_to_lua(state, error(id));
+		};
+
+		state["resource"] = [&](const std::uint32_t id)
+		{
+			return json_to_lua(state, resource(id));
+		};
+
+		state["playerinfo"] = sol::overload(
+			[&](const database::players::player& player)
+			{
+				return json_to_lua(state, player_info(player));
+			},
+			[&](const std::uint64_t player_id, const std::uint64_t account_id)
+			{
+				return json_to_lua(state, player_info(player_id, account_id));
+			}
+		);
+
 		state["database"] = sol::state::create_table(state.lua_state());
+		state["database"]["vars"] = sol::state::create_table(state.lua_state());
+
+		state["database"]["vars"]["session_heartbeat"] = database::vars.session_heartbeat.count();
+		state["database"]["vars"]["session_timeout"] = database::vars.session_timeout.count();
+		state["database"]["vars"]["nuclear_find_probability"] = database::vars.nuclear_find_probability;
+		state["database"]["vars"]["wormhole_duration"] = database::vars.wormhole_duration.count();
+		state["database"]["vars"]["max_server_gmp"] = database::vars.max_server_gmp;
+		state["database"]["vars"]["max_local_gmp"] = database::vars.max_local_gmp;
+		state["database"]["vars"]["gmp_ratio"] = database::vars.gmp_ratio;
+		state["database"]["vars"]["item_dev_limit"] = database::vars.item_dev_limit;
+		state["database"]["vars"]["unlock_all_items"] = database::vars.unlock_all_items;
+		state["database"]["vars"]["cost_factor_generic"] = database::vars.cost_factor_generic;
+		state["database"]["vars"]["cost_factor_item_dev"] = database::vars.cost_factor_item_dev;
+		state["database"]["vars"]["cost_factor_platform_construction"] = database::vars.cost_factor_platform_construction;
+
 		state["database"]["players"] = sol::state::create_table(state.lua_state());
 
 		state["database"]["players"]["find"] = database::players::find;
@@ -227,6 +265,11 @@ namespace scripting::engine
 		sol::state state;
 		initialize_state(state);
 
+		state["getdatastring"] = [&]()
+		{
+			return data.dump(4);
+		};
+
 		const auto script_result = state.safe_script(data_opt.value(), command);
 		if (!script_result.valid())
 		{
@@ -235,10 +278,11 @@ namespace scripting::engine
 			return {};
 		}
 
-		state["getdatastring"] = [&]()
+		const auto& error_map = utils::tpp::get_error_map();
+		for (const auto& [error, name] : error_map)
 		{
-			return data.dump(4);
-		};
+			state[name] = error;
+		}
 
 		const auto exec_func = state["execute"].get<sol::protected_function>();
 		const auto data_lua = json_to_lua(state, data);
