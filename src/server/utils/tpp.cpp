@@ -138,4 +138,9 @@ namespace utils::tpp
 	{
 		return static_cast<std::uint32_t>(static_cast<float>(seconds) * factor);
 	}
+
+	const std::unordered_map<std::uint32_t, std::string>& get_error_map()
+	{
+		return error_map;
+	}
 }
