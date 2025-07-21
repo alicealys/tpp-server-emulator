@@ -5,7 +5,7 @@ end
 mysql = {
 	source = path.join(dependencies.basePath, "mysql"),
 	version = "8.1.0",
-	download = "http://cdn.alicent.cat/deps/mysql-8.1.0-winx64.zip",
+	download = "http://cdn.alicent.cat/mysql-8.1.0-winx64.zip",
 }
 
 function mysql.install()
@@ -20,7 +20,7 @@ function mysql.install()
 	local archive = path.join(mysql.source, "mysql-8.1.0-winx64.zip")
 
 	print("Downloading MYSQL")
-	os.execute(string.format("powershell -command \"curl \\\"%s\\\" -o \\\"%s\\\"\"", mysql.download, archive))
+	os.execute(string.format("curl \"%s\" -L -o \"%s\"", mysql.download, archive))
 
     os.execute(string.format("powershell -command \"Expand-Archive -Force \\\"%s\\\" \\\"%s\\\"\"", archive, mysql.source))
     os.execute(string.format("powershell -command \"mv \\\"%s/*\\\" \\\"%s\\\"\"", folder, mysql.source))
