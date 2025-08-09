@@ -94,7 +94,7 @@ jobs:
         run: rsync -avz tpp-server-emulator.exe ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
         
       - name: Upload ddls
-        run: rsync -avz *.dll ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
+        run: rsync -avz libmysql.dll ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
 
       - name: Upload data files
         run: rsync -avz ./data/ ${{ secrets.FED_MASTER_SSH_USER }}@${{ secrets.FED_MASTER_SSH_ADDRESS }}:${{ env.FED_MASTER_PATH }}/h2-mod/
