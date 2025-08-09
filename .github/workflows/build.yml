@@ -47,9 +47,6 @@ jobs:
           path: |
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.exe
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.pdb
-            build/bin/x64/${{matrix.configuration}}/libcrypto-3-x64.dll
-            build/bin/x64/${{matrix.configuration}}/libssl-3-x64.dll
-            build/bin/x64/${{matrix.configuration}}/libmysql.dll
 
       - name: Upload ${{matrix.configuration}} data artifacts
         uses: actions/upload-artifact@v4
@@ -92,9 +89,6 @@ jobs:
 
       - name: Upload binary
         run: rsync -avz tpp-server-emulator.exe ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
-        
-      - name: Upload ddls
-        run: rsync -avz libmysql.dll ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
 
       - name: Upload data files
         run: rsync -avz ./data/ ${{ secrets.FED_MASTER_SSH_USER }}@${{ secrets.FED_MASTER_SSH_ADDRESS }}:${{ env.FED_MASTER_PATH }}/h2-mod/
