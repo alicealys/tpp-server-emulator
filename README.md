@@ -9,6 +9,10 @@ Reimplementation of **Metal Gear Solid V: The Phantom Pain**'s backend server
 discord server
 https://discord.gg/hYfW9MEEGF
 
+## Downloads
+
+- [windows x64](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator.exe)
+
 ## Usage
 
 - Setup a mysql server with a database called `mgstpp`.
