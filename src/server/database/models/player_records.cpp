@@ -7,35 +7,6 @@
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `player_records`
-(
-	id							bigint unsigned	not null	auto_increment,
-	player_id					bigint unsigned	not null,
-	fob_grade					int not null	default 0,
-	prev_fob_grade				int not null	default 0,
-	fob_point					int not null	default 0,
-	fob_rank					int not null	default 0,
-	prev_fob_rank				int not null	default 0,
-	is_insurance				boolean			default false,
-	league_grade				int not null	default 0,
-	prev_league_grade			int not null	default 0,
-	league_rank					int not null	default 0,
-	prev_league_rank			int not null	default 0,
-	league_point				int not null	default 0,
-	playtime					int not null	default 0,
-	point						int not null	default 0,
-	fob_defense_win				int not null	default 0,
-	fob_defense_lose			int not null	default 0,
-	fob_sneak_win				int not null	default 0,
-	fob_sneak_lose				int not null	default 0,
-	fob_deploy_emergency_count	int not null	default 0,
-	shield_date					datetime not null,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`),
-	unique (`player_id`)
-))"
-
 namespace database::player_records
 {
 	namespace impl
@@ -161,18 +132,7 @@ namespace database::player_records
 
 			last_update = now;
 
-			db.execute(R"(
-				with ranked_players as (
-					select player_id, fob_point, 
-						   (select count(distinct fob_point) + 1 
-							from player_records pr2 
-							where pr2.fob_point > pr1.fob_point) as new_rank
-					from player_records pr1
-				)
-				update player_records record
-				join ranked_players ranked_player on record.player_id = ranked_player.player_id
-				set record.fob_rank = ranked_player.new_rank where record.fob_point > 0;
-			)");
+			db.run_query("mgstpp.player_records.update_fob_ranking");
 
 			static std::vector<std::pair<std::uint32_t, std::uint32_t>> rank_ranges =
 			{
@@ -212,6 +172,16 @@ namespace database::player_records
 			}
 		}
 
+		auto get_verbatim_rand()
+		{
+			if (get_database_type() == database_sqlite3)
+			{
+				return sqlpp::verbatim("random()");
+			}
+
+			return sqlpp::verbatim("rand()");
+		}
+
 		template <database_type_t Type>
 		std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)
 		{
@@ -223,7 +193,7 @@ namespace database::player_records
 						sqlpp::all_of(player_record::table))
 							.from(player_record::table)
 								.where(player_record::table.fob_grade == grade)
-									.order_by(sqlpp::verbatim("rand()").asc())
+									.order_by(get_verbatim_rand().asc())
 										.limit(limit));
 
 				std::vector<player_record> list;
@@ -376,7 +346,7 @@ namespace database::player_records
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.player_records.create");
 		}
 
 		void run_tasks(database_t& database)

@@ -38,6 +38,8 @@ namespace database
 
 	using tables = std::vector<table_def>;
 	tables& get_tables();
+
+	std::string get_sql_query(const database::database_type_t type, const std::string& name);
 }
 
 #define REGISTER_TABLE(name, ...)												\

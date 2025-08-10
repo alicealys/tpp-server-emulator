@@ -6,19 +6,6 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `player_follows`
-(
-	id                  bigint unsigned	not null	auto_increment,
-	player_id	        bigint unsigned	not null,
-	to_player_id	    bigint unsigned	not null,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`),
-	foreign key (`to_player_id`) references players(`id`),
-	unique key `unique_player_follow` (`player_id`, `to_player_id`),
-    check (`player_id` != `to_player_id`)
-))"
-
 namespace database::player_follows
 {
 	namespace impl
@@ -128,7 +115,7 @@ namespace database::player_follows
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.player_follows.create");
 		}
 	};
 }

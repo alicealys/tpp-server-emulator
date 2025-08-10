@@ -6,24 +6,6 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `sneak_results`
-(
-	id                  bigint unsigned		not null	auto_increment,
-	player_id	        bigint unsigned		not null,
-	target_id	        bigint unsigned		not null,
-	fob_id				bigint unsigned		not null,
-	fob_index			bigint unsigned		not null,
-	is_win				tinyint unsigned	not null,
-	platform			int unsigned 		not null,
-	data				json,
-	create_date			datetime not null,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`),
-	foreign key (`target_id`) references players(`id`),
-	foreign key (`fob_id`) references fobs(`id`)
-))"
-
 namespace database::sneak_results
 {
 	namespace
@@ -169,7 +151,7 @@ namespace database::sneak_results
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.sneak_results.create");
 		}
 	};
 }

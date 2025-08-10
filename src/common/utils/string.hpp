@@ -101,4 +101,6 @@ namespace utils::string
 	bool match_compare(const std::string& input, const std::string& text, const bool exact);
 
 	bool is_numeric(const std::string& text);
+
+	std::string trim(const std::string& str, const std::string& whitespace = " \t\n\r\f\v");
 }

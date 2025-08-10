@@ -6,17 +6,6 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `items`
-(
-	id                  bigint unsigned	not null	auto_increment,
-	player_id           bigint unsigned	not null,
-	item_id				bigint unsigned	not null,
-	create_date			datetime        default current_timestamp not null,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`)
-))"
-
 namespace database::items
 {
 	namespace
@@ -366,7 +355,7 @@ namespace database::items
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.items.create");
 
 			get_static_map();
 			get_static_list();

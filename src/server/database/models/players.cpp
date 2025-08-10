@@ -5,36 +5,6 @@
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `players`
-(
-	id									bigint unsigned	not null	auto_increment,
-	account_id							bigint unsigned	not null	 unique,
-	session_id							char(32)		default null unique,
-	login_password						char(32)		default null,
-	last_update							datetime		default null,
-	crypto_key							char(32)		default null,
-	smart_device_id						char(128)		default null,
-	currency							varchar(32)		default null,
-	ex_ip								varchar(15)		default null,
-	in_ip								varchar(15)		default null,
-	ex_port								int unsigned	default 0,
-	in_port								int unsigned	default 0,
-	nat									int unsigned	default 0,
-	creation_time						datetime        not null,
-	security_challenge					boolean			not null default false,
-	current_lock						bigint unsigned	not null		default 0,
-	current_sneak_mode					int unsigned	not null		default 0,
-	current_sneak_fob					bigint unsigned not null		default 0,
-	current_sneak_player				bigint unsigned not null		default 0,
-	current_sneak_platform				int unsigned	not null		default 0,
-	current_sneak_status				int unsigned	not null		default 0,
-	current_sneak_is_sneak				tinyint			not null		default 0,
-	current_sneak_security_challenge 	tinyint			not null		default 0,
-	current_sneak_start 				datetime,
-	primary key (`id`)
-))"
-
 namespace database::players
 {
 	namespace
@@ -819,7 +789,7 @@ namespace database::players
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.players.create");
 		}
 	};
 }

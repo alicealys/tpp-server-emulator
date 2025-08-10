@@ -22,6 +22,8 @@ namespace utils::resources
 			{RESOURCE_SECURITY_SETTINGS_PARAM, "resources/data/security_setting_param.json"},
 			{RESOURCE_FOB_DEPLOY_LIST, "resources/data/fob_deploy_list.json"},
 			{RESOURCE_STEAM_SHOP_ITEM_LIST, "resources/data/steam_shop_item_list.json"},
+			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
+			{RESOURCE_SQL_SQLITE3, "resources/data/sqlite3.sql"},
 		};
 	}
 

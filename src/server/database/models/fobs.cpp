@@ -6,22 +6,6 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `fobs`
-(
-	id                  bigint unsigned	not null	auto_increment,
-	player_id	        bigint unsigned	not null,
-	fob_index			bigint unsigned	not null,
-	platform_count		int	unsigned	not null default 0,
-	security_rank		int unsigned	not null default 0,
-	area_id	            int unsigned	not null default 0,
-	cluster_param		json,
-	construct_param		int unsigned	not null default 0,
-	create_date			datetime        default current_timestamp not null,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`)
-))"
-
 namespace database::fobs
 {
 	nlohmann::json& get_area_list()
@@ -195,7 +179,7 @@ namespace database::fobs
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.fobs.create");
 		}
 	};
 }
