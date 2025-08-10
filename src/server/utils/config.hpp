@@ -6,7 +6,7 @@
 
 namespace config
 {
-	using field_type = nlohmann::json::value_t ;
+	using field_type = nlohmann::json::value_t;
 	using field_value = nlohmann::json;
 	using validate_callback_t = std::function<bool(const field_value&)>;
 

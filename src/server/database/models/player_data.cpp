@@ -515,61 +515,337 @@ namespace database::player_data
 		decrement_value("uav", damage_values[database::player_data::damage_param_num_drones], 1);
 	}
 
+	namespace impl
+	{
+		template <database_type_t Type>
+		void create(const std::uint64_t player_id)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::insert_into(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.staff_count = 0,
+							 player_data::table.loadout = "{}",
+							 player_data::table.motherbase = "{}",
+							 player_data::table.emblem = "{}",
+							 player_data::table.local_gmp = 0,
+							 player_data::table.server_gmp = 0,
+							 player_data::table.loadout_gmp = 0,
+							 player_data::table.insurance_gmp = 0,
+							 player_data::table.injury_gmp = 0
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+		{
+			return database::access<std::unique_ptr<player_data>>([&](database::database_t& db)
+				-> std::unique_ptr<player_data>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::all_of(player_data::table))
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				const auto& row = results.front();
+				auto p_data = std::make_unique<player_data>(row);
+				if (parse_motherbase)
+				{
+					p_data->parse_motherbase(row);
+				}
+
+				if (parse_loadout)
+				{
+					p_data->parse_loadout(row);
+				}
+
+				if (parse_emblem)
+				{
+					p_data->parse_emblem(row);
+				}
+
+				return std::move(p_data);
+			});
+		}
+
+		template <database_type_t Type>
+		void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.staff_count = staff_count,
+							 player_data::table.staff_bin = encode_buffer(data))
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
+			unit_levels_t& levels, unit_counts_t& counts)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.staff_count = staff_count,
+							 player_data::table.staff_bin = encode_buffer(data),
+							 player_data::table.unit_levels = encode(levels),
+							 player_data::table.unit_counts = encode(counts))
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.unit_levels = encode(levels),
+							 player_data::table.unit_counts = encode(counts))
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
+		{
+			const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
+
+			const auto nuke_count = arrays[processed_local][nuke_resource_id] + arrays[processed_server][nuke_resource_id];
+
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.resource_arrays = encode_buffer(resource_buf),
+							 player_data::table.local_gmp = local_gmp,
+							 player_data::table.server_gmp = server_gmp,
+							 player_data::table.nuke_count = nuke_count,
+							 player_data::table.version = player_data::table.version + 1)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
+		{
+			const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
+
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.resource_arrays = encode_buffer(resource_buf),
+							 player_data::table.local_gmp = local_gmp,
+							 player_data::table.server_gmp = server_gmp,
+							 player_data::table.last_sync = std::chrono::system_clock::now(),
+							 player_data::table.version = player_data::table.version + 1)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.motherbase = motherbase.dump())
+								.where(player_data::table.player_id == player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
+		void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.loadout = loadout.dump())
+								.where(player_data::table.player_id == player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
+		void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.emblem = emblem.dump())
+								.where(player_data::table.player_id == player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
+		bool spend_coins(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.mb_coin = player_data::table.mb_coin - value)
+								.where(player_data::table.player_id == player_id &&
+									   player_data::table.mb_coin >= value)
+					);
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		bool add_coins(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							player_data::table.mb_coin = player_data::table.mb_coin + value)
+								.where(player_data::table.player_id == player_id)
+					);
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		std::uint32_t get_nuke_count()
+		{
+			return database::access<std::uint32_t>([&](database::database_t& db)
+				-> std::uint32_t
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::sum(player_data::table.nuke_count))
+							.from(player_data::table).unconditionally()
+				);
+
+				if (result.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(result.front().sum.value());
+			});
+		}
+
+		template <database_type_t Type>
+		std::uint32_t get_player_nuke_count(const std::uint64_t player_id)
+		{
+			return database::access<std::uint32_t>([&](database::database_t& db)
+				-> std::uint32_t
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::sum(player_data::table.nuke_count))
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id)
+				);
+
+				if (result.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(result.front().sum.value());
+			});
+		}
+
+		template <database_type_t Type>
+		void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.fob_deploy_damage_param = param.dump())	
+							.where(player_data::table.player_id == player_id));
+			});
+		}
+
+		template <database_type_t Type>
+		std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit)
+		{
+			return database::access<std::vector<std::uint64_t>>([&](database::database_t& db)
+				-> std::vector<std::uint64_t>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_data::table.player_id)
+							.from(player_data::table)
+								.where((player_data::table.nuke_count > 0))
+					);
+
+				std::vector<std::uint64_t> list;
+
+				const auto should_add = []()
+				{
+					constexpr auto ceil = 100;
+					const auto random = utils::cryptography::random::get_integer(0, ceil);
+					const auto probability = vars.nuclear_find_probability * ceil;
+					return random < probability;
+				};
+
+				for (auto& row : results)
+				{
+					if (should_add())
+					{
+						list.emplace_back(row.player_id);
+					}
+				}
+
+				return list;
+			});
+		}
+	}
+
 	void create(const std::uint64_t player_id)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::insert_into(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.staff_count = 0,
-						 player_data::table.loadout = "{}",
-						 player_data::table.motherbase = "{}",
-						 player_data::table.emblem = "{}",
-						 player_data::table.local_gmp = 0,
-						 player_data::table.server_gmp = 0,
-						 player_data::table.loadout_gmp = 0,
-						 player_data::table.insurance_gmp = 0,
-						 player_data::table.injury_gmp = 0
-				));
-		});
+		RUN_IMPL(impl::create, player_id);
 	}
 
 	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
 	{
-		return database::access<std::unique_ptr<player_data>>([&](database::database_t& db)
-			-> std::unique_ptr<player_data>
-		{
-			auto results = db->operator()(
-				sqlpp::select(
-					sqlpp::all_of(player_data::table))
-						.from(player_data::table)
-							.where(player_data::table.player_id == player_id));
-
-			if (results.empty())
-			{
-				return {};
-			}
-
-			const auto& row = results.front();
-			auto p_data = std::make_unique<player_data>(row);
-			if (parse_motherbase)
-			{
-				p_data->parse_motherbase(row);
-			}
-
-			if (parse_loadout)
-			{
-				p_data->parse_loadout(row);
-			}
-
-			if (parse_emblem)
-			{
-				p_data->parse_emblem(row);
-			}
-
-			return std::move(p_data);
-		});
+		RUN_IMPL(impl::find, player_id, parse_motherbase, parse_loadout, parse_emblem);
 	}
 
 	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id)
@@ -586,249 +862,73 @@ namespace database::player_data
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.staff_count = staff_count,
-						 player_data::table.staff_bin = encode_buffer(data))
-							.where(player_data::table.player_id == player_id
-				));
-		});
+		RUN_IMPL(impl::set_soldier_bin, player_id, staff_count, data);
 	}
 
-	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data, 
+	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
 		unit_levels_t& levels, unit_counts_t& counts)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.staff_count = staff_count,
-						 player_data::table.staff_bin = encode_buffer(data),
-						 player_data::table.unit_levels = encode(levels),
-						 player_data::table.unit_counts = encode(counts))
-							.where(player_data::table.player_id == player_id
-				));
-		});
+		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, data, levels, counts);
 	}
 
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.unit_levels = encode(levels),
-						 player_data::table.unit_counts = encode(counts))
-							.where(player_data::table.player_id == player_id
-				));
-		});
+		RUN_IMPL(impl::set_soldier_diff, player_id, levels, counts);
 	}
 
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 	{
-		const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
-
-		const auto nuke_count = arrays[processed_local][nuke_resource_id] + arrays[processed_server][nuke_resource_id];
-
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.resource_arrays = encode_buffer(resource_buf),
-						 player_data::table.local_gmp = local_gmp,
-						 player_data::table.server_gmp = server_gmp,
-						 player_data::table.nuke_count = nuke_count,
-						 player_data::table.version = player_data::table.version + 1)
-							.where(player_data::table.player_id == player_id
-				));
-		});
+		RUN_IMPL(impl::set_resources, player_id, arrays, local_gmp, server_gmp);
 	}
 
 	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 	{
-		const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
-
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.resource_arrays = encode_buffer(resource_buf),
-						 player_data::table.local_gmp = local_gmp,
-						 player_data::table.server_gmp = server_gmp,
-						 player_data::table.last_sync = std::chrono::system_clock::now(),
-						 player_data::table.version = player_data::table.version + 1)
-							.where(player_data::table.player_id == player_id
-				));
-		});
+		RUN_IMPL(impl::set_resources_as_sync, player_id, arrays, local_gmp, server_gmp);
 	}
 
 	void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.motherbase = motherbase.dump())
-							.where(player_data::table.player_id == player_id)
-				);
-		});
+		RUN_IMPL(impl::sync_motherbase, player_id, motherbase);
 	}
 
-	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout)
+	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.loadout = loadout.dump())
-							.where(player_data::table.player_id == player_id)
-				);
-		});
+		RUN_IMPL(impl::sync_loadout, player_id, motherbase);
 	}
 
 	void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.emblem = emblem.dump())
-							.where(player_data::table.player_id == player_id)
-				);
-		});
+		RUN_IMPL(impl::sync_emblem, player_id, emblem);
 	}
 
 	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value)
 	{
-		if (value == 0)
-		{
-			return true;
-		}
-
-		return database::access<bool>([&](database::database_t& db)
-		{
-			const auto result = db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						 player_data::table.mb_coin = player_data::table.mb_coin - value)
-							.where(player_data::table.player_id == player_id &&
-								   player_data::table.mb_coin >= value)
-				);
-
-			return result != 0;
-		});
+		RUN_IMPL(impl::spend_coins, player_id, value);
 	}
 
 	bool add_coins(const std::uint64_t player_id, const std::uint32_t value)
 	{
-		if (value == 0)
-		{
-			return true;
-		}
-
-		return database::access<bool>([&](database::database_t& db)
-		{
-			const auto result = db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.player_id = player_id,
-						player_data::table.mb_coin = player_data::table.mb_coin + value)
-							.where(player_data::table.player_id == player_id)
-				);
-
-			return result != 0;
-		});
+		RUN_IMPL(impl::add_coins, player_id, value);
 	}
 
 	std::uint32_t get_nuke_count()
 	{
-		return database::access<std::uint32_t>([&](database::database_t& db)
-			-> std::uint32_t
-		{
-			const auto result = db->operator()(
-				sqlpp::select(
-					sqlpp::sum(player_data::table.nuke_count))
-						.from(player_data::table).unconditionally()
-			);
-
-			if (result.empty())
-			{
-				return 0u;
-			}
-
-			return static_cast<std::uint32_t>(result.front().sum.value());
-		});
+		RUN_IMPL(impl::get_nuke_count);
 	}
 
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id)
 	{
-		return database::access<std::uint32_t>([&](database::database_t& db)
-			-> std::uint32_t
-		{
-			const auto result = db->operator()(
-				sqlpp::select(
-					sqlpp::sum(player_data::table.nuke_count))
-						.from(player_data::table)
-							.where(player_data::table.player_id == player_id)
-			);
-
-			if (result.empty())
-			{
-				return 0u;
-			}
-
-			return static_cast<std::uint32_t>(result.front().sum.value());
-		});
+		RUN_IMPL(impl::get_player_nuke_count, player_id);
 	}
 
 	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
 	{
-		database::access([&](database::database_t& db)
-		{
-			db->operator()(
-				sqlpp::update(player_data::table)
-					.set(player_data::table.fob_deploy_damage_param = param.dump())	
-						.where(player_data::table.player_id == player_id));
-		});
+		RUN_IMPL(impl::set_fob_deploy_damage_param, player_id, param);
 	}
 
 	std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit)
 	{
-		return database::access<std::vector<std::uint64_t>>([&](database::database_t& db)
-			-> std::vector<std::uint64_t>
-		{
-			auto results = db->operator()(
-				sqlpp::select(player_data::table.player_id)
-						.from(player_data::table)
-							.where((player_data::table.nuke_count > 0))
-				);
-
-			std::vector<std::uint64_t> list;
-
-			const auto should_add = []()
-			{
-				constexpr auto ceil = 100;
-				const auto random = utils::cryptography::random::get_integer(0, ceil);
-				const auto probability = vars.nuclear_find_probability * ceil;
-				return random < probability;
-			};
-
-			for (auto& row : results)
-			{
-				if (should_add())
-				{
-					list.emplace_back(row.player_id);
-				}
-			}
-
-			return list;
-		});
+		RUN_IMPL(impl::find_with_nukes, limit);
 	}
 
 	class table final : public table_interface
@@ -836,7 +936,7 @@ namespace database::player_data
 	public:
 		void create(database_t& database) override
 		{
-			database->execute(TABLE_DEF);
+			database.execute(TABLE_DEF);
 		}
 	};
 }

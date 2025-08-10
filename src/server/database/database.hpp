@@ -1,19 +1,82 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4127)
+#pragma warning(disable: 4267)
+#pragma warning(disable: 4018)
+#pragma warning(disable: 4996)
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/mysql/mysql.h>
+#include <sqlpp11/sqlite3/sqlite3.h>
+#pragma warning(pop)
+
 #include <utils/concurrency.hpp>
-#include "table_loader.hpp"
 
 #include "utils/config.hpp"
 #include "utils/resources.hpp"
 #include "vars.hpp"
-
-namespace sql = sqlpp::mysql;
 
 namespace database
 {
 	constexpr auto max_connections = 100;
 
 	using database_mutex_t = std::recursive_mutex;
+
+	enum database_type_t
+	{
+		database_invalid = 0,
+		database_mysql = 1,
+		database_sqlite3 = 2,
+		database_count
+	};
+
+	struct database_config
+	{
+		std::string user;
+		std::string password;
+		std::string host;
+		std::uint16_t port;
+		std::string database_name;
+	};
+
+	class database_container
+	{
+	public:
+		template <database_type_t Type, typename T = std::conditional<Type == database_mysql, sqlpp::mysql::connection*, sqlpp::sqlite3::connection*>::type>
+		T get_database() const
+		{
+			if constexpr (Type == database_mysql)
+			{
+				return this->dbs_.mysql_.get();
+			}
+
+			if constexpr (Type == database_sqlite3)
+			{
+				return this->dbs_.sqlite3_.get();
+			}
+		}
+
+		sqlpp::mysql::connection* get_mysql() const;
+		sqlpp::sqlite3::connection* get_sqlite3() const;
+
+		bool is_valid() const;
+		void create_connection();
+
+		size_t execute(const std::string& query);
+
+		void reset();
+
+	private:
+		struct
+		{
+			std::unique_ptr<sqlpp::mysql::connection> mysql_{};
+			std::unique_ptr<sqlpp::sqlite3::connection> sqlite3_{};
+		} dbs_{};
+	};
+
+	using database_t = database_container;
+
+	database_type_t get_database_type();
 
 	struct connection_t
 	{
@@ -26,8 +89,6 @@ namespace database
 	extern std::array<connection_t, max_connections> connection_pool;
 
 	void initialize();
-
-	sql::connection_config& get_config();
 
 	template <typename T = void, typename F>
 	T access(F&& accessor)
@@ -43,9 +104,9 @@ namespace database
 			const auto now = std::chrono::high_resolution_clock::now();
 			const auto diff = now - connection.start;
 
-			if (!connection.db.get() || !connection.db->is_valid() || diff >= 1h)
+			if (!connection.db.is_valid() || diff >= 1h)
 			{
-				connection.db = std::make_unique<sql::connection>(get_config());
+				connection.db.create_connection();
 				connection.start = now;
 			}
 
@@ -59,4 +120,13 @@ namespace database
 	void cleanup_connections();
 
 	void run_tasks();
+
+#define SELECT_IMPL(__fn__) (get_database_type() == database_mysql ? __fn__<database_mysql> : __fn__<database_sqlite3>)
+
+#define RUN_IMPL(__fn__, ...) \
+	static auto fn = (get_database_type() == database_mysql ? __fn__<database_mysql> : __fn__<database_sqlite3>); \
+	return fn(__VA_ARGS__); \
+
 }
+
+#include "table_loader.hpp"
