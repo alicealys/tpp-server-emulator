@@ -15,8 +15,9 @@ https://discord.gg/hYfW9MEEGF
 
 ## Usage
 
-- Setup a mysql server with a database called `mgstpp`.
+- \***OPTIONAL**\* Setup a mysql server with a database called `mgstpp`.
 - In the EXE's path create a file called `config.json` and add the following values:
+    * `database_type`: (default: `"mysql"`, options: "mysql", "sqlite3")
     * `database_user`: (default: `"root"`)
     * `database_password`: (default: `"root"`)
     * `database_host`: (default: `"localhost"`)
@@ -36,10 +37,8 @@ Example config
     "https_port": 443,
     "cert_file": "",
     "key_file": "",
-    "database_user": "root",
+    "database_type": "sqlite3",
     "database_password": "root",
-    "database_host": "localhost",
-    "database_port": 3306,
     "database_name": "mgstpp",
     "use_konami_auth": false,
     "vars": {
@@ -64,6 +63,7 @@ Example config
 | https_port | https port | 443 |
 | cert_file | file path for ssl certificate | "" |
 | key_file | file path for tls key | "" |
+| database_type | database type (mysql, sqlite3) | "mysql" |
 | database_user | database username | "root" |
 | database_password | database password | "root" |
 | database_host | database hostname | "localhost" |
