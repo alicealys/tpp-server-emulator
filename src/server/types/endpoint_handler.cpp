@@ -54,7 +54,7 @@ namespace tpp
 
 		auto get_json_response = [&]
 		{
-			const auto json_opt = scripting::engine::execute_command_hook(msgid_str, json_req["data"], player);
+			const auto json_opt = scripting::execute_command_hook(msgid_str, json_req["data"], player);
 			if (json_opt.has_value())
 			{
 				return json_opt.value();

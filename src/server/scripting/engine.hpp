@@ -18,7 +18,40 @@
 #define SOL_PRINT_ERRORS 0
 #include <sol/sol.hpp>
 
-namespace tpp::scripting::engine
+namespace tpp::scripting
 {
+	class engine
+	{
+	public:
+		engine() = default;
+
+		engine(const engine&) = delete;
+		engine& operator=(const engine&) = delete;
+
+		void setup_server();
+		void setup_json();
+		void setup_database();
+		void setup_player();
+
+		void handle_error(const sol::protected_function_result& result);
+
+		void initialize();
+		void load_scripts();
+
+		void reset();
+
+		std::optional<nlohmann::json> handle_command(const std::string& command, nlohmann::json& data, 
+			const std::optional<database::players::player>& player);
+
+	private:
+		sol::state state_{};
+		std::unordered_map<std::string, sol::protected_function> command_handlers_;
+
+	};
+
+	void start();
+	void stop();
+	void reload();
+
 	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, const std::optional<database::players::player>& player);
 }

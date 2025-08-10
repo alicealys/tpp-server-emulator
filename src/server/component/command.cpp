@@ -6,6 +6,7 @@
 
 #include "database/database.hpp"
 #include "database/auth.hpp"
+#include "scripting/engine.hpp"
 
 #include <utils/io.hpp>
 #include <utils/string.hpp>
@@ -284,6 +285,8 @@ namespace command
 			});
 
 			add("reload_lists", auth::reload_lists);
+
+			add("reload_scripts", tpp::scripting::reload);
 		}
 	};
 }

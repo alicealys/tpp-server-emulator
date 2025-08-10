@@ -4,239 +4,24 @@
 
 #include "../types/command_handler.hpp"
 
+#include "types/json.hpp"
+#include "types/database.hpp"
+#include "types/player.hpp"
+
 #include <utils/io.hpp>
 
-namespace tpp::scripting::engine
+namespace tpp::scripting
 {
 	namespace
 	{
-		std::optional<std::string> read_cmd_script(const std::string& command)
-		{
-			const auto lower = utils::string::to_lower(command);
-			const auto path = std::format("scripts\\commands\\{}.lua", lower);
+		std::mutex script_mutex;
 
-			std::string data;
-			if (utils::io::read_file(path, &data))
-			{
-				return {data};
-			}
-
-			return {};
-		}
-
-		nlohmann::json lua_to_json(const sol::lua_value& value);
-
-		nlohmann::json table_to_json(const sol::lua_value& value)
-		{
-			const auto table = value.as<sol::table>();
-			const sol::state_view state_view = value.value().lua_state();
-			auto to_string = state_view["tostring"];
-
-			nlohmann::json array_;
-			nlohmann::json object;
-
-			auto is_array = true;
-			auto last_index = 0;
-
-			for (const auto& [k, v] : table)
-			{
-				const auto is_numeric = k.is<int>();
-				if (!is_numeric)
-				{
-					is_array = false;
-					array_.clear();
-				}
-				else
-				{
-					const auto index = k.as<int>();
-					if (index - last_index != 1)
-					{
-						is_array = false;
-						array_.clear();
-					}
-
-					last_index = index;
-				}
-
-				const auto value_json = lua_to_json(v);
-
-				if (is_array)
-				{
-					array_.push_back(value_json);
-				}
-
-				const auto key_str = to_string(k).get<std::string>();
-				object[key_str] = value_json;
-			}
-
-			if (is_array)
-			{
-				return array_;
-			}
-			else
-			{
-				return object;
-			}
-		}
-		
-		nlohmann::json lua_to_json(const sol::lua_value& value)
-		{
-			const auto type = value.value().get_type();
-
-			switch (type)
-			{
-			case sol::type::boolean:
-				return value.as<bool>();
-			case sol::type::number:
-			{
-				const auto val_float = value.as<float>();
-				const auto val_int = static_cast<float>(value.as<int>());
-				if (val_int == val_float)
-				{
-					return val_int;
-				}
-
-				return val_float;
-			}
-			case sol::type::string:
-				return value.as<std::string>();
-			case sol::type::table:
-				return table_to_json(value);
-			default:
-				return {};
-			}
-		}
-
-		sol::lua_value json_to_lua(sol::state& s, const nlohmann::json& value);
-
-		sol::lua_value json_array_to_lua(sol::state& s, const nlohmann::json& value)
-		{
-			auto table = sol::table::create(s.lua_state());
-
-			for (auto i = 0; i < value.size(); i++)
-			{
-				table[i + 1] = json_to_lua(s, value[i]);
-			}
-
-			return table;
-		}
-
-		sol::lua_value json_object_to_lua(sol::state& s, const nlohmann::json& value)
-		{
-			auto table = sol::table::create(s.lua_state());
-
-			for (auto& [k, v] : value.items())
-			{
-				table[k] = json_to_lua(s, v);
-			}
-
-			return table;
-		}
-
-		sol::lua_value json_to_lua(sol::state& s, const nlohmann::json& value)
-		{
-			const auto type = value.type();
-			switch (type)
-			{
-			case nlohmann::json::value_t::boolean:
-				return {s, value.get<bool>()};
-			case nlohmann::json::value_t::number_float:
-				return {s, value.get<float>()};
-			case nlohmann::json::value_t::number_integer:
-				return {s, value.get<int>()};
-			case nlohmann::json::value_t::number_unsigned:
-				return {s, value.get<unsigned int>()};
-			case nlohmann::json::value_t::string:
-				return {s, value.get<std::string>()};
-			case nlohmann::json::value_t::array:
-				return json_array_to_lua(s, value);
-			case nlohmann::json::value_t::object:
-				return json_object_to_lua(s, value);
-			default:
-				return sol::lua_value{s, sol::nil};
-			}
-		}
+		utils::concurrency::container<engine> engine_container;
 	}
 
-	void initialize_player_type(sol::state& state)
+	void engine::initialize()
 	{
-		auto player_type = state.new_usertype<database::players::player>("database::players::player");
-
-#define REGISTER_METHOD(__method__) \
-		{ \
-			static const auto name = utils::string::replace(#__method__, "_", ""); \
-			player_type[name] = [](const database::players::player& player) \
-			{ \
-				return player.__method__(); \
-			}; \
-		} \
-
-		REGISTER_METHOD(get_id);
-		REGISTER_METHOD(get_account_id);
-		REGISTER_METHOD(get_login_password);
-		REGISTER_METHOD(get_crypto_key);
-		REGISTER_METHOD(get_smart_device_id);
-		REGISTER_METHOD(get_currency);
-		REGISTER_METHOD(get_ex_ip);
-		REGISTER_METHOD(get_in_ip);
-		REGISTER_METHOD(get_ex_port);
-		REGISTER_METHOD(get_in_port);
-		REGISTER_METHOD(get_nat);
-		REGISTER_METHOD(get_last_update);
-		REGISTER_METHOD(get_creation_time);
-		REGISTER_METHOD(is_security_challenge_enabled);
-		REGISTER_METHOD(get_session_id);
-		REGISTER_METHOD(get_name);
-	}
-
-	void initialize_state(sol::state& state)
-	{
-		state["error"] = [&](const std::uint32_t id)
-		{
-			return json_to_lua(state, error(id));
-		};
-
-		state["resource"] = [&](const std::uint32_t id)
-		{
-			return json_to_lua(state, resource(id));
-		};
-
-		state["playerinfo"] = sol::overload(
-			[&](const database::players::player& player)
-			{
-				return json_to_lua(state, player_info(player));
-			},
-			[&](const std::uint64_t player_id, const std::uint64_t account_id)
-			{
-				return json_to_lua(state, player_info(player_id, account_id));
-			}
-		);
-
-		state["database"] = sol::state::create_table(state.lua_state());
-		state["database"]["vars"] = sol::state::create_table(state.lua_state());
-
-		state["database"]["vars"]["session_heartbeat"] = database::vars.session_heartbeat.count();
-		state["database"]["vars"]["session_timeout"] = database::vars.session_timeout.count();
-		state["database"]["vars"]["nuclear_find_probability"] = database::vars.nuclear_find_probability;
-		state["database"]["vars"]["wormhole_duration"] = database::vars.wormhole_duration.count();
-		state["database"]["vars"]["max_server_gmp"] = database::vars.max_server_gmp;
-		state["database"]["vars"]["max_local_gmp"] = database::vars.max_local_gmp;
-		state["database"]["vars"]["gmp_ratio"] = database::vars.gmp_ratio;
-		state["database"]["vars"]["item_dev_limit"] = database::vars.item_dev_limit;
-		state["database"]["vars"]["unlock_all_items"] = database::vars.unlock_all_items;
-		state["database"]["vars"]["cost_factor_generic"] = database::vars.cost_factor_generic;
-		state["database"]["vars"]["cost_factor_item_dev"] = database::vars.cost_factor_item_dev;
-		state["database"]["vars"]["cost_factor_platform_construction"] = database::vars.cost_factor_platform_construction;
-
-		state["database"]["players"] = sol::state::create_table(state.lua_state());
-
-		state["database"]["players"]["find"] = database::players::find;
-		state["database"]["players"]["findfromaccount"] = database::players::find_from_account;
-		state["database"]["players"]["findbysessionid"] = database::players::find_by_session_id;
-
-		initialize_player_type(state);
-
-		state.open_libraries
+		this->state_.open_libraries
 		(
 			sol::lib::base,
 			sol::lib::package,
@@ -246,6 +31,70 @@ namespace tpp::scripting::engine
 			sol::lib::math,
 			sol::lib::table
 		);
+
+		this->setup_server();
+		this->setup_json();
+		this->setup_database();
+		this->setup_player();
+
+		this->load_scripts();
+	}
+
+	void engine::handle_error(const sol::protected_function_result& result)
+	{
+		if (result.valid())
+		{
+			return;
+		}
+
+		const sol::error error = result;
+		console::error("%s\n", error.what());
+	}
+
+	void engine::load_scripts()
+	{
+		const auto path = "scripts/";
+		const auto files = utils::io::list_files(path);
+
+		for (const auto& file : files)
+		{
+			console::print("[scripting] loading script %s\n", file.data());
+			this->handle_error(this->state_.safe_script_file(file, sol::script_pass_on_error));
+		}
+	}
+
+	void engine::reset()
+	{
+		this->command_handlers_.clear();
+		this->state_ = {};
+	}
+
+	std::optional<nlohmann::json> engine::handle_command(const std::string& command, nlohmann::json& data, 
+		const std::optional<database::players::player>& player)
+	{
+		const auto iter = this->command_handlers_.find(command);
+		if (iter == this->command_handlers_.end())
+		{
+			return {};
+		}
+
+		const auto result = player.has_value() 
+			? iter->second(data, player.value())
+			: iter->second(data);
+
+		if (!result.valid())
+		{
+			this->handle_error(result);
+			return {};
+		}
+
+		const auto value = result.get<sol::lua_value>(0);
+		if (!value.is<nlohmann::json>())
+		{
+			return {};
+		}
+
+		return value.as<nlohmann::json>();
 	}
 
 	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, const std::optional<database::players::player>& player)
@@ -256,69 +105,34 @@ namespace tpp::scripting::engine
 			return {};
 		}
 
-		const auto data_opt = read_cmd_script(command);
-		if (!data_opt.has_value())
+		return engine_container.access<std::optional<nlohmann::json>>([&](engine& e)
 		{
-			return {};
-		}
+			return e.handle_command(command, data, player);
+		});
+	}
 
-		sol::state state;
-		initialize_state(state);
+	void start()
+	{
+		engine_container.access([&](engine& e)
+		{
+			e.initialize();
+		});
+	}
 
-		state["getdatastring"] = [&]()
+	void stop()
+	{
+		engine_container.access([&](engine& e)
 		{
-			return data.dump(4);
-		};
+			e.reset();
+		});
+	}
 
-		const auto script_result = state.safe_script(data_opt.value(), command);
-		if (!script_result.valid())
+	void reload()
+	{
+		engine_container.access([&](engine& e)
 		{
-			const sol::error error = script_result;
-			console::error("Error executing script \"%s.lua\": %s\n", command.data(), error.what());
-			return {};
-		}
-
-		const auto& error_map = utils::tpp::get_error_map();
-		for (const auto& [error, name] : error_map)
-		{
-			state[name] = error;
-		}
-
-		const auto exec_func = state["execute"].get<sol::protected_function>();
-		const auto data_lua = json_to_lua(state, data);
-
-		sol::protected_function_result result;
-		if (player.has_value())
-		{
-			result = exec_func(command, data_lua, player.value());
-		}
-		else
-		{
-			result = exec_func(command, data_lua);
-		}
-
-		if (!result.valid())
-		{
-			const sol::error error = result;
-			console::error("Error executing command in script \"%s.lua\": %s\n", command.data(), error.what());
-			return {};
-		}
-
-		const auto result_value = result.get<sol::lua_value>();
-		if (result_value.value().get_type() == sol::type::nil)
-		{
-			return {};
-		}
-
-		try
-		{
-			const auto result_json = lua_to_json(result_value);
-			return {result_json};
-		}
-		catch (const std::exception& e)
-		{
-			console::error("Error parsing script result \"%s.lua\": %s\n", command.data(), e.what());
-			return {};
-		}
+			e.reset();
+			e.initialize();
+		});
 	}
 }
