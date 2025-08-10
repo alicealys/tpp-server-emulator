@@ -61,12 +61,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Release binaries
-          
-      - name: Download Release data artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: Release data artifacts
-          path: data
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2.7.0
