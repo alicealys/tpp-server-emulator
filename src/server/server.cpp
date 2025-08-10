@@ -5,6 +5,7 @@
 #include "types/server.hpp"
 #include "database/database.hpp"
 #include "database/auth.hpp"
+#include "scripting/engine.hpp"
 
 #include "component/console.hpp"
 #include "component/command.hpp"
@@ -67,11 +68,15 @@ namespace tpp
 
 		component_loader::post_start();
 
+		scripting::start();
+
 		while (!killed)
 		{
 			command::run_frame();
 			std::this_thread::sleep_for(1ms);
 		}
+
+		scripting::stop();
 
 		for (auto& thread : threads)
 		{
