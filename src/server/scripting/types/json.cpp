@@ -153,23 +153,5 @@ namespace tpp::scripting
 				return {};
 			}
 		};
-
-		nlohmann::json json_value1;
-		json_value1["f1"] = 1;
-		json_value1["f2"] = "lol";
-
-		nlohmann::json json_value2 = "lol";
-		nlohmann::json json_value3 = 43253;
-
-		nlohmann::json json_value4;
-		json_value4[0] = "lol1";
-		json_value4[1] = "lol2";
-		json_value4[2] = "lol3";
-		json_value4[4] = "lol4";
-
-		this->state_["j1"] = json_value1;
-		this->state_["j2"] = json_value2;
-		this->state_["j3"] = json_value3;
-		this->state_["j4"] = json_value4;
 	}
 }
