@@ -21,79 +21,106 @@ create table if not exists `player_follows`
 
 namespace database::player_follows
 {
-	bool add_follow(const std::uint64_t player_id, const std::uint64_t to_player_id)
+	namespace impl
 	{
-		if (player_id == to_player_id)
+		template <database_type_t Type>
+		bool add_follow(const std::uint64_t player_id, const std::uint64_t to_player_id)
 		{
-			return false;
+			if (player_id == to_player_id)
+			{
+				return false;
+			}
+
+			return database::access<bool>([&](database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::insert_into(player_follow::table)
+						.set(player_follow::table.player_id = player_id,
+							 player_follow::table.to_player_id = to_player_id)
+					);
+
+				return result != 0;
+			});
 		}
 
-		return database::access<bool>([&](database_t& db)
+		template <database_type_t Type>
+		bool remove_follow(const std::uint64_t player_id, const std::uint64_t to_player_id)
 		{
-			const auto result = db->operator()(
-				sqlpp::insert_into(player_follow::table)
-					.set(player_follow::table.player_id = player_id,
-						 player_follow::table.to_player_id = to_player_id)
-				);
+			return database::access<bool>([&](database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::remove_from(player_follow::table)
+						.where(player_follow::table.player_id == player_id &&
+							 player_follow::table.to_player_id == to_player_id)
+					);
 
-			return result != 0;
-		});
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		std::unordered_set<std::uint64_t> get_follows(const std::uint64_t player_id)
+		{
+			return database::access<std::unordered_set<std::uint64_t>>([&](database_t& db)
+				-> std::unordered_set<std::uint64_t>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_follow::table.to_player_id)
+							.from(player_follow::table)
+								.where(player_follow::table.player_id == player_id));
+
+				std::unordered_set<std::uint64_t> list;
+
+				for (auto& row : results)
+				{
+					list.insert(row.to_player_id);
+				}
+
+				return list;
+			});
+		}
+
+		template <database_type_t Type>
+		std::unordered_set<std::uint64_t> get_followers(const std::uint64_t to_player_id)
+		{
+			return database::access<std::unordered_set<std::uint64_t>>([&](database_t& db)
+				-> std::unordered_set<std::uint64_t>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_follow::table.player_id)
+							.from(player_follow::table)
+								.where(player_follow::table.to_player_id == to_player_id));
+
+				std::unordered_set<std::uint64_t> list;
+
+				for (auto& row : results)
+				{
+					list.insert(row.player_id);
+				}
+
+				return list;
+			});
+		}
+	}
+
+	bool add_follow(const std::uint64_t player_id, const std::uint64_t to_player_id)
+	{
+		RUN_IMPL(impl::add_follow, player_id, to_player_id);
 	}
 
 	bool remove_follow(const std::uint64_t player_id, const std::uint64_t to_player_id)
 	{
-		return database::access<bool>([&](database_t& db)
-		{
-			const auto result = db->operator()(
-				sqlpp::remove_from(player_follow::table)
-					.where(player_follow::table.player_id == player_id &&
-						 player_follow::table.to_player_id == to_player_id)
-				);
-
-			return result != 0;
-		});
+		RUN_IMPL(impl::remove_follow, player_id, to_player_id);
 	}
 
 	std::unordered_set<std::uint64_t> get_follows(const std::uint64_t player_id)
 	{
-		return database::access<std::unordered_set<std::uint64_t>>([&](database_t& db)
-			-> std::unordered_set<std::uint64_t>
-		{
-			auto results = db->operator()(
-				sqlpp::select(player_follow::table.to_player_id)
-						.from(player_follow::table)
-							.where(player_follow::table.player_id == player_id));
-
-			std::unordered_set<std::uint64_t> list;
-
-			for (auto& row : results)
-			{
-				list.insert(row.to_player_id);
-			}
-
-			return list;
-		});
+		RUN_IMPL(impl::get_follows, player_id);
 	}
 
 	std::unordered_set<std::uint64_t> get_followers(const std::uint64_t to_player_id)
 	{
-		return database::access<std::unordered_set<std::uint64_t>>([&](database_t& db)
-			-> std::unordered_set<std::uint64_t>
-		{
-			auto results = db->operator()(
-				sqlpp::select(player_follow::table.player_id)
-						.from(player_follow::table)
-							.where(player_follow::table.to_player_id == to_player_id));
-
-			std::unordered_set<std::uint64_t> list;
-
-			for (auto& row : results)
-			{
-				list.insert(row.player_id);
-			}
-
-			return list;
-		});
+		RUN_IMPL(impl::get_followers, to_player_id);
 	}
 
 	class table final : public table_interface
@@ -101,7 +128,7 @@ namespace database::player_follows
 	public:
 		void create(database_t& database) override
 		{
-			database->execute(TABLE_DEF);
+			database.execute(TABLE_DEF);
 		}
 	};
 }

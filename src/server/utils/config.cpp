@@ -27,6 +27,7 @@ namespace config
 			{define_field("base_url", field_type::string, "http://localhost:80")},
 			{define_field("https_port", field_type::number_unsigned, 443)},
 			{define_field("http_port", field_type::number_unsigned, 80)},
+			{define_field("database_type", field_type::string, "mysql")},
 			{define_field("database_user", field_type::string, "root")},
 			{define_field("database_password", field_type::string, "root")},
 			{define_field("database_host", field_type::string, "localhost")},

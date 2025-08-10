@@ -1,22 +1,9 @@
 #pragma once
 
-#include <utils/concurrency.hpp>
-
-#pragma warning(push)
-#pragma warning(disable: 4127)
-#pragma warning(disable: 4267)
-#pragma warning(disable: 4018)
-#pragma warning(disable: 4996)
-#include <sqlpp11/sqlpp11.h>
-#include <sqlpp11/mysql/mysql.h>
-#pragma warning(pop)
-
-namespace sql = sqlpp::mysql;
+#include "database.hpp"
 
 namespace database
 {
-	using database_t = std::unique_ptr<sql::connection>;
-
 	class table_interface
 	{
 	public:

@@ -209,123 +209,156 @@ namespace database::items
 		}
 	}
 
+	namespace impl
+	{
+		template <database_type_t Type>
+		std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
+		{
+			return database::access<std::unordered_map<std::uint32_t, item_status>>([&](database::database_t& db)
+				-> std::unordered_map<std::uint32_t, item_status>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::all_of(item_status::table))
+							.from(item_status::table)
+								.where(item_status::table.player_id == player_id));
+
+				std::unordered_map<std::uint32_t, item_status> list;
+
+				for (const auto& row : results)
+				{
+					item_status status(row);
+					list.insert(std::make_pair(status.get_id(), status));
+				}
+
+				auto p_data = player_data::find(player_id);
+
+				const auto& static_list = get_static_list();
+				for (const auto& item : static_list)
+				{
+					const auto iter = list.find(item.id);
+					if (iter == list.end())
+					{
+						item_status status(item.id, player_id);
+						status.set_data(item, p_data);
+						list.insert(std::make_pair(item.id, status));
+					}
+					else
+					{
+						iter->second.set_data(item, p_data);
+					}
+				}
+
+				return list;
+			});
+		}
+
+		template <database_type_t Type>
+		item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id)
+		{
+			return database::access<item_status>([&](database::database_t& db)
+				-> item_status
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::all_of(item_status::table))
+							.from(item_status::table)
+								.where(item_status::table.player_id == player_id &&
+									   item_status::table.item_id == item_id));
+
+				const auto& static_map = get_static_map();
+				auto iter = static_map.find(item_id);
+				if (iter == static_map.end())
+				{
+					return {};
+				}
+
+				auto p_data = player_data::find(player_id);
+
+				if (results.empty())
+				{
+					item_status status(item_id, player_id);
+					status.set_data(iter->second, p_data);
+					return status;
+				}
+
+				item_status status(results.front());
+				status.set_data(iter->second, p_data);
+				return status;
+			});
+		}
+
+		template <database_type_t Type>
+		bool create(const std::uint64_t player_id, const std::uint32_t item_id)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::insert_into(item_status::table)
+						.set(item_status::table.player_id = player_id,
+							 item_status::table.item_id = item_id,
+							 item_status::table.create_date = std::chrono::system_clock::now()
+					));
+
+				return result != 0;
+			});
+		}
+	
+		template <database_type_t Type>
+		bool remove(const std::uint64_t player_id, const std::uint32_t item_id)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::remove_from(item_status::table)
+						.where(item_status::table.player_id == player_id &&
+							   item_status::table.item_id == item_id)
+					);
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(item_status::table)
+						.set(item_status::table.create_date = std::chrono::system_clock::from_time_t({}))
+							.where(item_status::table.player_id == player_id &&
+								   item_status::table.item_id == item_id)
+					);
+
+				return result != 0;
+			});
+		}
+	}
+
 	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
 	{
-		return database::access<std::unordered_map<std::uint32_t, item_status>>([&](database::database_t& db)
-			-> std::unordered_map<std::uint32_t, item_status>
-		{
-			auto results = db->operator()(
-				sqlpp::select(
-					sqlpp::all_of(item_status::table))
-						.from(item_status::table)
-							.where(item_status::table.player_id == player_id));
-
-			std::unordered_map<std::uint32_t, item_status> list;
-
-			for (const auto& row : results)
-			{
-				item_status status(row);
-				list.insert(std::make_pair(status.get_id(), status));
-			}
-
-			auto p_data = player_data::find(player_id);
-
-			const auto& static_list = get_static_list();
-			for (const auto& item : static_list)
-			{
-				const auto iter = list.find(item.id);
-				if (iter == list.end())
-				{
-					item_status status(item.id, player_id);
-					status.set_data(item, p_data);
-					list.insert(std::make_pair(item.id, status));
-				}
-				else
-				{
-					iter->second.set_data(item, p_data);
-				}
-			}
-
-			return list;
-		});
+		RUN_IMPL(impl::get_item_list, player_id);
 	}
 
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		return database::access<item_status>([&](database::database_t& db)
-			-> item_status
-		{
-			auto results = db->operator()(
-				sqlpp::select(
-					sqlpp::all_of(item_status::table))
-						.from(item_status::table)
-							.where(item_status::table.player_id == player_id &&
-								   item_status::table.item_id == item_id));
-
-			const auto& static_map = get_static_map();
-			auto iter = static_map.find(item_id);
-			if (iter == static_map.end())
-			{
-				return {};
-			}
-
-			auto p_data = player_data::find(player_id);
-
-			if (results.empty())
-			{
-				item_status status(item_id, player_id);
-				status.set_data(iter->second, p_data);
-				return status;
-			}
-
-			item_status status(results.front());
-			status.set_data(iter->second, p_data);
-			return status;
-		});
+		RUN_IMPL(impl::get_item, player_id, item_id);
 	}
 
 	bool create(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		return database::access<bool>([&](database::database_t& db)
-		{
-			const auto result = db->operator()(
-				sqlpp::insert_into(item_status::table)
-					.set(item_status::table.player_id = player_id,
-						 item_status::table.item_id = item_id,
-						 item_status::table.create_date = std::chrono::system_clock::now()
-				));
-
-			return result != 0;
-		});
+		RUN_IMPL(impl::create, player_id, item_id);
 	}
-	
+
 	bool remove(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		return database::access<bool>([&](database::database_t& db)
-		{
-			const auto result = db->operator()(
-				sqlpp::remove_from(item_status::table)
-					.where(item_status::table.player_id == player_id &&
-						   item_status::table.item_id == item_id)
-				);
-
-			return result != 0;
-		});
+		RUN_IMPL(impl::remove, player_id, item_id);
 	}
 
 	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
-		return database::access<bool>([&](database::database_t& db)
-		{
-			const auto result = db->operator()(
-				sqlpp::update(item_status::table)
-					.set(item_status::table.create_date = std::chrono::system_clock::from_time_t({}))
-						.where(item_status::table.player_id == player_id &&
-							   item_status::table.item_id == item_id)
-				);
-
-			return result != 0;
-		});
+		RUN_IMPL(impl::force_develop, player_id, item_id);
 	}
 
 	class table final : public table_interface
@@ -333,7 +366,7 @@ namespace database::items
 	public:
 		void create(database_t& database) override
 		{
-			database->execute(TABLE_DEF);
+			database.execute(TABLE_DEF);
 
 			get_static_map();
 			get_static_list();

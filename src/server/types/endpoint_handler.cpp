@@ -52,7 +52,7 @@ namespace tpp
 		console::debug("[Endpoint] Handling command \"%s\" (%lli)\n", msgid_str.data(), id);
 #endif
 
-		const auto get_json_response = [&]
+		auto get_json_response = [&]
 		{
 			const auto json_opt = scripting::engine::execute_command_hook(msgid_str, json_req["data"], player);
 			if (json_opt.has_value())
@@ -70,7 +70,11 @@ namespace tpp
 			}
 		};
 
-		const auto json_res = get_json_response();
+		auto json_res = get_json_response();
+		if (!json_res.contains("result"))
+		{
+			json_res["result"] = "NOERR";
+		}
 
 #ifdef DEBUG
 		if (json_res["result"].is_string())

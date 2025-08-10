@@ -61,3 +61,6 @@
 [submodule "deps/sol2"]
 	path = deps/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "deps/sqlite3"]
+	path = deps/sqlite3
+	url = https://github.com/endlesssoftware/sqlite3.git

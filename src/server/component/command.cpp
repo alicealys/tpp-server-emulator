@@ -132,11 +132,17 @@ namespace command
 
 			add("query", [](const params& params)
 			{
+				if (database::get_database_type() != database::database_mysql)
+				{
+					console::print("this command is only supported for mysql");
+					return;
+				}
+
 				const auto query = params.join(1);
 				const auto start = std::chrono::high_resolution_clock::now();
 				database::access([&](const database::database_t& db)
 				{
-					const auto handle = db->get_handle();
+					const auto handle = db.get_mysql()->get_handle();
 
 					console::print("> %s\n", query.data());
 
