@@ -8,19 +8,6 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `event_rankings`
-(
-	id                  bigint unsigned	not null	auto_increment,
-	player_id	        bigint unsigned	not null,
-	event_id	        int unsigned	not null,
-	player_rank		    bigint unsigned	not null default 0,
-	value		        int unsigned	not null default 0,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`),
-	unique key `unique_player_event_rankings_type` (`player_id`, `event_id`)
-))"
-
 namespace database::event_rankings
 {
 	namespace
@@ -263,22 +250,7 @@ namespace database::event_rankings
 
 		last_update = now;
 
-		db.execute(R"(
-				update event_rankings event_ranking
-				join (
-					select
-						player_id,
-						event_id,
-						value,
-						case 
-							when value = 0 then 0 
-							else rank() over (partition by event_id order by value desc)
-						end as new_rank
-					from event_rankings
-				) ranked
-				on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
-				set event_ranking.player_rank = ranked.new_rank;
-			)");
+		db.run_query("mgstpp.event_rankings.update_entries");
 	}
 
 	std::chrono::seconds get_last_update()
@@ -292,7 +264,7 @@ namespace database::event_rankings
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.event_rankings.create");
 		}
 
 		void run_tasks(database_t& database)

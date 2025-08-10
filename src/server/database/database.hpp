@@ -62,6 +62,8 @@ namespace database
 		bool is_valid() const;
 		void create_connection();
 
+		void run_query(const std::string& name);
+
 		size_t execute(const std::string& query);
 
 		void reset();
@@ -95,23 +97,37 @@ namespace database
 	{
 		for (auto& connection : connection_pool)
 		{
-			std::unique_lock<database_mutex_t> lock(connection.mutex, std::try_to_lock);
-			if (!lock.owns_lock())
+			const auto check_connection = [&]
 			{
-				continue;
-			}
+				const auto now = std::chrono::high_resolution_clock::now();
+				const auto diff = now - connection.start;
 
-			const auto now = std::chrono::high_resolution_clock::now();
-			const auto diff = now - connection.start;
+				if (!connection.db.is_valid() || diff >= 1h)
+				{
+					connection.db.create_connection();
+					connection.start = now;
+				}
 
-			if (!connection.db.is_valid() || diff >= 1h)
+				connection.last_access = now;
+			};
+
+			if (get_database_type() == database_sqlite3)
 			{
-				connection.db.create_connection();
-				connection.start = now;
+				std::unique_lock<database_mutex_t> lock(connection.mutex);
+				check_connection();
+				return accessor(connection.db);
 			}
+			else
+			{
+				std::unique_lock<database_mutex_t> lock(connection.mutex, std::try_to_lock);
+				if (!lock.owns_lock())
+				{
+					continue;
+				}
 
-			connection.last_access = now;
-			return accessor(connection.db);
+				check_connection();
+				return accessor(connection.db);
+			}
 		}
 
 		throw std::runtime_error("out of connections");

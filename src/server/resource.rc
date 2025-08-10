@@ -109,6 +109,9 @@ RESOURCE_SECURITY_SETTINGS_PARAM        RCDATA "resources/data/security_setting_
 RESOURCE_FOB_DEPLOY_LIST        RCDATA "resources/data/fob_deploy_list.json"
 RESOURCE_STEAM_SHOP_ITEM_LIST        RCDATA "resources/data/steam_shop_item_list.json"
 
+RESOURCE_SQL_MYSQL        RCDATA "resources/sql/mysql.sql"
+RESOURCE_SQL_SQLITE3        RCDATA "resources/sql/sqlite3.sql"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -74,6 +74,11 @@ namespace database
 		return this->dbs_.sqlite3_.get();
 	}
 
+	void database_container::run_query(const std::string& name)
+	{
+		this->execute(get_sql_query(database::get_database_type(), name));
+	}
+
 	size_t database_container::execute(const std::string& query)
 	{
 		if (get_database_type() == database_mysql)
@@ -113,7 +118,7 @@ namespace database
 			sqlpp::sqlite3::connection_config config;
 			config.password = base_config.password;
 			config.path_to_database = base_config.database_name;
-			config.flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX;
+			config.flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX;
 
 			this->dbs_.sqlite3_ = std::make_unique<sqlpp::sqlite3::connection>(config);
 			return;
@@ -146,7 +151,7 @@ namespace database
 
 	void cleanup_connections()
 	{
-		for (auto&& connection : connection_pool)
+		for (auto& connection : connection_pool)
 		{
 			std::unique_lock<database_mutex_t> lock(connection.mutex, std::try_to_lock);
 			if (!lock.owns_lock())
@@ -180,7 +185,14 @@ namespace database
 		{
 			for (const auto& table : get_tables())
 			{
-				table.inst->run_tasks(db);
+				try
+				{
+					table.inst->run_tasks(db);
+				}
+				catch (const std::exception& e)
+				{
+					console::error("database::run_tasks: %s\n", e.what());
+				}
 			}
 		});
 	}

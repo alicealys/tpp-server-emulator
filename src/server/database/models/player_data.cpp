@@ -6,34 +6,6 @@
 #include <utils/string.hpp>
 #include <utils/nt.hpp>
 
-#define TABLE_DEF R"(
-create table if not exists `player_data`
-(
-	id						bigint unsigned	not null	auto_increment,
-	player_id				bigint unsigned	not null,
-	unit_counts				blob default null,
-	unit_levels				blob default null,
-	resource_arrays			mediumblob default null,
-	nuke_count				bigint unsigned default 0,
-	staff_count				int unsigned not null,
-	staff_bin				mediumblob default null,
-	loadout					json not null,
-	motherbase				json not null,
-	emblem					json not null,
-	local_gmp				int default 0,
-	server_gmp				int default 0,
-	loadout_gmp				int default 0,
-	insurance_gmp			int default 0,
-	injury_gmp				int default 0,
-	last_sync				datetime default null,
-	mb_coin					int default 0,
-	version 				bigint unsigned default 0,
-	fob_deploy_damage_param json,
-	primary key (`id`),
-	foreign key (`player_id`) references players(`id`),
-	unique (`player_id`)
-))"
-
 namespace database::player_data
 {
 	namespace
@@ -936,7 +908,7 @@ namespace database::player_data
 	public:
 		void create(database_t& database) override
 		{
-			database.execute(TABLE_DEF);
+			database.run_query("mgstpp.player_data.create");
 		}
 	};
 }
