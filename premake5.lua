@@ -230,8 +230,25 @@ workspace "tpp-server-emulator"
 		language "C++"
 		cppdialect "C++latest"
 
-		architecture "x86_64"
-		platforms "x64"
+		if os.istarget("linux") then
+			platforms {"x64", "arm64"}
+		else
+			platforms {"x64"}
+		end
+
+		filter "platforms:x64"
+			architecture "x86_64"
+		filter {}
+
+		filter "platforms:arm64"
+			architecture "ARM64"
+		filter {}
+		
+		if os.istarget("windows") then
+			filter "platforms:x64"
+				defines {"_WINDOWS", "WIN32"}
+			filter {}
+		end
 
 		systemversion "latest"
 		symbols "On"
@@ -249,10 +266,6 @@ workspace "tpp-server-emulator"
 		end
 
 		flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
-
-		filter "platforms:x64"
-			defines {"_WINDOWS", "WIN32"}
-		filter {}
 
 		filter "configurations:Release"
 			optimize "Size"
