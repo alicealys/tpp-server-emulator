@@ -32,6 +32,14 @@ namespace tpp::scripting
 		void setup_json();
 		void setup_database();
 		void setup_player();
+		void setup_player_data();
+		void setup_player_follow();
+		void setup_player_record();
+		void setup_sneak_result();
+		void setup_event_ranking();
+		void setup_wormhole();
+		void setup_fob();
+		void setup_item();
 
 		void handle_error(const sol::protected_function_result& result);
 

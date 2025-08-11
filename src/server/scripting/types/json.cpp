@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "json.hpp"
+#include "../engine.hpp"
 
 namespace tpp::scripting
 {

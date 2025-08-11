@@ -1,9 +1,9 @@
 #include <std_include.hpp>
 
+#include "../engine.hpp"
+
 #include "database/database.hpp"
 #include "database/vars.hpp"
-
-#include "database.hpp"
 
 namespace tpp::scripting
 {
