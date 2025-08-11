@@ -269,7 +269,6 @@ workspace "tpp-server-emulator"
 
 		filter "configurations:Release"
 			optimize "Size"
-			buildoptions {"/GL"}
 			linkoptions {"/IGNORE:4702", "/LTCG"}
 			defines {"NDEBUG"}
 			flags {"FatalCompileWarnings"}
@@ -279,6 +278,14 @@ workspace "tpp-server-emulator"
 			optimize "Debug"
 			buildoptions {"/bigobj"}
 			defines {"DEBUG", "_DEBUG"}
+		filter {}
+
+		filter { "configurations:Release", "toolset:msc*" }
+			buildoptions {"/GL"}
+		filter {}
+
+		filter { "configurations:Debug", "toolset:msc*" }
+			buildoptions "/bigobj"
 		filter {}
 
 		project "common"

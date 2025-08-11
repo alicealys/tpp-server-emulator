@@ -3,6 +3,12 @@
 #include <string>
 #include <tomcrypt.h>
 
+#ifdef _WIN32
+#define BSWAP32(x) _byteswap_ulong(x)
+#else
+#define BSWAP32(x) __builtin_bswap32(x)
+#endif
+
 namespace utils::cryptography
 {
 	namespace ecc

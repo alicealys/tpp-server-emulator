@@ -4,8 +4,7 @@
 #include "console.hpp"
 #include "command.hpp"
 
-#include <utils/thread.hpp>
-
+#ifdef _WIN32
 #define OUTPUT_HANDLE GetStdHandle(STD_OUTPUT_HANDLE)
 
 namespace console
@@ -417,3 +416,4 @@ namespace console
 }
 
 REGISTER_COMPONENT(console::component)
+#endif

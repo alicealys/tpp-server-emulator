@@ -241,7 +241,6 @@ namespace tpp::scripting
 					return mysql::prepared_statement(db, query, values);
 				}
 #endif
-
 				return {};
 			});
 		}
