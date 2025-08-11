@@ -128,7 +128,7 @@ namespace scheduler
 	public:
 		void post_start() override
 		{
-			thread = utils::thread::create_named_thread("Async Scheduler", []()
+			thread = std::thread([]()
 			{
 				while (!kill)
 				{

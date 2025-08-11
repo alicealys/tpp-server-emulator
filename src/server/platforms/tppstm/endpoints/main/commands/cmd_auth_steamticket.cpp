@@ -5,8 +5,6 @@
 #include "database/auth.hpp"
 #include "database/models/players.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_auth_steamticket::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

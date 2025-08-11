@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef _WIN32
 #include <string>
 
 namespace utils
@@ -20,3 +21,4 @@ namespace utils
 		std::string path_;
 	};
 }
+#endif

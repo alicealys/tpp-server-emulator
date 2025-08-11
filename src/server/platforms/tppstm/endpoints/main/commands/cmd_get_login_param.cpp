@@ -4,8 +4,6 @@
 
 #include "database/models/items.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_get_login_param::cmd_get_login_param()

@@ -4,8 +4,6 @@
 #include <curl/curl.h>
 #include <gsl/gsl>
 
-#pragma comment(lib, "ws2_32.lib")
-
 #ifdef max
 #undef max
 #endif

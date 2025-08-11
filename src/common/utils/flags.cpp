@@ -1,8 +1,10 @@
 #include "flags.hpp"
 #include "string.hpp"
-#include "nt.hpp"
 
+#ifdef _WIN32
+#include "nt.hpp"
 #include <shellapi.h>
+#endif
 
 namespace utils::flags
 {
@@ -20,6 +22,7 @@ namespace utils::flags
 
 		void parse_flags(flag_map_t& flags)
 		{
+#ifdef _WIN32
 			int num_args;
 			auto* const argv = CommandLineToArgvW(GetCommandLineW(), &num_args);
 
@@ -50,6 +53,9 @@ namespace utils::flags
 
 				LocalFree(argv);
 			}
+#else
+
+#endif
 		}
 
 		void check_parse_flags()

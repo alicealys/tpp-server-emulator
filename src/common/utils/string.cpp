@@ -3,8 +3,6 @@
 #include <cstdarg>
 #include <algorithm>
 
-#include "nt.hpp"
-
 namespace utils::string
 {
 	const char* va(const char* fmt, ...)
@@ -87,29 +85,6 @@ namespace utils::string
 		}
 
 		return result;
-	}
-
-	std::string get_clipboard_data()
-	{
-		if (OpenClipboard(nullptr))
-		{
-			std::string data;
-
-			auto* const clipboard_data = GetClipboardData(1u);
-			if (clipboard_data)
-			{
-				auto* const cliptext = static_cast<char*>(GlobalLock(clipboard_data));
-				if (cliptext)
-				{
-					data.append(cliptext);
-					GlobalUnlock(clipboard_data);
-				}
-			}
-			CloseClipboard();
-
-			return data;
-		}
-		return {};
 	}
 
 	void strip(const char* in, char* out, int max)

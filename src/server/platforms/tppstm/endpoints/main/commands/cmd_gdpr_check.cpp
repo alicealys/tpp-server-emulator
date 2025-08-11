@@ -2,8 +2,6 @@
 
 #include "cmd_gdpr_check.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_gdpr_check::cmd_gdpr_check()

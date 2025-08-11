@@ -5,8 +5,6 @@
 #include "database/models/players.hpp"
 #include "database/models/wormholes.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_open_wormhole::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

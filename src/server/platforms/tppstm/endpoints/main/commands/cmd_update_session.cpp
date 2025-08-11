@@ -4,8 +4,6 @@
 
 #include "database/models/players.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_update_session::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

@@ -4,8 +4,6 @@
 
 #include "database/models/items.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_mining_resource::cmd_mining_resource()

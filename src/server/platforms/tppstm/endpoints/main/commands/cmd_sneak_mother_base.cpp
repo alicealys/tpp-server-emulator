@@ -6,8 +6,6 @@
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_sneak_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

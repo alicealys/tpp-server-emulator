@@ -9,8 +9,6 @@
 #include "database/models/sneak_results.hpp"
 #include "database/models/wormholes.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	namespace

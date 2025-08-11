@@ -1,17 +1,16 @@
 #include "io.hpp"
-#include "nt.hpp"
 #include <fstream>
 
 namespace utils::io
 {
 	bool remove_file(const std::string& file)
 	{
-		return DeleteFileA(file.data()) == TRUE;
+		return std::filesystem::remove(file);
 	}
 
-	bool move_file(const std::string& src, const std::string& target)
+	void move_file(const std::string& src, const std::string& target)
 	{
-		return MoveFileA(src.data(), target.data()) == TRUE;
+		std::filesystem::rename(src, target);
 	}
 
 	bool file_exists(const std::string& file)

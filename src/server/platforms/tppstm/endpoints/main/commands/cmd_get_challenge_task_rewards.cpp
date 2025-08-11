@@ -2,8 +2,6 @@
 
 #include "cmd_get_challenge_task_rewards.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_get_challenge_task_rewards::cmd_get_challenge_task_rewards()

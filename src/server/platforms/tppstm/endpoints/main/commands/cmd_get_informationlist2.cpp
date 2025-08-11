@@ -2,8 +2,6 @@
 
 #include "cmd_get_informationlist2.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_get_informationlist2::cmd_get_informationlist2()

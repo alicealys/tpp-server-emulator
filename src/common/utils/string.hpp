@@ -89,8 +89,6 @@ namespace utils::string
 
 	std::string dump_hex(const std::string& data, const std::string& separator = " ", bool upper_case = true);
 
-	std::string get_clipboard_data();
-
 	void strip(const char* in, char* out, int max);
 
 	std::string convert(const std::wstring& wstr);

@@ -1,5 +1,6 @@
 #include "binary_resource.hpp"
 
+#ifdef _WIN32
 #include <utility>
 #include "nt.hpp"
 #include "io.hpp"
@@ -70,3 +71,4 @@ namespace utils
 		return this->resource_;
 	}
 }
+#endif

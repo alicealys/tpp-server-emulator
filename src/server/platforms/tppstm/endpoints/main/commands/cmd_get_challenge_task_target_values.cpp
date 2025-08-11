@@ -2,8 +2,6 @@
 
 #include "cmd_get_challenge_task_target_values.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_get_challenge_task_target_values::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
