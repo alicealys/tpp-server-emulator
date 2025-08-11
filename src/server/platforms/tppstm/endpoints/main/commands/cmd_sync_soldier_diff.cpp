@@ -97,12 +97,12 @@ namespace tpp
 			{
 				const auto staff = p_data->get_staff(idx);
 				std::uint32_t params[6]{};
-				params[0] = _byteswap_ulong(staff.unk.data);
-				params[1] = _byteswap_ulong(staff.unk2.data);
-				params[2] = _byteswap_ulong(staff.packed_header);
-				params[3] = _byteswap_ulong(staff.packed_seed);
-				params[4] = _byteswap_ulong(staff.packed_status_sync);
-				params[5] = _byteswap_ulong(staff.packed_status_no_sync);
+				params[0] = BSWAP32(staff.unk.data);
+				params[1] = BSWAP32(staff.unk2.data);
+				params[2] = BSWAP32(staff.packed_header);
+				params[3] = BSWAP32(staff.packed_seed);
+				params[4] = BSWAP32(staff.packed_status_sync);
+				params[5] = BSWAP32(staff.packed_status_no_sync);
 				new_staff_array.append(reinterpret_cast<char*>(params), sizeof(params));
 			}
 		}

@@ -3,6 +3,7 @@
 #include <string>
 #include <optional>
 #include <future>
+#include <unordered_map>
 
 namespace utils::http
 {
