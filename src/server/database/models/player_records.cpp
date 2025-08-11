@@ -172,28 +172,20 @@ namespace database::player_records
 			}
 		}
 
-		auto get_verbatim_rand()
-		{
-			if (get_database_type() == database_sqlite3)
-			{
-				return sqlpp::verbatim("random()");
-			}
-
-			return sqlpp::verbatim("rand()");
-		}
-
 		template <database_type_t Type>
 		std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)
 		{
 			return database::access<std::vector<player_record>>([&](database::database_t& db)
 				-> std::vector<player_record>
 			{
+				const auto rand = sqlpp::verbatim(database::get_database_def().rand_func);
+
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::all_of(player_record::table))
 							.from(player_record::table)
 								.where(player_record::table.fob_grade == grade)
-									.order_by(get_verbatim_rand().asc())
+									.order_by(rand.asc())
 										.limit(limit));
 
 				std::vector<player_record> list;

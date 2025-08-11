@@ -16,9 +16,11 @@
 #include "utils/resources.hpp"
 #include "vars.hpp"
 
+#define SINGLE_CONNECTION_INDEX 0
+
 namespace database
 {
-	constexpr auto max_connections = 100;
+	constexpr auto max_connections = 256;
 
 	using database_mutex_t = std::recursive_mutex;
 
@@ -28,6 +30,13 @@ namespace database
 		database_mysql = 1,
 		database_sqlite3 = 2,
 		database_count
+	};
+
+	struct database_def_t
+	{
+		database_type_t type;
+		bool use_multi_connection;
+		std::string rand_func;
 	};
 
 	struct database_config
@@ -79,6 +88,7 @@ namespace database
 	using database_t = database_container;
 
 	database_type_t get_database_type();
+	database_def_t get_database_def();
 
 	struct connection_t
 	{
@@ -92,32 +102,14 @@ namespace database
 
 	void initialize();
 
+	void check_connection(connection_t& connection);
+
 	template <typename T = void, typename F>
 	T access(F&& accessor)
 	{
-		for (auto& connection : connection_pool)
+		const auto access_multi = [&]
 		{
-			const auto check_connection = [&]
-			{
-				const auto now = std::chrono::high_resolution_clock::now();
-				const auto diff = now - connection.start;
-
-				if (!connection.db.is_valid() || diff >= 1h)
-				{
-					connection.db.create_connection();
-					connection.start = now;
-				}
-
-				connection.last_access = now;
-			};
-
-			if (get_database_type() == database_sqlite3)
-			{
-				std::unique_lock<database_mutex_t> lock(connection.mutex);
-				check_connection();
-				return accessor(connection.db);
-			}
-			else
+			for (auto& connection : connection_pool)
 			{
 				std::unique_lock<database_mutex_t> lock(connection.mutex, std::try_to_lock);
 				if (!lock.owns_lock())
@@ -125,12 +117,32 @@ namespace database
 					continue;
 				}
 
-				check_connection();
+				check_connection(connection);
 				return accessor(connection.db);
 			}
-		}
 
-		throw std::runtime_error("out of connections");
+			throw std::runtime_error("out of connections");
+		};
+
+		const auto access_single = [&]
+		{
+			auto& connection = connection_pool[SINGLE_CONNECTION_INDEX];
+
+			std::unique_lock<database_mutex_t> lock(connection.mutex);
+			check_connection(connection);
+
+			return accessor(connection.db);
+		};
+
+
+		if (get_database_def().use_multi_connection)
+		{
+			return access_multi();
+		}
+		else
+		{
+			return access_single();
+		}
 	}
 
 	void cleanup_connections();
