@@ -57,6 +57,11 @@ namespace tpp::scripting
 	void engine::load_scripts()
 	{
 		const auto path = "scripts/";
+		if (!utils::io::directory_exists(path))
+		{
+			return;
+		}
+
 		const auto files = utils::io::list_files(path);
 
 		for (const auto& file : files)
