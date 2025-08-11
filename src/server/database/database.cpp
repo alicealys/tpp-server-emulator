@@ -76,6 +76,13 @@ namespace database
 			throw std::runtime_error(std::format("invalid database type specified: {}", type_name));
 		}
 
+#ifndef MYSQL_SUPPORTED
+		if (type == database_mysql)
+		{
+			throw std::runtime_error("mysql is not supported on this build");
+		}
+#endif
+
 		set_database_type(type);
 
 		database_config config;
@@ -93,12 +100,12 @@ namespace database
 		return config;
 	}
 
-	sqlpp::mysql::connection* database_container::get_mysql() const
+	mysql_connection* database_container::get_mysql() const
 	{
 		return this->dbs_.mysql_.get();
 	}
 
-	sqlpp::sqlite3::connection* database_container::get_sqlite3() const
+	sqlite3_connection* database_container::get_sqlite3() const
 	{
 		return this->dbs_.sqlite3_.get();
 	}
@@ -110,11 +117,13 @@ namespace database
 
 	size_t database_container::execute(const std::string& query)
 	{
+#ifdef MYSQL_SUPPORTED
 		if (get_database_type() == database_mysql)
 		{
 			this->dbs_.mysql_->execute(query);
 			return 0ull;
 		}
+#endif
 
 		if (get_database_type() == database_sqlite3)
 		{
@@ -132,6 +141,7 @@ namespace database
 		{
 		case database_mysql:
 		{
+#ifdef MYSQL_SUPPORTED
 			sqlpp::mysql::connection_config config;
 			config.user = base_config.user;
 			config.password = base_config.password;
@@ -140,6 +150,7 @@ namespace database
 			config.database = base_config.database_name;
 
 			this->dbs_.mysql_ = std::make_unique<sqlpp::mysql::connection>(config);
+#endif
 			return;
 		}
 		case database_sqlite3:
@@ -159,10 +170,12 @@ namespace database
 
 	bool database_container::is_valid() const
 	{
+#ifdef MYSQL_SUPPORTED
 		if (get_database_type() == database_mysql)
 		{
 			return this->dbs_.mysql_.get() && this->dbs_.mysql_->is_valid();
 		}
+#endif
 
 		if (get_database_type() == database_sqlite3)
 		{

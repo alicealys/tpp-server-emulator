@@ -6,7 +6,9 @@
 #pragma warning(disable: 4018)
 #pragma warning(disable: 4996)
 #include <sqlpp11/sqlpp11.h>
+#ifdef MYSQL_SUPPORTED
 #include <sqlpp11/mysql/mysql.h>
+#endif
 #include <sqlpp11/sqlite3/sqlite3.h>
 #pragma warning(pop)
 
@@ -48,16 +50,29 @@ namespace database
 		std::string database_name;
 	};
 
+	struct dummy_mysql_connection
+	{
+	};
+
+#ifdef MYSQL_SUPPORTED
+	using mysql_connection = sqlpp::mysql::connection;
+#else
+	using mysql_connection = dummy_mysql_connection;
+#endif
+	using sqlite3_connection = sqlpp::sqlite3::connection;
+
 	class database_container
 	{
 	public:
-		template <database_type_t Type, typename T = std::conditional<Type == database_mysql, sqlpp::mysql::connection*, sqlpp::sqlite3::connection*>::type>
+		template <database_type_t Type, typename T = std::conditional<Type == database_mysql, mysql_connection*, sqlite3_connection*>::type>
 		T get_database() const
 		{
+#ifdef MYSQL_SUPPORTED
 			if constexpr (Type == database_mysql)
 			{
 				return this->dbs_.mysql_.get();
 			}
+#endif
 
 			if constexpr (Type == database_sqlite3)
 			{
@@ -65,8 +80,8 @@ namespace database
 			}
 		}
 
-		sqlpp::mysql::connection* get_mysql() const;
-		sqlpp::sqlite3::connection* get_sqlite3() const;
+		mysql_connection* get_mysql() const;
+		sqlite3_connection* get_sqlite3() const;
 
 		bool is_valid() const;
 		void create_connection();
@@ -80,8 +95,8 @@ namespace database
 	private:
 		struct
 		{
-			std::unique_ptr<sqlpp::mysql::connection> mysql_{};
-			std::unique_ptr<sqlpp::sqlite3::connection> sqlite3_{};
+			std::unique_ptr<mysql_connection> mysql_{};
+			std::unique_ptr<sqlite3_connection> sqlite3_{};
 		} dbs_{};
 	};
 
@@ -149,12 +164,23 @@ namespace database
 
 	void run_tasks();
 
+#ifdef MYSQL_SUPPORTED
+
 #define SELECT_IMPL(__fn__) (get_database_type() == database_mysql ? __fn__<database_mysql> : __fn__<database_sqlite3>)
 
 #define RUN_IMPL(__fn__, ...) \
 	static auto fn = (get_database_type() == database_mysql ? __fn__<database_mysql> : __fn__<database_sqlite3>); \
 	return fn(__VA_ARGS__); \
 
+#else
+
+#define SELECT_IMPL(__fn__) (__fn__<database_sqlite3>)
+
+#define RUN_IMPL(__fn__, ...) \
+	static auto fn = __fn__<database_sqlite3>; \
+	return fn(__VA_ARGS__); \
+
+#endif
 }
 
 #include "table_loader.hpp"
