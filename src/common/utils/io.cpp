@@ -26,8 +26,10 @@ namespace utils::io
 			create_directory(file.substr(0, pos));
 		}
 
-		std::ofstream stream(
-			file, std::ios::binary | std::ofstream::out | (append ? std::ofstream::app : 0));
+		const auto open_mode = static_cast<std::ios::openmode>(
+			std::ios::binary | std::ofstream::out | (append ? std::ofstream::app : 0));
+
+		std::ofstream stream(file, open_mode);
 
 		if (stream.is_open())
 		{

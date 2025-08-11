@@ -2,6 +2,9 @@
 
 #include <mutex>
 #include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cstring>
 
 namespace utils
 {

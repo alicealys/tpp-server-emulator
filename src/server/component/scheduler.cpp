@@ -3,7 +3,6 @@
 
 #include "scheduler.hpp"
 
-#include <utils/thread.hpp>
 #include <utils/concurrency.hpp>
 
 namespace scheduler

@@ -104,7 +104,7 @@ namespace tpp::scripting
 
 		json_type[sol::meta_function::to_string] = [](nlohmann::json& value)
 		{
-			return utils::string::va("sol.nlohmann::json: %p", &value);
+			return std::format("sol.nlohmann::json: {:016X}", reinterpret_cast<size_t>(&value));
 		};
 
 #define REGISTER_METHOD(__method__) \

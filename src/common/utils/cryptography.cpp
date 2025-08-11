@@ -795,13 +795,13 @@ namespace utils::cryptography
 			auto chunk_l = chunk.substr(0, 4);
 			auto chunk_r = chunk.substr(4, 4);
 
-			auto xl = static_cast<std::uint32_t>(_byteswap_ulong(*reinterpret_cast<std::uint32_t*>(chunk_l.data())));
-			auto xr = static_cast<std::uint32_t>(_byteswap_ulong(*reinterpret_cast<std::uint32_t*>(chunk_r.data())));
+			auto xl = static_cast<std::uint32_t>(BSWAP32(*reinterpret_cast<std::uint32_t*>(chunk_l.data())));
+			auto xr = static_cast<std::uint32_t>(BSWAP32(*reinterpret_cast<std::uint32_t*>(chunk_r.data())));
 
 			this->encrypt_single(xl, xr);
 
-			xl = _byteswap_ulong(xl);
-			xr = _byteswap_ulong(xr);
+			xl = BSWAP32(xl);
+			xr = BSWAP32(xr);
 
 			text.append(reinterpret_cast<char*>(&xl), 4);
 			text.append(reinterpret_cast<char*>(&xr), 4);
@@ -825,13 +825,13 @@ namespace utils::cryptography
 			auto chunk_l = chunk.substr(0, 4);
 			auto chunk_r = chunk.substr(4, 4);
 
-			auto xl = static_cast<std::uint32_t>(_byteswap_ulong(*reinterpret_cast<std::uint32_t*>(chunk_l.data())));
-			auto xr = static_cast<std::uint32_t>(_byteswap_ulong(*reinterpret_cast<std::uint32_t*>(chunk_r.data())));
+			auto xl = static_cast<std::uint32_t>(BSWAP(*reinterpret_cast<std::uint32_t*>(chunk_l.data())));
+			auto xr = static_cast<std::uint32_t>(BSWAP(*reinterpret_cast<std::uint32_t*>(chunk_r.data())));
 
 			this->decrypt_single(xl, xr);
 
-			xl = _byteswap_ulong(xl);
-			xr = _byteswap_ulong(xr);
+			xl = BSWAP32(xl);
+			xr = BSWAP32(xr);
 
 			text.append(reinterpret_cast<char*>(&xl), 4);
 			text.append(reinterpret_cast<char*>(&xr), 4);
