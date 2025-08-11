@@ -341,7 +341,7 @@ namespace database::player_data
 			{
 				for (auto o = 0; o < 6; o++)
 				{
-					this->staff_array_[i].packed[o] = _byteswap_ulong(this->staff_array_[i].packed[o]);
+					this->staff_array_[i].packed[o] = BSWAP32(this->staff_array_[i].packed[o]);
 				}
 			}
 

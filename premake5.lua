@@ -310,7 +310,11 @@ workspace "tpp-server-emulator"
 
 			linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
 
-			files {"./src/server/**.rc", "./src/server/**.hpp", "./src/server/**.cpp"}
+			filter { "toolset:msc*" }
+				files {"./src/server/**.rc"}
+			filter {}
+
+			files {"./src/server/**.hpp", "./src/server/**.cpp"}
 
 			includedirs {"./src/server", "./src/common", "%{prj.location}/src", "./deps/mysql/include"}
 
@@ -322,7 +326,9 @@ workspace "tpp-server-emulator"
 
 			links {"common"}
 
-			prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "tools\\premake5 generate-buildinfo", "popd"}
+			filter { "toolset:msc*" }
+				prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "tools\\premake5 generate-buildinfo", "popd"}
+			filter {}
 
 			if _OPTIONS["copy-to"] then
 				postbuildcommands {"copy /y \"$(TargetPath)\" \"" .. _OPTIONS["copy-to"] .. "\""}

@@ -79,7 +79,7 @@ namespace tpp
 		for (auto i = 0u; i < array_size; i++)
 		{
 			auto staff = *reinterpret_cast<database::player_data::staff_t*>(&soldier_bin[i * 24]);
-			staff.fields.packed_status_sync = _byteswap_ulong(staff.fields.packed_status_sync);
+			staff.fields.packed_status_sync = BSWAP32(staff.fields.packed_status_sync);
 			if (staff.fields.status_sync.designation != 0)
 			{
 				++soldier_count;
