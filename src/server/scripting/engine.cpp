@@ -4,18 +4,12 @@
 
 #include "../types/command_handler.hpp"
 
-#include "types/json.hpp"
-#include "types/database.hpp"
-#include "types/player.hpp"
-
 #include <utils/io.hpp>
 
 namespace tpp::scripting
 {
 	namespace
 	{
-		std::mutex script_mutex;
-
 		utils::concurrency::container<engine> engine_container;
 	}
 
@@ -35,7 +29,16 @@ namespace tpp::scripting
 		this->setup_server();
 		this->setup_json();
 		this->setup_database();
+
 		this->setup_player();
+		this->setup_player_data();
+		this->setup_player_follow();
+		this->setup_player_record();
+		this->setup_sneak_result();
+		this->setup_event_ranking();
+		this->setup_wormhole();
+		this->setup_fob();
+		this->setup_item();
 
 		this->load_scripts();
 	}
