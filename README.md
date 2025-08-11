@@ -15,8 +15,8 @@ https://discord.gg/hYfW9MEEGF
 
 ## Documentation
 
-- [Usage/Installation](https://github.com/alicealys/tpp-server-emulator/docs/usage.md)
-- [Scripting](https://github.com/alicealys/tpp-server-emulator/docs/scripting.md)
+- [Usage/Installation](https://github.com/alicealys/tpp-server-emulator/blob/main/docs/usage.md)
+- [Scripting](https://github.com/alicealys/tpp-server-emulator/blob/main/docs/scripting.md)
 
 ## Compile from source
 
