@@ -6,6 +6,36 @@ namespace tpp::scripting
 {
 	void engine::setup_player_data()
 	{
+		auto player_data_type = this->state_.new_usertype<database::player_data::player_data>("database::player_data::player_data");
+
+#define REGISTER_METHOD(__method__) \
+		{ \
+			static const auto name = utils::string::replace(#__method__, "_", ""); \
+			player_data_type[name] = [](const database::player_data::player_data& data) \
+			{ \
+				return data.__method__(); \
+			}; \
+		} \
+
+		//REGISTER_METHOD(get_resource_value);
+		//REGISTER_METHOD(copy_resources);
+		REGISTER_METHOD(get_player_id);
+		//REGISTER_METHOD(get_staff);
+		//REGISTER_METHOD(get_unit_level);
+		//REGISTER_METHOD(get_unit_count);
+		REGISTER_METHOD(get_staff_count);
+		REGISTER_METHOD(get_usable_staff_count);
+		REGISTER_METHOD(get_motherbase);
+		REGISTER_METHOD(get_loadout);
+		REGISTER_METHOD(get_emblem);
+		REGISTER_METHOD(get_server_gmp);
+		REGISTER_METHOD(get_local_gmp);
+		REGISTER_METHOD(get_mb_coin);
+		REGISTER_METHOD(get_version);
+		REGISTER_METHOD(get_last_sync);
+		REGISTER_METHOD(get_nuke_count);
+		REGISTER_METHOD(get_fob_deploy_damage_param);
+
 		this->state_["database"]["playerdata"] = sol::state::create_table(this->state_.lua_state());
 
 		//this->state_["database"]["playerdata"]["unitnamefromdesignation"] = database::player_data::unit_name_from_designation;
