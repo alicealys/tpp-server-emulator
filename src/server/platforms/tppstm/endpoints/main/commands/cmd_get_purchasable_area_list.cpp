@@ -4,8 +4,6 @@
 
 #include "database/models/fobs.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_get_purchasable_area_list::cmd_get_purchasable_area_list()

@@ -6,8 +6,6 @@
 #include "database/models/players.hpp"
 #include "database/models/event_rankings.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_reqauth_https::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

@@ -6,9 +6,9 @@
 #include "utils/config.hpp"
 
 #include <utils/binary_resource.hpp>
-#include <utils/nt.hpp>
 #include <utils/io.hpp>
 #include <utils/flags.hpp>
+#include <utils/nt.hpp>
 
 namespace
 {
@@ -21,6 +21,7 @@ namespace
 
 	void write_dlls()
 	{
+#ifdef _WIN32
 		const auto use_tmp_folder = config::get<bool>("use_tmp_folder");
 
 		if (use_tmp_folder)
@@ -41,6 +42,7 @@ namespace
 				utils::io::write_file(name, binary_resource.get_data());
 			}
 		}
+#endif
 	}
 
 	void set_working_dir()
@@ -60,9 +62,4 @@ int main()
 	write_dlls();
 	tpp::start_server();
 	return 0;
-}
-
-int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
-{
-	return main();
 }

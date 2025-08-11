@@ -2,8 +2,6 @@
 
 #include "cmd_get_security_setting_param.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_get_security_setting_param::cmd_get_security_setting_param()

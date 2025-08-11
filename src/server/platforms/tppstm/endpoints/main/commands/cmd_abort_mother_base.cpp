@@ -7,8 +7,6 @@
 #include "database/models/players.hpp"
 #include "database/models/sneak_results.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_abort_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

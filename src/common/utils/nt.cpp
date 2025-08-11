@@ -1,5 +1,7 @@
 #include "nt.hpp"
 
+#ifdef _WIN32
+
 namespace utils::nt
 {
 	library library::load(const std::string& name)
@@ -263,3 +265,5 @@ namespace utils::nt
 		return path;
 	}
 }
+
+#endif

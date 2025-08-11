@@ -358,7 +358,7 @@ namespace console
 
 			con.kill_event = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-			con.thread = utils::thread::create_named_thread("Console", []()
+			con.thread = std::thread([]()
 			{
 				const auto handle = GetStdHandle(STD_INPUT_HANDLE);
 				HANDLE handles[2] = {handle, con.kill_event};

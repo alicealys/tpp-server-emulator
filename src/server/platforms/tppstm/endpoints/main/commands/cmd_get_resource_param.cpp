@@ -2,8 +2,6 @@
 
 #include "cmd_get_resource_param.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_get_resource_param::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

@@ -5,8 +5,6 @@
 #include "database/models/fobs.hpp"
 #include "database/models/players.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_purchase_fob::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

@@ -1,10 +1,13 @@
 #include "string.hpp"
 #include "cryptography.hpp"
-#include "nt.hpp"
 #include <gsl/gsl>
 
 #undef max
 using namespace std::string_literals;
+
+#ifndef ZeroMemory
+#define ZeroMemory(x, y) std::memset(x, 0, y)
+#endif
 
 /// http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-55010/Source/libtomcrypt/doc/libTomCryptDoc.pdf
 

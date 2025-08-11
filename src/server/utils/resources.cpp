@@ -43,7 +43,11 @@ namespace utils::resources
 			}
 		}
 
+#ifdef _WIN32
 		return utils::nt::load_resource(resource_id);
+#else
+		return {};
+#endif
 	}
 
 	nlohmann::json load_json(const std::int32_t resource_id)

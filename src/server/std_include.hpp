@@ -24,29 +24,26 @@
 #pragma warning(disable: 26812)
 #pragma warning(disable: 28020)
 
+#ifdef _WIN32
+#pragma once
+
 #define WIN32_LEAN_AND_MEAN
 
 #include <Windows.h>
-#include <MsHTML.h>
-#include <MsHtmHst.h>
-#include <ExDisp.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
-#include <corecrt_io.h>
-#include <fcntl.h>
-#include <shellapi.h>
-#include <csetjmp>
-#include <ShlObj.h>
-#include <winternl.h>
-#include <VersionHelpers.h>
-#include <Psapi.h>
-#include <urlmon.h>
-#include <atlbase.h>
-#include <iphlpapi.h>
-#include <wincrypt.h>
-#include <dwmapi.h>
 
-// min and max is required by gdi, therefore NOMINMAX won't work
+#else
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <fcntl.h>
+#endif
+
 #ifdef max
 #undef max
 #endif
@@ -81,6 +78,7 @@
 #pragma warning(pop)
 #pragma warning(disable: 4100)
 
+#ifdef _WIN32
 #pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "urlmon.lib" )
@@ -88,6 +86,7 @@
 #pragma comment(lib, "Crypt32.lib")
 #pragma comment(lib, "libmysql.lib")
 #pragma comment(lib, "delayimp.lib")
+#endif
 
 #include "resource.hpp"
 

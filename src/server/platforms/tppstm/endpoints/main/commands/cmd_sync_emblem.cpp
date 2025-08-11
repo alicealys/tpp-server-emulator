@@ -5,8 +5,6 @@
 #include "database/models/players.hpp"
 #include "database/models/player_data.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_sync_emblem::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

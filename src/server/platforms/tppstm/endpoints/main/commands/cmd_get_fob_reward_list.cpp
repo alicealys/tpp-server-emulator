@@ -7,8 +7,6 @@
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	nlohmann::json cmd_get_fob_reward_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

@@ -4,7 +4,6 @@
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
-#include <utils/nt.hpp>
 
 namespace database::player_data
 {

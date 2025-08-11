@@ -2,8 +2,6 @@
 
 #include "cmd_get_fob_param.hpp"
 
-#include <utils/nt.hpp>
-
 namespace tpp
 {
 	cmd_get_fob_param::cmd_get_fob_param()
