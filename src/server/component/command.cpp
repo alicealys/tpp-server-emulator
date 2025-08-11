@@ -139,6 +139,7 @@ namespace command
 					return;
 				}
 
+#ifdef MYSQL_SUPPORTED
 				const auto query = params.join(1);
 				const auto start = std::chrono::high_resolution_clock::now();
 				database::access([&](const database::database_t& db)
@@ -282,6 +283,7 @@ namespace command
 						console::print("Query OK, %i row affected (%.04f sec)", affected_rows, secs);
 					}
 				});
+#endif
 			});
 
 			add("reload_lists", auth::reload_lists);

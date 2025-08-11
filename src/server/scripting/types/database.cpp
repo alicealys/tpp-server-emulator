@@ -9,6 +9,7 @@ namespace tpp::scripting
 {
 	namespace
 	{
+#ifdef MYSQL_SUPPORTED
 		namespace mysql
 		{
 			nlohmann::json field_to_value(const MYSQL_FIELD* field, const std::string& row)
@@ -228,16 +229,18 @@ namespace tpp::scripting
 				return result;
 			}
 		}
-
+#endif
 		nlohmann::json prepared_statement(const std::string& query, const sol::variadic_args& values)
 		{
 			return database::access<nlohmann::json>([&](database::database_t& db)
 				-> nlohmann::json
 			{
+#ifdef MYSQL_SUPPORTED
 				if (database::get_database_type() == database::database_mysql)
 				{
 					return mysql::prepared_statement(db, query, values);
 				}
+#endif
 
 				return {};
 			});

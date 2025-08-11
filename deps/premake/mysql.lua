@@ -1,5 +1,6 @@
 if (os.host() ~= "windows") then
-    error("automatic mysql installation is not supported on your os")
+    print("automatic mysql installation is not supported on your os")
+    return
 end
 
 mysql = {
@@ -30,6 +31,7 @@ end
 
 function mysql.import()
 	linkoptions {"/DELAYLOAD:libmysql.dll"}
+	defines {"MYSQL_SUPPORTED"}
 
 	mysql.install()
 	mysql.includes()
