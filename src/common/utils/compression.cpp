@@ -2,7 +2,6 @@
 #include "compression.hpp"
 
 #include <zlib.h>
-#include <zip.h>
 
 #include <gsl/gsl>
 
@@ -108,62 +107,6 @@ namespace utils::compression
 
 			result.resize(length);
 			return result;
-		}
-	}
-
-	namespace zip
-	{
-		namespace
-		{
-			bool add_file(zipFile& zip_file, const std::string& filename, const std::string& data)
-			{
-				const auto zip_64 = data.size() > 0xffffffff ? 1 : 0;
-				if (ZIP_OK != zipOpenNewFileInZip64(zip_file, filename.data(), nullptr, nullptr, 0, nullptr, 0, nullptr,
-				                                    Z_DEFLATED, Z_BEST_COMPRESSION, zip_64))
-				{
-					return false;
-				}
-
-				const auto _ = gsl::finally([&zip_file]()
-				{
-					zipCloseFileInZip(zip_file);
-				});
-
-				return ZIP_OK == zipWriteInFileInZip(zip_file, data.data(), static_cast<unsigned>(data.size()));
-			}
-		}
-
-		void archive::add(std::string filename, std::string data)
-		{
-			this->files_[std::move(filename)] = std::move(data);
-		}
-
-		bool archive::write(const std::string& filename, const std::string& comment)
-		{
-			// Hack to create the directory :3
-			io::write_file(filename, {});
-			io::remove_file(filename);
-
-			auto* zip_file = zipOpen64(filename.data(), 0);
-			if (!zip_file)
-			{
-				return false;
-			}
-
-			const auto _ = gsl::finally([&zip_file, &comment]()
-			{
-				zipClose(zip_file, comment.empty() ? nullptr : comment.data());
-			});
-
-			for (const auto& file : this->files_)
-			{
-				if (!add_file(zip_file, file.first, file.second))
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 }
