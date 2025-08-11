@@ -59,13 +59,19 @@ j["f2"] = 1
 j["f3"] = json:array()
 j["f3"][0] = "v2"
 
+print(j:dump())
+
+print(j["f1"]) -- "sol.nlohmann::json"
+print(j["f1"]:get() == "v1") -- true
+print(j["f2"]:get() == 1) -- true
+
 ```
 
 ---
-- *F* **`json.parse`**: parses json string into nlohmann::json
-- *F* **`json.array`**: returns nlohmann::json::array
-- *F* **`json.object`**: returns nlohmann::json::object
-- *M* **`json:get`**: converts json value into lua primitive (if possible)
+- *F* **`json.parse(text: string)`**: parses json string into nlohmann::json
+- *F* **`json.array()`**: returns nlohmann::json::array
+- *F* **`json.object()`**: returns nlohmann::json::object
+- *M* **`json:get()`**: converts json value into lua primitive (if possible)
 - *M* **`json:dump([, indent: int])`**: serializes json value into a string
 
 #### [server](https://github.com/alicealys/tpp-server-emulator/blob/main/src/server/scripting/types/server.cpp)
