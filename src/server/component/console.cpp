@@ -4,7 +4,53 @@
 #include "console.hpp"
 #include "command.hpp"
 
-#ifdef _WIN32
+#include <cstdarg>
+
+#ifndef _WIN32
+namespace console
+{
+	std::string format(va_list* ap, const char* message)
+	{
+		static thread_local char buffer[0x1000];
+
+		const auto count = vsnprintf(buffer, sizeof(buffer), sizeof(buffer), message, *ap);
+		if (count < 0)
+		{
+			return {};
+		}
+
+		return {buffer, static_cast<size_t>(count)};
+	}
+
+	std::string get_prefix(const int type)
+	{
+		switch (type)
+		{
+		case con_type_info:
+			return "[*] ";
+		case con_type_warning:
+			return "[!] ";
+		case con_type_error:
+			return "[-] ";
+		case con_type_debug:
+			return "[+] ";
+		}
+
+		return {};
+	}
+
+	void dispatch_print(const int type, const char* fmt, ...)
+	{
+		va_list ap;
+		va_start(ap, fmt);
+		const auto result = format(&ap, fmt);
+		va_end(ap);
+
+		const auto text = std::format("{}{}", get_prefix(type), result);
+		printf("%s", text.data());
+	}
+}
+#else
 #define OUTPUT_HANDLE GetStdHandle(STD_OUTPUT_HANDLE)
 
 namespace console

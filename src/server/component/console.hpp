@@ -11,7 +11,6 @@ namespace console
 		con_type_info = 4
 	};
 
-#ifdef _WIN32
 	void dispatch_print(const int type, const char* fmt, ...);
 
 	template <typename... Args>
@@ -45,37 +44,4 @@ namespace console
 		dispatch_print(con_type_debug, fmt, std::forward<Args>(args)...);
 #endif
 	}
-#else
-	template <typename... Args>
-	void print(const char* fmt, Args&&... args)
-	{
-		printf(fmt, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void log(const char* fmt, Args&&... args)
-	{
-		printf(fmt, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void warning(const char* fmt, Args&&... args)
-	{
-		printf(fmt, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void error(const char* fmt, Args&&... args)
-	{
-		printf(fmt, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void debug([[maybe_unused]] const char* fmt, [[maybe_unused]] Args&&... args)
-	{
-#ifdef DEBUG
-		printf(fmt, std::forward<Args>(args)...);
-#endif
-	}
-#endif
 }

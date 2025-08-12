@@ -93,7 +93,8 @@ namespace tpp
 			const auto& damage_values = deploy_exec_info["damage_values"];
 			if (damage_values.is_array())
 			{
-				const auto count = std::min(static_cast<size_t>(database::player_data::damage_param_count), damage_values.size());
+				const auto count = static_cast<std::int32_t>(
+					std::min(static_cast<size_t>(database::player_data::damage_param_count), damage_values.size()));
 				for (auto i = 0; i < count; i++)
 				{
 					if (!damage_values[i].is_number_unsigned())

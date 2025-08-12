@@ -288,7 +288,7 @@ workspace "tpp-server-emulator"
 		filter {}
 
 		filter { "toolset:gcc" }
-			buildoptions { "-Wno-unused-parameter", "-Wno-unknown-pragmas" }
+			buildoptions { "-Wno-unused-parameter", "-Wno-unknown-pragmas", "-Wno-switch" }
 		filter {}
 
 		project "common"
