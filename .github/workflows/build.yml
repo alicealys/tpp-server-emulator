@@ -11,6 +11,8 @@ on:
 concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
+env:
+  PREMAKE_VERSION: "5.0.0-beta6"
 jobs:
   build-windows:
     name: Build binaries
