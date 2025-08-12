@@ -65,7 +65,7 @@ jobs:
       - name: Install g++ and multilib
         run: |
           apt-get update
-          apt-get install -y wget libcurl4-openssl-dev tar git make gcc-13 g++-13 gcc-13-multilib g++-13-multilib
+          apt-get install -y wget libcurl4-openssl-dev unzip git make gcc-13 g++-13 gcc-13-multilib g++-13-multilib
           update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 13
           update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 13
           update-alternatives --set gcc /usr/bin/gcc-13
