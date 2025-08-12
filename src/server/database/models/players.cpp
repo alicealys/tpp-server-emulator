@@ -103,8 +103,6 @@ namespace database::players
 
 	bool is_sneak_in_game(const sneak_info& info)
 	{
-		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-			std::chrono::system_clock::now().time_since_epoch());
 		if (info.get_status() < status_in_game)
 		{
 			return false;
