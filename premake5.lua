@@ -256,10 +256,10 @@ workspace "tpp-server-emulator"
 				"-Wno-unused-parameter", 
 				"-Wno-unknown-pragmas", 
 				"-Wno-switch",
-				"-Wno-unused-value"
+				"-Wno-unused-value",
 				"-Wno-unused-but-set-variable"
 			}
-			linkoptions "-fuse-ld=lld"
+			linkoptions {"-fuse-ld=lld"}
 		filter {}
 
 		filter { "system:windows" }
