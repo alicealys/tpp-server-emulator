@@ -45,7 +45,7 @@ jobs:
       - name: Upload ${{matrix.configuration}} binaries
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} binaries
+          name: windows-${{matrix.configuration}}
           path: |
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.exe
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.pdb
@@ -114,10 +114,15 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "ALICE_MASTER_PATH=${{ secrets.ALICE_MASTER_SSH_PATH }}" >> $GITHUB_ENV
 
-      - name: Download Release binaries
+      - name: Download windows release binaries
         uses: actions/download-artifact@v4
         with:
-          name: Release binaries
+          name: windows-release
+
+      - name: Download linux release binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-release
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2.7.0
@@ -131,8 +136,11 @@ jobs:
       - name: Remove old data files
         run: ssh ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }} rm -rf ${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/*
 
-      - name: Upload binary
+      - name: Upload windows binary
         run: rsync -avz tpp-server-emulator.exe ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
+
+      - name: Upload linux binary
+        run: rsync -avz tpp-server-emulator ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
 
       - name: Publish changes
         run: ssh ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }} ${{ secrets.ALICE_MASTER_SSH_CHANGE_PUBLISH_COMMAND }}
