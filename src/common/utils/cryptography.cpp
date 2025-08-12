@@ -728,7 +728,7 @@ namespace utils::cryptography
 
 	void blowfish::set_key(std::uint8_t* key, const size_t len)
 	{
-		auto j = 0;
+		auto j = 0ull;
 		for (auto i = 0u; i < this->n_ + 2; i++)
 		{
 			std::uint32_t data{};
@@ -782,7 +782,7 @@ namespace utils::cryptography
 		if (mod != 0)
 		{
 			const auto byte_count = 8 - mod;
-			for (auto i = 0; i < byte_count; i++)
+			for (auto i = 0ull; i < byte_count; i++)
 			{
 				data += static_cast<char>(byte_count);
 			}
