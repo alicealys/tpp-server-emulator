@@ -270,7 +270,7 @@ workspace "tpp-server-emulator"
 		filter "configurations:Release"
 			optimize "Size"
 			defines {"NDEBUG"}
-			flags {"FatalCompileWarnings"}
+			fatalwarnings {"all"}
 		filter {}
 
 		filter "configurations:Debug"
