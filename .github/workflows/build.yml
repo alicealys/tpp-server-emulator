@@ -49,6 +49,12 @@ jobs:
           path: |
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.exe
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.pdb
+      - name: Upload ${{matrix.configuration}} resources
+        uses: actions/upload-artifact@v4
+        with:
+          name: resources
+          path: |
+            src/server/resources/*
   build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
@@ -124,6 +130,12 @@ jobs:
         with:
           name: linux-x64-release
 
+      - name: Download resources
+        uses: actions/download-artifact@v4
+        with:
+          name: data-resources
+          path: resources
+
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2.7.0
         with:
@@ -141,6 +153,9 @@ jobs:
 
       - name: Upload linux binary
         run: rsync -avz tpp-server-emulator ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
+
+      - name: Upload resources
+        run: rsync -avz ./resources ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }}:${{ env.ALICE_MASTER_PATH }}/tpp-server-emulator/
 
       - name: Publish changes
         run: ssh ${{ secrets.ALICE_MASTER_SSH_USER }}@${{ secrets.ALICE_MASTER_SSH_ADDRESS }} ${{ secrets.ALICE_MASTER_SSH_CHANGE_PUBLISH_COMMAND }}
