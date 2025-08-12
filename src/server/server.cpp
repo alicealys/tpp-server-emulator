@@ -44,7 +44,7 @@ namespace tpp
 		server s;
 		if (!s.start())
 		{
-			console::error("Failed to start server\n");
+			console::error("Failed to start server (%i)\n", errno);
 			return;
 		}
 

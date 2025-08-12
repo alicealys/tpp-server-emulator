@@ -9,6 +9,15 @@
 #ifndef _WIN32
 namespace console
 {
+	namespace
+	{
+		struct
+		{
+			std::atomic_bool kill;
+			std::thread thread;
+		} con;
+	}
+
 	std::string format(va_list* ap, const char* message)
 	{
 		static thread_local char buffer[0x1000];
@@ -49,7 +58,36 @@ namespace console
 		const auto text = std::format("{}{}", get_prefix(type), result);
 		printf("%s", text.data());
 	}
+
+	class component final : public component_interface
+	{
+	public:
+		void pre_start() override
+		{
+			con.thread = std::thread([]()
+			{
+				while (!con.kill)
+				{
+					std::string cmd;
+					std::getline(std::cin, cmd);
+					command::execute(cmd);
+				}
+			});
+		}
+
+		void pre_destroy() override
+		{
+			con.kill = true;
+
+			if (con.thread.joinable())
+			{
+				con.thread.join();
+			}
+		}
+	};
 }
+
+REGISTER_COMPONENT(console::component)
 #else
 #define OUTPUT_HANDLE GetStdHandle(STD_OUTPUT_HANDLE)
 
