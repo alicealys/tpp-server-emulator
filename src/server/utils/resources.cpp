@@ -32,7 +32,7 @@ namespace utils::resources
 		const auto resource_iter = resource_map.find(resource_id);
 		if (resource_iter == resource_map.end())
 		{
-			return {};
+			throw std::runtime_error(std::format("invalid resource id {}", resource_id));
 		}
 
 		{
@@ -46,6 +46,7 @@ namespace utils::resources
 #ifdef _WIN32
 		return utils::nt::load_resource(resource_id);
 #else
+		console::error("resource %i not found\n", resource_id);
 		return {};
 #endif
 	}

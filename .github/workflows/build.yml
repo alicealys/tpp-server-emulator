@@ -52,7 +52,7 @@ jobs:
       - name: Upload ${{matrix.configuration}} resources
         uses: actions/upload-artifact@v4
         with:
-          name: resources
+          name: ${{matrix.configuration}}-resources
           path: |
             src/server/resources/*
   build-linux:
@@ -130,10 +130,10 @@ jobs:
         with:
           name: linux-x64-release
 
-      - name: Download resources
+      - name: Download release resources
         uses: actions/download-artifact@v4
         with:
-          name: data-resources
+          name: release-resources
           path: resources
 
       - name: Install SSH key
