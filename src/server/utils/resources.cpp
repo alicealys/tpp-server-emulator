@@ -24,7 +24,7 @@ namespace utils::resources
 			{RESOURCE_FOB_DEPLOY_LIST, "resources/data/fob_deploy_list.json"},
 			{RESOURCE_STEAM_SHOP_ITEM_LIST, "resources/data/steam_shop_item_list.json"},
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
-			{RESOURCE_SQL_SQLITE3, "resources/data/sqlite3.sql"},
+			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},
 		};
 	}
 
@@ -47,7 +47,7 @@ namespace utils::resources
 #ifdef _WIN32
 		return utils::nt::load_resource(resource_id);
 #else
-		console::error("resource %i not found\n", resource_id);
+		console::error("resource \"%s\" (%i) not found\n", resource_iter->second, resource_id);
 		return {};
 #endif
 	}
