@@ -2,7 +2,7 @@
 
 namespace tpp
 {
-	class var_handler : public endpoint_handler
+	class var_handler final : public endpoint_handler
 	{
 	public:
 		var_handler(const std::string& name, const std::string& value);

@@ -341,7 +341,7 @@ namespace database::player_records
 			database.run_query("mgstpp.player_records.create");
 		}
 
-		void run_tasks(database_t& database)
+		void run_tasks(database_t& database) override
 		{
 			update_fob_ranking(database);
 		}

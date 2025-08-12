@@ -9,6 +9,10 @@ namespace tpp
 	class endpoint_handler : public base_handler<command_handler>
 	{
 	public:
+		virtual ~endpoint_handler()
+		{
+		}
+
 		virtual std::optional<nlohmann::json> decrypt_request(const std::string& data, std::optional<database::players::player>& player)
 		{
 			return {};
