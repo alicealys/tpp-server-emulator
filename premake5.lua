@@ -250,7 +250,22 @@ workspace "tpp-server-emulator"
 			filter {}
 		end
 
-		systemversion "latest"
+		filter { "system:linux" }
+			toolset "clang"
+			buildoptions { 
+				"-Wno-unused-parameter", 
+				"-Wno-unknown-pragmas", 
+				"-Wno-switch",
+				"-Wno-unused-value"
+				"-Wno-unused-but-set-variable"
+			}
+			linkoptions "-fuse-ld=lld"
+		filter {}
+
+		filter { "system:windows" }
+			systemversion "latest"
+		filter {}
+
 		symbols "On"
 		staticruntime "On"
 		editandcontinue "Off"
@@ -287,10 +302,6 @@ workspace "tpp-server-emulator"
 			buildoptions "/bigobj"
 		filter {}
 
-		filter { "toolset:gcc" }
-			buildoptions { "-Wno-unused-parameter", "-Wno-unknown-pragmas", "-Wno-switch" }
-		filter {}
-
 		project "common"
 		kind "StaticLib"
 		language "C++"
@@ -314,10 +325,6 @@ workspace "tpp-server-emulator"
 
 			filter { "toolset:msc*" }
 				linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
-			filter {}
-
-			filter { "toolset:gcc" }
-				linkoptions {"-fuse-ld=mold"}
 			filter {}
 
 			filter { "toolset:msc*" }

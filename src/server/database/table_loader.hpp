@@ -4,7 +4,7 @@
 
 namespace database
 {
-	class table_interface
+	class table_interface final
 	{
 	public:
 		virtual void create(database_t& db)

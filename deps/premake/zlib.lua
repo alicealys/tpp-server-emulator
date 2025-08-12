@@ -20,6 +20,7 @@ end
 function zlib.project()
 	project "zlib"
 		language "C"
+		cdialect "C89"
 
 		zlib.includes()
 
