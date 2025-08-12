@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "resources.hpp"
+#include "component/console.hpp"
 
 #include <utils/nt.hpp>
 #include <utils/io.hpp>
