@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_delete_troops_list : public command_handler
+	class cmd_delete_troops_list final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

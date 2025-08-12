@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_challenge_task_rewards : public command_handler
+	class cmd_get_challenge_task_rewards final : public command_handler
 	{
 	public:
 		cmd_get_challenge_task_rewards();

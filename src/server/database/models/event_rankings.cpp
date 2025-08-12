@@ -254,7 +254,6 @@ namespace database::event_rankings
 
 	std::chrono::seconds get_last_update()
 	{
-		auto a = last_update.time_since_epoch();
 		return std::chrono::duration_cast<std::chrono::seconds>(last_update.time_since_epoch());
 	}
 
@@ -266,7 +265,7 @@ namespace database::event_rankings
 			database.run_query("mgstpp.event_rankings.create");
 		}
 
-		void run_tasks(database_t& database)
+		void run_tasks(database_t& database) override
 		{
 			update_entries(database);
 		}

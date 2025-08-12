@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_gdpr_check : public command_handler
+	class cmd_gdpr_check final : public command_handler
 	{
 	public:
 		cmd_gdpr_check();

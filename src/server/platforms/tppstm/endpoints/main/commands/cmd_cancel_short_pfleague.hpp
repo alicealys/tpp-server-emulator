@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_cancel_short_pfleague : public command_handler
+	class cmd_cancel_short_pfleague final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

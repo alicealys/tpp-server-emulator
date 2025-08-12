@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_online_development_progress : public command_handler
+	class cmd_get_online_development_progress final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

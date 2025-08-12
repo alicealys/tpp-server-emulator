@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_purchase_security_service : public command_handler
+	class cmd_purchase_security_service final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

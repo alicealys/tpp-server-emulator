@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_fob_param : public command_handler
+	class cmd_get_fob_param final : public command_handler
 	{
 	public:
 		cmd_get_fob_param();
