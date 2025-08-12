@@ -10,8 +10,13 @@ discord server
 https://discord.gg/hYfW9MEEGF
 
 ## Downloads
+- [tpp-server-emulator-linux_x64.tar](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator-linux_x64.tar)
+- [tpp-server-emulator-windows_x64.tar](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator-windows_x64.tar)
 
-- [Windows x64](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator.exe)
+### Binary only
+
+- [tpp-server-emulator.exe](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator.exe)
+- [tpp-server-emulator](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator) (linux x64)
 
 ## Documentation
 
