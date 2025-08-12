@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_mining_resource : public command_handler
+	class cmd_mining_resource final : public command_handler
 	{
 	public:
 		cmd_mining_resource();

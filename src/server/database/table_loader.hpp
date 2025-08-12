@@ -7,6 +7,10 @@ namespace database
 	class table_interface
 	{
 	public:
+		virtual ~table_interface()
+		{
+		}
+
 		virtual void create(database_t& db)
 		{
 		}

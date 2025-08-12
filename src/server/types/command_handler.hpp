@@ -8,6 +8,10 @@ namespace tpp
 	class command_handler
 	{
 	public:
+		virtual ~command_handler()
+		{
+		}
+
 		virtual nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 		{
 			throw std::runtime_error("unimplemented command");

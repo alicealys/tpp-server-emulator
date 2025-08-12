@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_fob_deploy_list : public command_handler
+	class cmd_get_fob_deploy_list final : public command_handler
 	{
 	public:
 		cmd_get_fob_deploy_list();

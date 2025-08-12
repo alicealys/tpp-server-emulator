@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_fob_event_detail : public command_handler
+	class cmd_get_fob_event_detail final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

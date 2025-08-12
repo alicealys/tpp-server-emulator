@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_send_sneak_result : public command_handler
+	class cmd_send_sneak_result final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

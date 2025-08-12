@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_informationlist2 : public command_handler
+	class cmd_get_informationlist2 final : public command_handler
 	{
 	public:
 		cmd_get_informationlist2();

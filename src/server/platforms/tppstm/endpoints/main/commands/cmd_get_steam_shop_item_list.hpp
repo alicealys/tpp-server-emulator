@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_steam_shop_item_list : public command_handler
+	class cmd_get_steam_shop_item_list final : public command_handler
 	{
 	public:
 		cmd_get_steam_shop_item_list();

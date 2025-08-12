@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_request_relief : public command_handler
+	class cmd_request_relief final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 	};

@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class cmd_get_urllist : public command_handler
+	class cmd_get_urllist final : public command_handler
 	{
 	public:
 		cmd_get_urllist();
