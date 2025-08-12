@@ -75,7 +75,7 @@ namespace tpp::scripting
 				const auto val_int = static_cast<float>(value.as<int>());
 				if (val_int == val_float)
 				{
-					return val_int;
+					return static_cast<int>(val_int);
 				}
 
 				return val_float;
