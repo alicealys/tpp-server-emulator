@@ -8,7 +8,7 @@ namespace tpp::scripting
 {
 	void engine::setup_event_handler()
 	{
-		this->state_["scripting"]["registereventhandler"] = [&](const std::string& name, const sol::protected_function& cb)
+		this->state_["scripting"]["onevent"] = [&](const std::string& name, const sol::protected_function& cb)
 		{
 			this->event_handler_.add_listener(name, cb);
 		};
