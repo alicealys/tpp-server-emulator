@@ -18,6 +18,9 @@
 #define SOL_PRINT_ERRORS 0
 #include <sol/sol.hpp>
 
+#include "event_handler.hpp"
+#include "scheduler.hpp"
+
 namespace tpp::scripting
 {
 	class engine
@@ -27,6 +30,9 @@ namespace tpp::scripting
 
 		engine(const engine&) = delete;
 		engine& operator=(const engine&) = delete;
+
+		void setup_event_handler();
+		void setup_scheduler();
 
 		void setup_server();
 		void setup_json();
@@ -41,25 +47,38 @@ namespace tpp::scripting
 		void setup_fob();
 		void setup_item();
 
-		void handle_error(const sol::protected_function_result& result);
-
 		void initialize();
 		void load_scripts();
+
+		void run_frame();
+		void dispatch_event(const std::string& name, const std::vector<std::string>& args);
 
 		void reset();
 
 		std::optional<nlohmann::json> handle_command(const std::string& command, nlohmann::json& data, 
 			const std::optional<database::players::player>& player);
+		void set_original_handler(const std::function<nlohmann::json()>& original_handler);
+		void reset_original_handler();
 
 	private:
+		bool initialized_{};
+
+		std::optional<std::function<nlohmann::json()>> original_handler_;
+
 		sol::state state_{};
 		std::unordered_map<std::string, sol::protected_function> command_handlers_;
+
+		event_handler event_handler_{};
+		scheduler scheduler_{};
 
 	};
 
 	void start();
+	void run_frame();
+	void dispatch_event(const std::string&, const std::vector<std::string>& args);
 	void stop();
 	void reload();
 
-	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, const std::optional<database::players::player>& player);
+	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, 
+		const std::optional<database::players::player>& player, const std::function<nlohmann::json()>& original_handler);
 }

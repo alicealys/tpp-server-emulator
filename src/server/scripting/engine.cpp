@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "engine.hpp"
+#include "error.hpp"
 
 #include "../types/command_handler.hpp"
 
@@ -26,6 +27,10 @@ namespace tpp::scripting
 			sol::lib::table
 		);
 
+		this->state_["scripting"] = sol::state::create_table(this->state_.lua_state());
+		this->setup_event_handler();
+		this->setup_scheduler();
+
 		this->setup_server();
 		this->setup_json();
 		this->setup_database();
@@ -41,17 +46,8 @@ namespace tpp::scripting
 		this->setup_item();
 
 		this->load_scripts();
-	}
 
-	void engine::handle_error(const sol::protected_function_result& result)
-	{
-		if (result.valid())
-		{
-			return;
-		}
-
-		const sol::error error = result;
-		console::error("%s\n", error.what());
+		this->initialized_ = true;
 	}
 
 	void engine::load_scripts()
@@ -67,14 +63,47 @@ namespace tpp::scripting
 		for (const auto& file : files)
 		{
 			console::print("[scripting] loading script %s\n", file.data());
-			this->handle_error(this->state_.safe_script_file(file, sol::script_pass_on_error));
+			handle_error(this->state_.safe_script_file(file, sol::script_pass_on_error));
 		}
+	}
+
+	void engine::run_frame()
+	{
+		if (!this->initialized_)
+		{
+			return;
+		}
+
+		this->scheduler_.run_frame();
+	}
+
+	void engine::dispatch_event(const std::string& name, const std::vector<std::string>& args)
+	{
+		if (!this->initialized_)
+		{
+			return;
+		}
+
+		this->event_handler_.dispatch_event(name, args);
 	}
 
 	void engine::reset()
 	{
+		this->scheduler_.clear();
+		this->event_handler_.clear();
 		this->command_handlers_.clear();
 		this->state_ = {};
+		this->initialized_ = false;
+	}
+
+	void engine::set_original_handler(const std::function<nlohmann::json()>& original_handler)
+	{
+		this->original_handler_.emplace(original_handler);
+	}
+
+	void engine::reset_original_handler()
+	{
+		this->original_handler_.reset();
 	}
 
 	std::optional<nlohmann::json> engine::handle_command(const std::string& command, nlohmann::json& data, 
@@ -92,7 +121,7 @@ namespace tpp::scripting
 
 		if (!result.valid())
 		{
-			this->handle_error(result);
+			handle_error(result);
 			return {};
 		}
 
@@ -105,7 +134,8 @@ namespace tpp::scripting
 		return value.as<nlohmann::json>();
 	}
 
-	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, const std::optional<database::players::player>& player)
+	std::optional<nlohmann::json> execute_command_hook(const std::string& command, nlohmann::json& data, 
+		const std::optional<database::players::player>& player, const std::function<nlohmann::json()>& original_handler)
 	{
 		static const auto use_lua_scripts = config::get<bool>("use_lua_scripts");
 		if (!use_lua_scripts)
@@ -115,21 +145,43 @@ namespace tpp::scripting
 
 		return engine_container.access<std::optional<nlohmann::json>>([&](engine& e)
 		{
+			const auto _ = gsl::finally([&]
+			{
+				e.reset_original_handler();
+			});
+
+			e.set_original_handler(original_handler);
 			return e.handle_command(command, data, player);
 		});
 	}
 
 	void start()
 	{
-		engine_container.access([&](engine& e)
+		engine_container.access([](engine& e)
 		{
 			e.initialize();
 		});
 	}
 
+	void run_frame()
+	{
+		engine_container.access([](engine& e)
+		{
+			e.run_frame();
+		});
+	}
+
+	void dispatch_event(const std::string& event, const std::vector<std::string>& args)
+	{
+		engine_container.access([=](engine& e)
+		{
+			e.dispatch_event(event, args);
+		});
+	}
+
 	void stop()
 	{
-		engine_container.access([&](engine& e)
+		engine_container.access([](engine& e)
 		{
 			e.reset();
 		});
@@ -137,7 +189,7 @@ namespace tpp::scripting
 
 	void reload()
 	{
-		engine_container.access([&](engine& e)
+		engine_container.access([](engine& e)
 		{
 			e.reset();
 			e.initialize();

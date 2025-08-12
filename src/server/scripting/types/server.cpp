@@ -40,5 +40,16 @@ namespace tpp::scripting
 			console::log("Registering script command \"%s\"", name.data());
 			this->command_handlers_.insert(std::make_pair(name, handler));
 		};
+
+		this->state_["server"]["originalhandler"] = [&]
+			-> nlohmann::json
+		{
+			if (!this->original_handler_.has_value())
+			{
+				return {};
+			}
+
+			return this->original_handler_->operator()();
+		};
 	}
 }

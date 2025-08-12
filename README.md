@@ -18,6 +18,10 @@ https://discord.gg/hYfW9MEEGF
 - [tpp-server-emulator.exe](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator.exe)
 - [tpp-server-emulator](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator) (linux x64)
 
+### Version history
+
+https://archive.alicent.cat/tpp-server-emulator
+
 ## Documentation
 
 - [Usage/Installation](https://github.com/alicealys/tpp-server-emulator/blob/main/docs/usage.md)

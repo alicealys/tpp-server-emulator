@@ -54,20 +54,25 @@ namespace tpp
 
 		auto get_json_response = [&]
 		{
-			const auto json_opt = scripting::execute_command_hook(msgid_str, json_req["data"], player);
+			const auto execute_command = [&]
+			{
+				if (handler->second->needs_player() && !player.has_value())
+				{
+					return error(ERR_INVALID_SESSION);
+				}
+				else
+				{
+					return handler->second->execute(json_req["data"], player);
+				}
+			};
+
+			const auto json_opt = scripting::execute_command_hook(msgid_str, json_req["data"], player, execute_command);
 			if (json_opt.has_value())
 			{
 				return json_opt.value();
 			}
 
-			if (handler->second->needs_player() && !player.has_value())
-			{
-				return error(ERR_INVALID_SESSION);
-			}
-			else
-			{
-				return handler->second->execute(json_req["data"], player);
-			}
+			return execute_command();
 		};
 
 		auto json_res = get_json_response();

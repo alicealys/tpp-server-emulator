@@ -52,6 +52,15 @@ namespace tpp
 		{
 			while (!killed)
 			{
+				scripting::run_frame();
+				std::this_thread::sleep_for(10ms);
+			}
+		});
+
+		threads.emplace_back([&]
+		{
+			while (!killed)
+			{
 				s.run_frame();
 			}
 		});
