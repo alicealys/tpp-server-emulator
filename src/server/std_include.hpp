@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #pragma once
 
 #pragma warning(push)
@@ -23,9 +24,6 @@
 #pragma warning(disable: 26498)
 #pragma warning(disable: 26812)
 #pragma warning(disable: 28020)
-
-#ifdef _WIN32
-#pragma once
 
 #define WIN32_LEAN_AND_MEAN
 
