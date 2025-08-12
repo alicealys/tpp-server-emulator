@@ -13,7 +13,7 @@ namespace console
 	{
 		static thread_local char buffer[0x1000];
 
-		const auto count = vsnprintf(buffer, sizeof(buffer), sizeof(buffer), message, *ap);
+		const auto count = vsnprintf(buffer, sizeof(buffer), message, *ap);
 		if (count < 0)
 		{
 			return {};
