@@ -57,7 +57,7 @@ You can check the c++ source code to find all the methods/functions, some of the
 #### [json](https://github.com/alicealys/tpp-server-emulator/blob/main/src/server/scripting/types/json.cpp)
 
 Tthe json library used by this project is **nlohmann::json**, this type is exposed to the lua scripts  
-The values can be accessed using the bracket `[]` operator  
+Json values can be interacted with in the same way as lua tables  
 
 ---
 - *F* **`json.parse(text: string)`**: parses json string into nlohmann::json
@@ -66,6 +66,19 @@ The values can be accessed using the bracket `[]` operator
 - *F* **`json.object()`**: returns nlohmann::json::object
 - *M* **`json:get()`**: converts json value into lua primitive (if possible)
 - *M* **`json:dump([, indent: int])`**: serializes json value into a string
+- *M* **`json:isprimitive()`**
+- *M* **`json:isstructured()`**
+- *M* **`json:isnull()`**
+- *M* **`json:isboolean()`**
+- *M* **`json:isnumber()`**
+- *M* **`json:isnumberinteger()`**
+- *M* **`json:isnumberunsigned()`**
+- *M* **`json:isnumberfloat()`**
+- *M* **`json:isobject()`**
+- *M* **`json:isarray()`**
+- *M* **`json:isstring()`**
+- *M* **`json:isbinary()`**
+- *M* **`json:isdiscarded()`**
 
 #### [server](https://github.com/alicealys/tpp-server-emulator/blob/main/src/server/scripting/types/server.cpp)
 ---
@@ -181,9 +194,9 @@ j["f3"][0] = "v2"
 
 print(j:dump())
 
-print(j["f1"]) -- "sol.nlohmann::json"
-print(j["f1"]:get() == "v1") -- true
-print(j["f2"]:get() == 1) -- true
+print(j["f1"]) -- "v1"
+print(j["f1"] == "v1") -- true
+print(j["f2"] == 1) -- true
 
 local j2 = json.convert({
     cat = 1,

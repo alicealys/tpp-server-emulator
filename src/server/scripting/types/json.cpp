@@ -95,15 +95,47 @@ namespace tpp::scripting
 		auto json_type = this->state_.new_usertype<nlohmann::json>("json", sol::constructors<nlohmann::json()>());
 
 		json_type[sol::meta_function::index] = sol::overload(
-			[](nlohmann::json& value, const std::string& key)
-				-> nlohmann::json&
+			[](nlohmann::json& value, const sol::this_state s, const std::string& key)
+				-> sol::lua_value
 			{
-				return value[key];
+				auto& v = value[key];
+				const auto type = v.type();
+				switch (type)
+				{
+				case nlohmann::json::value_t::number_integer:
+					return {s, v.get<std::int32_t>()};
+				case nlohmann::json::value_t::number_float:
+					return {s, v.get<float>()};
+				case nlohmann::json::value_t::number_unsigned:
+					return {s, v.get<std::uint32_t>()};
+				case nlohmann::json::value_t::string:
+					return {s, v.get<std::string>()};
+				case nlohmann::json::value_t::boolean:
+					return {s, v.get<bool>()};
+				}
+
+				return {s, &v};
 			},
-			[](nlohmann::json& value, const int index)
-				-> nlohmann::json&
+			[](nlohmann::json& value, const sol::this_state s, const int index)
+				-> sol::lua_value
 			{
-				return value[index];
+				auto& v = value[index];
+				const auto type = v.type();
+				switch (type)
+				{
+				case nlohmann::json::value_t::number_integer:
+					return {s, v.get<std::int32_t>()};
+				case nlohmann::json::value_t::number_float:
+					return {s, v.get<float>()};
+				case nlohmann::json::value_t::number_unsigned:
+					return {s, v.get<std::uint32_t>()};
+				case nlohmann::json::value_t::string:
+					return {s, v.get<std::string>()};
+				case nlohmann::json::value_t::boolean:
+					return {s, v.get<bool>()};
+				}
+
+				return {s, &v};
 			}
 		);
 
@@ -218,27 +250,27 @@ namespace tpp::scripting
 		REGISTER_METHOD(is_binary);
 		REGISTER_METHOD(is_discarded);
 
-		json_type["get"] = [](nlohmann::json& value)
+		json_type["get"] = [](nlohmann::json& value, const sol::this_state s)
 			-> sol::lua_value
 		{
 			const auto type = value.type();
 			switch (type)
 			{
 			case nlohmann::json::value_t::boolean:
-				return value.get<bool>();
+				return {s, value.get<bool>()};
 			case nlohmann::json::value_t::number_float:
-				return value.get<float>();
+				return {s, value.get<float>()};
 			case nlohmann::json::value_t::number_integer:
-				return value.get<int>();
+				return {s, value.get<int>()};
 			case nlohmann::json::value_t::number_unsigned:
-				return value.get<unsigned int>();
+				return {s, value.get<unsigned int>()};
 			case nlohmann::json::value_t::string:
-				return value.get<std::string>();
+				return {s, value.get<std::string>()};
 			case nlohmann::json::value_t::array:
 			case nlohmann::json::value_t::object:
-				return value;
+				return {s, value};
 			default:
-				return {};
+				return {s, sol::nil};
 			}
 		};
 	}
