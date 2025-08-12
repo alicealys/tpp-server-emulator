@@ -80,7 +80,7 @@ namespace database::fobs
 		{
 			auto list = get_fob_list<Type>(player_id);
 
-			auto index = 0;
+			auto index = 0ull;
 			for (auto& server_fob : list)
 			{
 				if (index >= fobs.size())
