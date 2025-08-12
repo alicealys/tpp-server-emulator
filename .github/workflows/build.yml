@@ -12,7 +12,7 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  build:
+  build-windows:
     name: Build binaries
     runs-on: windows-2022
     strategy:
@@ -47,6 +47,61 @@ jobs:
           path: |
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.exe
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.pdb
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    container: ubuntu:noble
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - release
+          - debug
+        arch:
+          - x64
+    steps:
+      - name: Install g++ and multilib
+        run: |
+          apt-get update
+          apt-get install -y wget libcurl4-openssl-dev tar git make gcc-13 g++-13 gcc-13-multilib g++-13-multilib
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 13
+          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 13
+          update-alternatives --set gcc /usr/bin/gcc-13
+          update-alternatives --set g++ /usr/bin/g++-13
+
+      - name: Check out files
+        uses: actions/checkout@main
+        with:
+          submodules: true
+          fetch-depth: 0
+          lfs: false
+
+      - name: Install Premake5
+        uses: diamante0018/setup-premake@master
+        with:
+          version: ${{ env.PREMAKE_VERSION }}
+
+      - name: Install Mold
+        uses: rui314/setup-mold@staging
+
+      - name: Generate project files
+        working-directory: ${{ github.workspace }}
+        run: premake5 gmake
+
+      - name: Set up problem matching
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: Build ${{matrix.arch}} ${{matrix.configuration}} binaries
+        working-directory: ${{ github.workspace }}
+        run: |
+          make -C build config=${{matrix.configuration}}_${{matrix.arch}} -j$(nproc)
+
+      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{matrix.arch}}-${{matrix.configuration}}
+          path: |
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/tpp-server-emulator
   deploy:
     name: Deploy artifacts
     needs: build
