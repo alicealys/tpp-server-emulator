@@ -4,6 +4,92 @@
 
 namespace tpp::scripting
 {
+	namespace
+	{
+		nlohmann::json lua_to_json(const sol::lua_value& value);
+
+		nlohmann::json table_to_json(const sol::lua_value& value)
+		{
+			const auto table = value.as<sol::table>();
+			const sol::state_view state_view = value.value().lua_state();
+			auto to_string = state_view["tostring"];
+
+			nlohmann::json array_;
+			nlohmann::json object;
+
+			auto is_array = true;
+			auto last_index = 0;
+
+			for (const auto& [k, v] : table)
+			{
+				const auto is_numeric = k.is<int>();
+				if (!is_numeric)
+				{
+					is_array = false;
+					array_.clear();
+				}
+				else
+				{
+					const auto index = k.as<int>();
+					if (index - last_index != 1)
+					{
+						is_array = false;
+						array_.clear();
+					}
+
+					last_index = index;
+				}
+
+				const auto value_json = lua_to_json(v);
+
+				if (is_array)
+				{
+					array_.push_back(value_json);
+				}
+
+				const auto key_str = to_string(k).get<std::string>();
+				object[key_str] = value_json;
+			}
+
+			if (is_array)
+			{
+				return array_;
+			}
+			else
+			{
+				return object;
+			}
+		}
+
+		nlohmann::json lua_to_json(const sol::lua_value& value)
+		{
+			const auto type = value.value().get_type();
+
+			switch (type)
+			{
+			case sol::type::boolean:
+				return value.as<bool>();
+			case sol::type::number:
+			{
+				const auto val_float = value.as<float>();
+				const auto val_int = static_cast<float>(value.as<int>());
+				if (val_int == val_float)
+				{
+					return val_int;
+				}
+
+				return val_float;
+			}
+			case sol::type::string:
+				return value.as<std::string>();
+			case sol::type::table:
+				return table_to_json(value);
+			default:
+				return {};
+			}
+		}
+	}
+
 	void engine::setup_json()
 	{
 		auto json_type = this->state_.new_usertype<nlohmann::json>("json", sol::constructors<nlohmann::json()>());
@@ -101,6 +187,8 @@ namespace tpp::scripting
 		{
 			return nlohmann::json::parse(text);
 		};
+
+		json_type["convert"] = lua_to_json;
 
 		json_type[sol::meta_function::to_string] = [](nlohmann::json& value)
 		{
