@@ -337,7 +337,7 @@ workspace "tpp-server-emulator"
 			links {"common"}
 
 			filter { "toolset:msc*" }
-				prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "tools\\premake5 generate-buildinfo", "popd"}
+				prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "premake5 generate-buildinfo", "popd"}
 			filter {}
 
 			if _OPTIONS["copy-to"] then
