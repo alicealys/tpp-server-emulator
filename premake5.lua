@@ -316,6 +316,10 @@ workspace "tpp-server-emulator"
 				linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
 			filter {}
 
+			filter { "toolset:gcc" }
+				linkoptions {"-fuse-ld=mold"}
+			filter {}
+
 			filter { "toolset:msc*" }
 				files {"./src/server/**.rc"}
 			filter {}

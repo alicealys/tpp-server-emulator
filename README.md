@@ -26,9 +26,10 @@ https://discord.gg/hYfW9MEEGF
 ## Compile from source
 
 - Clone the Git repo. Do NOT download it as ZIP, that won't work.
-- Update the submodules and run `premake5 vs2022` or simply use the delivered `generate.bat`.
-- Build via solution file in `build\tpp-server-emulator.sln`.
-
+- Install [premake5](https://premake.github.io/download) on your PATH
+- **Windows** Run `generate.bat` and build via solution file in `build\tpp-server-emulator.sln`.
+- **Linux** Run `generate.sh` then run `build-release.sh` or `build-debug.sh`  
+  **NOTE**: make sure you are using `clang` or, if you are using `gcc`, use the [Mold](https://github.com/rui314/mold) linker
   ### Premake arguments
 
   | Argument                    | Description                                    |

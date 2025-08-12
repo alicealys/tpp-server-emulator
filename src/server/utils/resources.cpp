@@ -47,7 +47,7 @@ namespace utils::resources
 #ifdef _WIN32
 		return utils::nt::load_resource(resource_id);
 #else
-		console::error("resource \"%s\" (%i) not found\n", resource_iter->second, resource_id);
+		console::error("resource \"%s\" (%i) not found\n", resource_iter->second.data(), resource_id);
 		return {};
 #endif
 	}

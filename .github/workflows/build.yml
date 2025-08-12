@@ -30,6 +30,11 @@ jobs:
           fetch-depth: 0
           lfs: false
 
+      - name: Install Premake5
+        uses: diamante0018/setup-premake@master
+        with:
+          version: ${{ env.PREMAKE_VERSION }}
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
 
