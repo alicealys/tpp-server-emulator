@@ -3,9 +3,8 @@
 ## Installation
 
 - Download binary 
-  - **[Windows x64](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator.exe)**  
-    **NOTE**: this can also run on linux using **[Wine](https://www.winehq.org/)**
-  - **~~[Linux x64]~~** not yet available  
+  - **[Windows x64](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator-windows_x64.tar)**  
+  - **[Linux x64](https://github.alicent.cat/tpp-server-emulator/tpp-server-emulator-linux_x64.tar)**  
 - \***OPTIONAL**\* Setup a mysql server with a database called `mgstpp`.
 - In the EXE's path create a file called `config.json` and add the following values:
     * `database_type`: (default: `"mysql"`, options: "mysql", "sqlite3")
