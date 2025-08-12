@@ -6,7 +6,7 @@
 
 namespace tpp
 {
-	class gate_handler : public endpoint_handler
+	class gate_handler final : public endpoint_handler
 	{
 	public:
 		gate_handler();

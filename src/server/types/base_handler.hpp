@@ -6,6 +6,10 @@ namespace tpp
 	class base_handler
 	{
 	public:
+		virtual ~base_handler()
+		{
+		}
+
 		template <typename T, typename... Args>
 		void register_handler(const std::string& name, Args&&... args)
 		{

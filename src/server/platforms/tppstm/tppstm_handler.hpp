@@ -4,7 +4,7 @@
 
 namespace tpp
 {
-	class tppstm_handler : public platform_handler
+	class tppstm_handler final : public platform_handler
 	{
 	public:
 		tppstm_handler();

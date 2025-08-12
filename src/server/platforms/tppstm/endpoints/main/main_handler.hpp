@@ -6,7 +6,7 @@
 
 namespace tpp
 {
-	class main_handler : public endpoint_handler
+	class main_handler final : public endpoint_handler
 	{
 	public:
 		main_handler();
