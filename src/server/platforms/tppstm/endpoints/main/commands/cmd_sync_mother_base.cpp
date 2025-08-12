@@ -21,7 +21,7 @@ namespace tpp
 		if (mother_base_param.is_array())
 		{
 			std::vector<database::fobs::fob> fobs;
-			for (auto i = 0; i < mother_base_param.size(); i++)
+			for (auto i = 0ull; i < mother_base_param.size(); i++)
 			{
 				auto& param = mother_base_param[i];
 				if (!param["construct_param"].is_number_integer() ||

@@ -10,7 +10,7 @@ namespace utils::encoding
 	{
 		std::string encoded;
 
-		for (size_t i = 0; i < string.size(); i++)
+		for (size_t i = 0ull; i < string.size(); i++)
 		{
 			encoded += string[i];
 			if (((i + 1) % chars_per_line) == 0)

@@ -55,7 +55,7 @@ namespace utils::string
 	{
 		std::string result;
 
-		for (unsigned int i = 0; i < data.size(); ++i)
+		for (auto i = 0ull; i < data.size(); ++i)
 		{
 			if (i > 0)
 			{

@@ -47,7 +47,7 @@ namespace tpp
 			bool sync)
 		{
 			const auto id = local_type == database::player_data::unprocessed_local ? "2"s : "1"s;
-			for (auto i = 0; i < resources.size(); i++)
+			for (auto i = 0ull; i < resources.size(); i++)
 			{
 				const auto& value_j = resources[i];
 				if (!value_j.is_number_integer())

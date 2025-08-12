@@ -287,6 +287,10 @@ workspace "tpp-server-emulator"
 			buildoptions "/bigobj"
 		filter {}
 
+		filter { "toolset:gcc" }
+			buildoptions { "Wno-unused-parameter", "Wno-unknown-pragma" }
+		filter {}
+
 		project "common"
 		kind "StaticLib"
 		language "C++"
@@ -308,7 +312,9 @@ workspace "tpp-server-emulator"
 			pchheader "std_include.hpp"
 			pchsource "src/server/std_include.cpp"
 
-			linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
+			filter { "toolset:msc*" }
+				linkoptions {"/IGNORE:4254", "/DYNAMICBASE:NO", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/LAST:.main", "/PDBCompress"}
+			filter {}
 
 			filter { "toolset:msc*" }
 				files {"./src/server/**.rc"}

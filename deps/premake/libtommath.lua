@@ -15,16 +15,22 @@ function libtommath.includes()
 		libtommath.source
 	}
 
+	if os.istarget("windows") then
+		defines {
+			"MP_NO_DEV_URANDOM",
+		}
+	end
+
 	defines {
 		"LTM_DESC",
 		"__STDC_IEC_559__",
-		"MP_NO_DEV_URANDOM",
 	}
 end
 
 function libtommath.project()
 	project "libtommath"
 		language "C"
+		cdialect "C89"
 
 		libtommath.includes()
 
@@ -39,10 +45,6 @@ function libtommath.project()
 		removedefines {
 			"_DLL",
 			"_USRDLL"
-		}
-
-		linkoptions {
-			"-IGNORE:4221"
 		}
 
 		warnings "Off"

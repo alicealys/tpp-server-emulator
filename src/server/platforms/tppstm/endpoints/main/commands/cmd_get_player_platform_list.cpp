@@ -32,7 +32,7 @@ namespace tpp
 		else
 		{
 			auto index = 0;
-			for (auto i = 0; i < data["player_id_list"].size(); i++)
+			for (auto i = 0ull; i < data["player_id_list"].size(); i++)
 			{
 				const auto& value = data["player_id_list"][i];
 				if (!value.is_number_unsigned())

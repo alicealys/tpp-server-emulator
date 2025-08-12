@@ -45,7 +45,7 @@ namespace tpp
 		{
 			std::vector<database::player_data::staff_t> remover_params;
 
-			for (auto i = 0; i < remover_param.size(); i++)
+			for (auto i = 0ull; i < remover_param.size(); i++)
 			{
 				const auto& param = remover_param[i]["param"];
 				if (!param.is_array() || param.size() != 2 ||

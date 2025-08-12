@@ -108,3 +108,4 @@ public: \
 	{ \
 		return this->##__name__##_; \
 	} \
+

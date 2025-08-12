@@ -116,7 +116,7 @@ namespace tpp
 				target.extra_data["is_win"] = static_cast<int>(row.is_win());
 				target.extra_data["cluster"] = row.get_platform();
 
-				for (auto i = 0; i < sneak_data["injure_soldier_id"].size(); i++)
+				for (auto i = 0ull; i < sneak_data["injure_soldier_id"].size(); i++)
 				{
 					const auto header_val = sneak_data["injure_soldier_id"][i]["param"][0].get<std::uint32_t>();
 					database::player_data::staff_header_t header{};
@@ -212,7 +212,7 @@ namespace tpp
 			const auto attacker_data = database::player_data::find(active_sneak->get_player_id(), false, false, true);
 			const auto fob_list = database::fobs::get_fob_list(active_sneak->get_owner_id());
 
-			for (auto i = 0; i < fob_list.size(); i++)
+			for (auto i = 0ull; i < fob_list.size(); i++)
 			{
 				auto& fob = fob_list[i];
 				target.extra_data["mother_base_param"][i + 1]["area_id"] = 0;
@@ -486,7 +486,7 @@ namespace tpp
 			target["is_sneak_restriction"] = 0;
 			target["is_win"] = 0;
 
-			for (auto i = 0; i < target_fobs.size(); i++)
+			for (auto i = 0ull; i < target_fobs.size(); i++)
 			{
 				target["mother_base_param"][i]["area_id"] = 0;
 				target["mother_base_param"][i]["fob_index"] = 0;

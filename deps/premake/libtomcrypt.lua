@@ -19,12 +19,15 @@ function libtomcrypt.includes()
 		"LTC_NO_FAST",
 		"LTC_NO_PROTOTYPES",
 		"LTC_NO_RSA_BLINDING",
+		"LTC_NO_FILE",
+		"ARGTYPE=4",
 	}
 end
 
 function libtomcrypt.project()
 	project "libtomcrypt"
 		language "C"
+		cdialect "C89"
 
 		libtomcrypt.includes()
 		libtommath.import()
@@ -42,16 +45,14 @@ function libtomcrypt.project()
 			"_CRT_SECURE_NO_WARNINGS",
 			"LTC_SOURCE",
 			"_LIB",
-			"USE_LTM"
+			"USE_LTM",
+			"LTC_NO_TEST",
+			"LTC_NO_PROTOTYPES"
 		}
 
 		removedefines {
 			"_DLL",
-			"_USRDLL"
-		}
-
-		linkoptions {
-			"-IGNORE:4221"
+			"_USRDLL",
 		}
 
 		warnings "Off"

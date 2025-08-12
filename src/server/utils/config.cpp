@@ -57,7 +57,7 @@ namespace config
 
 		const auto nodes = utils::string::split(key, '.');
 		auto obj = &cfg;
-		for (auto i = 0; i < nodes.size(); i++)
+		for (auto i = 0ull; i < nodes.size(); i++)
 		{
 			const auto& node = nodes[i];
 			if (!obj->contains(nodes[i]))

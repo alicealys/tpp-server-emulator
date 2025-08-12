@@ -18,7 +18,7 @@ namespace database::fobs
 		auto& list = get_area_list();
 		auto& areas = list["area"];
 
-		for (auto i = 0; i < areas.size(); i++)
+		for (auto i = 0ull; i < areas.size(); i++)
 		{
 			if (areas[i]["area_id"] == area_id)
 			{
@@ -100,7 +100,7 @@ namespace database::fobs
 					}
 				};
 
-				for (auto i = 0; i < cluster_param.size(); i++)
+				for (auto i = 0ull; i < cluster_param.size(); i++)
 				{
 					auto& data = cluster_param[i];
 					auto& server_data = server_cluster_param[i];

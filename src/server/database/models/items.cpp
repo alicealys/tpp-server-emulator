@@ -19,7 +19,7 @@ namespace database::items
 				return items;
 			}
 
-			for (auto i = 0; i < data.size(); i++)
+			for (auto i = 0ull; i < data.size(); i++)
 			{
 				item_t item{};
 				auto& entry = data[i];
