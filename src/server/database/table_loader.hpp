@@ -106,6 +106,6 @@ public: \
 #define GET_FIELD_C(__class__, __type__, __name__) \
 	__type__ __class__::get_##__name__() const \
 	{ \
-		return this->##__name__##_; \
+		return this->__name__##_; \
 	} \
 
