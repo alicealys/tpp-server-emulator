@@ -225,7 +225,7 @@ workspace "tpp-server-emulator"
 		objdir "%{wks.location}/obj"
 		targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 
-		configurations {"Debug", "Release"}
+		configurations {"debug", "release"}
 
 		language "C++"
 		cppdialect "C++latest"
@@ -269,7 +269,6 @@ workspace "tpp-server-emulator"
 
 		filter "configurations:Release"
 			optimize "Size"
-			linkoptions {"/IGNORE:4702", "/LTCG"}
 			defines {"NDEBUG"}
 			flags {"FatalCompileWarnings"}
 		filter {}
@@ -281,6 +280,7 @@ workspace "tpp-server-emulator"
 
 		filter { "configurations:Release", "toolset:msc*" }
 			buildoptions {"/GL"}
+			linkoptions {"/IGNORE:4702", "/LTCG"}
 		filter {}
 
 		filter { "configurations:Debug", "toolset:msc*" }
