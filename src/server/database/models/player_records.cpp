@@ -123,7 +123,7 @@ namespace database::player_records
 		template <database_type_t Type>
 		void update_fob_ranking(database_t& db)
 		{
-			static std::chrono::steady_clock::time_point last_update{};
+			static std::chrono::high_resolution_clock::time_point last_update{};
 			const auto now = std::chrono::high_resolution_clock::now();
 			if (now - last_update < 10min)
 			{
@@ -150,7 +150,7 @@ namespace database::player_records
 				{1000000, 1000000},	// 11
 			};
 
-			for (auto i = 0; i < rank_ranges.size(); i++)
+			for (auto i = 0ull; i < rank_ranges.size(); i++)
 			{
 				const auto& range = rank_ranges[i];
 				if (i == rank_ranges.size() - 1)

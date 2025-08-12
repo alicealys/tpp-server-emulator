@@ -25,7 +25,7 @@ namespace tpp
 		auto check_result = 0;
 
 		const auto server_item_list = database::items::get_item_list(player->get_id());
-		for (auto i = 0; i < item_list.size(); i++)
+		for (auto i = 0ull; i < item_list.size(); i++)
 		{
 			if (!item_list[i].is_number_unsigned())
 			{

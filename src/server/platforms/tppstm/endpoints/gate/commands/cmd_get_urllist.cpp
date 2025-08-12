@@ -137,7 +137,7 @@ namespace tpp
 
 		result["result"] = "NOERR";
 
-		for (auto i = 0; i < url_list.size(); i++)
+		for (auto i = 0ull; i < url_list.size(); i++)
 		{
 			result["url_list"][i]["type"] = url_list[i].type;
 			result["url_list"][i]["url"] = url_list[i].url;

@@ -35,7 +35,7 @@ namespace tpp
 
 		const auto get_item_index = [&]
 		{
-			for (auto i = 0; i < list.size(); i++)
+			for (auto i = 0; i < static_cast<std::int32_t>(list.size()); i++)
 			{
 				if (list[i]["steam_item_id"] == steam_item_id)
 				{
