@@ -72,7 +72,7 @@ List of implemeted/unimplemented server commands
 | CMD_GET_LEAGUE_RESULT | ✔️ |  |
 | CMD_GET_LOGIN_PARAM | ✔️ |  |
 | CMD_GET_MBCOIN_REMAINDER | ✔️ |  |
-| CMD_GET_NEXT_MAINTENANCE | ❌ |  |
+| CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
 | CMD_GET_ONLINE_DEVELOPMENT_PROGRESS | ❌ |  |
 | CMD_GET_ONLINE_PRISON_LIST | ✔️ |  |
 | CMD_GET_OWN_FOB_LIST | ✔️ |  |
@@ -149,4 +149,51 @@ List of implemeted/unimplemented server commands
 
 ## MGO
 
-N/A
+### mgostm/gate
+| name | status | note |
+| --- | --- | --- |
+| CMD_GET_SVRLIST | ✔️ |  |
+| CMD_GET_SVRTIME | ✔️ |  |
+| CMD_GET_URLLIST | ✔️ |  |
+
+### mgostm/main
+
+| name | status | note |
+| --- | --- | --- |
+| CMD_AUTH_STEAMTICKET | ✔️ |  |
+| CMD_GDPR_CHECK | ✔️ |  |
+| CMD_GET_ABOLITION_COUNT | ✔️ |  |
+| CMD_GET_INFORMATIONLIST2 | ✔️ |  |
+| CMD_GET_MBCOIN_REMAINDER | ❌ |  |
+| CMD_GET_MGO_BOOST | ❌ |  |
+| CMD_GET_MGO_CHARACTER2 | ❌ |  |
+| CMD_GET_MGO_GP | ❌ |  |
+| CMD_GET_MGO_LOADOUT | ❌ |  |
+| CMD_GET_MGO_MATCH_STAT | ❌ |  |
+| CMD_GET_MGO_MISSION_INFO | ❌ |  |
+| CMD_GET_MGO_PARAMETERS | ✔️ |  |
+| CMD_GET_MGO_PROGRESSION | ❌ |  |
+| CMD_GET_MGO_PURCHASABLE_BOOST_LIST | ❌ |  |
+| CMD_GET_MGO_PURCHASABLE_GEAR | ❌ |  |
+| CMD_GET_MGO_PURCHASABLE_ITEM_LIST | ❌ |  |
+| CMD_GET_MGO_PURCHASED_ITEM | ❌ |  |
+| CMD_GET_MGO_RANK_XP_LIST | ❌ |  |
+| CMD_GET_MGO_STAT | ❌ |  |
+| CMD_GET_MGO_TITLE_LIST | ✔️ |  |
+| CMD_GET_MGO_TITLE_USR | ❌ |  |
+| CMD_GET_MGO_USER_DATA | ❌ |  |
+| CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
+| CMD_GET_PLAYERLIST | ✔️ |  |
+| CMD_GET_PURCHASE_HISTORY | ❌ |  |
+| CMD_GET_PURCHASE_HISTORY_NUM | ❌ |  |
+| CMD_GET_SHOP_ITEM_NAME_LIST | ❌ |  |
+| CMD_MGO_DLC_UPDATE | ✔️ |  |
+| CMD_MGO_MISSION_RESULT | ❌ |  |
+| CMD_REQAUTH_HTTPS | ✔️ |  |
+| CMD_SEND_IPANDPORT | ✔️ |  |
+| CMD_SET_CURRENTPLAYER | ✔️ |  |
+| CMD_SET_MGO_CHARACTER_AND_LOADOUT2 | ❌ |  |
+| CMD_SET_MGO_MATCH_STAT | ❌ |  |
+| CMD_SET_MGO_STAT | ❌ |  |
+| CMD_UPDATE_SESSION | ✔️ |  |
+
