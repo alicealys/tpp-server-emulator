@@ -26,6 +26,7 @@ https://archive.alicent.cat/tpp-server-emulator
 
 - [Usage/Installation](https://github.com/alicealys/tpp-server-emulator/blob/main/docs/usage.md)
 - [Scripting](https://github.com/alicealys/tpp-server-emulator/blob/main/docs/scripting.md)
+- [Progress](https://github.com/alicealys/tpp-server-emulator/blob/main/docs/progress.md)
 
 ## Compile from source
 
