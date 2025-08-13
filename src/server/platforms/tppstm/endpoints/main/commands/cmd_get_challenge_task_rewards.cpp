@@ -2,7 +2,7 @@
 
 #include "cmd_get_challenge_task_rewards.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_challenge_task_rewards::cmd_get_challenge_task_rewards()
 	{

@@ -9,7 +9,7 @@
 
 #include <utils/memory.hpp>
 
-namespace tpp
+namespace emulator
 {
 	class server;
 

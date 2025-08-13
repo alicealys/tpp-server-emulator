@@ -2,7 +2,7 @@
 
 #include "cmd_get_online_prison_list.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_online_prison_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

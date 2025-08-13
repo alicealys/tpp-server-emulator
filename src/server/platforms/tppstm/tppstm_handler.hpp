@@ -2,7 +2,7 @@
 
 #include "types/platform_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class tppstm_handler final : public platform_handler
 	{

@@ -5,7 +5,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/players.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_purchase_platform_construction::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

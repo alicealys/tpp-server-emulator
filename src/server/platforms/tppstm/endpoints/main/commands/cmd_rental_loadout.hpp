@@ -2,7 +2,7 @@
 
 #include "types/command_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class cmd_rental_loadout final : public command_handler
 	{

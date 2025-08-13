@@ -2,7 +2,7 @@
 
 #include "types/command_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class cmd_check_server_item_correct final : public command_handler
 	{

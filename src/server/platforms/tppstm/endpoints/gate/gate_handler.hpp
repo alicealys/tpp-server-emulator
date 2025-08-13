@@ -4,7 +4,7 @@
 
 #include <utils/cryptography.hpp>
 
-namespace tpp
+namespace emulator::tpp
 {
 	class gate_handler final : public endpoint_handler
 	{

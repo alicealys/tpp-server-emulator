@@ -4,7 +4,7 @@
 
 // unimplemented
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_send_suspicion_play_data::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

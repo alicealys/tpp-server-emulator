@@ -2,7 +2,7 @@
 
 #include "cmd_get_steam_shop_item_list.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_steam_shop_item_list::cmd_get_steam_shop_item_list()
 	{

@@ -2,7 +2,7 @@
 
 #include "types/command_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class cmd_deploy_mission final : public command_handler
 	{

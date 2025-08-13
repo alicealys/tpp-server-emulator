@@ -144,12 +144,13 @@
 #include <utils/string.hpp>
 #include <utils/compression.hpp>
 
-namespace tpp
+namespace emulator::tpp
 {
 	main_handler::main_handler()
 	{
 		blow_.set_key(utils::tpp::get_static_key(), utils::tpp::get_static_key_len());
 
+		this->set_platform("tppstm/main");
 		this->register_handler<cmd_abort_mother_base>("CMD_ABORT_MOTHER_BASE");
 		this->register_handler<cmd_active_sneak_mother_base>("CMD_ACTIVE_SNEAK_MOTHER_BASE");
 		this->register_handler<cmd_add_follow>("CMD_ADD_FOLLOW");

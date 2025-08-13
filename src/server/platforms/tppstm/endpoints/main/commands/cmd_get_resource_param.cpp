@@ -2,7 +2,7 @@
 
 #include "cmd_get_resource_param.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_resource_param::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

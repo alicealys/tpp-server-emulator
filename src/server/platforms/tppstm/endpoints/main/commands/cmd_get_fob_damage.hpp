@@ -2,7 +2,7 @@
 
 #include "types/command_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class cmd_get_fob_damage final : public command_handler
 	{

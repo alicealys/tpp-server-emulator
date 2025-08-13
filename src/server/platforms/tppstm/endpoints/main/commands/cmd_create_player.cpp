@@ -9,7 +9,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/event_rankings.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_create_player::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

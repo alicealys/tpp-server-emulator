@@ -60,6 +60,6 @@ int main()
 {
 	set_working_dir();
 	write_dlls();
-	tpp::start_server();
+	emulator::start_server();
 	return 0;
 }

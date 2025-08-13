@@ -4,7 +4,7 @@
 
 #include "utils/config.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	namespace
 	{

@@ -4,7 +4,7 @@
 
 // unimplemented
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_reset_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

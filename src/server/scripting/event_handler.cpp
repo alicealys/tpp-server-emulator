@@ -4,7 +4,7 @@
 #include "error.hpp"
 #include "event_handler.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	void engine::setup_event_handler()
 	{

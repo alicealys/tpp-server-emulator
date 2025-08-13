@@ -21,7 +21,7 @@
 #include "event_handler.hpp"
 #include "scheduler.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	class engine
 	{

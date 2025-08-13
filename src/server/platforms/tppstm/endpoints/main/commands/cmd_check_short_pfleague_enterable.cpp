@@ -4,7 +4,7 @@
 
 // unimplemented
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_check_short_pfleague_enterable::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

@@ -2,7 +2,7 @@
 
 #include "cmd_gdpr_check.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_gdpr_check::cmd_gdpr_check()
 	{

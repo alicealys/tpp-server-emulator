@@ -1,6 +1,6 @@
 #pragma once
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	struct event_listener
 	{

@@ -5,7 +5,7 @@
 #include "database/models/items.hpp"
 #include "database/models/players.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_server_item_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

@@ -2,7 +2,7 @@
 
 #include "types/command_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json create_nuclear(const std::optional<database::players::player>& player);
 

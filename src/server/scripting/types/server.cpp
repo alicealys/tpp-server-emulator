@@ -3,7 +3,7 @@
 #include "../engine.hpp"
 #include "server.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	void engine::setup_server()
 	{

@@ -2,7 +2,7 @@
 
 #include "../engine.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	void engine::setup_player_follow()
 	{

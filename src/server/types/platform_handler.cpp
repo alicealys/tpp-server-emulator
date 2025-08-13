@@ -4,7 +4,7 @@
 
 #include "component/console.hpp"
 
-namespace tpp
+namespace emulator
 {
 	std::optional<std::string> platform_handler::handle_endpoint(const utils::request_params& params, const std::string& endpoint, const std::string& data)
 	{

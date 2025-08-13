@@ -1,6 +1,6 @@
 #pragma once
 
-namespace tpp
+namespace emulator
 {
 	void stop_server();
 	void start_server();

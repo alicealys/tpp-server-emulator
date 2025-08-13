@@ -4,7 +4,7 @@
 
 #include "database/models/fobs.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_purchasable_area_list::cmd_get_purchasable_area_list()
 	{

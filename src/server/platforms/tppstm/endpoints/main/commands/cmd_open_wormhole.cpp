@@ -5,7 +5,7 @@
 #include "database/models/players.hpp"
 #include "database/models/wormholes.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_open_wormhole::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

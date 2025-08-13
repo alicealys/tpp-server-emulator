@@ -1,6 +1,6 @@
 #include "types/endpoint_handler.hpp"
 
-namespace tpp
+namespace emulator
 {
 	class var_handler final : public endpoint_handler
 	{

@@ -8,7 +8,7 @@
 #include "database/models/sneak_results.hpp"
 #include "database/models/event_rankings.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_send_sneak_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

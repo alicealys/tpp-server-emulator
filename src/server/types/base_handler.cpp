@@ -2,7 +2,7 @@
 
 #include "base_handler.hpp"
 
-namespace tpp
+namespace emulator
 {
 
 }

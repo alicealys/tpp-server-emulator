@@ -4,7 +4,7 @@
 
 #include "../main_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class cmd_develop_server_item final : public command_handler
 	{

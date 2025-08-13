@@ -2,7 +2,7 @@
 
 #include "cmd_get_fob_param.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_fob_param::cmd_get_fob_param()
 	{
