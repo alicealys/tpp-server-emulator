@@ -188,3 +188,20 @@ join (
 ) ranked
 on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
 set event_ranking.player_rank = ranked.new_rank;
+-- query:mgstpp.mgo_characters.create
+create table if not exists `mgo_characters`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	character_index			int unsigned	not null,
+	avatar					json not null,
+	loadouts				json not null,
+	last_loadout			int not null default 0,
+	name					char(32),
+	player_class			int not null default 0,
+	player_type				int not null default 0,
+	version 				bigint unsigned default 0,
+	create_date				datetime		default current_timestamp not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`)
+)

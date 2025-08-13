@@ -187,3 +187,19 @@ set player_rank = (
     where ranked.player_id = event_rankings.player_id
       and ranked.event_id = event_rankings.event_id
 );
+-- query:mgstpp.mgo_characters.create
+create table if not exists `mgo_characters`
+(
+	id						integer	primary key autoincrement,
+	player_id				bigint unsigned	not null,
+	character_index			int unsigned	not null,
+	avatar					json not null,
+	loadouts				json not null,
+	last_loadout			int not null default 0,
+	name					char(32),
+	player_class			int not null default 0,
+	player_type				int not null default 0,
+	version 				bigint unsigned default 0,
+	create_date				datetime		not null,
+	foreign key (`player_id`) references players(`id`)
+)
