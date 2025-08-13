@@ -13,8 +13,11 @@
     * `database_host`: (default: `"localhost"`)
     * `database_port`: (default: `3306`)
     * `database_name`: (default: `"mgstpp"`)
-- Change the string `"https://mgstpp-game.konamionline.com/tppstm/gate"` in mgsvtpp.exe to `"{your base url}/tppstm/gate"`.  
-  Alternatively, run [tpp-mod](https://github.com/alicealys/tpp-mod) with the `-custom-server url` flag.
+- TPP:
+  Change the string `"https://mgstpp-game.konamionline.com/tppstm/gate"` in `mgsvtpp.exe` to `"{your base url}/tppstm/gate"`.
+- MGO:
+  Change the string `"https://mgstpp-game.konamionline.com/mgostm/gate"` in `mgsvmgo.exe` to `"{your base url}/mgostm/gate"`.
+  Alternatively, run [tpp-mod](https://github.com/alicealys/tpp-mod) with the `-custom-server-tpp url`/`-custom-server-mgo url` flag.
 
 ## Config
 
