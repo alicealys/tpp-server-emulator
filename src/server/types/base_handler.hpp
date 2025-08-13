@@ -1,6 +1,6 @@
 #pragma once
 
-namespace tpp
+namespace emulator
 {
 	template <typename HandlerType>
 	class base_handler

@@ -4,7 +4,7 @@
 #include "error.hpp"
 #include "scheduler.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	void engine::setup_scheduler()
 	{

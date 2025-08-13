@@ -4,7 +4,7 @@
 
 #include "database/models/items.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_mining_resource::cmd_mining_resource()
 	{

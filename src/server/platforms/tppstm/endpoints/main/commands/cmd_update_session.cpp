@@ -4,7 +4,7 @@
 
 #include "database/models/players.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_update_session::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

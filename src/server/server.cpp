@@ -10,7 +10,7 @@
 #include "component/console.hpp"
 #include "component/command.hpp"
 
-namespace tpp
+namespace emulator
 {
 	namespace
 	{

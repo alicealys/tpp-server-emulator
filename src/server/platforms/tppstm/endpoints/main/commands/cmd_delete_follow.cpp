@@ -5,7 +5,7 @@
 #include "database/models/players.hpp"
 #include "database/models/player_follows.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_delete_follow::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

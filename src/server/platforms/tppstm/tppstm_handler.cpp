@@ -5,7 +5,7 @@
 
 #include "tppstm_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	tppstm_handler::tppstm_handler()
 	{

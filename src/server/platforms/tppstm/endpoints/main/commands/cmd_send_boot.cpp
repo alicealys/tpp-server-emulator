@@ -2,7 +2,7 @@
 
 #include "cmd_send_boot.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_send_boot::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

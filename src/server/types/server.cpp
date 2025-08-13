@@ -2,6 +2,7 @@
 
 #include "server.hpp"
 
+#include "platforms/mgostm/mgostm_handler.hpp"
 #include "platforms/tppstm/tppstm_handler.hpp"
 #include "platforms/tppstmweb/tppstmweb_handler.hpp"
 
@@ -13,11 +14,12 @@
 #include <utils/cryptography.hpp>
 #include <utils/io.hpp>
 
-namespace tpp
+namespace emulator
 {
 	server::server()
 	{
-		this->register_handler<tppstm_handler>("tppstm");
+		this->register_handler<mgo::mgostm_handler>("mgostm");
+		this->register_handler<tpp::tppstm_handler>("tppstm");
 		this->register_handler<tppstmweb_handler>("tppstmweb");
 	}
 

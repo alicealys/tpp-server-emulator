@@ -128,7 +128,7 @@ namespace command
 		{
 			add("quit", [](const params& params)
 			{
-				tpp::stop_server();
+				emulator::stop_server();
 			});
 
 			add("query", [](const params& params)
@@ -288,7 +288,7 @@ namespace command
 
 			add("reload_lists", auth::reload_lists);
 
-			add("reload_scripts", tpp::scripting::reload);
+			add("reload_scripts", emulator::scripting::reload);
 		}
 	};
 }

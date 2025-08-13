@@ -8,7 +8,7 @@
 #include <utils/string.hpp>
 #include <utils/compression.hpp>
 
-namespace tpp
+namespace emulator
 {
 	var_handler::var_handler(const std::string& name, const std::string& value)
 		: name_(name)

@@ -2,7 +2,7 @@
 
 #include "cmd_get_security_info.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_security_info::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

@@ -4,7 +4,7 @@
 
 #include "database/models/items.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_login_param::cmd_get_login_param()
 	{

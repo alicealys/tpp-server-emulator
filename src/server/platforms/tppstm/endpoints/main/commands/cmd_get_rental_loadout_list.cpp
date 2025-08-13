@@ -4,7 +4,7 @@
 
 // unimplemented
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_rental_loadout_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

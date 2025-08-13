@@ -4,7 +4,7 @@
 
 // unimplemented
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_previous_short_pfleague_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

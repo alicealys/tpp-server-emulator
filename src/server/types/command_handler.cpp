@@ -2,7 +2,7 @@
 
 #include "command_handler.hpp"
 
-namespace tpp
+namespace emulator
 {
 	nlohmann::json error(const std::string& id)
 	{

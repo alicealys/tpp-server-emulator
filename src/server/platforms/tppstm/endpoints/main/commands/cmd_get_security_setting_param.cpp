@@ -2,7 +2,7 @@
 
 #include "cmd_get_security_setting_param.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_security_setting_param::cmd_get_security_setting_param()
 	{

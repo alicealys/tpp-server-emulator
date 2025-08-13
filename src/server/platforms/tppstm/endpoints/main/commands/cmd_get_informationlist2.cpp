@@ -2,7 +2,7 @@
 
 #include "cmd_get_informationlist2.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_get_informationlist2::cmd_get_informationlist2()
 	{

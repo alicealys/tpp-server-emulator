@@ -3,7 +3,7 @@
 #include "database/models/players.hpp"
 #include "utils/tpp.hpp"
 
-namespace tpp
+namespace emulator
 {
 	class command_handler
 	{

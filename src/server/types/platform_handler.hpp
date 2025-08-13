@@ -3,7 +3,7 @@
 #include "base_handler.hpp"
 #include "endpoint_handler.hpp"
 
-namespace tpp
+namespace emulator
 {
 	class platform_handler : public base_handler<endpoint_handler>
 	{

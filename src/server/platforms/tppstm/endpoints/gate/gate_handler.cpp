@@ -12,12 +12,13 @@
 #include <utils/string.hpp>
 #include <utils/compression.hpp>
 
-namespace tpp
+namespace emulator::tpp
 {
 	gate_handler::gate_handler()
 	{
 		blow_.set_key(utils::tpp::get_static_key(), utils::tpp::get_static_key_len());
 
+		this->set_platform("tppstm/gate");
 		this->register_handler<cmd_get_urllist>("CMD_GET_URLLIST");
 		this->register_handler<cmd_get_svrlist>("CMD_GET_SVRLIST");
 		this->register_handler<cmd_get_svrtime>("CMD_GET_SVRTIME");

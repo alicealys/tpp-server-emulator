@@ -7,7 +7,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_player_platform_list::execute(nlohmann::json& data, const std::optional<database::players::player>&)
 	{

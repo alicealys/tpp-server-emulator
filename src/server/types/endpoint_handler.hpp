@@ -4,7 +4,7 @@
 #include "command_handler.hpp"
 #include "utils/http_server.hpp"
 
-namespace tpp
+namespace emulator
 {
 	class endpoint_handler : public base_handler<command_handler>
 	{
@@ -31,5 +31,11 @@ namespace tpp
 		virtual std::optional<std::string> handle_command(const utils::request_params& params, const std::string& data);
 
 		void print_handler_name([[ maybe_unused ]] const std::string& name) override;
+
+		void set_platform(const std::string& platform);
+
+	private:
+		std::string platform_;
+
 	};
 }

@@ -3,7 +3,7 @@
 #include "types/command_handler.hpp"
 #include "../main_handler.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	class cmd_sale_resource final : public command_handler
 	{

@@ -5,7 +5,7 @@
 #include "database/models/items.hpp"
 #include "database/models/player_data.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json create_nuclear(const std::optional<database::players::player>& player)
 	{

@@ -5,7 +5,7 @@
 #include "database/database.hpp"
 #include "database/vars.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	namespace
 	{

@@ -2,7 +2,7 @@
 
 #include "error.hpp"
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	void handle_error(const sol::protected_function_result& result)
 	{

@@ -6,7 +6,7 @@
 
 #include "scripting/engine.hpp"
 
-namespace tpp
+namespace emulator
 {
 	std::optional<std::string> endpoint_handler::handle_command([[maybe_unused]] const utils::request_params& params, 
 		const std::string& data)
@@ -98,6 +98,11 @@ namespace tpp
 
 	void endpoint_handler::print_handler_name([[ maybe_unused ]] const std::string& name)
 	{
-		console::log("Registering command \"%s\"\n", name.data());
+		console::log("Registering command for \"%s\": \"%s\"\n", this->platform_.data(), name.data());
+	}
+
+	void endpoint_handler::set_platform(const std::string& platform)
+	{
+		this->platform_ = platform;
 	}
 }

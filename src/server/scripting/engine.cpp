@@ -7,7 +7,7 @@
 
 #include <utils/io.hpp>
 
-namespace tpp::scripting
+namespace emulator::scripting
 {
 	namespace
 	{

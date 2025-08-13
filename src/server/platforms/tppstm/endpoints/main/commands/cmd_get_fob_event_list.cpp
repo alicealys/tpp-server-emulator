@@ -4,7 +4,7 @@
 
 #include "database/models/sneak_results.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	nlohmann::json cmd_get_fob_event_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{

@@ -9,7 +9,7 @@
 #include "database/models/sneak_results.hpp"
 #include "database/models/wormholes.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	namespace
 	{

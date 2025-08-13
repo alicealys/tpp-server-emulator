@@ -4,7 +4,7 @@
 
 #include "tppstmweb_handler.hpp"
 
-namespace tpp
+namespace emulator
 {
 	tppstmweb_handler::tppstmweb_handler()
 	{

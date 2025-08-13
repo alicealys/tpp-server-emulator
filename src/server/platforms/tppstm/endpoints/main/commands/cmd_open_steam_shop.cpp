@@ -4,7 +4,7 @@
 
 #include "database/models/player_data.hpp"
 
-namespace tpp
+namespace emulator::tpp
 {
 	cmd_open_steam_shop::cmd_open_steam_shop()
 	{
