@@ -21,13 +21,13 @@ namespace emulator::mgo
 			{
 				.type = "GATE",
 				.url = "mgostm/gate",
-				.version = 17,
+				.version = 14,
 				.replace_hostname = true
 			},
 			{
 				.type = "WEB",
 				.url = "mgostm/main",
-				.version = 17,
+				.version = 14,
 				.replace_hostname = true
 			},
 			{
@@ -35,16 +35,6 @@ namespace emulator::mgo
 				.url = "tppstmweb/eula/eula.var",
 				.version = 6,
 				.replace_hostname = true
-			},
-			{
-				.type = "HEATMAP",
-				.url = "http://mgstpp-app.konamionline.com/tppstmweb/heatmap",
-				.version = 0
-			},
-			{
-				.type = "DEVICE",
-				.url = "https://mgstpp-app.konamionline.com/tppstm/main",
-				.version = 0
 			},
 			{
 				.type = "EULA_COIN",

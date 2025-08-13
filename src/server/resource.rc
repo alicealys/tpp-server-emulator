@@ -93,24 +93,27 @@ END
 // Data
 //
 
-RESOURCE_DLL_LIBMYSQL       RCDATA "../../deps/mysql/lib/libmysql.dll"
-RESOURCE_DLL_LIBCRYPTO      RCDATA "../../deps/mysql/bin/libcrypto-3-x64.dll"
-RESOURCE_DLL_LIBSSL         RCDATA "../../deps/mysql/bin/libssl-3-x64.dll"
+RESOURCE_DLL_LIBMYSQL             RCDATA "../../deps/mysql/lib/libmysql.dll"
+RESOURCE_DLL_LIBCRYPTO            RCDATA "../../deps/mysql/bin/libcrypto-3-x64.dll"
+RESOURCE_DLL_LIBSSL               RCDATA "../../deps/mysql/bin/libssl-3-x64.dll"
 
-RESOURCE_GDPR_CHECK        RCDATA "resources/data/gdpr_check.json"
-RESOURCE_CHALLENGE_TASK_REWARDS        RCDATA "resources/data/challenge_task_rewards.json"
-RESOURCE_LOGIN_PARAM        RCDATA "resources/data/login_param.json"
-RESOURCE_INFORMATIONLIST2        RCDATA "resources/data/informationlist2.json"
-RESOURCE_ITEM_LIST        RCDATA "resources/data/item_list.json"
-RESOURCE_MINING_RESOURCE        RCDATA "resources/data/mining_resource.json"
-RESOURCE_AREA_LIST        RCDATA "resources/data/area_list.json"
-RESOURCE_FOB_PARAM        RCDATA "resources/data/fob_param.json"
-RESOURCE_SECURITY_SETTINGS_PARAM        RCDATA "resources/data/security_setting_param.json"
-RESOURCE_FOB_DEPLOY_LIST        RCDATA "resources/data/fob_deploy_list.json"
-RESOURCE_STEAM_SHOP_ITEM_LIST        RCDATA "resources/data/steam_shop_item_list.json"
+RESOURCE_GDPR_CHECK               RCDATA "resources/data/gdpr_check.json"
+RESOURCE_CHALLENGE_TASK_REWARDS   RCDATA "resources/data/challenge_task_rewards.json"
+RESOURCE_LOGIN_PARAM              RCDATA "resources/data/login_param.json"
+RESOURCE_TPP_INFORMATIONLIST2     RCDATA "resources/data/tpp_informationlist2.json"
+RESOURCE_ITEM_LIST                RCDATA "resources/data/item_list.json"
+RESOURCE_MINING_RESOURCE          RCDATA "resources/data/mining_resource.json"
+RESOURCE_AREA_LIST                RCDATA "resources/data/area_list.json"
+RESOURCE_FOB_PARAM                RCDATA "resources/data/fob_param.json"
+RESOURCE_SECURITY_SETTINGS_PARAM  RCDATA "resources/data/security_setting_param.json"
+RESOURCE_FOB_DEPLOY_LIST          RCDATA "resources/data/fob_deploy_list.json"
+RESOURCE_STEAM_SHOP_ITEM_LIST     RCDATA "resources/data/steam_shop_item_list.json"
+RESOURCE_MGO_PARAMETERS           RCDATA "resources/data/mgo_parameters.json"
+RESOURCE_MGO_TITLE_LIST           RCDATA "resources/data/mgo_title_list.json"
+RESOURCE_MGO_INFORMATIONLIST2     RCDATA "resources/data/mgo_informationlist2.json"
 
-RESOURCE_SQL_MYSQL        RCDATA "resources/sql/mysql.sql"
-RESOURCE_SQL_SQLITE3        RCDATA "resources/sql/sqlite3.sql"
+RESOURCE_SQL_MYSQL                RCDATA "resources/sql/mysql.sql"
+RESOURCE_SQL_SQLITE3              RCDATA "resources/sql/sqlite3.sql"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

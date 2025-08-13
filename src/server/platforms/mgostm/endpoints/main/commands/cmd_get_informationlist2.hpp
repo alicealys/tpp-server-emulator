@@ -6,6 +6,12 @@ namespace emulator::mgo
 {
 	class cmd_get_informationlist2 final : public command_handler
 	{
+	public:
+		cmd_get_informationlist2();
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
+
+	private:
+		nlohmann::json list_;
+
 	};
 }
