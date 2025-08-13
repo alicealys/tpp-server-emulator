@@ -15,7 +15,7 @@ namespace utils::resources
 			{RESOURCE_GDPR_CHECK, "resources/data/gdpr_check.json"},
 			{RESOURCE_CHALLENGE_TASK_REWARDS, "resources/data/challenge_task_rewards.json"},
 			{RESOURCE_LOGIN_PARAM, "resources/data/login_param.json"},
-			{RESOURCE_INFORMATIONLIST2, "resources/data/informationlist2.json"},
+			{RESOURCE_TPP_INFORMATIONLIST2, "resources/data/tpp_informationlist2.json"},
 			{RESOURCE_ITEM_LIST, "resources/data/item_list.json"},
 			{RESOURCE_MINING_RESOURCE, "resources/data/mining_resource.json"},
 			{RESOURCE_AREA_LIST, "resources/data/area_list.json"},
@@ -23,6 +23,10 @@ namespace utils::resources
 			{RESOURCE_SECURITY_SETTINGS_PARAM, "resources/data/security_setting_param.json"},
 			{RESOURCE_FOB_DEPLOY_LIST, "resources/data/fob_deploy_list.json"},
 			{RESOURCE_STEAM_SHOP_ITEM_LIST, "resources/data/steam_shop_item_list.json"},
+			{RESOURCE_MGO_PARAMETERS, "resources/data/mgo_parameters.json"},
+			{RESOURCE_MGO_TITLE_LIST, "resources/data/mgo_title_list.json"},
+			{RESOURCE_MGO_INFORMATIONLIST2, "resources/data/mgo_informationlist2.json"},
+
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},
 		};
