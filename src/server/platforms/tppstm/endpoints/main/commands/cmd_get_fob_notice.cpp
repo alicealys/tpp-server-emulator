@@ -26,7 +26,7 @@ namespace emulator::tpp
 		}
 
 		const auto player_record = database::player_records::find(player->get_id());
-		if (!player_data.get())
+		if (!player_record.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -49,7 +49,7 @@ namespace emulator::tpp
 		result["league_update"]["prev_rank"] = 0;
 		result["league_update"]["score"] = 0;
 
-		result["mb_coin"] = player_data->get_mb_coin();
+		result["mb_coin"] = database::player_data::get_mb_coins(player->get_id());
 		result["pf_current_season"] = 0;
 		result["pf_finish_num"] = 0;
 		result["pf_finish_num_max"] = 0;

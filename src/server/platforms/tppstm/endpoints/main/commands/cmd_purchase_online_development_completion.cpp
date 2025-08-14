@@ -26,11 +26,11 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		if (database::player_data::spend_coins(player->get_id(), item.get_mb_coin()))
+		if (database::player_data::spend_mb_coins(player->get_id(), item.get_mb_coin()))
 		{
 			if (!database::items::force_develop(player->get_id(), item.get_id()))
 			{
-				database::player_data::add_coins(player->get_id(), item.get_mb_coin());
+				database::player_data::add_mb_coins(player->get_id(), item.get_mb_coin());
 				return error(ERR_DATABASE);
 			}
 		}

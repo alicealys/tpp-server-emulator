@@ -59,7 +59,7 @@ namespace emulator::tpp
 		}
 
 		const auto mb_coins = mb_coins_j.get<std::int32_t>();
-		database::player_data::add_coins(player->get_id(), mb_coins);
+		database::player_data::add_mb_coins(player->get_id(), mb_coins);
 
 		return result;
 	}

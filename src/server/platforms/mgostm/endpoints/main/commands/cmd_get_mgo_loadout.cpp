@@ -18,7 +18,7 @@ namespace emulator::mgo
 			result["loadout"]["character_list"][i]["loadout_list"] = characters[i].get_loadouts();
 		}
 
-		result["loadout"]["version"] = 0;
+		result["loadout"]["version"] = 130186347867651;
 
 		return result;
 	}

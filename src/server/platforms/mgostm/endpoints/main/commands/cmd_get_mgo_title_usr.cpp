@@ -2,14 +2,20 @@
 
 #include "cmd_get_mgo_title_usr.hpp"
 
-// unimplemented
-
 namespace emulator::mgo
 {
 	nlohmann::json cmd_get_mgo_title_usr::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+
+		auto& title_list = result["title_list"];
+
+		title_list = utils::resources::load_json(RESOURCE_MGO_TITLE_LIST);
+		for (auto i = 0; i < title_list.size(); i++)
+		{
+			title_list["flag"] = 0;
+		}
+
 		return result;
 	}
 }

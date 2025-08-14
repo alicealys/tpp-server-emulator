@@ -16,13 +16,7 @@ namespace emulator::tpp
 			return error(ERR_INVALID_SESSION);
 		}
 
-		const auto p_data = database::player_data::find(player->get_id());
-		if (!player.has_value())
-		{
-			return error(ERR_INVALIDARG);
-		}
-
-		result["remainder"] = p_data->get_mb_coin();
+		result["remainder"] = database::player_data::get_mb_coins(player->get_id());
 		result["result"] = utils::tpp::get_error(NOERR);
 
 		return result;

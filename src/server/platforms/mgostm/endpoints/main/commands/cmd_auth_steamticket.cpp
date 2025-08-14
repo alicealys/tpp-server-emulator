@@ -5,7 +5,7 @@
 #include "database/auth.hpp"
 #include "database/models/players.hpp"
 
-namespace emulator::tpp
+namespace emulator::mgo
 {
 	nlohmann::json cmd_auth_steamticket::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
@@ -23,7 +23,7 @@ namespace emulator::tpp
 			const auto steam_ticket = steam_ticket_val.get<std::string>();
 			const auto steam_ticket_size = steam_ticket_size_j.get<std::size_t>();
 
-			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket, steam_ticket_size, true);
+			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket, steam_ticket_size, false);
 			if (!auth_result_opt.has_value())
 			{
 				return error(ERR_INVALID_TICKET);

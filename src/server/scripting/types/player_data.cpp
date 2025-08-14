@@ -55,8 +55,8 @@ namespace emulator::scripting
 		this->state_["database"]["playerdata"]["syncmotherbase"] = database::player_data::sync_motherbase;
 		this->state_["database"]["playerdata"]["syncloadout"] = database::player_data::sync_loadout;
 		this->state_["database"]["playerdata"]["syncemblem"] = database::player_data::sync_emblem;
-		this->state_["database"]["playerdata"]["spendcoins"] = database::player_data::spend_coins;
-		this->state_["database"]["playerdata"]["addcoins"] = database::player_data::add_coins;
+		this->state_["database"]["playerdata"]["spendcoins"] = database::player_data::spend_mb_coins;
+		this->state_["database"]["playerdata"]["addcoins"] = database::player_data::add_mb_coins;
 		this->state_["database"]["playerdata"]["getnukecount"] = database::player_data::get_nuke_count;
 		this->state_["database"]["playerdata"]["getplayernukecount"] = database::player_data::get_player_nuke_count;
 		this->state_["database"]["playerdata"]["setfobdeploydamageparam"] = database::player_data::set_fob_deploy_damage_param;
