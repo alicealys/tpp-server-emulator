@@ -26,6 +26,20 @@ namespace emulator::mgo
 			char_json["player_type"] = characters[i].get_player_type();
 		}
 
+		if (characters.empty())
+		{
+			for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
+			{
+				static const auto base_avatar = utils::resources::load_json(RESOURCE_MGO_BASE_AVATAR);
+				auto& char_json = character["character_list"][i];
+				char_json["avatar"] = base_avatar;
+				char_json["last_loadout"] = i == 0 ? 1 : 0;
+				char_json["player_name"] = "";
+				char_json["player_class"] = i == 0 ? 16 : 0;;
+				char_json["player_type"] = i == 0 ? 5 : 0;
+			}
+		}
+
 		const auto mgo_data = database::mgo_data::find_or_create(player->get_id());
 
 		character["last_active"] = mgo_data->get_last_character_used();

@@ -12,7 +12,7 @@ namespace emulator::mgo
 
 		const auto characters = database::mgo_characters::get_character_list(player->get_id());
 
-		auto& progression = data["progression"];
+		auto& progression = result["progression"];
 
 		progression["character_list"] = nlohmann::json::array();
 		for (auto i = 0ull; i < characters.size(); i++)
