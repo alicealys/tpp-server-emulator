@@ -33,10 +33,10 @@ namespace emulator::mgo
 				static const auto base_avatar = utils::resources::load_json(RESOURCE_MGO_BASE_AVATAR);
 				auto& char_json = character["character_list"][i];
 				char_json["avatar"] = base_avatar;
-				char_json["last_loadout"] = i == 0 ? 1 : 0;
+				char_json["last_loadout"] = 0;
 				char_json["player_name"] = "";
-				char_json["player_class"] = i == 0 ? 16 : 0;;
-				char_json["player_type"] = i == 0 ? 5 : 0;
+				char_json["player_class"] = 0;
+				char_json["player_type"] = 0;
 			}
 		}
 

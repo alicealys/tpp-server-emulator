@@ -15,13 +15,34 @@ namespace emulator::mgo
 		auto& progression = result["progression"];
 
 		progression["character_list"] = nlohmann::json::array();
+		progression["permanent_unlock_list"] = nlohmann::json::array();
+
 		for (auto i = 0ull; i < characters.size(); i++)
 		{
 			progression["character_list"][i]["legendary"] = characters[i].get_legendary();
 			progression["character_list"][i]["prestige"] = characters[i].get_legendary();
 			progression["character_list"][i]["xp"] = characters[i].get_xp();
 
-			progression["permanent_unlock_list"][i] = characters[i].get_permanent_unlock_list();
+			const auto list = characters[i].get_permanent_unlock_list();
+			if (list != 0)
+			{
+				progression["permanent_unlock_list"][i] = list;
+			}
+		}
+
+		if (characters.empty())
+		{
+			for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
+			{
+				progression["character_list"][i]["legendary"] = 0;
+				progression["character_list"][i]["prestige"] = 0;
+				progression["character_list"][i]["xp"] = 0;
+
+				if (i == 0)
+				{
+					progression["permanent_unlock_list"][i] = 1146596596;
+				}
+			}
 		}
 
 		result["version"] = 143737279559449;
