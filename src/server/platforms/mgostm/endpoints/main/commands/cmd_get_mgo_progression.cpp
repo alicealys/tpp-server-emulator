@@ -37,15 +37,12 @@ namespace emulator::mgo
 				progression["character_list"][i]["legendary"] = 0;
 				progression["character_list"][i]["prestige"] = 0;
 				progression["character_list"][i]["xp"] = 0;
+				progression["permanent_unlock_list"][i] = i == 0 ? 1146596596 : 0;
 
-				if (i == 0)
-				{
-					progression["permanent_unlock_list"][i] = 1146596596;
-				}
 			}
 		}
 
-		result["version"] = 143737279559449;
+		progression["version"] = 143737279559449;
 
 		return result;
 	}

@@ -35,6 +35,7 @@ namespace emulator
 
 		if (handler == this->handlers_.end())
 		{
+			console::warning("[Endpoint] Missing handler for \"%s\"\n", msgid_str.data());
 			return {};
 		}
 

@@ -21,7 +21,7 @@ namespace emulator::mgo
 			auto& char_json = character["character_list"][i];
 			char_json["avatar"] = characters[i].get_avatar();
 			char_json["last_loadout"] = characters[i].get_last_loadout();
-			char_json["player_name"] = characters[i].get_name();
+			char_json["name"] = characters[i].get_name();
 			char_json["player_class"] = characters[i].get_player_class();
 			char_json["player_type"] = characters[i].get_player_type();
 		}
@@ -34,7 +34,7 @@ namespace emulator::mgo
 				auto& char_json = character["character_list"][i];
 				char_json["avatar"] = base_avatar;
 				char_json["last_loadout"] = 0;
-				char_json["player_name"] = "";
+				char_json["name"] = "";
 				char_json["player_class"] = 0;
 				char_json["player_type"] = 0;
 			}
