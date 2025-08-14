@@ -30,10 +30,10 @@ namespace emulator::mgo
 		}
 
 		auto& character_list = character["character_list"];
-		auto& loadouts_list = loadout["character_list"];
+		auto& loadout_character_list = loadout["character_list"];
 		auto& permanent_unlock = data["permanent_unlock"];
 
-		if (!loadouts_list.is_array() || loadouts_list.size() != database::mgo_characters::max_character_count ||
+		if (!loadout_character_list.is_array() || loadout_character_list.size() != database::mgo_characters::max_character_count ||
 			!character_list.is_array() || character_list.size() != database::mgo_characters::max_character_count)
 		{
 			return error(ERR_INVALIDARG);
@@ -44,7 +44,7 @@ namespace emulator::mgo
 			if (!character_list[i].is_object() || !character_list[i]["avatar"].is_object() ||
 				!character_list[i]["last_loadout"].is_number_unsigned() || !character_list[i]["player_type"].is_number_unsigned() ||
 				!character_list[i]["player_class"].is_number_unsigned() || !character_list[i]["name"].is_string() ||
-				!loadouts_list[i].is_object())
+				!loadout_character_list[i].is_object() || !loadout_character_list[i]["loadout_list"].is_array())
 			{
 				return error(ERR_INVALIDARG);
 			}
@@ -58,7 +58,7 @@ namespace emulator::mgo
 			params.player_type = character_list[i]["player_type"].get<std::uint32_t>();
 			params.player_class = character_list[i]["player_class"].get<std::uint32_t>();
 			params.name = character_list[i]["name"].get<std::string>();
-			params.loadouts = loadouts_list[i].dump();
+			params.loadouts = loadout_character_list[i]["loadout_list"].dump();
 
 			const auto get_permanent_unlock = [&]
 			{
