@@ -93,6 +93,23 @@ namespace database::mgo_characters
 				return result != 0ull;
 			});
 		}
+
+		template <database_type_t Type>
+		bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_character::table)
+						.set(mgo_character::table.name = "", mgo_character::table.avatar = "{}",
+							 mgo_character::table.loadouts = "{}", mgo_character::table.player_class = 0,
+							 mgo_character::table.player_type = 0, mgo_character::table.permanent_unlock_list = 0,
+							 mgo_character::table.last_loadout = 0)
+								.where(mgo_character::table.player_id == player_id && mgo_character::table.character_index == character_index));
+
+				return result != 0ull;
+			});
+		}
 	}
 
 	std::vector<mgo_character> get_character_list(const std::uint64_t player_id)
@@ -113,6 +130,11 @@ namespace database::mgo_characters
 	bool update_character(const std::uint64_t player_id, const std::uint32_t character_index, const character_params& params)
 	{
 		RUN_IMPL(impl::update_character, player_id, character_index, params);
+	}
+
+	bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index)
+	{
+		RUN_IMPL(impl::delete_character, player_id, character_index);
 	}
 
 	class table final : public table_interface
