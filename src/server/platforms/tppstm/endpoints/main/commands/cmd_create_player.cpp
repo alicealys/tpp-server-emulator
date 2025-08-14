@@ -8,6 +8,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/player_data.hpp"
 #include "database/models/event_rankings.hpp"
+#include "database/models/mgo_data.hpp"
 
 namespace emulator::tpp
 {
@@ -24,6 +25,7 @@ namespace emulator::tpp
 		database::player_records::find_or_create(player->get_id());
 		database::player_data::find_or_create(player->get_id());
 		database::event_rankings::create_entries(player->get_id());
+		database::mgo_data::find_or_create(player->get_id());
 
 		result["player_id"] = player->get_id();
 		result["result"] = "NOERR";

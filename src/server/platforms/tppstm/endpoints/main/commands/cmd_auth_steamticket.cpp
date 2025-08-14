@@ -23,7 +23,7 @@ namespace emulator::tpp
 			const auto steam_ticket = steam_ticket_val.get<std::string>();
 			const auto steam_ticket_size = steam_ticket_size_j.get<std::size_t>();
 
-			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket, steam_ticket_size);
+			const auto auth_result_opt = auth::authenticate_user_with_ticket(steam_ticket, steam_ticket_size, true);
 			if (!auth_result_opt.has_value())
 			{
 				return error(ERR_INVALID_TICKET);

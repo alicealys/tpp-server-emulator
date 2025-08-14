@@ -677,7 +677,27 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		bool spend_coins(const std::uint64_t player_id, const std::uint32_t value)
+		std::uint32_t get_mb_coins(const std::uint64_t player_id)
+		{
+			return database::access<std::uint32_t>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::select(player_data::table.mb_coin)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id)
+				);
+
+				if (result.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(result.front().mb_coin.value());
+			});
+		}
+
+		template <database_type_t Type>
+		bool spend_mb_coins(const std::uint64_t player_id, const std::uint32_t value)
 		{
 			if (value == 0)
 			{
@@ -699,7 +719,7 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		bool add_coins(const std::uint64_t player_id, const std::uint32_t value)
+		bool add_mb_coins(const std::uint64_t player_id, const std::uint32_t value)
 		{
 			if (value == 0)
 			{
@@ -872,14 +892,19 @@ namespace database::player_data
 		RUN_IMPL(impl::sync_emblem, player_id, emblem);
 	}
 
-	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value)
+	std::uint32_t get_mb_coins(const std::uint64_t player_id)
 	{
-		RUN_IMPL(impl::spend_coins, player_id, value);
+		RUN_IMPL(impl::get_mb_coins, player_id);
 	}
 
-	bool add_coins(const std::uint64_t player_id, const std::uint32_t value)
+	bool spend_mb_coins(const std::uint64_t player_id, const std::uint32_t value)
 	{
-		RUN_IMPL(impl::add_coins, player_id, value);
+		RUN_IMPL(impl::spend_mb_coins, player_id, value);
+	}
+
+	bool add_mb_coins(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::add_mb_coins, player_id, value);
 	}
 
 	std::uint32_t get_nuke_count()

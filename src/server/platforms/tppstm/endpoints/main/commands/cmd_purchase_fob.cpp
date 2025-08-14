@@ -38,7 +38,7 @@ namespace emulator::tpp
 		const auto& area = area_opt.value();
 		const auto price = area["price"].get<std::uint32_t>();
 
-		if (database::player_data::spend_coins(player->get_id(), price))
+		if (database::player_data::spend_mb_coins(player->get_id(), price))
 		{
 			database::fobs::create(player->get_id(), area_id);
 		}

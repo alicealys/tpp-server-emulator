@@ -2,7 +2,7 @@
 
 #include "main_handler.hpp"
 
-#include "../../../tppstm/endpoints/main/commands/cmd_auth_steamticket.hpp"
+#include "commands/cmd_auth_steamticket.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_gdpr_check.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_get_abolition_count.hpp"
 #include "commands/cmd_get_informationlist2.hpp"
@@ -53,7 +53,7 @@ namespace emulator::mgo
 	main_handler::main_handler()
 	{
 		this->set_platform("mgostm/main");
-		this->register_handler<tpp::cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
+		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
 		this->register_handler<tpp::cmd_gdpr_check>("CMD_GDPR_CHECK");
 		this->register_handler<tpp::cmd_get_abolition_count>("CMD_GET_ABOLITION_COUNT");
 		this->register_handler<cmd_get_informationlist2>("CMD_GET_INFORMATIONLIST2");

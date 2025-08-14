@@ -1,15 +1,31 @@
 #include <std_include.hpp>
 
-#include "cmd_get_mgo_progression.hpp"
+#include "database/models/mgo_characters.hpp"
 
-// unimplemented
+#include "cmd_get_mgo_progression.hpp"
 
 namespace emulator::mgo
 {
 	nlohmann::json cmd_get_mgo_progression::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+
+		const auto characters = database::mgo_characters::get_character_list(player->get_id());
+
+		auto& progression = data["progression"];
+
+		progression["character_list"] = nlohmann::json::array();
+		for (auto i = 0ull; i < characters.size(); i++)
+		{
+			progression["character_list"][i]["legendary"] = characters[i].get_legendary();
+			progression["character_list"][i]["prestige"] = characters[i].get_legendary();
+			progression["character_list"][i]["xp"] = characters[i].get_xp();
+
+			progression["permanent_unlock_list"][i] = characters[i].get_permanent_unlock_list();
+		}
+
+		result["version"] = 143737279559449;
+
 		return result;
 	}
 }

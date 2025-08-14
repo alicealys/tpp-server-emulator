@@ -86,7 +86,7 @@ create table if not exists `player_data`
 	insurance_gmp			int default 0,
 	injury_gmp				int default 0,
 	last_sync				datetime default null,
-	mb_coin					int default 0,
+	mb_coin					int unsigned default 0,
 	version 				bigint unsigned default 0,
 	fob_deploy_damage_param json,
 	primary key (`id`),
@@ -196,12 +196,58 @@ create table if not exists `mgo_characters`
 	character_index			int unsigned	not null,
 	avatar					json not null,
 	loadouts				json not null,
-	last_loadout			int not null default 0,
+	last_loadout			int unsigned not null default 0,
 	name					char(32),
-	player_class			int not null default 0,
-	player_type				int not null default 0,
-	version 				bigint unsigned default 0,
+	player_class			int unsigned not null default 0,
+	player_type				int unsigned  not null default 0,
+	legendary				int unsigned  not null default 0,
+	prestige				int unsigned  not null default 0,
+	xp						int unsigned  not null default 0,
+	permanent_unlock_list   int unsigned  not null default 0,
 	create_date				datetime		default current_timestamp not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
+)
+-- query:mgstpp.mgo_data.create
+create table if not exists `mgo_data`
+(
+	id							bigint unsigned	not null	auto_increment,
+	player_id					bigint unsigned	not null,
+	last_character_used			int unsigned default 0 not null,
+	bgm_selected				int unsigned default 0 not null,
+	match_auto_leave			int unsigned default 0 not null,
+	match_briefing_time			int unsigned default 0 not null,
+	match_host_comment			int unsigned default 0 not null,
+	match_max_capacity			int unsigned default 0 not null,
+	match_mission_slot_count	int unsigned default 0 not null,
+	gp_coin						int unsigned default 0 not null,
+	gp_boost_mag				int unsigned default 0 not null,
+	gp_expire_unix_timestamp	int unsigned default 0 not null,
+	rank_xp						int unsigned default 0 not null,
+	xp_boost_mag				int unsigned default 0 not null,
+	xp_expire_unix_timestamp	int unsigned default 0 not null,
+	reward_category				int unsigned default 0 not null,
+	reward_id_a					int unsigned default 0 not null,
+	reward_id_b					int unsigned default 0 not null,
+	reward_id_c					int unsigned default 0 not null,
+	survival_ticket_remain		int unsigned default 0 not null,
+	mission_slot_list			int unsigned default 0 not null,
+	mission_player_num			int unsigned default 0 not null,
+	matches_played				int unsigned default 0 not null,
+	matches_abandoned			int unsigned default 0 not null,
+	matches_started				int unsigned default 0 not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`),
+	unique key `unique_mgo_data_player_id` (`player_id`)
+)
+-- query:mgstpp.mgo_stat.create
+create table if not exists `mgo_stat`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	stat_id					int unsigned	not null,
+	stat_value				int unsigned	not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`),
+	unique key `unique_mgo_stat_player_id_stat_id` (`player_id`, `stat_id`)
 )

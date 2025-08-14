@@ -106,7 +106,7 @@ namespace auth
 		get_deny_list() = parse_list(deny_list_file);
 	}
 
-	std::optional<std::uint64_t> verify_ticket_konami(const std::string& auth_ticket, const size_t ticket_size)
+	std::optional<std::uint64_t> verify_ticket_konami(const std::string& auth_ticket, const size_t ticket_size, const bool is_tpp)
 	{
 		nlohmann::json data;
 		data["steam_ticket"] = utils::encoding::split_into_lines(auth_ticket);
@@ -117,7 +117,8 @@ namespace auth
 		data["lang"] = "en";
 		data["country"] = "ww";
 
-		auto result_opt = client.send_command("tppstm/main", data, false);
+		const auto end_point = is_tpp ? "tppstm/main" : "mgostm/main";
+		auto result_opt = client.send_command(end_point, data, false);
 		if (!result_opt.has_value())
 		{
 			return {};
@@ -166,12 +167,12 @@ namespace auth
 		return {account_id};
 	}
 
-	std::optional<std::uint64_t> verify_ticket(const std::string& auth_ticket, const size_t ticket_size)
+	std::optional<std::uint64_t> verify_ticket(const std::string& auth_ticket, const size_t ticket_size, const bool is_tpp)
 	{
 		static const auto use_konami_auth = config::get<bool>("use_konami_auth");
 		if (use_konami_auth)
 		{
-			return verify_ticket_konami(auth_ticket, ticket_size);
+			return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
 		}
 		else
 		{
@@ -179,9 +180,9 @@ namespace auth
 		}
 	}
 
-	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket, const size_t ticket_size)
+	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket, const size_t ticket_size, const bool is_tpp)
 	{
-		const auto account_id_opt = verify_ticket(auth_ticket, ticket_size);
+		const auto account_id_opt = verify_ticket(auth_ticket, ticket_size, is_tpp);
 		if (!account_id_opt.has_value())
 		{
 			return {};

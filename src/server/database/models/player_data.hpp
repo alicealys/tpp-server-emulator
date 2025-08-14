@@ -575,6 +575,7 @@ namespace database::player_data
 		std::optional<nlohmann::json> fob_deploy_damage_param_{};
 
 		std::uint32_t mb_coin_{};
+		std::uint32_t gp_coin_{};
 
 		std::int32_t local_gmp_{};
 		std::int32_t server_gmp_{};
@@ -611,8 +612,9 @@ namespace database::player_data
 	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase);
 	void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem);
 
-	bool spend_coins(const std::uint64_t player_id, const std::uint32_t value);
-	bool add_coins(const std::uint64_t player_id, const std::uint32_t value);
+	std::uint32_t get_mb_coins(const std::uint64_t player_id);
+	bool spend_mb_coins(const std::uint64_t player_id, const std::uint32_t value);
+	bool add_mb_coins(const std::uint64_t player_id, const std::uint32_t value);
 
 	std::uint32_t get_nuke_count();
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id);

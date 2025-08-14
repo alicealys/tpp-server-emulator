@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "database/models/mgo_characters.hpp"
+#include "database/models/mgo_data.hpp"
 
 #include "cmd_get_mgo_character2.hpp"
 
@@ -25,15 +26,17 @@ namespace emulator::mgo
 			char_json["player_type"] = characters[i].get_player_type();
 		}
 
-		character["last_active"] = 0;
+		const auto mgo_data = database::mgo_data::find_or_create(player->get_id());
 
-		character["match"]["auto_leave"] = 0;
-		character["match"]["briefing_time"] = 0;
-		character["match"]["host_comment"] = 0;
-		character["match"]["max_capacity"] = 0;
+		character["last_active"] = mgo_data->get_last_character_used();
+
+		character["match"]["auto_leave"] = mgo_data->get_match_auto_leave();
+		character["match"]["briefing_time"] = mgo_data->get_match_briefing_time();
+		character["match"]["host_comment"] = mgo_data->get_match_host_comment();
+		character["match"]["max_capacity"] = mgo_data->get_match_max_capacity();
 		character["match"]["mission_slot_count"] = 0;
 		character["match"]["mission_slot_list"] = nlohmann::json::array();
-		character["match"]["player_num"] = 0;
+		character["match"]["player_num"] = mgo_data->get_mission_player_num();
 
 		character["preset_radio_rule_list"] = nlohmann::json::array();
 		for (auto i = 0; i < 5; i++)
@@ -46,8 +49,8 @@ namespace emulator::mgo
 			}
 		}
 
-		character["selected_bgm"] = 0;
-		character["version"] = 0;
+		character["selected_bgm"] = mgo_data->get_bgm_selected();
+		character["version"] = 130186347867651;
 
 		return result;
 	}

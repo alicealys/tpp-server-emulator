@@ -26,6 +26,8 @@ namespace utils::resources
 			{RESOURCE_MGO_PARAMETERS, "resources/data/mgo_parameters.json"},
 			{RESOURCE_MGO_TITLE_LIST, "resources/data/mgo_title_list.json"},
 			{RESOURCE_MGO_INFORMATIONLIST2, "resources/data/mgo_informationlist2.json"},
+			{RESOURCE_MGO_RULE_STAT_LIST, "resources/data/mgo_rule_stat_list.json"},
+			{RESOURCE_MGO_PURCHASABLE_LIST, "resources/data/mgo_purchasable_list.json"},
 
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},
