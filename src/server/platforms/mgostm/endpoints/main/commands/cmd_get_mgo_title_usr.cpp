@@ -11,9 +11,9 @@ namespace emulator::mgo
 		auto& title_list = result["title_list"];
 
 		title_list = utils::resources::load_json(RESOURCE_MGO_TITLE_LIST);
-		for (auto i = 0; i < title_list.size(); i++)
+		for (auto i = 0ull; i < title_list.size(); i++)
 		{
-			title_list["flag"] = 0;
+			title_list[i]["flag"] = 0;
 		}
 
 		return result;

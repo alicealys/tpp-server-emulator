@@ -575,7 +575,6 @@ namespace database::player_data
 		std::optional<nlohmann::json> fob_deploy_damage_param_{};
 
 		std::uint32_t mb_coin_{};
-		std::uint32_t gp_coin_{};
 
 		std::int32_t local_gmp_{};
 		std::int32_t server_gmp_{};

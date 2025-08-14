@@ -19,7 +19,7 @@ namespace emulator::mgo
 		auto& list = stat["stat_list"];
 		const auto id_set = database::mgo_stat::get_id_set();
 
-		for (auto i = 0; i < list.size(); i++)
+		for (auto i = 0ull; i < list.size(); i++)
 		{
 			const auto& id_j = list[i]["id"];
 			const auto& value_j = list[i]["value"];

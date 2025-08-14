@@ -18,6 +18,14 @@ namespace emulator::mgo
 			result["loadout"]["character_list"][i]["loadout_list"] = characters[i].get_loadouts();
 		}
 
+		if (characters.empty())
+		{
+			static const auto base_loadouts = utils::resources::load_json(RESOURCE_MGO_BASE_LOADOUTS);
+			result["loadout"]["character_list"][0]["loadout_list"] = base_loadouts;
+			result["loadout"]["character_list"][1]["loadout_list"] = base_loadouts;
+			result["loadout"]["character_list"][2]["loadout_list"] = base_loadouts;
+		}
+
 		result["loadout"]["version"] = 130186347867651;
 
 		return result;

@@ -22,7 +22,7 @@ namespace emulator::mgo
 		}
 
 		auto& character = data["character"];
-		auto& loadout = data["character"];
+		auto& loadout = data["loadout"];
 
 		if (!character.is_object() || !loadout.is_object())
 		{
@@ -52,11 +52,11 @@ namespace emulator::mgo
 
 		for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
 		{
-			database::mgo_characters::character_params params;
+			database::mgo_characters::character_params params{};
 			params.avatar = character_list[i]["avatar"].dump();
 			params.last_loadout = character_list[i]["last_loadout"].get<std::uint32_t>();
 			params.player_type = character_list[i]["player_type"].get<std::uint32_t>();
-			params.player_type = character_list[i]["player_class"].get<std::uint32_t>();
+			params.player_class = character_list[i]["player_class"].get<std::uint32_t>();
 			params.name = character_list[i]["name"].get<std::string>();
 			params.loadouts = loadouts_list[i].dump();
 
@@ -77,7 +77,7 @@ namespace emulator::mgo
 
 			params.permanent_unlock = get_permanent_unlock();
 
-			database::mgo_characters::update_character(player->get_id(), i, params);
+			database::mgo_characters::update_character(player->get_id(), static_cast<std::uint32_t>(i), params);
 		}
 
 		auto& last_active = character["last_active"];
