@@ -6,7 +6,7 @@ namespace emulator::mgo
 {
 	cmd_get_mgo_title_list::cmd_get_mgo_title_list()
 	{
-		this->list_ = utils::resources::load_json(RESOURCE_MGO_TITLE_LIST);
+		this->list_["title_list"] = utils::resources::load_json(RESOURCE_MGO_TITLE_LIST);
 	}
 
 	nlohmann::json cmd_get_mgo_title_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
