@@ -161,6 +161,7 @@ List of implemeted/unimplemented server commands
 | name | status | note |
 | --- | --- | --- |
 | CMD_AUTH_STEAMTICKET | ✔️ |  |
+| CMD_GET_MGO_TITLE_LIST | ✔️ |  |
 | CMD_GDPR_CHECK | ✔️ |  |
 | CMD_GET_ABOLITION_COUNT | ✔️ |  |
 | CMD_GET_INFORMATIONLIST2 | ✔️ |  |
