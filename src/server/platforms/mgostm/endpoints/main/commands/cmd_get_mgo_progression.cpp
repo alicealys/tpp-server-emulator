@@ -32,7 +32,7 @@ namespace emulator::mgo
 
 		if (characters.empty())
 		{
-			for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
+			for (auto i = 0ull; i < database::mgo_characters::initial_character_count; i++)
 			{
 				progression["character_list"][i]["legendary"] = 0;
 				progression["character_list"][i]["prestige"] = 0;

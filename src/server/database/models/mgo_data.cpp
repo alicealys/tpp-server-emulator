@@ -88,6 +88,50 @@ namespace database::mgo_data
 			});
 		}
 
+		
+		template <database_type_t Type>
+		bool spend_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+						.set(mgo_data::table.player_id = player_id,
+							 mgo_data::table.gp_coin = mgo_data::table.gp_coin - value)
+								.where(mgo_data::table.player_id == player_id &&
+									   mgo_data::table.gp_coin >= value)
+					);
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		bool add_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+						.set(mgo_data::table.player_id = player_id,
+							 mgo_data::table.gp_coin = mgo_data::table.gp_coin + value)
+								.where(mgo_data::table.player_id == player_id)
+					);
+
+				return result != 0;
+			});
+		}
+
 		template <database_type_t Type>
 		bool set_values_from_character(const std::uint64_t player_id, const character_params& params)
 		{
@@ -146,6 +190,16 @@ namespace database::mgo_data
 	std::uint32_t get_gp_coins(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::get_gp_coins, player_id);
+	}
+
+	bool spend_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::spend_gp_coins, player_id, value);
+	}
+
+	bool add_mb_coins(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::add_gp_coins, player_id, value);
 	}
 
 	bool set_values_from_character(const std::uint64_t player_id, const character_params& params)

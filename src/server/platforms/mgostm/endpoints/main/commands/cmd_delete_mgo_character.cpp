@@ -18,7 +18,7 @@ namespace emulator::mgo
 		}
 
 		const auto character_index = character_index_j.get<std::uint32_t>();
-		if (character_index < 1 || character_index >= database::mgo_characters::max_character_count)
+		if (character_index < 1 || character_index >= database::mgo_characters::total_character_count)
 		{
 			return error(ERR_INVALIDARG);
 		}

@@ -51,4 +51,39 @@ namespace emulator
 	{
 		return player_info(*player);
 	}
+
+	std::optional<database::players::player> get_target_player(const nlohmann::json& target)
+	{
+		if (!target.is_object())
+		{
+			return {};
+		}
+
+		const auto get_id = [&](const std::string& key)
+			-> std::optional<std::uint64_t>
+		{
+			if (!target.contains(key) || !target[key].is_number_unsigned())
+			{
+				return {};
+			}
+
+			return {target[key].get<std::uint64_t>()};
+		};
+
+		const auto player_id_opt = get_id("player_id");
+		const auto steam_id_opt = get_id("steam_id");
+
+		std::optional<database::players::player> target_player;
+
+		if (player_id_opt.has_value())
+		{
+			target_player = database::players::find(player_id_opt.value());
+		}
+		else if (steam_id_opt.has_value())
+		{
+			target_player = database::players::find_from_account(steam_id_opt.value());
+		}
+
+		return target_player;
+	}
 }

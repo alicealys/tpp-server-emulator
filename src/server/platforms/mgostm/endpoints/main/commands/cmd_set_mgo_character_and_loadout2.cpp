@@ -12,9 +12,9 @@ namespace emulator::mgo
 		nlohmann::json result;
 
 		const auto char_count = database::mgo_characters::get_character_count(player->get_id());
-		if (char_count < database::mgo_characters::max_character_count)
+		if (char_count < database::mgo_characters::initial_character_count)
 		{
-			const auto needs = database::mgo_characters::max_character_count - char_count;
+			const auto needs = database::mgo_characters::initial_character_count - char_count;
 			for (auto i = 0ull; i < needs; i++)
 			{
 				database::mgo_characters::create_character(player->get_id(), static_cast<std::uint32_t>(char_count + i));
@@ -33,13 +33,19 @@ namespace emulator::mgo
 		auto& loadout_character_list = loadout["character_list"];
 		auto& permanent_unlock = data["permanent_unlock"];
 
-		if (!loadout_character_list.is_array() || loadout_character_list.size() != database::mgo_characters::max_character_count ||
-			!character_list.is_array() || character_list.size() != database::mgo_characters::max_character_count)
+		if (!loadout_character_list.is_array() || !character_list.is_array())
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
+		if (character_list.size() != loadout_character_list.size())
+		{
+			return error(ERR_INVALIDARG);
+		}
+
+		const auto update_count = std::min(char_count, character_list.size());
+
+		for (auto i = 0ull; i < update_count; i++)
 		{
 			if (!character_list[i].is_object() || !character_list[i]["avatar"].is_object() ||
 				!character_list[i]["last_loadout"].is_number_unsigned() || !character_list[i]["player_type"].is_number_unsigned() ||
@@ -50,7 +56,7 @@ namespace emulator::mgo
 			}
 		}
 
-		for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
+		for (auto i = 0ull; i < update_count; i++)
 		{
 			database::mgo_characters::character_params params{};
 			params.avatar = character_list[i]["avatar"].dump();

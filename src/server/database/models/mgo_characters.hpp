@@ -18,7 +18,8 @@ namespace database::mgo_characters
 		std::uint32_t permanent_unlock;
 	};
 
-	constexpr auto max_character_count = 3ull;
+	constexpr auto total_character_count = 8ull;
+	constexpr auto initial_character_count = 3ull;
 
 	class mgo_character
 	{

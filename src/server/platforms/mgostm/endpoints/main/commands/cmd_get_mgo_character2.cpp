@@ -28,7 +28,7 @@ namespace emulator::mgo
 
 		if (characters.empty())
 		{
-			for (auto i = 0ull; i < database::mgo_characters::max_character_count; i++)
+			for (auto i = 0ull; i < database::mgo_characters::initial_character_count; i++)
 			{
 				static const auto base_avatar = utils::resources::load_json(RESOURCE_MGO_BASE_AVATAR);
 				auto& char_json = character["character_list"][i];

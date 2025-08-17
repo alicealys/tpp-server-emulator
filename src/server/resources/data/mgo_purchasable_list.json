@@ -181,7 +181,7 @@
                 "purchase_type": 3
             },
             {
-                "already_purchased": 1,
+                "already_purchased": 0,
                 "already_released": 1,
                 "default_color": 327502434,
                 "gear_id": 662270850,
@@ -334,7 +334,7 @@
                 "purchase_type": 3
             },
             {
-                "already_purchased": 1,
+                "already_purchased": 0,
                 "already_released": 1,
                 "default_color": 76167981,
                 "gear_id": 2575864910,
@@ -343,7 +343,7 @@
                 "purchase_type": 3
             },
             {
-                "already_purchased": 1,
+                "already_purchased": 0,
                 "already_released": 1,
                 "default_color": 76167981,
                 "gear_id": 3491263666,
