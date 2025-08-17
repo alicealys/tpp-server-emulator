@@ -251,3 +251,14 @@ create table if not exists `mgo_stat`
 	foreign key (`player_id`) references players(`id`),
 	unique key `unique_mgo_stat_player_id_stat_id` (`player_id`, `stat_id`)
 )
+-- query:mgstpp.mgo_color_purchase.create
+create table if not exists `mgo_color_purchase`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	gear_id					int unsigned	not null,
+	color_id				int unsigned	not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`),
+	unique key `unique_mgo_color_purchase_player_id_gear_id_color_id` (`player_id`, `gear_id`, `color_id`)
+)
