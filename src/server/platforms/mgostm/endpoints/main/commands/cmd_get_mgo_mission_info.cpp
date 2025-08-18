@@ -1,5 +1,7 @@
 #include <std_include.hpp>
 
+#include "database/models/mgo_data.hpp"
+
 #include "cmd_get_mgo_mission_info.hpp"
 
 namespace emulator::mgo
@@ -8,10 +10,12 @@ namespace emulator::mgo
 	{
 		nlohmann::json result;
 
-		result["gp_boost_mag"] = 0;
-		result["xp_boost_mag"] = 0;
+		const auto mgo_data = database::mgo_data::find_or_create(player->get_id());
 
-		result["rank_param"]["current_rank_xp"] = 0;
+		result["gp_boost_mag"] = mgo_data->get_gp_boost_mag();
+		result["xp_boost_mag"] = mgo_data->get_xp_boost_mag();
+
+		result["rank_param"]["current_rank_xp"] = mgo_data->get_rank_xp();
 		result["rank_param"]["earned_rank_xp"] = 0;
 		result["rank_param"]["rank_xp_list"] = nlohmann::json::array();
 
@@ -29,5 +33,10 @@ namespace emulator::mgo
 		result["survival_params"]["survival_update_key"] = 0;
 
 		return result;
+	}
+
+	bool cmd_get_mgo_mission_info::needs_player()
+	{
+		return true;
 	}
 }

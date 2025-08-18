@@ -116,8 +116,10 @@ namespace database::mgo_data
 
 	std::uint32_t get_gp_coins(const std::uint64_t player_id);
 	bool spend_gp_coins(const std::uint64_t player_id, const std::uint32_t value);
-	bool add_gp_coins(const std::uint64_t player_id, const std::uint32_t value);
+	std::uint32_t add_gp_coins(const std::uint64_t player_id, const std::uint32_t value);
 
 	bool set_values_from_character(const std::uint64_t player_id, const character_params& params);
 	bool update_match_stats(const std::uint64_t player_id, const std::uint32_t abandon, const std::uint32_t started, const std::uint32_t played);
+
+	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag);
 }

@@ -97,4 +97,5 @@ namespace database::mgo_characters
 	bool create_character(const std::uint64_t player_id, const std::uint32_t character_index);
 	bool update_character(const std::uint64_t player_id, const std::uint32_t character_index, const character_params& params);
 	bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index);
+	std::uint32_t increase_xp(const std::uint64_t player_id, const std::uint32_t character_index, const std::uint32_t value);
 }

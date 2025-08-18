@@ -112,23 +112,28 @@ namespace database::mgo_data
 		}
 
 		template <database_type_t Type>
-		bool add_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
+		std::uint32_t add_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
 		{
-			if (value == 0)
+			return database::access<std::uint32_t>([&](database::database_t& db)
 			{
-				return true;
-			}
-
-			return database::access<bool>([&](database::database_t& db)
-			{
-				const auto result = db.get_database<Type>()->operator()(
+				db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
 						.set(mgo_data::table.player_id = player_id,
 							 mgo_data::table.gp_coin = mgo_data::table.gp_coin + value)
 								.where(mgo_data::table.player_id == player_id)
 					);
 
-				return result != 0;
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(mgo_data::table.gp_coin)
+							.from(mgo_data::table)
+								.where(mgo_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(results.front().gp_coin.value());
 			});
 		}
 
@@ -154,6 +159,20 @@ namespace database::mgo_data
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
 							.set(mgo_data::table.matches_abandoned = abandon, mgo_data::table.matches_started = started, mgo_data::table.matches_played = played)
+								.where(mgo_data::table.player_id == player_id));
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+							.set(mgo_data::table.xp_boost_mag = xp_boost_mag, mgo_data::table.gp_boost_mag = gp_boost_mag)
 								.where(mgo_data::table.player_id == player_id));
 
 				return result != 0;
@@ -197,7 +216,7 @@ namespace database::mgo_data
 		RUN_IMPL(impl::spend_gp_coins, player_id, value);
 	}
 
-	bool add_mb_coins(const std::uint64_t player_id, const std::uint32_t value)
+	std::uint32_t add_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::add_gp_coins, player_id, value);
 	}
@@ -210,6 +229,11 @@ namespace database::mgo_data
 	bool update_match_stats(const std::uint64_t player_id, const std::uint32_t abandon, const std::uint32_t started, const std::uint32_t played)
 	{
 		RUN_IMPL(impl::update_match_stats, player_id, abandon, started, played);
+	}
+
+	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag)
+	{
+		RUN_IMPL(impl::set_boost, player_id, xp_boost_mag, gp_boost_mag);
 	}
 
 	class table final : public table_interface
