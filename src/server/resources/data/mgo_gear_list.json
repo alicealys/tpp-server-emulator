@@ -1,0 +1,562 @@
+[
+    {
+        "gear_id": 13258465,
+        "default_color": 373432697,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 142035392,
+        "default_color": 373432697,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 191196192,
+        "default_color": 2358646918,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 243665594,
+        "default_color": 2421028971,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 301980537,
+        "default_color": 2421028971,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 317452302,
+        "default_color": 373432697,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 319804376,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 343198811,
+        "default_color": 2421028971,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 391035613,
+        "default_color": 2421028971,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 434424516,
+        "default_color": 288703677,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 496917024,
+        "default_color": 2421028971,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 569677223,
+        "default_color": 2421028971,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 625661586,
+        "default_color": 12356394,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 662270850,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 769863771,
+        "default_color": 12356394,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 775154908,
+        "default_color": 327502434,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 878119308,
+        "default_color": 1563954279,
+        "point": 10000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 887697884,
+        "default_color": 3020208773,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1026385083,
+        "default_color": 2421028971,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1031643753,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 1034459920,
+        "default_color": 327502434,
+        "point": 10000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1041509373,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 1044513810,
+        "default_color": 2421028971,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 1071960682,
+        "default_color": 1563954279,
+        "point": 3000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1082868864,
+        "default_color": 441935374,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 1177875415,
+        "default_color": 75594939,
+        "point": 50,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1219317716,
+        "default_color": 373432697,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1227294830,
+        "default_color": 42204107,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1244045621,
+        "default_color": 75594939,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 1363005292,
+        "default_color": 2421028971,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1497338757,
+        "default_color": 2421028971,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1601475495,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 1840106309,
+        "default_color": 384817944,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1931887529,
+        "default_color": 596127025,
+        "point": 3000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1985479465,
+        "default_color": 373432697,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 1998788085,
+        "default_color": 76167981,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 2208910834,
+        "default_color": 596127025,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2211090473,
+        "default_color": 373432697,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 2280419734,
+        "default_color": 373432697,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2281828283,
+        "default_color": 2358646918,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2294721085,
+        "default_color": 373432697,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2374271527,
+        "default_color": 596127025,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 2380202832,
+        "default_color": 596127025,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2417898025,
+        "default_color": 2421028971,
+        "point": 50,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2487588223,
+        "default_color": 2421028971,
+        "point": 3000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2515384843,
+        "default_color": 2421028971,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 2575864910,
+        "default_color": 76167981,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 2579147060,
+        "default_color": 2421028971,
+        "point": 50,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2589171374,
+        "default_color": 2421028971,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2593011832,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 2602268177,
+        "default_color": 327502434,
+        "point": 10000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2790942852,
+        "default_color": 2421028971,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2904393478,
+        "default_color": 327502434,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2919407593,
+        "default_color": 373432697,
+        "point": 50,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2983599233,
+        "default_color": 2510955615,
+        "point": 10000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 2986082315,
+        "default_color": 327502434,
+        "point": 3000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 3039021011,
+        "default_color": 42204107,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3172129675,
+        "default_color": 3642541877,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 3265718520,
+        "default_color": 2421028971,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3286648596,
+        "default_color": 327502434,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 3316788240,
+        "default_color": 327502434,
+        "point": 1337,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 3347441038,
+        "default_color": 288703677,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3420616329,
+        "default_color": 76167981,
+        "point": 50,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 3478078378,
+        "default_color": 373432697,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3491263666,
+        "default_color": 76167981,
+        "point": 5000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 3600261678,
+        "default_color": 2421028971,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3609704195,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 3641197719,
+        "default_color": 596127025,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3685115142,
+        "default_color": 327502434,
+        "point": 3000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 3802731151,
+        "default_color": 2421028971,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 3875105802,
+        "default_color": 12356394,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3929682215,
+        "default_color": 352863748,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 3931626384,
+        "default_color": 2421028971,
+        "point": 3000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 4066524013,
+        "default_color": 596127025,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 4084124012,
+        "default_color": 327502434,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 4100151160,
+        "default_color": 373432697,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "gear_id": 4126523844,
+        "default_color": 327502434,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 4236819450,
+        "default_color": 352863748,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "gear_id": 4243121754,
+        "default_color": 327502434,
+        "point": 1337,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "gear_id": 4273678466,
+        "default_color": 3202192720,
+        "point": 300,
+        "prestige": 0,
+        "purchase_type": 2
+    }
+]
