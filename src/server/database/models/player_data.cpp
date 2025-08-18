@@ -510,10 +510,10 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+		player_data_ptr find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
 		{
-			return database::access<std::unique_ptr<player_data>>([&](database::database_t& db)
-				-> std::unique_ptr<player_data>
+			return database::access<player_data_ptr>([&](database::database_t& db)
+				->player_data_ptr
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
@@ -834,12 +834,12 @@ namespace database::player_data
 		RUN_IMPL(impl::create, player_id);
 	}
 
-	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+	player_data_ptr find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
 	{
 		RUN_IMPL(impl::find, player_id, parse_motherbase, parse_loadout, parse_emblem);
 	}
 
-	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id)
+	player_data_ptr find_or_create(const std::uint64_t player_id)
 	{
 		auto found = find(player_id);
 		if (found.get())

@@ -30,4 +30,5 @@ namespace emulator
 	nlohmann::json player_info(const database::players::player& player);
 	nlohmann::json player_info(const std::optional<database::players::player>& player);
 	std::optional<database::players::player> get_target_player(const nlohmann::json& target);
+	void merge_json(nlohmann::json& data, const nlohmann::json& extra_data);
 }

@@ -86,4 +86,31 @@ namespace emulator
 
 		return target_player;
 	}
+
+	void merge_json(nlohmann::json& data, const nlohmann::json& extra_data)
+	{
+		if (!extra_data.is_object())
+		{
+			return;
+		}
+
+		for (const auto& [k, v] : extra_data.items())
+		{
+			if (v.is_object())
+			{
+				if (data[k].is_object())
+				{
+					merge_json(data[k], v);
+				}
+				else
+				{
+					data[k] = v;
+				}
+			}
+			else
+			{
+				data[k] = v;
+			}
+		}
+	}
 }
