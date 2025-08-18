@@ -587,6 +587,8 @@ namespace database::player_data
 
 	};
 
+	using player_data_ptr = std::unique_ptr<player_data>;
+
 	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index);
 	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value);
 
@@ -595,8 +597,8 @@ namespace database::player_data
 	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
 	void create(const std::uint64_t player_id);
-	std::unique_ptr<player_data> find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
-	std::unique_ptr<player_data> find_or_create(const std::uint64_t player_id);
+	player_data_ptr find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
+	player_data_ptr find_or_create(const std::uint64_t player_id);
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
 

@@ -2,397 +2,52 @@
 
 #include "cmd_get_fob_target_list.hpp"
 
-#include "database/models/fobs.hpp"
+#include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
-#include "database/models/players.hpp"
-#include "database/models/player_follows.hpp"
-#include "database/models/sneak_results.hpp"
-#include "database/models/wormholes.hpp"
+#include "database/models/fobs.hpp"
+
+#include "cmd_get_fob_target_list/target_list_challenge.hpp"
+#include "cmd_get_fob_target_list/target_list_deployed.hpp"
+#include "cmd_get_fob_target_list/target_list_emergency.hpp"
+#include "cmd_get_fob_target_list/target_list_enemy.hpp"
+#include "cmd_get_fob_target_list/target_list_event.hpp"
+#include "cmd_get_fob_target_list/target_list_follow.hpp"
+#include "cmd_get_fob_target_list/target_list_follower.hpp"
+#include "cmd_get_fob_target_list/target_list_fr_enemy.hpp"
+#include "cmd_get_fob_target_list/target_list_nuclear.hpp"
+#include "cmd_get_fob_target_list/target_list_pickup_high.hpp"
+#include "cmd_get_fob_target_list/target_list_pickup.hpp"
+#include "cmd_get_fob_target_list/target_list_trial.hpp"
 
 namespace emulator::tpp
 {
-	namespace
+	cmd_get_fob_target_list::cmd_get_fob_target_list()
 	{
-#define CALLBACK_ARGS const database::players::player& player, const std::unique_ptr<database::player_data::player_data>& player_data, const std::uint32_t limit
-
-		struct target_data_t
-		{
-			std::uint64_t player_id;
-			nlohmann::json extra_data;
-		};
-
-		using target_list_t = std::vector<target_data_t>;
-
-		target_list_t get_pickup_list(CALLBACK_ARGS)
-		{
-			const auto list = database::player_records::find_same_grade_players(player.get_id(), std::min(limit, 30u));
-			target_list_t targets;
-
-			for (const auto& row : list)
-			{
-				target_data_t target{};
-				target.player_id = row.get_player_id();
-				targets.emplace_back(target);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_pickup_high_list(CALLBACK_ARGS)
-		{
-			const auto list = database::player_records::find_higher_grade_players(player.get_id(), std::min(limit, 30u));
-			target_list_t targets;
-
-			for (const auto& row : list)
-			{
-				target_data_t target{};
-				target.player_id = row.get_player_id();
-				targets.emplace_back(target);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_enemy_list(CALLBACK_ARGS)
-		{
-			auto list = database::wormholes::find_active_wormholes(player.get_id());
-			target_list_t targets;
-
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
-			for (auto& [to_player_id, wormhole] : list)
-			{
-				target_data_t target{};
-
-				auto left_hour = 0;
-				if (wormhole.expire > now)
-				{
-					const auto diff = wormhole.expire - now;
-					left_hour = std::chrono::duration_cast<std::chrono::hours>(diff).count();
-				}
-
-				target.extra_data["owner_detail_record"]["enemy"] = 1;
-				target.extra_data["owner_fob_record"]["left_hour"] = left_hour;
-
-				target.player_id = wormhole.to_player_id;
-
-				targets.emplace_back(target);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_injury_list(CALLBACK_ARGS)
-		{
-			auto list = database::sneak_results::get_sneak_results(player.get_id(), std::min(limit, 10u));
-			target_list_t targets;
-
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
-			for (auto& row : list)
-			{
-				target_data_t target{};
-
-				auto& sneak_data = row.get_data();
-
-				const auto wormhole = database::wormholes::get_wormhole_status(player.get_id(), row.get_player_id());
-
-				if (wormhole.open)
-				{
-					auto left_hour = 0;
-					if (wormhole.expire > now)
-					{
-						const auto diff = wormhole.expire - now;
-						left_hour = std::chrono::duration_cast<std::chrono::hours>(diff).count();
-					}
-
-					target.extra_data["owner_detail_record"]["enemy"] = 1;
-					target.extra_data["owner_fob_record"]["left_hour"] = left_hour;
-				}
-
-				target.extra_data["owner_fob_record"]["injury_staff_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-				target.extra_data["is_win"] = static_cast<int>(row.is_win());
-				target.extra_data["cluster"] = row.get_platform();
-
-				for (auto i = 0ull; i < sneak_data["injure_soldier_id"].size(); i++)
-				{
-					const auto header_val = sneak_data["injure_soldier_id"][i]["param"][0].get<std::uint32_t>();
-					database::player_data::staff_header_t header{};
-
-					std::memcpy(&header, &header_val, sizeof(database::player_data::staff_header_t));
-					auto& value = target.extra_data["owner_fob_record"]["injury_staff_count"][header.peak_rank];
-
-					const auto current = value.get<std::uint32_t>();
-					value = current + 1;
-				}
-
-				target.extra_data["owner_fob_record"]["date_time"] = row.get_date();
-				target.player_id = row.get_player_id();
-
-				targets.emplace_back(target);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_challenge_list(CALLBACK_ARGS)
-		{
-			const auto follows = database::player_follows::get_follows(player.get_id());
-
-			const auto list = database::players::find_with_security_challenge(std::min(limit, 10u));
-			target_list_t targets;
-
-			if (player.is_security_challenge_enabled())
-			{
-				target_data_t target{};
-				target.player_id = player.get_id();
-				targets.emplace_back(target);
-			}
-
-			for (auto& row : list)
-			{
-				if (row.get_id() != player.get_id() && !follows.contains(row.get_id()))
-				{
-					target_data_t target{};
-					target.player_id = row.get_id();
-					targets.emplace_back(target);
-				}
-			}
-
-			return targets;
-		}
-
-		target_list_t get_deployed_list(CALLBACK_ARGS)
-		{
-			target_data_t target;
-
-			auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
-			if (!deploy_damage_opt.has_value())
-			{
-				return {};
-			}
-
-			auto& deploy_damage = deploy_damage_opt.value();
-			const auto& mother_base_id_j = deploy_damage["motherbase_id"];
-
-			if (!mother_base_id_j.is_number_unsigned())
-			{
-				return {};
-			}
-
-			const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
-			const auto fob = database::fobs::get_fob(mother_base_id);
-			if (!fob.has_value())
-			{
-				return {};
-			}
-
-			target.player_id = fob->get_player_id();
-
-			return {target};
-		}
-
-		target_list_t get_emergency_list(CALLBACK_ARGS)
-		{
-			const auto active_sneak = database::players::find_active_sneak(player.get_id(), true, true);
-			if (!active_sneak.has_value())
-			{
-				return {};
-			}
-
-			target_list_t targets;
-			target_data_t target;
-
-			target.player_id = player.get_id();
-
-			const auto attacker = database::players::find(active_sneak->get_player_id());
-			const auto attacker_record = database::player_records::find(active_sneak->get_player_id());
-			const auto attacker_data = database::player_data::find(active_sneak->get_player_id(), false, false, true);
-			const auto fob_list = database::fobs::get_fob_list(active_sneak->get_owner_id());
-
-			for (auto i = 0ull; i < fob_list.size(); i++)
-			{
-				auto& fob = fob_list[i];
-				target.extra_data["mother_base_param"][i + 1]["area_id"] = 0;
-				target.extra_data["mother_base_param"][i + 1]["construct_param"] = fob.get_construct_param();
-				target.extra_data["mother_base_param"][i + 1]["fob_index"] = fob.get_index();
-				target.extra_data["mother_base_param"][i + 1]["mother_base_id"] = fob.get_id();
-				target.extra_data["mother_base_param"][i + 1]["platform_count"] = fob.get_platform_count();
-				target.extra_data["mother_base_param"][i + 1]["price"] = 0;
-				target.extra_data["mother_base_param"][i + 1]["security_rank"] = fob.get_security_rank();
-
-				if (i == 0)
-				{
-					target.extra_data["mother_base_param"][0] = target.extra_data["mother_base_param"][1];
-				}
-
-				if (fob.get_id() == active_sneak->get_fob_id())
-				{
-					target.extra_data["mother_base_param"][0] = target.extra_data["mother_base_param"][i + 1];
-				}
-			}
-
-			target.extra_data["attacker_emblem"] = attacker_data->get_emblem();
-			target.extra_data["attacker_espionage"]["win"] = attacker_record->get_sneak_win();
-			target.extra_data["attacker_espionage"]["lose"] = attacker_record->get_sneak_lose();
-			target.extra_data["attacker_espionage"]["score"] = attacker_record->get_fob_point();
-			target.extra_data["attacker_espionage"]["section"] = 0;
-
-			target.extra_data["attacker_info"]["player_id"] = attacker->get_id();
-			target.extra_data["attacker_info"]["player_name"] = std::format("{}_player01", attacker->get_account_id());
-			target.extra_data["attacker_info"]["xuid"] = attacker->get_id();
-
-			target.extra_data["attacker_sneak_rank_grade"] = attacker_record->get_fob_grade();
-
-			targets.emplace_back(target);
-
-			return targets;
-		}
-
-		target_list_t get_follow_list(CALLBACK_ARGS)
-		{
-			target_list_t targets;
-
-			const auto players = database::player_follows::get_follows(player.get_id());
-			const auto followers = database::player_follows::get_followers(player.get_id());
-
-			for (const auto& id : players)
-			{
-				target_data_t data{};
-				data.player_id = id;
-				data.extra_data["owner_detail_record"]["follower"] = followers.contains(id);
-				data.extra_data["owner_detail_record"]["follow"] = 1;
-				targets.emplace_back(data);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_trial_list(CALLBACK_ARGS)
-		{
-			target_list_t targets;
-
-			const auto follows = database::player_follows::get_follows(player.get_id());
-			const auto followers = database::player_follows::get_followers(player.get_id());
-
-			target_data_t self{};
-			self.player_id = player.get_id();
-			targets.emplace_back(self);
-
-			for (const auto& id : follows)
-			{
-				target_data_t data{};
-				data.player_id = id;
-				data.extra_data["owner_detail_record"]["follower"] = followers.contains(id);
-				data.extra_data["owner_detail_record"]["follow"] = 1;
-				targets.emplace_back(data);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_follower_list(CALLBACK_ARGS)
-		{
-			target_list_t targets;
-
-			const auto follows = database::player_follows::get_follows(player.get_id());
-			const auto followers = database::player_follows::get_followers(player.get_id());
-
-			for (const auto& id : followers)
-			{
-				target_data_t data{};
-				data.player_id = id;
-				data.extra_data["owner_detail_record"]["follower"] = 1;
-				data.extra_data["owner_detail_record"]["follow"] = follows.contains(id);
-				targets.emplace_back(data);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_nuclear_list(CALLBACK_ARGS)
-		{
-			target_list_t targets;
-
-			const auto players = database::player_data::find_with_nukes(std::min(limit, 10u));
-
-			for (const auto& id : players)
-			{
-				if (id == player.get_id())
-				{
-					continue;
-				}
-
-				target_data_t data{};
-				data.player_id = id;
-				targets.emplace_back(data);
-			}
-
-			return targets;
-		}
-
-		target_list_t get_unimplemented(CALLBACK_ARGS)
+		this->register_handler<target_list_challenge>("CHALLENGE");
+		this->register_handler<target_list_deployed>("DEPLOYED");
+		this->register_handler<target_list_emergency>("EMERGENCY");
+		this->register_handler<target_list_enemy>("ENEMY");
+		this->register_handler<target_list_event>("EVENT");
+		this->register_handler<target_list_follow>("FOLLOW");
+		this->register_handler<target_list_follower>("FOLLOWER");
+		this->register_handler<target_list_fr_enemy>("FR_ENEMY");
+		this->register_handler<target_list_nuclear>("NUCLEAR");
+		this->register_handler<target_list_pickup_high>("PICKUP_HIGH");
+		this->register_handler<target_list_pickup>("PICKUP");
+		this->register_handler<target_list_trial>("TRIAL");
+	}
+
+	target_list_t cmd_get_fob_target_list::get_target_list(const std::string& name, const database::players::player& player, 
+		const database::player_data::player_data_ptr& player_data, 
+		const std::uint32_t limit)
+	{
+		const auto iter = this->handlers_.find(name);
+		if (iter == this->handlers_.end())
 		{
 			return {};
 		}
 
-		using target_callback_t = std::function<target_list_t(CALLBACK_ARGS)>;
-		std::unordered_map<std::string, target_callback_t> target_callbacks =
-		{
-			{"DEPLOYED", get_deployed_list},
-			{"CHALLENGE", get_challenge_list},
-			{"EVENT", get_unimplemented}, ///
-			{"INJURY", get_injury_list},
-			{"FR_ENEMY", get_unimplemented}, ///
-			{"PICKUP_HIGH", get_pickup_high_list},
-			{"NUCLEAR", get_nuclear_list},
-			{"TRIAL", get_trial_list},
-			{"PICKUP", get_pickup_list},
-			{"FOLLOWER", get_follower_list},
-			{"FOLLOW", get_follow_list},
-			{"EMERGENCY", get_emergency_list},
-			{"ENEMY", get_enemy_list},
-		};
-
-		target_list_t get_target_list(const std::string& type, CALLBACK_ARGS)
-		{
-			const auto iter = target_callbacks.find(type);
-			if (iter == target_callbacks.end())
-			{
-				return {};
-			}
-
-			return iter->second(player, player_data, limit);
-		}
-
-		void merge_json(nlohmann::json& data, const nlohmann::json& extra_data)
-		{
-			if (!extra_data.is_object())
-			{
-				return;
-			}
-
-			for (const auto& [k, v] : extra_data.items())
-			{
-				if (v.is_object())
-				{
-					if (data[k].is_object())
-					{
-						merge_json(data[k], v);
-					}
-					else
-					{
-						data[k] = v;
-					}
-				}
-				else
-				{
-					data[k] = v;
-				}
-			}
-		}
+		return iter->second->generate(player, player_data, limit);
 	}
 
 	nlohmann::json cmd_get_fob_target_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
