@@ -168,18 +168,18 @@ List of implemeted/unimplemented server commands
 | CMD_GET_MBCOIN_REMAINDER | ✔️ |  |
 | CMD_GET_MGO_BOOST | ✔️ |  |
 | CMD_GET_MGO_CHARACTER2 | ✔️ |  |
-| CMD_GET_MGO_GLOBAL_PROGRESSION | ❌ |  |
+| CMD_GET_MGO_GLOBAL_PROGRESSION | ✔️ |  |
 | CMD_GET_MGO_GP | ✔️ |  |
 | CMD_GET_MGO_LOADOUT | ✔️ |  |
 | CMD_GET_MGO_MATCH_STAT | ✔️ |  |
-| CMD_GET_MGO_MISSION_INFO | ❌ |  |
+| CMD_GET_MGO_MISSION_INFO | ✔️ |  |
 | CMD_GET_MGO_PARAMETERS | ✔️ |  |
 | CMD_GET_MGO_PROGRESSION | ✔️ |  |
 | CMD_GET_MGO_PURCHASABLE_BOOST_LIST | ✔️ |  |
 | CMD_GET_MGO_PURCHASABLE_GEAR | ✔️ |  |
-| CMD_GET_MGO_PURCHASABLE_GEAR_COLOR | ❌ |  |
+| CMD_GET_MGO_PURCHASABLE_GEAR_COLOR | ✔️ |  |
 | CMD_GET_MGO_PURCHASABLE_ITEM_LIST | ✔️ |  |
-| CMD_GET_MGO_PURCHASABLE_WEAPON_COLOR | ❌ |  |
+| CMD_GET_MGO_PURCHASABLE_WEAPON_COLOR | ➖ | unused |
 | CMD_GET_MGO_PURCHASED_ITEM | ✔️ |  |
 | CMD_GET_MGO_RANK_XP_LIST | ✔️ |  |
 | CMD_GET_MGO_STAT | ✔️ |  |
@@ -187,8 +187,8 @@ List of implemeted/unimplemented server commands
 | CMD_GET_MGO_SURVIVAL_RULE_SET | ❌ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
-| CMD_GET_MGO_TITLE_USR | ✔️ |  |
-| CMD_GET_MGO_TITLE_USR2 | ❌ |  |
+| CMD_GET_MGO_TITLE_USR | 🟡 | database not implemented |
+| CMD_GET_MGO_TITLE_USR2 | 🟡 | database not implemented |
 | CMD_GET_MGO_USER_DATA | ✔️ |  |
 | CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
 | CMD_GET_PLAYERLIST | ✔️ |  |
@@ -196,21 +196,21 @@ List of implemeted/unimplemented server commands
 | CMD_GET_PURCHASE_HISTORY_NUM | ❌ |  |
 | CMD_GET_SHOP_ITEM_NAME_LIST | ❌ |  |
 | CMD_MGO_DLC_UPDATE | ✔️ |  |
-| CMD_MGO_MISSION_RESULT | ❌ |  |
+| CMD_MGO_MISSION_RESULT | ✔️ |  |
 | CMD_PURCHASE_MGO_BOOST | ❌ |  |
-| CMD_PURCHASE_MGO_GEAR_COLOR | ❌ |  |
+| CMD_PURCHASE_MGO_GEAR_COLOR | ✔️ |  |
 | CMD_PURCHASE_MGO_ITEM | ❌ |  |
-| CMD_PURCHASE_MGO_WEAPON_COLOR | ❌ |  |
+| CMD_PURCHASE_MGO_WEAPON_COLOR | ➖ | unused |
 | CMD_REQAUTH_HTTPS | ✔️ |  |
 | CMD_SEND_IPANDPORT | ✔️ |  |
-| CMD_SEND_MGO_SESSION_ERROR | ❌ |  |
+| CMD_SEND_MGO_SESSION_ERROR | ✔️ |  |
 | CMD_SET_CURRENTPLAYER | ✔️ |  |
-| CMD_SET_MGO_CHARACTER2 | ❌ |  |
+| CMD_SET_MGO_CHARACTER2 | ➖ | unused |
 | CMD_SET_MGO_CHARACTER_AND_LOADOUT2 | ✔️ |  |
-| CMD_SET_MGO_LOADOUT | ❌ |  |
+| CMD_SET_MGO_LOADOUT | ➖ | unused |
 | CMD_SET_MGO_LOG | ❌ |  |
 | CMD_SET_MGO_MATCH_STAT | ✔️ |  |
-| CMD_SET_MGO_PROGRESSION | ❌ |  |
+| CMD_SET_MGO_PROGRESSION | ➖ | unused |
 | CMD_SET_MGO_STAT | ✔️ |  |
 | CMD_UPDATE_SESSION | ✔️ |  |
 | CMD_USE_MGO_SURVIVAL_FREE_TICKET | ❌ |  |
