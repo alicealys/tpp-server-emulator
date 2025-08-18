@@ -4,6 +4,18 @@
 
 namespace database::mgo_color_purchase
 {
+	struct gear_info_t
+	{
+		std::uint32_t gear_id;
+		std::uint32_t default_color;
+		std::uint32_t purchase_type;
+		std::uint32_t point;
+		std::uint32_t prestige;
+		bool is_default;
+	};
+
+	gear_info_t get_gear_info(const std::uint32_t gear_id);
+
 	class mgo_color_purchase
 	{
 	public:

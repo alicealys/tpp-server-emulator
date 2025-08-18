@@ -6,6 +6,52 @@
 
 namespace database::mgo_color_purchase
 {
+	std::unordered_map<std::uint32_t, gear_info_t> load_gear_info_map()
+	{
+		std::unordered_map<std::uint32_t, gear_info_t> map;
+
+		const auto list = utils::resources::load_json(RESOURCE_MGO_GEAR_LIST);
+		for (auto i = 0ull; i < list.size(); i++)
+		{
+			gear_info_t info{};
+			info.gear_id = list[i]["gear_id"].get<std::uint32_t>();
+			info.default_color = list[i]["default_color"].get<std::uint32_t>();
+			info.point = list[i]["point"].get<std::uint32_t>();
+			info.purchase_type = list[i]["purchase_type"].get<std::uint32_t>();
+			info.prestige = list[i]["prestige"].get<std::uint32_t>();
+			map.insert(std::make_pair(info.gear_id, info));
+		}
+
+		return map;
+	}
+
+	std::unordered_map<std::uint32_t, gear_info_t>& get_gear_info_map()
+	{
+		static auto map = load_gear_info_map();
+		return map;
+	}
+
+	gear_info_t get_gear_info(const std::uint32_t gear_id)
+	{
+		const auto& map = get_gear_info_map();
+		const auto iter = map.find(gear_id);
+
+		if (iter != map.end())
+		{
+			return iter->second;
+		}
+
+		gear_info_t info{};
+		info.gear_id = gear_id;
+		info.default_color = 0;
+		info.point = 10;
+		info.default_color = 288703677;
+		info.purchase_type = 2;
+		info.is_default = true;
+
+		return info;
+	}
+
 	GET_FIELD_C(mgo_color_purchase, std::uint64_t, id);
 	GET_FIELD_C(mgo_color_purchase, std::uint64_t, player_id);
 	GET_FIELD_C(mgo_color_purchase, std::uint32_t, gear_id);

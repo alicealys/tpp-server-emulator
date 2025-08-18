@@ -24,23 +24,24 @@ namespace emulator::mgo
 
 		const auto color = color_j.get<std::uint32_t>();
 		const auto gear_id = gear_id_j.get<std::uint32_t>();
-		const auto price = price_j.get<std::uint32_t>();
+		[[ maybe_unused ]] const auto price = price_j.get<std::uint32_t>();
 		const auto purchase_type = purchase_type_j.get<std::uint32_t>();
+		const auto gear_info = database::mgo_color_purchase::get_gear_info(gear_id);
 
 		const auto do_purchase = [&]
 		{
-			if (purchase_type == 0) // mb_coin
+			if (gear_info.purchase_type == 3) // mb_coin
 			{
-				if (database::player_data::spend_mb_coins(player->get_id(), price))
+				if (database::player_data::spend_mb_coins(player->get_id(), gear_info.point))
 				{
 					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, color);
 					return true;
 				}
 			}
 
-			if (purchase_type == 1) // gp_coin
+			if (gear_info.purchase_type == 2) // gp_coin
 			{
-				if (database::mgo_data::spend_gp_coins(player->get_id(), price))
+				if (database::mgo_data::spend_gp_coins(player->get_id(), gear_info.point))
 				{
 					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, color);
 					return true;
@@ -54,10 +55,10 @@ namespace emulator::mgo
 		{
 			result["color"] = color;
 			result["gear_id"] = gear_id;
-			result["price"] = price;
+			result["price"] = gear_info.point;
 			result["purchase_type"] = purchase_type;
 
-			if (purchase_type == 0)
+			if (gear_info.purchase_type == 3)
 			{
 				result["result_point"] = database::player_data::get_mb_coins(player->get_id());
 			}
