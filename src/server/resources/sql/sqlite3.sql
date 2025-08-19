@@ -3,7 +3,6 @@ create table if not exists `players`
 (
 	id									integer	primary key autoincrement,
 	account_id							bigint unsigned		 		 unique,
-	is_real_player						boolean 		not null,
 	session_id							char(32)		default null unique,
 	login_password						char(32)		default null,
 	last_update							datetime		default null,
@@ -45,6 +44,7 @@ create table if not exists `player_records`
 	league_rank					int not null	default 0,
 	prev_league_rank			int not null	default 0,
 	league_point				int not null	default 0,
+	event_point					int not null	default 0,
 	playtime					int not null	default 0,
 	point						int not null	default 0,
 	fob_defense_win				int not null	default 0,
@@ -262,4 +262,11 @@ create table if not exists `mgo_color_purchase`
 	color_id				int unsigned	not null,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`, `gear_id`, `color_id`)
+)
+-- query:mgstpp.variable.create
+create table if not exists `variable`
+(
+	id						integer	primary key autoincrement,
+	variable_name			varchar(256) 	not null	unique,
+	variable_value			json			not null
 )

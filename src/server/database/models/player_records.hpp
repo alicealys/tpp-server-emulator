@@ -211,6 +211,7 @@ namespace database::player_records
 	void sync_prev_values(const std::uint64_t player_id);
 	void add_event_points(const std::uint64_t player_id, const std::uint32_t value);
 	bool spend_event_points(const std::uint64_t player_id, const std::uint32_t value);
+	void reset_event_points();
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit);
 	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit);

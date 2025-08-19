@@ -146,6 +146,19 @@ namespace database::player_records
 				return result != 0;
 			});
 		}
+		
+		template <database_type_t Type>
+		void reset_event_points()
+		{
+			return database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.event_point = 0)
+								.unconditionally()
+					);
+			});
+		}
 
 		template <database_type_t Type>
 		void sync_prev_values(const std::uint64_t player_id)
@@ -354,6 +367,11 @@ namespace database::player_records
 	bool spend_event_points(const std::uint64_t player_id, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::spend_event_points, player_id, value);
+	}
+
+	void reset_event_points()
+	{
+		RUN_IMPL(impl::reset_event_points);
 	}
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)

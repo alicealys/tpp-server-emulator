@@ -5,6 +5,8 @@
 #include "player_data.hpp"
 #include "player_records.hpp"
 #include "fobs.hpp"
+#include "variable.hpp"
+#include "event_rankings.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -13,6 +15,8 @@ namespace database::fob_event
 {
 	namespace
 	{
+		constexpr auto event_number_variable_name = "fob_event_number";
+
 		fob_event_date_range_t get_event_range()
 		{
 			const auto day = date::floor<date::days>(std::chrono::system_clock::now());
@@ -239,6 +243,44 @@ namespace database::fob_event
 				create_database_entries_for_player(player);
 			}
 		}
+
+		void reset_values()
+		{
+			database::event_rankings::reset_values(database::event_rankings::fob_event_ranking);
+			database::player_records::reset_event_points();
+		}
+
+		void update_event()
+		{
+			static auto last_update = std::chrono::high_resolution_clock::time_point();
+			const auto now = std::chrono::high_resolution_clock::now();
+
+			if (now - last_update < 1h)
+			{
+				return;
+			}
+
+			last_update = now;
+
+			const auto current_event_number = get_event_number();
+			const auto stored_event_number = variable::get(event_number_variable_name);
+
+			if (!stored_event_number.has_value() || !stored_event_number->is_number_unsigned())
+			{
+				reset_values();
+				variable::set(event_number_variable_name, current_event_number);
+				return;
+			}
+
+			const auto number = stored_event_number->get<std::uint32_t>();
+			if (number == current_event_number)
+			{
+				return;
+			}
+
+			reset_values();
+			variable::set(event_number_variable_name, current_event_number);
+		}
 	}
 
 	std::optional<fob_event_player_t> get_player(const std::uint64_t id)
@@ -282,6 +324,11 @@ namespace database::fob_event
 		{
 			get_current_event_index();
 			create_database_entries();
+		}
+
+		void run_tasks(database_t& database) override
+		{
+			update_event();
 		}
 	};
 }
