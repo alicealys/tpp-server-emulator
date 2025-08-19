@@ -86,7 +86,7 @@ namespace emulator::tpp
 
 		result["enable_security_challenge"] = player->is_security_challenge_enabled();
 		result["esp_point"] = stats->get_fob_point();
-		result["event_point"] = 0;
+		result["event_point"] = stats->get_event_point();
 
 		const auto deploy_damage = player_data->get_fob_deploy_damage_param();
 		if (deploy_damage.has_value())

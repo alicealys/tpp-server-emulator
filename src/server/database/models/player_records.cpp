@@ -107,6 +107,25 @@ namespace database::player_records
 		}
 
 		template <database_type_t Type>
+		void add_event_point(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			database::access([&](database::database_t& db)
+			{
+				const auto record = find<Type>(player_id);
+				if (!record.has_value())
+				{
+					return;
+				}
+
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.event_point = player_record::table.event_point + value)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
 		void sync_prev_values(const std::uint64_t player_id)
 		{
 			database::access([&](database::database_t& db)
@@ -303,6 +322,11 @@ namespace database::player_records
 	void sync_prev_values(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::sync_prev_values, player_id);
+	}
+
+	void add_event_point(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::add_event_point, player_id, value);
 	}
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)

@@ -60,8 +60,8 @@ namespace database::fob_event
 
 	struct fob_event_t
 	{
-		std::uint32_t event_id;
 		std::string server_text;
+		nlohmann::json one_event_task;
 		fob_event_date_range_t date_range;
 		std::vector<fob_event_information_t> information;
 		std::vector<fob_event_point_exchange_param_t> point_exchange_params;

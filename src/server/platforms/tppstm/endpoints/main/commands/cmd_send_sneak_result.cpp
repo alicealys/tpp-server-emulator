@@ -3,6 +3,7 @@
 #include "cmd_send_sneak_result.hpp"
 
 #include "database/models/fobs.hpp"
+#include "database/models/fob_event.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/sneak_results.hpp"
@@ -42,6 +43,8 @@ namespace emulator::tpp
 			const auto sneak_result = data["sneak_result"].get<std::string>();
 			const auto is_win = sneak_result == "WIN";
 			const auto sneak_point = data["sneak_point"].get<std::int32_t>();
+			const auto event_point = data["event_point"].get<std::uint32_t>();
+			const auto is_event = data["is_event"].get<std::uint32_t>() == 1;
 			const auto mode_str = data["mode"].get<std::string>();
 			const auto mother_base_id = data["mother_base_id"].get<std::uint64_t>();
 
@@ -157,6 +160,12 @@ namespace emulator::tpp
 				return NOERR;
 			};
 
+			if (is_event && database::fob_event::is_event_player(owner->get_id()))
+			{
+				database::player_records::add_event_point(player->get_id(), event_point);
+				database::player_records::add_sneak_result(player->get_id(), fob->get_player_id(), sneak_point, is_win, true);
+			}
+
 			if (owner->is_real_player())
 			{
 				const auto err = send_update();
@@ -175,7 +184,7 @@ namespace emulator::tpp
 			result["sneak_point"] = new_stats->get_fob_point();
 			result["is_security_challenge"] = 0;
 			result["is_wormhole_open"] = 0;
-			result["event_point"] = 0;
+			result["event_point"] = new_stats->get_event_point();
 		}
 		catch (const std::exception&)
 		{
