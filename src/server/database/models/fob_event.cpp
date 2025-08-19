@@ -17,7 +17,7 @@ namespace database::fob_event
 		{
 			const auto day = date::floor<date::days>(std::chrono::system_clock::now());
 			const auto event_duration = std::chrono::days(7);
-			const auto event_start = day - (date::weekday{day} - date::Tuesday);
+			const auto event_start = (day - (date::weekday{day} - date::Tuesday)) + std::chrono::hours(5);
 			const auto event_end = event_start + event_duration;
 
 			fob_event_date_range_t range{};
@@ -25,6 +25,15 @@ namespace database::fob_event
 			range.end = std::chrono::duration_cast<std::chrono::seconds>(event_end.time_since_epoch());
 
 			return range;
+		}
+
+		std::uint32_t get_event_number()
+		{
+			const auto now = std::chrono::system_clock::now() + 24h * 7;
+			constexpr auto offset = 24h * 5 + 5h; // tuesday 5AM
+			const auto day = std::chrono::floor<std::chrono::days>(now - offset).time_since_epoch().count();
+			const auto week = day / 7;
+			return week;
 		}
 
 		fob_event_player_t parse_event_player(const nlohmann::json& player_j)
@@ -214,16 +223,9 @@ namespace database::fob_event
 			database::fobs::sync_data(player.get_id(), event_player.fobs);
 		}
 
-		std::uint32_t get_week_number()
-		{
-			const auto day = std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now()).time_since_epoch().count();
-			const auto week = day / 7;
-			return week;
-		}
-
 		std::size_t get_current_event_index()
 		{
-			const auto week = get_week_number();
+			const auto week = get_event_number();
 			auto& events_data = get_events_data();
 			const auto index = week % events_data.events.size();
 			return index;

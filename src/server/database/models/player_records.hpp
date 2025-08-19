@@ -209,7 +209,8 @@ namespace database::player_records
 	void add_sneak_result(const std::uint64_t player_id, const std::uint64_t owner_id, 
 		const std::int32_t point_add, const bool is_win, const bool is_sneak);
 	void sync_prev_values(const std::uint64_t player_id);
-	void add_event_point(const std::uint64_t player_id, const std::uint32_t value);
+	void add_event_points(const std::uint64_t player_id, const std::uint32_t value);
+	bool spend_event_points(const std::uint64_t player_id, const std::uint32_t value);
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit);
 	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit);

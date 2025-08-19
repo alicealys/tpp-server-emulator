@@ -107,7 +107,7 @@ namespace database::player_records
 		}
 
 		template <database_type_t Type>
-		void add_event_point(const std::uint64_t player_id, const std::uint32_t value)
+		void add_event_points(const std::uint64_t player_id, const std::uint32_t value)
 		{
 			database::access([&](database::database_t& db)
 			{
@@ -122,6 +122,28 @@ namespace database::player_records
 						.set(player_record::table.event_point = player_record::table.event_point + value)
 								.where(player_record::table.player_id == player_id)
 					);
+			});
+		}
+
+		template <database_type_t Type>
+		bool spend_event_points(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.player_id = player_id,
+							 player_record::table.event_point = player_record::table.event_point - value)
+								.where(player_record::table.player_id == player_id &&
+									   player_record::table.event_point >= value)
+					);
+
+				return result != 0;
 			});
 		}
 
@@ -324,9 +346,14 @@ namespace database::player_records
 		RUN_IMPL(impl::sync_prev_values, player_id);
 	}
 
-	void add_event_point(const std::uint64_t player_id, const std::uint32_t value)
+	void add_event_points(const std::uint64_t player_id, const std::uint32_t value)
 	{
-		RUN_IMPL(impl::add_event_point, player_id, value);
+		RUN_IMPL(impl::add_event_points, player_id, value);
+	}
+
+	bool spend_event_points(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::spend_event_points, player_id, value);
 	}
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)
