@@ -7,6 +7,23 @@
 
 namespace database::mgo_characters
 {
+	namespace
+	{
+		std::string get_base_avatar()
+		{
+			static const auto base_avatar_j = utils::resources::load_json(RESOURCE_MGO_BASE_AVATAR);
+			static const auto base_avatar = base_avatar_j.dump();
+			return base_avatar;
+		}
+
+		std::string get_base_loadouts()
+		{
+			static const auto base_loadouts_j = utils::resources::load_json(RESOURCE_MGO_BASE_LOADOUTS);
+			static const auto base_loadouts = base_loadouts_j.dump();
+			return base_loadouts;
+		}
+	}
+
 	GET_FIELD_C(mgo_character, std::uint64_t, id);
 	GET_FIELD_C(mgo_character, std::uint64_t, player_id);
 	GET_FIELD_C(mgo_character, std::uint32_t, character_index);
@@ -71,7 +88,7 @@ namespace database::mgo_characters
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::insert_into(mgo_character::table)
 						.set(mgo_character::table.player_id = player_id, mgo_character::table.character_index = character_index,
-							 mgo_character::table.avatar = "{}", mgo_character::table.loadouts = "[]"));
+							 mgo_character::table.avatar = get_base_avatar(), mgo_character::table.loadouts = get_base_loadouts()));
 
 				return result != 0ull;
 			});
@@ -101,8 +118,8 @@ namespace database::mgo_characters
 			{
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_character::table)
-						.set(mgo_character::table.name = "", mgo_character::table.avatar = "{}",
-							 mgo_character::table.loadouts = "{}", mgo_character::table.player_class = 0,
+						.set(mgo_character::table.name = "", mgo_character::table.avatar = get_base_avatar(),
+							 mgo_character::table.loadouts = get_base_loadouts(), mgo_character::table.player_class = 0,
 							 mgo_character::table.player_type = 0, mgo_character::table.permanent_unlock_list = 0,
 							 mgo_character::table.last_loadout = 0)
 								.where(mgo_character::table.player_id == player_id && mgo_character::table.character_index == character_index));
