@@ -6,6 +6,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/wormholes.hpp"
+#include "database/models/fob_event.hpp"
 
 namespace emulator::tpp
 {
@@ -42,6 +43,8 @@ namespace emulator::tpp
 		{
 			return error(ERR_INVALIDARG);
 		}
+
+		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 		auto fob = database::fobs::get_fob(mother_base_id);
@@ -113,10 +116,19 @@ namespace emulator::tpp
 		detail["placement"][resource_names[4]] = target_data->get_resource_value(database::player_data::processed_server, 37);
 		detail["placement"][resource_names[5]] = target_data->get_resource_value(database::player_data::processed_server, 38);
 
-		detail["platform"] = 255;
-		detail["reward_rate"] = 0;
-
-		detail["primary_reward"] = nlohmann::json::array();
+		const auto event_player = database::fob_event::get_player(owner->get_id());
+		if (is_event && event_player.has_value())
+		{
+			detail["primary_reward"] = event_player->reward["primary_reward"];
+			detail["reward_rate"] = event_player->reward["reward_rate"];
+			detail["platform"] = 255; // seems to be 255 for regular players
+		}
+		else
+		{
+			detail["primary_reward"] = nlohmann::json::array();
+			detail["reward_rate"] = 0;
+			detail["platform"] = 0; // idk seems to be 0 for event players
+		}
 
 		for (auto i = 0u; i < 10; i++)
 		{

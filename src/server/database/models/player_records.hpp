@@ -1,5 +1,7 @@
 #pragma once
 
+#include "database/models/players.hpp"
+
 #include "../database.hpp"
 
 namespace database::player_records
@@ -12,7 +14,6 @@ namespace database::player_records
 	public:
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-		DEFINE_FIELD(is_real_player, sqlpp::boolean);
 		DEFINE_FIELD(fob_grade, sqlpp::integer_unsigned);
 		DEFINE_FIELD(prev_fob_grade, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_point, sqlpp::integer);
@@ -31,7 +32,7 @@ namespace database::player_records
 		DEFINE_FIELD(fob_sneak_win, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
 		DEFINE_FIELD(shield_date, sqlpp::time_point);
-		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, is_real_player_field_t, fob_grade_field_t, prev_fob_grade_field_t,
+		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
 			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t,
 			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
@@ -44,7 +45,6 @@ namespace database::player_records
 		{
 			this->id_ = row.id;
 			this->player_id_ = row.player_id;
-			this->is_real_player_ = row.is_real_player;
 			this->fob_grade_ = static_cast<std::uint32_t>(row.fob_grade);
 			this->prev_fob_grade_ = static_cast<std::uint32_t>(row.prev_fob_grade);
 			this->fob_point_ = static_cast<std::int32_t>(row.fob_point);
@@ -68,11 +68,6 @@ namespace database::player_records
 		std::uint64_t get_player_id() const
 		{
 			return this->player_id_;
-		}
-
-		bool is_real_player() const
-		{
-			return this->is_real_player_;
 		}
 
 		std::uint32_t get_fob_grade() const
@@ -179,7 +174,6 @@ namespace database::player_records
 	private:
 		std::uint64_t id_;
 		std::uint64_t player_id_;
-		bool is_real_player_;
 		std::uint32_t fob_grade_;
 		std::uint32_t prev_fob_grade_;
 		std::int32_t fob_point_;
@@ -203,7 +197,7 @@ namespace database::player_records
 	};
 
 	std::optional<player_record> find(const std::uint64_t player_id);
-	player_record find_or_create(const std::uint64_t player_id, bool is_real_player = true);
+	player_record find_or_create(const std::uint64_t player_id);
 	void add_sneak_result(const std::uint64_t player_id, const std::uint64_t owner_id, 
 		const std::int32_t point_add, const bool is_win, const bool is_sneak);
 	void sync_prev_values(const std::uint64_t player_id);

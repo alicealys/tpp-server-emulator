@@ -29,12 +29,17 @@ namespace database::players
 	sneak_mode get_sneak_mode_id(const std::string& mode);
 	sneak_mode get_alt_sneak_mode(const sneak_mode mode);
 
+	constexpr auto player_id_reserve_count = 1000ull;
+
+	bool is_system_player_id(const std::uint64_t id);
+
+#define IS_SYSTEM_PLAYER_ID(__id__) (__id__ < database::players::player_id_reserve_count)
+
 	class player
 	{
 	public:
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(account_id, sqlpp::integer_unsigned);
-		DEFINE_FIELD(is_real_player, sqlpp::boolean);
 		DEFINE_FIELD(session_id, sqlpp::text);
 		DEFINE_FIELD(login_password, sqlpp::text);
 		DEFINE_FIELD(crypto_key, sqlpp::text);
@@ -57,7 +62,7 @@ namespace database::players
 		DEFINE_FIELD(current_sneak_is_sneak, sqlpp::boolean);
 		DEFINE_FIELD(current_sneak_start, sqlpp::time_point);
 		DEFINE_FIELD(current_sneak_security_challenge, sqlpp::boolean);
-		DEFINE_TABLE(players, id_field_t, account_id_field_t, is_real_player_field_t, session_id_field_t,
+		DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t,
 			login_password_field_t, crypto_key_field_t, smart_device_id_field_t,
 			currency_field_t, last_update_field_t, ex_ip_field_t, ex_port_field_t,
 			in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t,
@@ -77,7 +82,6 @@ namespace database::players
 		{
 			this->id_ = row.id;
 			this->account_id_ = row.account_id;
-			this->is_real_player_ = row.is_real_player;
 			this->session_id_ = row.session_id;
 			this->login_password_ = row.login_password;
 			this->crypto_key_ = row.crypto_key;
@@ -105,7 +109,7 @@ namespace database::players
 
 		bool is_real_player() const
 		{
-			return this->is_real_player_;
+			return this->id_ >= player_id_reserve_count;
 		}
 
 		std::string get_login_password() const
@@ -186,7 +190,6 @@ namespace database::players
 	private:
 		std::uint64_t id_;
 		std::uint64_t account_id_;
-		bool is_real_player_;
 
 		std::string session_id_;
 		std::string login_password_;
@@ -289,7 +292,8 @@ namespace database::players
 	std::optional<player> find_from_account(const std::uint64_t id);
 	std::optional<player> find_by_session_id(const std::string session_id, bool use_timeout = true, bool* is_expired = nullptr);
 
-	player find_or_insert(const std::uint64_t account_id, bool is_real_player = true);
+	player find_or_insert(const std::uint64_t account_id);
+	player create_system_player(const std::uint64_t id);
 
 	std::string generate_login_password(const std::uint64_t account_id);
 	std::string generate_session_id(const std::uint64_t account_id);

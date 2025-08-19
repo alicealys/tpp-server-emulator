@@ -34,7 +34,7 @@ namespace database::player_records
 		}
 
 		template <database_type_t Type>
-		player_record find_or_create(const std::uint64_t player_id, bool is_real_player)
+		player_record find_or_create(const std::uint64_t player_id)
 		{
 			{
 				const auto found = find<Type>(player_id);
@@ -48,7 +48,7 @@ namespace database::player_records
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::insert_into(player_record::table)
-						.set(player_record::table.player_id = player_id, player_record::table.is_real_player = is_real_player,
+						.set(player_record::table.player_id = player_id,
 							 player_record::table.shield_date = std::chrono::system_clock::now()));
 			});
 
@@ -158,7 +158,8 @@ namespace database::player_records
 					db.get_database<Type>()->operator()(
 						sqlpp::update(player_record::table)
 							.set(player_record::table.fob_grade = i)
-								.where(player_record::table.is_real_player && player_record::table.fob_point >= range.first)
+								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && 
+									   player_record::table.fob_point >= range.first)
 						);
 				}
 				else
@@ -166,7 +167,8 @@ namespace database::player_records
 					db.get_database<Type>()->operator()(
 						sqlpp::update(player_record::table)
 							.set(player_record::table.fob_grade = i)
-								.where(player_record::table.is_real_player && player_record::table.fob_point >= range.first && player_record::table.fob_point < range.second)
+								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && 
+									   player_record::table.fob_point >= range.first && player_record::table.fob_point < range.second)
 						);
 				}
 			}
@@ -184,7 +186,7 @@ namespace database::player_records
 					sqlpp::select(
 						sqlpp::all_of(player_record::table))
 							.from(player_record::table)
-								.where(player_record::table.is_real_player && player_record::table.fob_grade == grade)
+								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && player_record::table.fob_grade == grade)
 									.order_by(rand.asc())
 										.limit(limit));
 
@@ -287,9 +289,9 @@ namespace database::player_records
 		RUN_IMPL(impl::find, player_id);
 	}
 
-	player_record find_or_create(const std::uint64_t player_id, bool is_real_player)
+	player_record find_or_create(const std::uint64_t player_id)
 	{
-		RUN_IMPL(impl::find_or_create, player_id, is_real_player);
+		RUN_IMPL(impl::find_or_create, player_id);
 	}
 
 	void add_sneak_result(const std::uint64_t player_id, const std::uint64_t owner_id,

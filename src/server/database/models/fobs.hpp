@@ -11,6 +11,8 @@ namespace database::fobs
 	nlohmann::json& get_area_list();
 	std::optional<nlohmann::json> get_area(const std::uint32_t area_id);
 
+	constexpr auto fob_id_reserve_count = 1000ull;
+
 	class fob
 	{
 	public:

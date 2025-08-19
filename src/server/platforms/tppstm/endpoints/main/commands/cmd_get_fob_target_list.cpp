@@ -142,16 +142,23 @@ namespace emulator::tpp
 			target["is_sneak_restriction"] = 0;
 			target["is_win"] = 0;
 
+			auto mother_base_index = 0;
 			for (auto i = 0ull; i < target_fobs.size(); i++)
 			{
-				target["mother_base_param"][i]["area_id"] = 0;
-				target["mother_base_param"][i]["cluster_param"] = nlohmann::json::array();
-				target["mother_base_param"][i]["fob_index"] = 0;
-				target["mother_base_param"][i]["price"] = 0;
-				target["mother_base_param"][i]["construct_param"] = target_fobs[i].get_construct_param();
-				target["mother_base_param"][i]["mother_base_id"] = target_fobs[i].get_id();
-				target["mother_base_param"][i]["platform_count"] = target_fobs[i].get_platform_count();
-				target["mother_base_param"][i]["security_rank"] = target_fobs[i].get_security_rank();
+				if (target_entry.fob_filter.has_value() && !target_entry.fob_filter->operator()(target_fobs[i]))
+				{
+					continue;
+				}
+
+				auto idx = mother_base_index++;
+				target["mother_base_param"][idx]["area_id"] = 0;
+				target["mother_base_param"][idx]["cluster_param"] = nlohmann::json::array();
+				target["mother_base_param"][idx]["fob_index"] = 0;
+				target["mother_base_param"][idx]["price"] = 0;
+				target["mother_base_param"][idx]["construct_param"] = target_fobs[i].get_construct_param();
+				target["mother_base_param"][idx]["mother_base_id"] = target_fobs[i].get_id();
+				target["mother_base_param"][idx]["platform_count"] = target_fobs[i].get_platform_count();
+				target["mother_base_param"][idx]["security_rank"] = target_fobs[i].get_security_rank();
 			}
 
 			target["owner_detail_record"]["emblem"] = target_data->get_emblem();

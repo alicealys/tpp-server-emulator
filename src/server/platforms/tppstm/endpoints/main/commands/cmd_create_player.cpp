@@ -10,6 +10,7 @@
 #include "database/models/event_rankings.hpp"
 #include "database/models/mgo_data.hpp"
 #include "database/models/mgo_characters.hpp"
+#include "database/models/fobs.hpp"
 
 namespace emulator::tpp
 {
@@ -26,6 +27,18 @@ namespace emulator::tpp
 		database::player_records::find_or_create(player->get_id());
 		database::player_data::find_or_create(player->get_id());
 		database::event_rankings::create_entries(player->get_id());
+
+		if (database::vars.create_fobs)
+		{
+			const auto fobs = database::fobs::get_fob_list(player->get_id());
+			if (fobs.empty())
+			{
+				database::fobs::create(player->get_id(), 0);
+				database::fobs::create(player->get_id(), 0);
+				database::fobs::create(player->get_id(), 0);
+				database::fobs::create(player->get_id(), 0);
+			}
+		}
 
 		const auto mgo_data = database::mgo_data::find(player->get_id());
 		if (!mgo_data.has_value())

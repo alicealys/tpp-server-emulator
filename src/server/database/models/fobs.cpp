@@ -126,15 +126,7 @@ namespace database::fobs
 						continue;
 					}
 
-					static std::vector<std::string> platform_keys =
-					{
-						{"common3_security"},
-						{"common2_security"},
-						{"common1_security"},
-						{"unique_security"},
-					};
-
-					for (const auto& key : platform_keys)
+					for (const auto& key : database::player_data::platform_keys)
 					{
 						merge_custom_security(data[key], server_data[key], "voluntary_coord_camera_params");
 						merge_custom_security(data[key], server_data[key], "voluntary_coord_mine_params");
@@ -206,7 +198,7 @@ namespace database::fobs
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.fobs.create");
-			database.run_query("mgstpp.fobs.set_auto_increment");
+			database.run_query("mgstpp.fobs.set_auto_increment", fob_id_reserve_count);
 		}
 	};
 }

@@ -174,8 +174,9 @@ namespace emulator::tpp
 			++soldier_index;
 		}
 
-		result["security_soldier_num"] = soldier_index;
-		result["security_soldier_rank"] = 0;
+		// idk
+		//result["security_soldier_num"] = soldier_index;
+		//result["security_soldier_rank"] = 0;
 
 		auto& stage_param = result["stage_param"];
 
@@ -185,10 +186,25 @@ namespace emulator::tpp
 		}
 
 		const auto mapped_index = database::player_data::cluster_index_map[platform];
+		const auto& mapped_cluster_param = cluster_param[mapped_index];
 
-		stage_param["build"] = mother_base["local_base_param"];
-		stage_param["cluster_param"] = cluster_param[mapped_index];
-		stage_param["cluster_param"]["build"] = 0;
+		// idk where it gets this for event fobs but whatever
+		result["security_soldier_rank"] = mapped_cluster_param["soldier_rank"];
+		auto security_soldier_num = 0u;
+		for (const auto& key : database::player_data::platform_keys)
+		{
+			security_soldier_num += mapped_cluster_param[key]["soldier"].get<std::uint32_t>();
+		}
+
+		result["security_soldier_num"] = security_soldier_num;
+
+		stage_param["cluster_param"] = mapped_cluster_param;
+		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
+
+		for (auto i = 0ull; i < cluster_param.size(); i++)
+		{
+			stage_param["build"][i] = cluster_param[i]["build"];
+		}
 
 		stage_param["construct_param"] = fob->get_construct_param();
 
