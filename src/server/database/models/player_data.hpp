@@ -148,6 +148,11 @@ namespace database::player_data
 	using unit_levels_t = std::uint32_t[unit_count];
 	using unit_counts_t = std::uint32_t[unit_count];
 
+	extern std::array<std::uint32_t, resource_type_count> local_processed_resource_caps;
+	extern std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps;
+	extern std::array<std::uint32_t, resource_type_count> server_processed_resource_caps;
+	extern std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps;
+
 	enum designation_t
 	{
 		des_none = 0,

@@ -6,6 +6,10 @@
 
 #include "database/database.hpp"
 #include "database/auth.hpp"
+
+#include "database/models/players.hpp"
+#include "database/models/player_data.hpp"
+
 #include "scripting/engine.hpp"
 
 #include <utils/io.hpp>
@@ -129,6 +133,28 @@ namespace command
 			add("quit", [](const params& params)
 			{
 				emulator::stop_server();
+			});
+
+			add("max_resources", [](const params& params)
+			{
+				if (params.size() < 2)
+				{
+					return;
+				}
+
+				const auto arg = params.get(1);
+				const auto player_id = std::strtoull(arg.data(), nullptr, 10);
+				database::player_data::resource_arrays_t resource_arrays{};
+
+				for (auto i = 0; i < database::player_data::resource_type_count; i++)
+				{
+					resource_arrays[database::player_data::processed_server][i] = database::player_data::server_processed_resource_caps[i];
+					resource_arrays[database::player_data::unprocessed_server][i] = database::player_data::server_unprocessed_resource_caps[i];
+					resource_arrays[database::player_data::processed_local][i] = database::player_data::local_processed_resource_caps[i];
+					resource_arrays[database::player_data::unprocessed_local][i] = database::player_data::local_processed_resource_caps[i];
+				}
+
+				database::player_data::set_resources_as_sync(player_id, resource_arrays, database::vars.max_local_gmp, database::vars.max_server_gmp);
 			});
 
 			add("query", [](const params& params)
