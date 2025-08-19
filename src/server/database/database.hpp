@@ -50,6 +50,9 @@ namespace database
 		std::string database_name;
 	};
 
+	database_type_t get_database_type();
+	database_def_t get_database_def();
+
 	struct dummy_mysql_connection
 	{
 	};
@@ -85,8 +88,15 @@ namespace database
 
 		bool is_valid() const;
 		void create_connection();
+		std::string get_sql_query(const std::string& name);
 
-		void run_query(const std::string& name);
+		template <typename... Args>
+		void run_query(const std::string& name, Args&&... args)
+		{
+			const auto query = this->get_sql_query(name);
+			const auto fmt = std::vformat(query, std::make_format_args(args...));
+			this->execute(fmt);
+		}
 
 		size_t execute(const std::string& query);
 
@@ -101,9 +111,6 @@ namespace database
 	};
 
 	using database_t = database_container;
-
-	database_type_t get_database_type();
-	database_def_t get_database_def();
 
 	struct connection_t
 	{

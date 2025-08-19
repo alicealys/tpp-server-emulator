@@ -1,4 +1,1342 @@
 {
+    "players": [
+        {
+            "player_id": 1,
+            "player_name": "MOSQUITO",
+            "emblem": {
+                "parts": [
+                    {
+                        "base_color": 15790320,
+                        "frame_color": 15790320,
+                        "position_x": 20,
+                        "position_y": 20,
+                        "rotate": 0,
+                        "scale": 10,
+                        "texture_tag": 2791841741
+                    },
+                    {
+                        "base_color": 1842204,
+                        "frame_color": 11842740,
+                        "position_x": 20,
+                        "position_y": 20,
+                        "rotate": 0,
+                        "scale": 10,
+                        "texture_tag": 4107974299
+                    },
+                    {
+                        "base_color": 1842204,
+                        "frame_color": 11842740,
+                        "position_x": -92,
+                        "position_y": -80,
+                        "rotate": 0,
+                        "scale": 30,
+                        "texture_tag": 473894566
+                    },
+                    {
+                        "base_color": 1842204,
+                        "frame_color": 11842740,
+                        "position_x": -64,
+                        "position_y": -80,
+                        "rotate": 0,
+                        "scale": 30,
+                        "texture_tag": 473894566
+                    }
+                ]
+            },
+            "reward": {
+                "primary_reward": [
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 4,
+                            "value": 6
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 16,
+                            "value": 1219
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 23,
+                            "value": 98
+                        }
+                    ]
+                },
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 1,
+                            "type": 4,
+                            "value": 6
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 12,
+                            "value": 3108
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 24,
+                            "value": 73
+                        }
+                    ]
+                },
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 2,
+                            "type": 4,
+                            "value": 3
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 14,
+                            "value": 1310
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 21,
+                            "value": 609
+                        }
+                    ]
+                },
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 3,
+                            "type": 4,
+                            "value": 1
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 13,
+                            "value": 3900
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 15,
+                            "value": 1853
+                        }
+                    ]
+                },
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 4,
+                            "type": 4,
+                            "value": 3
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 15,
+                            "value": 4388
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 22,
+                            "value": 146
+                        }
+                    ]
+                },
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 5,
+                            "type": 4,
+                            "value": 6
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 17,
+                            "value": 683
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 18,
+                            "value": 317
+                        }
+                    ]
+                },
+                {
+                    "reward_info": [
+                        {
+                            "bottom_type": 0,
+                            "rate": 0,
+                            "section": 100,
+                            "type": 1,
+                            "value": 752500
+                        },
+                        {
+                            "bottom_type": 8,
+                            "rate": 1000000,
+                            "section": 6,
+                            "type": 4,
+                            "value": 3
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 19,
+                            "value": 524
+                        },
+                        {
+                            "bottom_type": 0,
+                            "rate": 1000000,
+                            "section": 0,
+                            "type": 20,
+                            "value": 244
+                        }
+                    ]
+                }
+                ],
+                "reward_rate": 200
+            },
+            "fob_list": [
+                {
+                    "mother_base_id": 1,
+                    "area_id": 0,
+                    "cluster_param": [
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 8192,
+                            "cluster_security": 39177,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        }
+                    ],
+                    "construct_param": 41061,
+                    "platform_count": 14,
+                    "price": 0,
+                    "security_rank": 9
+                },
+                {
+                    "mother_base_id": 21,
+                    "area_id": 0,
+                    "cluster_param": [
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 16384,
+                            "cluster_security": 96529,
+                            "common1_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 8,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 6,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 5,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 4,
+                            "unique_security": {
+                                "antitheft": 4,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 4,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 10,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        }
+                    ],
+                    "construct_param": 41573,
+                    "platform_count": 28,
+                    "price": 0,
+                    "security_rank": 23
+                }
+            ],
+            "staff_resources": {
+                "placement": {
+                    "emplacement_gun_east": 2,
+                    "emplacement_gun_west": 2,
+                    "gatling_gun": 0,
+                    "gatling_gun_east": 0,
+                    "gatling_gun_west": 0,
+                    "mortar_normal": 1
+                },
+                "processing_resource": {
+                    "biotic_resource": 10500,
+                    "common_metal": 10500,
+                    "fuel_resource": 12000,
+                    "minor_metal": 10000,
+                    "precious_metal": 2250
+                },
+                "usable_resource": {
+                    "biotic_resource": 0,
+                    "common_metal": 0,
+                    "fuel_resource": 0,
+                    "minor_metal": 0,
+                    "precious_metal": 0
+                },
+                "section_level": {
+                    "base": 20,
+                    "combat": 20,
+                    "develop": 10,
+                    "medical": 10,
+                    "security": 5,
+                    "spy": 10,
+                    "suport": 10
+                },
+                "section_staff": [
+                    {
+                        "base": 19,
+                        "combat": 12,
+                        "develop": 16,
+                        "medical": 22,
+                        "security": 0,
+                        "spy": 17,
+                        "suport": 14
+                    },
+                    {
+                        "base": 6,
+                        "combat": 10,
+                        "develop": 6,
+                        "medical": 5,
+                        "security": 0,
+                        "spy": 9,
+                        "suport": 12
+                    },
+                    {
+                        "base": 4,
+                        "combat": 19,
+                        "develop": 8,
+                        "medical": 4,
+                        "security": 0,
+                        "spy": 3,
+                        "suport": 20
+                    },
+                    {
+                        "base": 4,
+                        "combat": 12,
+                        "develop": 3,
+                        "medical": 5,
+                        "security": 0,
+                        "spy": 6,
+                        "suport": 13
+                    },
+                    {
+                        "base": 2,
+                        "combat": 8,
+                        "develop": 3,
+                        "medical": 3,
+                        "security": 0,
+                        "spy": 4,
+                        "suport": 7
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    }
+                ]
+            },
+            "motherbase": {
+                "local_base_param": [
+                    8192,
+                    8192,
+                    8192,
+                    8192,
+                    8192,
+                    8192,
+                    8192
+                ],
+                "name_plate_id": 0,
+                "equip_grade": [
+                    5,
+                    5,
+                    0,
+                    5,
+                    5,
+                    0,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    0,
+                    0,
+                    3,
+                    0,
+                    5,
+                    3,
+                    0,
+                    3,
+                    3,
+                    7,
+                    5,
+                    8,
+                    0,
+                    0
+                ],
+                "security_level": [
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    2,
+                    1,
+                    0,
+                    2,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    2,
+                    1
+                ]
+            }
+        }
+    ],
     "event_list": [
         {
             "event_id": 1,
@@ -714,1346 +2052,7 @@
                     "unique_id": 2294889072
                 }
             ],
-            "players": [
-                {
-                    "player_name": "MOSQUITO",
-                    "emblem": {
-                        "parts": [
-                            {
-                                "base_color": 15790320,
-                                "frame_color": 15790320,
-                                "position_x": 20,
-                                "position_y": 20,
-                                "rotate": 0,
-                                "scale": 10,
-                                "texture_tag": 2791841741
-                            },
-                            {
-                                "base_color": 1842204,
-                                "frame_color": 11842740,
-                                "position_x": 20,
-                                "position_y": 20,
-                                "rotate": 0,
-                                "scale": 10,
-                                "texture_tag": 4107974299
-                            },
-                            {
-                                "base_color": 1842204,
-                                "frame_color": 11842740,
-                                "position_x": -92,
-                                "position_y": -80,
-                                "rotate": 0,
-                                "scale": 30,
-                                "texture_tag": 473894566
-                            },
-                            {
-                                "base_color": 1842204,
-                                "frame_color": 11842740,
-                                "position_x": -64,
-                                "position_y": -80,
-                                "rotate": 0,
-                                "scale": 30,
-                                "texture_tag": 473894566
-                            }
-                        ]
-                    },
-                    "fob_list": [
-                        {
-                            "mother_base_id": 1,
-                            "area_id": 0,
-                            "cluster_param": [
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 39177,
-                                    "common1_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 0,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 0,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 0,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                }
-                            ],
-                            "construct_param": 41061,
-                            "platform_count": 14,
-                            "price": 0,
-                            "security_rank": 9
-                        }
-                    ],
-                    "staff_resources": {
-                        "placement": {
-                            "emplacement_gun_east": 2,
-                            "emplacement_gun_west": 2,
-                            "gatling_gun": 0,
-                            "gatling_gun_east": 0,
-                            "gatling_gun_west": 0,
-                            "mortar_normal": 1
-                        },
-                        "processing_resource": {
-                            "biotic_resource": 10500,
-                            "common_metal": 10500,
-                            "fuel_resource": 12000,
-                            "minor_metal": 10000,
-                            "precious_metal": 2250
-                        },
-                        "usable_resource": {
-                            "biotic_resource": 0,
-                            "common_metal": 0,
-                            "fuel_resource": 0,
-                            "minor_metal": 0,
-                            "precious_metal": 0
-                        },
-                        "section_level": {
-                            "base": 20,
-                            "combat": 20,
-                            "develop": 10,
-                            "medical": 10,
-                            "security": 5,
-                            "spy": 10,
-                            "suport": 10
-                        },
-                        "section_staff": [
-                            {
-                                "base": 19,
-                                "combat": 12,
-                                "develop": 16,
-                                "medical": 22,
-                                "security": 0,
-                                "spy": 17,
-                                "suport": 14
-                            },
-                            {
-                                "base": 6,
-                                "combat": 10,
-                                "develop": 6,
-                                "medical": 5,
-                                "security": 0,
-                                "spy": 9,
-                                "suport": 12
-                            },
-                            {
-                                "base": 4,
-                                "combat": 19,
-                                "develop": 8,
-                                "medical": 4,
-                                "security": 0,
-                                "spy": 3,
-                                "suport": 20
-                            },
-                            {
-                                "base": 4,
-                                "combat": 12,
-                                "develop": 3,
-                                "medical": 5,
-                                "security": 0,
-                                "spy": 6,
-                                "suport": 13
-                            },
-                            {
-                                "base": 2,
-                                "combat": 8,
-                                "develop": 3,
-                                "medical": 3,
-                                "security": 1,
-                                "spy": 4,
-                                "suport": 7
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            }
-                        ]
-                    },
-                    "motherbase": {
-                        "local_base_param": [
-                            8192,
-                            8192,
-                            8192,
-                            8192,
-                            8192,
-                            8192,
-                            8192
-                        ],
-                        "name_plate_id": 0,
-                        "equip_grade": [
-                            5,
-                            5,
-                            0,
-                            5,
-                            5,
-                            0,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            0,
-                            0,
-                            3,
-                            0,
-                            5,
-                            3,
-                            0,
-                            3,
-                            3,
-                            7,
-                            5,
-                            8,
-                            0,
-                            0
-                        ],
-                        "security_level": [
-                            1,
-                            1,
-                            1,
-                            0,
-                            1,
-                            0,
-                            0,
-                            2,
-                            1,
-                            0,
-                            2,
-                            1,
-                            1,
-                            0,
-                            0,
-                            0,
-                            2,
-                            1
-                        ]
-                    }
-                },
-                {
-                    "player_name": "MOSQUITO",
-                    "emblem": {
-                        "parts": [
-                            {
-                                "base_color": 15790320,
-                                "frame_color": 15790320,
-                                "position_x": 20,
-                                "position_y": 20,
-                                "rotate": 0,
-                                "scale": 10,
-                                "texture_tag": 2791841741
-                            },
-                            {
-                                "base_color": 1842204,
-                                "frame_color": 11842740,
-                                "position_x": 20,
-                                "position_y": 20,
-                                "rotate": 0,
-                                "scale": 10,
-                                "texture_tag": 4107974299
-                            },
-                            {
-                                "base_color": 1842204,
-                                "frame_color": 11842740,
-                                "position_x": -92,
-                                "position_y": -80,
-                                "rotate": 0,
-                                "scale": 30,
-                                "texture_tag": 473894566
-                            },
-                            {
-                                "base_color": 1842204,
-                                "frame_color": 11842740,
-                                "position_x": -64,
-                                "position_y": -80,
-                                "rotate": 0,
-                                "scale": 30,
-                                "texture_tag": 473894566
-                            }
-                        ]
-                    },
-                    "fob_list": [
-                        {
-                            "mother_base_id": 21,
-                            "area_id": 0,
-                            "cluster_param": [
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                },
-                                {
-                                    "build": 8192,
-                                    "cluster_security": 96529,
-                                    "common1_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 8,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common2_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 6,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "common3_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 5,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    },
-                                    "soldier_rank": 4,
-                                    "unique_security": {
-                                        "antitheft": 4,
-                                        "camera": 0,
-                                        "caution_area": 0,
-                                        "decoy": 4,
-                                        "ir_sensor": 0,
-                                        "mine": 0,
-                                        "soldier": 10,
-                                        "uav": 0,
-                                        "voluntary_coord_camera_count": 0,
-                                        "voluntary_coord_camera_params": [],
-                                        "voluntary_coord_mine_count": 0,
-                                        "voluntary_coord_mine_params": []
-                                    }
-                                }
-                            ],
-                            "construct_param": 41573,
-                            "platform_count": 28,
-                            "price": 0,
-                            "security_rank": 23
-                        }
-                    ],
-                    "staff_resources": {
-                        "placement": {
-                            "emplacement_gun_east": 2,
-                            "emplacement_gun_west": 2,
-                            "gatling_gun": 0,
-                            "gatling_gun_east": 0,
-                            "gatling_gun_west": 0,
-                            "mortar_normal": 1
-                        },
-                        "processing_resource": {
-                            "biotic_resource": 10500,
-                            "common_metal": 10500,
-                            "fuel_resource": 12000,
-                            "minor_metal": 10000,
-                            "precious_metal": 2250
-                        },
-                        "usable_resource": {
-                            "biotic_resource": 0,
-                            "common_metal": 0,
-                            "fuel_resource": 0,
-                            "minor_metal": 0,
-                            "precious_metal": 0
-                        },
-                        "section_level": {
-                            "base": 20,
-                            "combat": 20,
-                            "develop": 10,
-                            "medical": 10,
-                            "security": 5,
-                            "spy": 10,
-                            "suport": 10
-                        },
-                        "section_staff": [
-                            {
-                                "base": 19,
-                                "combat": 12,
-                                "develop": 16,
-                                "medical": 22,
-                                "security": 0,
-                                "spy": 17,
-                                "suport": 14
-                            },
-                            {
-                                "base": 6,
-                                "combat": 10,
-                                "develop": 6,
-                                "medical": 5,
-                                "security": 0,
-                                "spy": 9,
-                                "suport": 12
-                            },
-                            {
-                                "base": 4,
-                                "combat": 19,
-                                "develop": 8,
-                                "medical": 4,
-                                "security": 0,
-                                "spy": 3,
-                                "suport": 20
-                            },
-                            {
-                                "base": 4,
-                                "combat": 12,
-                                "develop": 3,
-                                "medical": 5,
-                                "security": 0,
-                                "spy": 6,
-                                "suport": 13
-                            },
-                            {
-                                "base": 2,
-                                "combat": 8,
-                                "develop": 3,
-                                "medical": 3,
-                                "security": 1,
-                                "spy": 4,
-                                "suport": 7
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            },
-                            {
-                                "base": 0,
-                                "combat": 0,
-                                "develop": 0,
-                                "medical": 0,
-                                "security": 0,
-                                "spy": 0,
-                                "suport": 0
-                            }
-                        ]
-                    },
-                    "motherbase": {
-                        "name_plate_id": 0,
-                        "local_base_param": [
-                            8192,
-                            8192,
-                            8192,
-                            8192,
-                            8192,
-                            8192,
-                            8192
-                        ],
-                        "equip_grade": [
-                            5,
-                            5,
-                            0,
-                            5,
-                            5,
-                            0,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            5,
-                            0,
-                            0,
-                            3,
-                            0,
-                            5,
-                            3,
-                            0,
-                            3,
-                            3,
-                            7,
-                            5,
-                            8,
-                            0,
-                            0
-                        ],
-                        "security_level": [
-                            1,
-                            1,
-                            1,
-                            0,
-                            1,
-                            0,
-                            0,
-                            2,
-                            1,
-                            0,
-                            2,
-                            1,
-                            1,
-                            0,
-                            0,
-                            0,
-                            2,
-                            1
-                        ]
-                    }
-                }
-            ]
+            "players": [1]
         }
     ]
 }

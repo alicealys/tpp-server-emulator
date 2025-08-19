@@ -123,9 +123,9 @@ namespace database::player_data
 
 	enum resource_type
 	{
-		biotic_resource = 0,
-		common_metal = 1,
-		fuel_resource = 2,
+		fuel_resource = 0,
+		biotic_resource = 1,
+		common_metal = 2,
 		minor_metal = 3,
 		precious_metal = 4,
 
@@ -269,6 +269,8 @@ namespace database::player_data
 	extern std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map;
 
 	extern std::vector<std::string> unit_names;
+	extern std::vector<std::string> platform_keys;
+
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
 	std::uint32_t designation_from_unit_name(const std::string unit_name);
 

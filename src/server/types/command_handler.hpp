@@ -26,7 +26,7 @@ namespace emulator
 	nlohmann::json error(const std::string& id);
 	nlohmann::json error(const std::uint32_t id);
 	nlohmann::json resource(const std::uint32_t id);
-	nlohmann::json player_info(const std::uint64_t player_id, const std::uint64_t account_id, const bool is_real_player = true);
+	nlohmann::json player_info(const std::uint64_t player_id, const std::uint64_t account_id);
 	nlohmann::json player_info(const database::players::player& player);
 	nlohmann::json player_info(const std::optional<database::players::player>& player);
 	std::optional<database::players::player> get_target_player(const nlohmann::json& target);

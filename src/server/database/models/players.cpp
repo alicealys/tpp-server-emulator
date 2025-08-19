@@ -51,6 +51,11 @@ namespace database::players
 #define IS_ACTIVE_EXPR player::table.last_update >= std::chrono::system_clock::now() - database::vars.session_timeout
 	}
 
+	bool is_system_player_id(const std::uint64_t id)
+	{
+		return id < player_id_reserve_count;
+	}
+
 	std::uint32_t get_nat_type_id(const std::string& nat_type)
 	{
 		for (auto i = 0u; i < nat_types.size(); i++)
@@ -208,7 +213,7 @@ namespace database::players
 		}
 
 		template <database_type_t Type>
-		player find_or_insert(const std::uint64_t account_id, bool is_real_player)
+		player find_or_insert(const std::uint64_t account_id)
 		{
 			{
 				const auto found = find_from_account<Type>(account_id);
@@ -223,7 +228,6 @@ namespace database::players
 				db.get_database<Type>()->operator()(
 					sqlpp::insert_into(player::table)
 						.set(player::table.account_id = account_id,
-							 player::table.is_real_player = is_real_player,
 							 player::table.currency = "EUR",
 							 player::table.smart_device_id = generate_data(80, true),
 							 player::table.last_update = std::chrono::system_clock::now(),
@@ -231,6 +235,42 @@ namespace database::players
 			});
 
 			const auto found = find_from_account<Type>(account_id);
+			if (!found.has_value())
+			{
+				throw std::runtime_error("[database::clients::insert] Insertion failed");
+			}
+
+			return found.value();
+		}
+
+		template <database_type_t Type>
+		player create_system_player(const std::uint64_t id)
+		{
+			if (id >= player_id_reserve_count)
+			{
+				throw std::runtime_error("invalid player_id for system player");
+			}
+
+			{
+				const auto found = find<Type>(id);
+				if (found.has_value())
+				{
+					return found.value();
+				}
+			}
+
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::insert_into(player::table)
+						.set(player::table.id = id,
+							 player::table.currency = "",
+							 player::table.smart_device_id = "",
+							 player::table.last_update = std::chrono::system_clock::now(),
+							 player::table.creation_time = std::chrono::system_clock::now()));
+			});
+
+			const auto found = find<Type>(id);
 			if (!found.has_value())
 			{
 				throw std::runtime_error("[database::clients::insert] Insertion failed");
@@ -647,7 +687,7 @@ namespace database::players
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::count(1))
-							.from(player::table).unconditionally());
+							.from(player::table).where(!IS_SYSTEM_PLAYER(player::table.id)));
 
 				return results.front().count.value();
 			});
@@ -689,9 +729,14 @@ namespace database::players
 		RUN_IMPL(impl::find_by_session_id, session_id, use_timeout, is_expired);
 	}
 
-	player find_or_insert(const std::uint64_t account_id, bool is_real_player)
+	player find_or_insert(const std::uint64_t account_id)
 	{
-		RUN_IMPL(impl::find_or_insert, account_id, is_real_player);
+		RUN_IMPL(impl::find_or_insert, account_id);
+	}
+
+	player create_system_player(const std::uint64_t id)
+	{
+		RUN_IMPL(impl::create_system_player, id);
 	}
 
 	std::string generate_login_password(const std::uint64_t account_id)
@@ -789,6 +834,7 @@ namespace database::players
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.players.create");
+			database.run_query("mgstpp.players.set_auto_increment", player_id_reserve_count);
 		}
 	};
 }

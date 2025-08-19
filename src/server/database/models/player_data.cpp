@@ -308,6 +308,14 @@ namespace database::player_data
 		"security"
 	};
 
+	std::vector<std::string> platform_keys =
+	{
+		{"common3_security"},
+		{"common2_security"},
+		{"common1_security"},
+		{"unique_security"},
+	};
+
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation)
 	{
 		if (designation < des_combat || designation > des_security)
@@ -454,14 +462,6 @@ namespace database::player_data
 				param["cluster_security"] = cluster_security.packed;
 			}
 		}
-
-		static std::vector<std::string> platform_keys =
-		{
-			{"common3_security"},
-			{"common2_security"},
-			{"common1_security"},
-			{"unique_security"},
-		};
 
 		const auto decrement_value = [&](const std::string& name, const nlohmann::json& total_j, const std::int32_t per_platform)
 		{

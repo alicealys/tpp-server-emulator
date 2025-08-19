@@ -110,11 +110,6 @@ namespace database
 		return this->dbs_.sqlite3_.get();
 	}
 
-	void database_container::run_query(const std::string& name)
-	{
-		this->execute(get_sql_query(database::get_database_type(), name));
-	}
-
 	size_t database_container::execute(const std::string& query)
 	{
 #ifdef MYSQL_SUPPORTED
@@ -183,6 +178,11 @@ namespace database
 		}
 
 		return false;
+	}
+
+	std::string database_container::get_sql_query(const std::string& name)
+	{
+		return database::get_sql_query(get_database_type(), name);
 	}
 
 	void database_container::reset()

@@ -2,7 +2,7 @@
 create table if not exists `players`
 (
 	id									integer	primary key autoincrement,
-	account_id							bigint unsigned	not null	 unique,
+	account_id							bigint unsigned		 		 unique,
 	is_real_player						boolean 		not null,
 	session_id							char(32)		default null unique,
 	login_password						char(32)		default null,
@@ -27,12 +27,13 @@ create table if not exists `players`
 	current_sneak_security_challenge 	tinyint			not null		default 0,
 	current_sneak_start 				datetime
 )
+-- query:mgstpp.players.set_auto_increment
+update SQLITE_SEQUENCE set seq = {} WHERE name = 'players'
 -- query:mgstpp.player_records.create
 create table if not exists `player_records`
 (
 	id							integer	primary key autoincrement,
 	player_id					bigint unsigned	not null,
-	is_real_player				boolean 		not null,
 	fob_grade					int not null	default 0,
 	prev_fob_grade				int not null	default 0,
 	fob_point					int not null	default 0,
@@ -132,7 +133,7 @@ create table if not exists `fobs`
 	foreign key (`player_id`) references players(`id`)
 )
 -- query:mgstpp.fobs.set_auto_increment
-update SQLITE_SEQUENCE set seq = 1000 WHERE name = 'fobs'
+update SQLITE_SEQUENCE set seq = {} WHERE name = 'fobs'
 -- query:mgstpp.sneak_results.create
 create table if not exists `sneak_results`
 (

@@ -26,14 +26,15 @@ namespace emulator::tpp
 		for (auto& fob : fob_list)
 		{
 			auto area_opt = database::fobs::get_area(fob.get_area_id());
-			auto& area = area_opt.value();
+			const auto price = area_opt.has_value() ? area_opt->operator[]("price").get<std::uint32_t>() : 0u;
+
 			result["fob"][index]["area_id"] = fob.get_area_id();
 			result["fob"][index]["cluster_param"] = nlohmann::json::array();
 			result["fob"][index]["construct_param"] = fob.get_construct_param();
 			result["fob"][index]["fob_index"] = index;
 			result["fob"][index]["mother_base_id"] = fob.get_id();
 			result["fob"][index]["platform_count"] = 0;
-			result["fob"][index]["price"] = area["price"];
+			result["fob"][index]["price"] = price;
 			result["fob"][index]["security_rank"] = 0;
 
 			++index;

@@ -22,6 +22,7 @@ namespace database
 		std::uint32_t item_dev_limit = 4;
 
 		bool unlock_all_items = false;
+		bool create_fobs = false;
 
 		float cost_factor_generic = 0.01565f;
 		float cost_factor_item_dev = 1.f;
