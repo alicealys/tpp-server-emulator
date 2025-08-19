@@ -3,6 +3,7 @@
 #include "main_handler.hpp"
 
 #include "commands/cmd_auth_steamticket.hpp"
+#include "../../../tppstm/endpoints/main/commands/cmd_create_player.hpp"
 #include "commands/cmd_delete_mgo_character.hpp"
 #include "commands/cmd_do_mgo_ascension.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_gdpr_check.hpp"
@@ -72,6 +73,7 @@ namespace emulator::mgo
 	{
 		this->set_platform("mgostm/main");
 		this->register_handler<cmd_auth_steamticket>("CMD_AUTH_STEAMTICKET");
+		this->register_handler<tpp::cmd_create_player>("CMD_CREATE_PLAYER");
 		this->register_handler<cmd_delete_mgo_character>("CMD_DELETE_MGO_CHARACTER");
 		this->register_handler<cmd_do_mgo_ascension>("CMD_DO_MGO_ASCENSION");
 		this->register_handler<tpp::cmd_gdpr_check>("CMD_GDPR_CHECK");

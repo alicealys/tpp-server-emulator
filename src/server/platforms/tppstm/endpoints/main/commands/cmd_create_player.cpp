@@ -9,6 +9,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/event_rankings.hpp"
 #include "database/models/mgo_data.hpp"
+#include "database/models/mgo_characters.hpp"
 
 namespace emulator::tpp
 {
@@ -25,7 +26,16 @@ namespace emulator::tpp
 		database::player_records::find_or_create(player->get_id());
 		database::player_data::find_or_create(player->get_id());
 		database::event_rankings::create_entries(player->get_id());
-		database::mgo_data::find_or_create(player->get_id());
+
+		const auto mgo_data = database::mgo_data::find(player->get_id());
+		if (!mgo_data.has_value())
+		{
+			database::mgo_data::create(player->get_id());
+			for (auto i = 0ull; i < database::mgo_characters::initial_character_count; i++)
+			{
+				database::mgo_characters::create_character(player->get_id(), static_cast<std::uint32_t>(i));
+			}
+		}
 
 		result["player_id"] = player->get_id();
 		result["result"] = "NOERR";
