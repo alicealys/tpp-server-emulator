@@ -91,11 +91,11 @@ namespace database::fob_event
 					for (auto o = 0; o < database::player_data::unit_count; o++)
 					{
 						const auto& unit_name = database::player_data::unit_names[o];
-						const auto& staff_count = staff_of_rank_at_unit[unit_name];
+						const auto& staff_count = staff_of_rank_at_unit[unit_name].get<std::uint32_t>();
 						unit_counts[o] += staff_count;
 						player.motherbase.staff_count += staff_count;
 
-						for (auto l = 0; l < staff_count; l++)
+						for (auto l = 0u; l < staff_count; l++)
 						{
 							auto staff_index = total_staff++;
 							staff_array[staff_index].fields.header.peak_rank = i;
