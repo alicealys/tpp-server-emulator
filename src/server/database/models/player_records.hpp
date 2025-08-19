@@ -25,6 +25,7 @@ namespace database::player_records
 		DEFINE_FIELD(league_rank, sqlpp::integer_unsigned);
 		DEFINE_FIELD(prev_league_rank, sqlpp::integer_unsigned);
 		DEFINE_FIELD(league_point, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_point, sqlpp::integer_unsigned);
 		DEFINE_FIELD(playtime, sqlpp::integer_unsigned);
 		DEFINE_FIELD(point, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_defense_win, sqlpp::integer_unsigned);
@@ -34,7 +35,7 @@ namespace database::player_records
 		DEFINE_FIELD(shield_date, sqlpp::time_point);
 		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
 			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t,
-			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t,
+			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
 			fob_sneak_lose_field_t, shield_date_field_t);
 
@@ -56,6 +57,7 @@ namespace database::player_records
 			this->league_rank_ = static_cast<std::uint32_t>(row.league_rank);
 			this->prev_league_rank_ = static_cast<std::uint32_t>(row.prev_league_rank);
 			this->league_point_ = static_cast<std::uint32_t>(row.league_point);
+			this->event_point_ = static_cast<std::uint32_t>(row.event_point);
 			this->playtime_ = static_cast<std::uint32_t>(row.playtime);
 			this->point_ = static_cast<std::uint32_t>(row.point);
 			this->fob_defense_win_ = static_cast<std::uint32_t>(row.fob_defense_win);
@@ -125,6 +127,11 @@ namespace database::player_records
 			return this->league_point_;
 		}
 
+		std::uint32_t get_event_point() const
+		{
+			return this->event_point_;
+		}
+
 		std::uint32_t get_playtime() const
 		{
 			return this->playtime_;
@@ -185,6 +192,7 @@ namespace database::player_records
 		std::uint32_t league_rank_;
 		std::uint32_t prev_league_rank_;
 		std::uint32_t league_point_;
+		std::uint32_t event_point_;
 		std::uint32_t playtime_;
 		std::uint32_t point_;
 		std::uint32_t fob_defense_win_;
@@ -201,6 +209,7 @@ namespace database::player_records
 	void add_sneak_result(const std::uint64_t player_id, const std::uint64_t owner_id, 
 		const std::int32_t point_add, const bool is_win, const bool is_sneak);
 	void sync_prev_values(const std::uint64_t player_id);
+	void add_event_point(const std::uint64_t player_id, const std::uint32_t value);
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit);
 	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit);

@@ -29,7 +29,6 @@ namespace emulator::tpp
 		result["info"]["section"] = 0;
 		result["info"]["match_history"] = nlohmann::json::array();
 		result["info"]["player_count"] = nlohmann::json::array();
-		result["result"] = "ERR_NOTIMPLEMENTED";
 
 		return result;
 	}

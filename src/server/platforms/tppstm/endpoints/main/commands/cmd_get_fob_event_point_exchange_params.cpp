@@ -10,7 +10,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-
 		const auto& is_event_j = data["is_event"];
 		if (!is_event_j.is_number_unsigned())
 		{

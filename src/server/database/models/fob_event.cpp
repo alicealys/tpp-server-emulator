@@ -121,8 +121,8 @@ namespace database::fob_event
 		{
 			fob_event_t event{};
 
+			event.one_event_task = event_j["one_event_task"];
 			event.server_text = event_j["server_text"].get<std::string>();
-			event.event_id = event_j["event_id"].get<std::uint32_t>();
 
 			auto& information_list = event_j["information_list"];
 			for (auto i = 0ull; i < information_list.size(); i++)
