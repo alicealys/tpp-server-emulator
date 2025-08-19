@@ -123,8 +123,20 @@ namespace database::player_data
 
 	enum resource_type
 	{
+		biotic_resource = 0,
+		common_metal = 1,
+		fuel_resource = 2,
+		minor_metal = 3,
+		precious_metal = 4,
+
+		emplacement_gun_east = 34,
+		emplacement_gun_west = 35,
+		gatling_gun_east = 36,
+		gatling_gun_west = 37,
+		mortar_normal = 38,
+
 		nuclear = 28,
-		resource_type_count = 59
+		resource_type_count = 59,
 	};
 
 	constexpr auto unit_count = 7;
@@ -258,6 +270,7 @@ namespace database::player_data
 
 	extern std::vector<std::string> unit_names;
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
+	std::uint32_t designation_from_unit_name(const std::string unit_name);
 
 	std::string decode_buffer(const std::string& buffer);
 	std::string decode_buffer(const std::vector<std::uint8_t>& buffer);
@@ -604,6 +617,10 @@ namespace database::player_data
 
 	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
 		unit_levels_t& levels, unit_counts_t& counts);
+
+	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_t* staff,
+		unit_levels_t& levels, unit_counts_t& counts);
+
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
 
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);

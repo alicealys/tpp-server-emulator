@@ -302,7 +302,7 @@ namespace database::player_data
 		"combat",
 		"develop",
 		"base",
-		"suport" ,
+		"suport",
 		"spy",
 		"medical",
 		"security"
@@ -316,6 +316,19 @@ namespace database::player_data
 		}
 
 		return {unit_names[designation - 1]};
+	}
+
+	std::uint32_t designation_from_unit_name(const std::string unit_name)
+	{
+		for (auto i = 0ull; i < unit_names.size(); i++)
+		{
+			if (unit_names[i] == unit_name)
+			{
+				return des_units_start + static_cast<std::uint32_t>(i);
+			}
+		}
+
+		return des_none;
 	}
 
 	std::string encode_buffer(const std::string& buffer)
@@ -860,6 +873,16 @@ namespace database::player_data
 		unit_levels_t& levels, unit_counts_t& counts)
 	{
 		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, data, levels, counts);
+	}
+
+	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_t* staff,
+		unit_levels_t& levels, unit_counts_t& counts)
+	{
+		std::string staff_buffer;
+		staff_buffer.resize(sizeof(staff_array_t));
+		std::memcpy(staff_buffer.data(), *staff, sizeof(staff_array_t));
+
+		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, staff_buffer, levels, counts);
 	}
 
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)

@@ -6,6 +6,7 @@
 #include "database/models/players.hpp"
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
+#include "database/models/fob_event.hpp"
 
 namespace emulator::tpp
 {
@@ -31,13 +32,15 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		result["active_event_server_text"] = "NotImplement";
+		const auto fob_event = database::fob_event::get_current_event();
+
+		result["active_event_server_text"] = fob_event.has_value() ? fob_event->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 		result["common_server_text"] = "NotImplement";
 		result["common_server_text_title"] = "NotImplement";
 		result["daily"] = 0;
 		result["event_delete_date"] = 0;
-		result["event_end_date"] = 0;
+		result["event_end_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
 		result["exists_event_point_combat_deploy"] = 0;
 		result["flag"] = 1497;
 

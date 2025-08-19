@@ -4,6 +4,7 @@
 
 #include "database/models/items.hpp"
 #include "database/models/players.hpp"
+#include "database/models/fobs.hpp"
 
 namespace emulator::tpp
 {
@@ -17,10 +18,28 @@ namespace emulator::tpp
 		const auto& mother_base_id_j = data["mother_base_id"];
 		if (!mother_base_id_j.is_number_unsigned())
 		{
-			return error(ERR_DATABASE);
+			return error(ERR_INVALIDARG);
 		}
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
+
+		const auto fob = database::fobs::get_fob(mother_base_id);
+		if (!fob.has_value())
+		{
+			return error(ERR_INVALIDARG);
+		}
+
+		const auto owner = database::players::find(fob->get_player_id());
+		if (!owner.has_value())
+		{
+			return error(ERR_DATABASE);
+		}
+
+		if (!owner->is_real_player())
+		{
+			return error(NOERR);
+		}
+
 		const auto active_sneak = database::players::find_active_sneak_from_player(player->get_id());
 
 		if (!active_sneak.has_value() || active_sneak->get_fob_id() != mother_base_id)

@@ -25,7 +25,7 @@ namespace emulator
 		return resource;
 	}
 
-	nlohmann::json player_info(const std::uint64_t player_id, const std::uint64_t account_id)
+	nlohmann::json player_info(const std::uint64_t player_id, const std::uint64_t account_id, const bool is_real_player)
 	{
 		nlohmann::json info;
 
@@ -36,15 +36,15 @@ namespace emulator
 		info["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
 		info["player_id"] = player_id;
 		info["player_name"] = account_id == 0 ? "NotImplement" : std::format("{}_player01", account_id);
-		info["ugc"] = 1;
-		info["xuid"] = account_id;
+		info["ugc"] = account_id != 0 ? 1 : 0;
+		info["xuid"] = is_real_player ? account_id : 0;
 
 		return info;
 	}
 
 	nlohmann::json player_info(const database::players::player& player)
 	{
-		return player_info(player.get_id(), player.get_account_id());
+		return player_info(player.get_id(), player.get_account_id(), player.is_real_player());
 	}
 
 	nlohmann::json player_info(const std::optional<database::players::player>& player)

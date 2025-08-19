@@ -50,6 +50,12 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
+		const auto target_data = database::player_data::find(fob->get_player_id());
+		if (!target_data.get())
+		{
+			return error(ERR_DATABASE);
+		}
+
 		const auto mode_str = mode_j.get<std::string>();
 		const auto mode = database::players::get_sneak_mode_id(mode_str);
 		if (mode == database::players::mode_invalid)
@@ -100,12 +106,12 @@ namespace emulator::tpp
 			"mortar_normal"
 		};
 
-		detail["placement"][resource_names[0]] = player_data->get_resource_value(database::player_data::processed_server, 34);
-		detail["placement"][resource_names[1]] = player_data->get_resource_value(database::player_data::processed_server, 35);
+		detail["placement"][resource_names[0]] = target_data->get_resource_value(database::player_data::processed_server, 34);
+		detail["placement"][resource_names[1]] = target_data->get_resource_value(database::player_data::processed_server, 35);
 		detail["placement"][resource_names[2]] = 0;
-		detail["placement"][resource_names[3]] = player_data->get_resource_value(database::player_data::processed_server, 36);
-		detail["placement"][resource_names[4]] = player_data->get_resource_value(database::player_data::processed_server, 37);
-		detail["placement"][resource_names[5]] = player_data->get_resource_value(database::player_data::processed_server, 38);
+		detail["placement"][resource_names[3]] = target_data->get_resource_value(database::player_data::processed_server, 36);
+		detail["placement"][resource_names[4]] = target_data->get_resource_value(database::player_data::processed_server, 37);
+		detail["placement"][resource_names[5]] = target_data->get_resource_value(database::player_data::processed_server, 38);
 
 		detail["platform"] = 255;
 		detail["reward_rate"] = 0;
@@ -120,9 +126,9 @@ namespace emulator::tpp
 			}
 		}
 
-		for (auto i = 0u; i < player_data->get_staff_count(); i++)
+		for (auto i = 0u; i < target_data->get_staff_count(); i++)
 		{
-			const auto staff = player_data->get_staff(i);
+			const auto staff = target_data->get_staff(i);
 			const auto key_opt = database::player_data::unit_name_from_designation(staff.status_sync.designation);
 			if (!key_opt.has_value())
 			{
@@ -139,7 +145,7 @@ namespace emulator::tpp
 			detail["section_staff"][staff.header.peak_rank][key] = 1 + value.get<std::uint32_t>();
 		}
 
-		detail["security_section_rank"] = player_data->get_unit_level(database::player_data::unit_security);
+		detail["security_section_rank"] = target_data->get_unit_level(database::player_data::unit_security);
 
 		result["event_clear_bit"] = 0;
 		result["is_restrict"] = stats->is_shield_active();
@@ -159,54 +165,57 @@ namespace emulator::tpp
 		result["session"]["xnkid"] = {};
 		result["session"]["xuid"] = 0;
 
-		const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), fob->get_player_id());
-
-		if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
+		if (owner->is_real_player())
 		{
-			return error(ERR_SNEAK_RESTRICTION);
-		}
+			const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), fob->get_player_id());
 
-		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
-		if (is_sneak)
-		{
-			result["session"]["ip"] = player->get_ex_ip();
-			result["session"]["is_invalid"] = 0;
-			result["session"]["port"] = player->get_ex_port();
-			result["session"]["steamid"] = player->get_account_id();
-			result["session"]["xuid"] = player->get_account_id();
-
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
-				database::players::status_menu, true, owner->is_security_challenge_enabled()))
+			if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
 			{
-				return error(ERR_ALREADY_SNEAK);
-			}
-		}
-		else
-		{
-			const auto active_sneak = database::players::get_active_sneak(mother_base_id);
-			if (!active_sneak.has_value())
-			{
-				return error(ERR_DATABASE);
+				return error(ERR_SNEAK_RESTRICTION);
 			}
 
-			const auto attacker = database::players::find(active_sneak->get_player_id());
-			if (!attacker.has_value())
+			const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
+			if (is_sneak)
 			{
-				return error(ERR_DATABASE);
+				result["session"]["ip"] = player->get_ex_ip();
+				result["session"]["is_invalid"] = 0;
+				result["session"]["port"] = player->get_ex_port();
+				result["session"]["steamid"] = player->get_account_id();
+				result["session"]["xuid"] = player->get_account_id();
+
+				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
+					database::players::status_menu, true, owner->is_security_challenge_enabled()))
+				{
+					return error(ERR_ALREADY_SNEAK);
+				}
 			}
-
-			detail["platform"] = active_sneak->get_platform();
-
-			result["session"]["ip"] = attacker->get_ex_ip();
-			result["session"]["is_invalid"] = 0;
-			result["session"]["port"] = attacker->get_ex_port();
-			result["session"]["steamid"] = attacker->get_account_id();
-			result["session"]["xuid"] = attacker->get_account_id();
-
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_menu, false, owner->is_security_challenge_enabled()))
+			else
 			{
-				return error(ERR_ALREADY_SNEAK);
+				const auto active_sneak = database::players::get_active_sneak(mother_base_id);
+				if (!active_sneak.has_value())
+				{
+					return error(ERR_DATABASE);
+				}
+
+				const auto attacker = database::players::find(active_sneak->get_player_id());
+				if (!attacker.has_value())
+				{
+					return error(ERR_DATABASE);
+				}
+
+				detail["platform"] = active_sneak->get_platform();
+
+				result["session"]["ip"] = attacker->get_ex_ip();
+				result["session"]["is_invalid"] = 0;
+				result["session"]["port"] = attacker->get_ex_port();
+				result["session"]["steamid"] = attacker->get_account_id();
+				result["session"]["xuid"] = attacker->get_account_id();
+
+				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
+					database::players::status_menu, false, owner->is_security_challenge_enabled()))
+				{
+					return error(ERR_ALREADY_SNEAK);
+				}
 			}
 		}
 
