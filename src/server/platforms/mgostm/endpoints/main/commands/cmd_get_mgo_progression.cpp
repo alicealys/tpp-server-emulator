@@ -30,18 +30,6 @@ namespace emulator::mgo
 			}
 		}
 
-		if (characters.empty())
-		{
-			for (auto i = 0ull; i < database::mgo_characters::initial_character_count; i++)
-			{
-				progression["character_list"][i]["legendary"] = 0;
-				progression["character_list"][i]["prestige"] = 0;
-				progression["character_list"][i]["xp"] = 0;
-				progression["permanent_unlock_list"][i] = i == 0 ? 1146596596 : 0;
-
-			}
-		}
-
 		progression["version"] = 143737279559449;
 
 		return result;

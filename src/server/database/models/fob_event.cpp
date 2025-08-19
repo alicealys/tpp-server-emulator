@@ -14,7 +14,6 @@ namespace database::fob_event
 	namespace
 	{
 		constexpr auto account_id_start = 10000u;
-		constexpr auto account_id_end = 100000u;
 
 		fob_event_date_range get_event_range()
 		{

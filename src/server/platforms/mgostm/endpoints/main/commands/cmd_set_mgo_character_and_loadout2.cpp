@@ -12,14 +12,6 @@ namespace emulator::mgo
 		nlohmann::json result;
 
 		const auto char_count = database::mgo_characters::get_character_count(player->get_id());
-		if (char_count < database::mgo_characters::initial_character_count)
-		{
-			const auto needs = database::mgo_characters::initial_character_count - char_count;
-			for (auto i = 0ull; i < needs; i++)
-			{
-				database::mgo_characters::create_character(player->get_id(), static_cast<std::uint32_t>(char_count + i));
-			}
-		}
 
 		auto& character = data["character"];
 		auto& loadout = data["loadout"];
