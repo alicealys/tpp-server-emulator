@@ -687,7 +687,7 @@ namespace database::players
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::count(1))
-							.from(player::table).where(!IS_SYSTEM_PLAYER(player::table.id)));
+							.from(player::table).where(!IS_SYSTEM_PLAYER_ID(player::table.id)));
 
 				return results.front().count.value();
 			});
