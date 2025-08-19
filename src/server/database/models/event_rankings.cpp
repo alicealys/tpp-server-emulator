@@ -133,17 +133,28 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		bool reset_periodic_values()
+		void reset_periodic_values()
 		{
-			return database::access<bool>([&](database_t& db)
+			return database::access([&](database_t& db)
 			{
-				const auto result = db.get_database<Type>()->operator()(
+				db.get_database<Type>()->operator()(
 					sqlpp::update(event_ranking::table)
 						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0)
 							.where(event_ranking::table.event_id != static_cast<std::uint32_t>(ep_earned))
 					);
-
-				return result != 0;
+			});
+		}
+		
+		template <database_type_t Type>
+		void reset_values(const event_type event_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(event_ranking::table)
+						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0)
+							.where(event_ranking::table.event_id == static_cast<std::uint32_t>(event_id))
+					);
 			});
 		}
 
@@ -225,6 +236,16 @@ namespace database::event_rankings
 	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::set_value_if_bigger, player_id, event_id, value);
+	}
+
+	void reset_periodic_values()
+	{
+		RUN_IMPL(impl::reset_periodic_values);
+	}
+
+	void reset_values(const event_type type)
+	{
+		RUN_IMPL(impl::reset_values, type);
 	}
 
 	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const event_type event_id)

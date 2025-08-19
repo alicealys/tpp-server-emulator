@@ -40,30 +40,35 @@ namespace emulator::tpp
 
 			const auto iter = std::find_if(current_event->point_exchange_params.begin(), current_event->point_exchange_params.end(),
 				[&](const database::fob_event::fob_event_point_exchange_param_t& param)
-			{
-				return param.unique_id == unique_id && param.type == type;
-			}
+				{
+					return param.unique_id == unique_id && param.type == type;
+				}
 			);
 
 			if (iter == current_event->point_exchange_params.end())
 			{
-				return error(ERR_INVALIDARG);
+				return ERR_INVALIDARG;
 			}
 
 			const auto point = iter->point * num_to_exchange;
 			if (!database::player_records::spend_event_points(player->get_id(), point))
 			{
-				return error(ERR_POINT_SHORTAGE);
+				return ERR_POINT_SHORTAGE;
 			}
 
 			const auto stats = database::player_records::find(player->get_id());
 
 			result["point"] = stats->get_event_point();
+			return NOERR;
 		};
 
 		if (is_event)
 		{
-			do_event_exchange();
+			const auto res = do_event_exchange();
+			if (res != NOERR)
+			{
+				return error(res);
+			}
 		}
 		else
 		{

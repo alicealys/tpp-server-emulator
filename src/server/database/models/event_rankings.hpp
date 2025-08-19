@@ -128,7 +128,8 @@ namespace database::event_rankings
 
 	std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num);
 
-	bool reset_periodic_values();
+	void reset_periodic_values();
+	void reset_values(const event_type event_id);
 
 	std::chrono::seconds get_last_update();
 }
