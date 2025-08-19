@@ -208,7 +208,7 @@ namespace database::players
 		}
 
 		template <database_type_t Type>
-		player find_or_insert(const std::uint64_t account_id)
+		player find_or_insert(const std::uint64_t account_id, bool is_real_player)
 		{
 			{
 				const auto found = find_from_account<Type>(account_id);
@@ -223,6 +223,7 @@ namespace database::players
 				db.get_database<Type>()->operator()(
 					sqlpp::insert_into(player::table)
 						.set(player::table.account_id = account_id,
+							 player::table.is_real_player = is_real_player,
 							 player::table.currency = "EUR",
 							 player::table.smart_device_id = generate_data(80, true),
 							 player::table.last_update = std::chrono::system_clock::now(),
@@ -688,9 +689,9 @@ namespace database::players
 		RUN_IMPL(impl::find_by_session_id, session_id, use_timeout, is_expired);
 	}
 
-	player find_or_insert(const std::uint64_t account_id)
+	player find_or_insert(const std::uint64_t account_id, bool is_real_player)
 	{
-		RUN_IMPL(impl::find_or_insert, account_id);
+		RUN_IMPL(impl::find_or_insert, account_id, is_real_player);
 	}
 
 	std::string generate_login_password(const std::uint64_t account_id)

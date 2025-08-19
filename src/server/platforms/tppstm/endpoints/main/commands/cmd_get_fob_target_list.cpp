@@ -5,6 +5,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/fobs.hpp"
+#include "database/models/fob_event.hpp"
 
 #include "cmd_get_fob_target_list/target_list_challenge.hpp"
 #include "cmd_get_fob_target_list/target_list_deployed.hpp"
@@ -144,6 +145,7 @@ namespace emulator::tpp
 			for (auto i = 0ull; i < target_fobs.size(); i++)
 			{
 				target["mother_base_param"][i]["area_id"] = 0;
+				target["mother_base_param"][i]["cluster_param"] = nlohmann::json::array();
 				target["mother_base_param"][i]["fob_index"] = 0;
 				target["mother_base_param"][i]["price"] = 0;
 				target["mother_base_param"][i]["construct_param"] = target_fobs[i].get_construct_param();

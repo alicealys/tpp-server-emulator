@@ -79,6 +79,12 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
+		const auto owner = database::players::find(fob->get_player_id());
+		if (!owner.has_value())
+		{
+			return error(ERR_DATABASE);
+		}
+
 		auto mother_base = player_data->get_motherbase();
 
 		const auto active_sneak = database::players::get_active_sneak(mother_base_id);
@@ -94,22 +100,19 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto current_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode, is_sneak);
-		if (!current_sneak.has_value())
+		if (owner->is_real_player())
 		{
-			return error(ERR_DATABASE);
-		}
+			const auto current_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode, is_sneak);
+			if (!current_sneak.has_value())
+			{
+				return error(ERR_DATABASE);
+			}
 
-		const auto sneak_player_id = current_sneak->get_player_id();
-		if (player->get_id() != sneak_player_id || fob->get_id() != current_sneak->get_fob_id())
-		{
-			return error(ERR_DATABASE);
-		}
-
-		const auto owner = database::players::find(fob->get_player_id());
-		if (!owner.has_value())
-		{
-			return error(ERR_DATABASE);
+			const auto sneak_player_id = current_sneak->get_player_id();
+			if (player->get_id() != sneak_player_id || fob->get_id() != current_sneak->get_fob_id())
+			{
+				return error(ERR_DATABASE);
+			}
 		}
 
 		result["damage_param"] = nlohmann::json::array();
@@ -132,7 +135,7 @@ namespace emulator::tpp
 			}
 		}
 
-		result["is_event"] = 0;
+		result["is_event"] = is_event_j;
 		result["is_security_contract"] = 0;
 
 		result["owner_gmp"] = player_data->get_server_gmp();
@@ -158,7 +161,7 @@ namespace emulator::tpp
 		for (auto i = 0u; i < player_data->get_staff_count(); i++)
 		{
 			const auto staff = player_data->get_staff(i);
-			if (!database::player_data::is_usable_staff(staff) || 
+			if (!database::player_data::is_usable_staff(staff) ||
 				staff.status_sync.designation != database::player_data::des_security)
 			{
 				continue;
@@ -176,7 +179,10 @@ namespace emulator::tpp
 
 		auto& stage_param = result["stage_param"];
 
-		database::player_data::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
+		if (owner->is_real_player())
+		{
+			database::player_data::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
+		}
 
 		const auto mapped_index = database::player_data::cluster_index_map[platform];
 
@@ -240,29 +246,32 @@ namespace emulator::tpp
 
 		result["wormhole_player_id"] = wormhole_player_id_j;
 
-		if (!is_sneak)
+		if (owner->is_real_player())
 		{
-			if (!active_sneak.has_value())
+			if (!is_sneak)
 			{
-				return error(ERR_DATABASE);
+				if (!active_sneak.has_value())
+				{
+					return error(ERR_DATABASE);
+				}
+
+				stage_param["platform"] = active_sneak->get_platform();
+
+				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
+					database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
+				{
+					return error(ERR_DATABASE);
+				}
 			}
-
-			stage_param["platform"] = active_sneak->get_platform();
-
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
+			else
 			{
-				return error(ERR_DATABASE);
-			}
-		}
-		else
-		{
-			database::player_records::clear_shield_date(player->get_id());
+				database::player_records::clear_shield_date(player->get_id());
 
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
-				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
-			{
-				return error(ERR_DATABASE);
+				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
+					database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
+				{
+					return error(ERR_DATABASE);
+				}
 			}
 		}
 

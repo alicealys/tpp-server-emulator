@@ -32,6 +32,7 @@ namespace utils::resources
 			{RESOURCE_MGO_BASE_AVATAR, "resources/data/mgo_base_avatar.json"},
 			{RESOURCE_MGO_GEAR_COLORS, "resources/data/mgo_gear_colors.json"},
 			{RESOURCE_MGO_GEAR_LIST, "resources/data/mgo_gear_list.json"},
+			{RESOURCE_FOB_EVENT_LIST, "resources/data/fob_event_list.json"},
 
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},

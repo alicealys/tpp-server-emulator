@@ -118,7 +118,7 @@ namespace database::fobs
 	};
 
 	std::vector<fob> get_fob_list(const std::uint64_t player_id);
-	void create(const std::uint64_t player_id, const std::uint32_t area_id);
+	void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id = 0);
 	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs);
 	std::optional<fob> get_fob(const std::uint64_t id);
 }

@@ -56,22 +56,38 @@ namespace database::fobs
 		}
 
 		template <database_type_t Type>
-		void create(const std::uint64_t player_id, const std::uint32_t area_id)
+		void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id)
 		{
 			database::access([&](database::database_t& db)
 			{
 				const auto list = get_fob_list<Type>(player_id);
 				const auto index = list.size();
 
-				db.get_database<Type>()->operator()(
-					sqlpp::insert_into(fob::table)
-						.set(fob::table.player_id = player_id,
-							 fob::table.area_id = area_id,
-							 fob::table.fob_index = index,
-							 fob::table.cluster_param = "[]",
-							 fob::table.construct_param = 0,
-							 fob::table.create_date = std::chrono::system_clock::now()
-					));
+				if (fob_id == 0)
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::insert_into(fob::table)
+							.set(fob::table.player_id = player_id,
+								 fob::table.area_id = area_id,
+								 fob::table.fob_index = index,
+								 fob::table.cluster_param = "[]",
+								 fob::table.construct_param = 0,
+								 fob::table.create_date = std::chrono::system_clock::now()
+						));
+				}
+				else
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::insert_into(fob::table)
+							.set(fob::table.player_id = player_id,
+								 fob::table.id = fob_id,
+								 fob::table.area_id = area_id,
+								 fob::table.fob_index = index,
+								 fob::table.cluster_param = "[]",
+								 fob::table.construct_param = 0,
+								 fob::table.create_date = std::chrono::system_clock::now()
+						));
+				}
 			});
 		}
 
@@ -110,8 +126,19 @@ namespace database::fobs
 						continue;
 					}
 
-					merge_custom_security(data, server_data, "voluntary_coord_camera_params");
-					merge_custom_security(data, server_data, "voluntary_coord_mine_params");
+					static std::vector<std::string> platform_keys =
+					{
+						{"common3_security"},
+						{"common2_security"},
+						{"common1_security"},
+						{"unique_security"},
+					};
+
+					for (const auto& key : platform_keys)
+					{
+						merge_custom_security(data[key], server_data[key], "voluntary_coord_camera_params");
+						merge_custom_security(data[key], server_data[key], "voluntary_coord_mine_params");
+					}
 				}
 
 				const auto cluster_param_str = cluster_param.dump();
@@ -158,9 +185,9 @@ namespace database::fobs
 		RUN_IMPL(impl::get_fob_list, player_id);
 	}
 
-	void create(const std::uint64_t player_id, const std::uint32_t area_id)
+	void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id)
 	{
-		RUN_IMPL(impl::create, player_id, area_id);
+		RUN_IMPL(impl::create, player_id, area_id, fob_id);
 	}
 
 	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs)
@@ -179,6 +206,7 @@ namespace database::fobs
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.fobs.create");
+			database.run_query("mgstpp.fobs.set_auto_increment");
 		}
 	};
 }

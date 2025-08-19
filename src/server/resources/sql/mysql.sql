@@ -3,6 +3,7 @@ create table if not exists `players`
 (
 	id									bigint unsigned	not null	auto_increment,
 	account_id							bigint unsigned	not null	 unique,
+	is_real_player						boolean 		not null,
 	session_id							char(32)		default null unique,
 	login_password						char(32)		default null,
 	last_update							datetime		default null,
@@ -32,6 +33,7 @@ create table if not exists `player_records`
 (
 	id							bigint unsigned	not null	auto_increment,
 	player_id					bigint unsigned	not null,
+	is_real_player				boolean 		not null,
 	fob_grade					int not null	default 0,
 	prev_fob_grade				int not null	default 0,
 	fob_point					int not null	default 0,
@@ -130,6 +132,8 @@ create table if not exists `fobs`
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
 )
+-- query:mgstpp.fobs.set_auto_increment
+alter table `mgstpp`.`fobs` auto_increment = 1000;
 -- query:mgstpp.sneak_results.create
 create table if not exists `sneak_results`
 (
