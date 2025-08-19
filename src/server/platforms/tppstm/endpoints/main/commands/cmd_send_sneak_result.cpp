@@ -162,7 +162,10 @@ namespace emulator::tpp
 
 			if (is_event && database::fob_event::is_event_player(owner->get_id()))
 			{
-				database::player_records::add_event_point(player->get_id(), event_point);
+				database::player_records::add_event_points(player->get_id(), event_point);
+				database::event_rankings::set_value_if_bigger(player->get_id(), database::event_rankings::most_ep_in_mission, sneak_point);
+				database::event_rankings::increment_event_value(player->get_id(), database::event_rankings::fob_event_ranking, event_point);
+				database::event_rankings::increment_event_value(player->get_id(), database::event_rankings::cores_reached_no_defender, 1);
 				database::player_records::add_sneak_result(player->get_id(), fob->get_player_id(), sneak_point, is_win, true);
 			}
 
