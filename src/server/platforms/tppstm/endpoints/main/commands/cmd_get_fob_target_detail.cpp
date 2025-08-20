@@ -159,8 +159,10 @@ namespace emulator::tpp
 
 		detail["security_section_rank"] = target_data->get_unit_level(database::player_data::unit_security);
 
+		const auto is_sham = mode == database::players::mode_sham;
+
 		result["event_clear_bit"] = 0;
-		result["is_restrict"] = stats->is_shield_active();
+		result["is_restrict"] = is_sham ? 0 : stats->is_shield_active();
 
 		result["session"]["ip"] = "0.0.0.0";
 		result["session"]["is_invalid"] = 1;
@@ -179,11 +181,13 @@ namespace emulator::tpp
 
 		if (owner->is_real_player())
 		{
-			const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), fob->get_player_id());
-
-			if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
+			if (!is_sham)
 			{
-				return error(ERR_SNEAK_RESTRICTION);
+				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), fob->get_player_id());
+				if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
+				{
+					return error(ERR_SNEAK_RESTRICTION);
+				}
 			}
 
 			const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
