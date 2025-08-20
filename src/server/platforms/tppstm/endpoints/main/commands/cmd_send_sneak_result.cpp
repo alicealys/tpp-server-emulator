@@ -111,7 +111,7 @@ namespace emulator::tpp
 			database::player_data::unit_levels_t levels{};
 
 			auto new_staff_count = 0;
-			for (auto i = 0; i < database::player_data::max_staff_count; i++)
+			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
 			{
 				const auto staff = &new_staff_array[i];
 				if (staff->fields.status_sync.designation != 0)
