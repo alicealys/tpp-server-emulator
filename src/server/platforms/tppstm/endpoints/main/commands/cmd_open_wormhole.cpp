@@ -48,6 +48,11 @@ namespace emulator::tpp
 		}
 
 		database::wormholes::add_wormhole(from_player_id, to_player_id, flag_id, is_open, retaliate_score);
+		const auto status = database::wormholes::get_wormhole_status(from_player_id, to_player_id);
+
+		result["is_new_open"] = status.open && status.first;
+		result["player_id"] = from_player_id;
+		result["to_player_id"] = to_player_id;
 
 		return result;
 	}
