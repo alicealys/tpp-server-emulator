@@ -20,6 +20,7 @@ namespace emulator::tpp
 
 		create_nuclear(player);
 
+		const auto& version_j = data["version"];
 		const auto& diff_resource_1 = data["diff_resource1"];
 		const auto& diff_resource_2 = data["diff_resource2"];
 		const auto& gmp_j = data["gmp"];
@@ -49,54 +50,63 @@ namespace emulator::tpp
 			const auto id = local_type == database::player_data::unprocessed_local ? "2"s : "1"s;
 			for (auto i = 0; i < static_cast<std::int32_t>(resources.size()); i++)
 			{
-				const auto& value_j = resources[i];
-				if (!value_j.is_number_integer())
+				if (sync)
 				{
-					return;
+					const auto& value_j = resources[i];
+					if (!value_j.is_number_integer())
+					{
+						return false;
+					}
+
+					const auto ratio = database::player_data::get_local_resource_ratio(local_type, server_type, i);
+
+					const auto current_local_value = database::player_data::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
+					const auto current_server_value = database::player_data::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
+
+					const auto total = current_local_value + current_server_value;
+
+					const auto local_value = database::player_data::cap_resource_value(local_type, i, static_cast<std::uint32_t>(total * ratio));
+					const auto server_value = database::player_data::cap_resource_value(server_type, i, total - local_value);
+
+					resource_arrays[local_type][i] = local_value;
+					resource_arrays[server_type][i] = server_value;
 				}
-
-				const auto ratio = database::player_data::get_local_resource_ratio(local_type, server_type, i);
-
-				const auto current_local_value = database::player_data::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
-				const auto current_server_value = database::player_data::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
-
-				const auto total = current_local_value + current_server_value;
-
-				const auto local_value = database::player_data::cap_resource_value(local_type, i, static_cast<std::uint32_t>(total * ratio));
-				const auto server_value = database::player_data::cap_resource_value(server_type, i, total - local_value);
-
-				resource_arrays[local_type][i] = local_value;
-				resource_arrays[server_type][i] = server_value;
 
 				result["diff_resource" + id][i] = resource_arrays[local_type][i];
 				result["fix_resource" + id][i] = resource_arrays[server_type][i];
 			}
+
+			return true;
 		};
 
 		auto server_gmp = player_data->get_server_gmp();
 		auto local_gmp = std::min(database::vars.max_local_gmp, gmp_j.get<std::int32_t>());
 
-		const auto now = std::chrono::system_clock::now();
-		const auto now_epoc = now.time_since_epoch();
-		const auto diff = now_epoc - player_data->get_last_sync();
-		const auto should_sync = diff >= 30min;
+		const auto local_version = version_j.get<std::uint64_t>();
+		const auto client_version = player_data->get_client_resource_version();
+		auto server_version = player_data->get_server_resource_version();
 
-		sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, should_sync);
-		sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, should_sync);
+		const auto update_client = client_version != server_version || local_version == client_version - 1;
 
-		if (should_sync)
+		if (!sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, !update_client) ||
+			!sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, !update_client))
+		{
+			return error(ERR_INVALIDARG);
+		}
+
+		if (!update_client)
 		{
 			const auto total_gmp = local_gmp + server_gmp;
 			local_gmp = std::min(database::vars.max_local_gmp, static_cast<std::int32_t>(database::vars.gmp_ratio * total_gmp));
 			server_gmp = std::min(database::vars.max_server_gmp, total_gmp - local_gmp);
 
 			database::player_data::set_resources_as_sync(player->get_id(), resource_arrays, local_gmp, server_gmp);
-			result["version"] = player_data->get_version() + 1;
+			server_version++;
 		}
-		else
-		{
-			result["version"] = player_data->get_version();
-		}
+
+		database::player_data::sync_client_resource_version(player->get_id());
+
+		result["version"] = server_version;
 
 		result["injury_gmp"] = 0;
 		result["insurance_gmp"] = 0;

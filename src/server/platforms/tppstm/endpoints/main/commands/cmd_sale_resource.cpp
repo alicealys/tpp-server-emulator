@@ -76,7 +76,9 @@ namespace emulator::tpp
 		result["resouce_id"] = resource_id;
 
 		database::player_data::set_resources(player->get_id(), resource_arrays, local_gmp, server_gmp);
-		result["version"] = player_data->get_version() + 1;
+		database::player_data::sync_client_resource_version(player->get_id());
+
+		result["version"] = player_data->get_server_resource_version() + 1;
 
 		return result;
 	}

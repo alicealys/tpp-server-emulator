@@ -31,7 +31,6 @@ namespace emulator::scripting
 		REGISTER_METHOD(get_server_gmp);
 		REGISTER_METHOD(get_local_gmp);
 		REGISTER_METHOD(get_mb_coin);
-		REGISTER_METHOD(get_version);
 		REGISTER_METHOD(get_last_sync);
 		REGISTER_METHOD(get_nuke_count);
 		REGISTER_METHOD(get_fob_deploy_damage_param);

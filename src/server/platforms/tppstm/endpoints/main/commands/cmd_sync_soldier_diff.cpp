@@ -20,17 +20,19 @@ namespace emulator::tpp
 			return error(ERR_INVALID_SESSION);
 		}
 
-		const auto p_data = database::player_data::find(player->get_id());
-		if (!p_data.get())
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.get())
 		{
 			return error(ERR_INVALIDARG);
 		}
 
 		const auto& section = data["section"];
 		const auto& section_soldier = data["section_soldier"];
+		const auto& client_version_j = data["version"];
 
 		if (!section.is_object() || section.size() != database::player_data::unit_count ||
-			!section_soldier.is_object() || section_soldier.size() != database::player_data::unit_count)
+			!section_soldier.is_object() || section_soldier.size() != database::player_data::unit_count ||
+			!client_version_j.is_number_unsigned())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -63,10 +65,10 @@ namespace emulator::tpp
 				remover_params.emplace_back(staff);
 			}
 
-			for (auto i = 0u; i < p_data->get_staff_count(); i++)
+			for (auto i = 0u; i < player_data->get_staff_count(); i++)
 			{
 				auto removed = false;
-				const auto staff = p_data->get_staff(i);
+				const auto staff = player_data->get_staff(i);
 
 				for (const auto& remover : remover_params)
 				{
@@ -95,7 +97,7 @@ namespace emulator::tpp
 
 			for (const auto& idx : staff_indices)
 			{
-				const auto staff = p_data->get_staff(idx);
+				const auto staff = player_data->get_staff(idx);
 				std::uint32_t params[6]{};
 				params[0] = BSWAP32(staff.unk.data);
 				params[1] = BSWAP32(staff.unk2.data);
@@ -139,8 +141,11 @@ namespace emulator::tpp
 		{
 			database::player_data::set_soldier_diff(player->get_id(), levels, counts);
 		}
+		
+		database::player_data::sync_client_staff_version(player->get_id());
 
 		result["result"] = "NOERR";
+		result["version"] = player_data->get_server_staff_version() + 1;
 
 		return result;
 	}

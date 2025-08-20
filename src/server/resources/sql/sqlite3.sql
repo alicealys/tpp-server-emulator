@@ -93,7 +93,10 @@ create table if not exists `player_data`
 	last_sync				datetime default null,
 	mb_coin					int unsigned default 0,
 	gp_coin					int unsigned default 0,
-	version 				bigint unsigned default 0,
+	client_resource_version bigint unsigned default 0,
+	client_staff_version 	bigint unsigned default 0,
+	server_resource_version bigint unsigned default 0,
+	server_staff_version 	bigint unsigned default 0,
 	fob_deploy_damage_param json,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)

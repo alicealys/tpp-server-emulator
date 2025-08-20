@@ -115,14 +115,6 @@ namespace database::fob_event
 						}
 					}
 				}
-
-				for (auto i = 0u; i < player.motherbase.staff_count; i++)
-				{
-					for (auto o = 0; o < 6; o++)
-					{
-						staff_array[i].packed[o] = BSWAP32(staff_array[i].packed[o]);
-					}
-				}
 			}
 
 			player.motherbase.motherbase = player_j["motherbase"];
@@ -209,7 +201,7 @@ namespace database::fob_event
 			database::player_data::sync_motherbase(player.get_id(), event_player.motherbase.motherbase);
 			database::player_data::set_resources(player.get_id(), event_player.motherbase.resource_arrays, 0, 0);
 
-			database::player_data::set_soldier_data_raw(player.get_id(), event_player.motherbase.staff_count, event_player.motherbase.staff_array,
+			database::player_data::set_soldier_data_raw(player.get_id(), event_player.motherbase.staff_count, *event_player.motherbase.staff_array,
 				event_player.motherbase.unit_levels, event_player.motherbase.unit_counts);
 
 			database::player_records::find_or_create(player.get_id());
