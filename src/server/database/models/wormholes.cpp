@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "wormholes.hpp"
+#include "player_follows.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -70,7 +71,7 @@ namespace database::wormholes
 		}
 
 		template <database_type_t Type>
-		std::vector<wormhole> find_active_wormholes_from(const std::uint64_t player_id)
+		std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id)
 		{
 			return database::access<std::vector<wormhole>>([&](database_t& db)
 			{
@@ -78,7 +79,7 @@ namespace database::wormholes
 					sqlpp::select(sqlpp::all_of(wormhole::table))
 						.from(wormhole::table)
 							.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
-								   wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id &&
+								   (wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id) &&
 								   wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
 					);
 
@@ -91,7 +92,7 @@ namespace database::wormholes
 
 				return list;
 			});
-		}
+		} 
 	}
 
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id,
@@ -105,19 +106,14 @@ namespace database::wormholes
 		RUN_IMPL(impl::find_active_wormholes_to, player_id, other_player_id);
 	}
 
-	std::vector<wormhole> find_active_wormholes_from(const std::uint64_t player_id)
+	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id)
 	{
-		RUN_IMPL(impl::find_active_wormholes_from, player_id);
+		RUN_IMPL(impl::find_active_wormholes, player_id);
 	}
 
-	std::vector<wormhole> find_active_wormholes_from_friends(const std::uint64_t player_id)
+	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t player_id)
 	{
-		return {};
-	}
-
-	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t from_player_id)
-	{
-		const auto wormholes = find_active_wormholes_from(from_player_id);
+		const auto wormholes = find_active_wormholes(player_id);
 
 		std::vector<wormhole_status> list;
 		std::unordered_map<std::uint64_t, wormhole_status> map;
@@ -127,12 +123,12 @@ namespace database::wormholes
 
 		for (const auto& w : wormholes)
 		{
-			const auto to_player_id = from_player_id == w.get_to_player_id()
+			const auto to_player_id = player_id == w.get_to_player_id()
 				? w.get_player_id() : w.get_to_player_id();
 
 			auto& status = map[to_player_id];
 
-			status.player_id = from_player_id;
+			status.player_id = player_id;
 			status.to_player_id = to_player_id;
 
 			if (now - w.get_create_date() > vars.wormhole_duration)

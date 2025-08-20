@@ -29,12 +29,14 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		if (player_id_j != player->get_id())
+		const auto from_player_id = player_id_j.get<std::uint64_t>();  // fob owner
+		const auto to_player_id = to_player_id_j.get<std::uint64_t>(); // attacker
+
+		if (to_player_id != player->get_id())
 		{
 			return error(ERR_INVALIDARG);
 		}
 		
-		const auto to_player_id = to_player_id_j.get<std::uint64_t>();
 		const auto retaliate_score = retaliate_score_j.get<std::uint32_t>();
 		const auto flag = flag_j.get<std::string>();
 		const auto flag_id = database::wormholes::get_flag_id(flag);
@@ -45,7 +47,7 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		database::wormholes::add_wormhole(player->get_id(), to_player_id, flag_id, is_open, retaliate_score);
+		database::wormholes::add_wormhole(from_player_id, to_player_id, flag_id, is_open, retaliate_score);
 
 		return result;
 	}
