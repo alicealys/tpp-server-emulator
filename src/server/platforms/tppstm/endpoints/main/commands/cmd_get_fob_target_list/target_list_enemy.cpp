@@ -8,13 +8,13 @@ namespace emulator::tpp
 {
 	target_list_t target_list_enemy::generate(const database::players::player& player, const database::player_data::player_data_ptr& player_data, const std::uint32_t limit)
 	{
-		auto list = database::wormholes::find_active_wormholes(player.get_id());
+		const auto list = database::wormholes::get_wormholes_status(player.get_id());
 		target_list_t targets;
 
 		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
 			std::chrono::system_clock::now().time_since_epoch());
 
-		for (auto& [to_player_id, wormhole] : list)
+		for (const auto& wormhole : list)
 		{
 			target_data_t target{};
 

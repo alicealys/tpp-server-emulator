@@ -15,9 +15,10 @@
 #include "cmd_get_fob_target_list/target_list_follow.hpp"
 #include "cmd_get_fob_target_list/target_list_follower.hpp"
 #include "cmd_get_fob_target_list/target_list_fr_enemy.hpp"
+#include "cmd_get_fob_target_list/target_list_injury.hpp"
 #include "cmd_get_fob_target_list/target_list_nuclear.hpp"
-#include "cmd_get_fob_target_list/target_list_pickup_high.hpp"
 #include "cmd_get_fob_target_list/target_list_pickup.hpp"
+#include "cmd_get_fob_target_list/target_list_pickup_high.hpp"
 #include "cmd_get_fob_target_list/target_list_trial.hpp"
 
 namespace emulator::tpp
@@ -32,9 +33,10 @@ namespace emulator::tpp
 		this->register_handler<target_list_follow>("FOLLOW");
 		this->register_handler<target_list_follower>("FOLLOWER");
 		this->register_handler<target_list_fr_enemy>("FR_ENEMY");
+		this->register_handler<target_list_injury>("INJURY");
 		this->register_handler<target_list_nuclear>("NUCLEAR");
-		this->register_handler<target_list_pickup_high>("PICKUP_HIGH");
 		this->register_handler<target_list_pickup>("PICKUP");
+		this->register_handler<target_list_pickup_high>("PICKUP_HIGH");
 		this->register_handler<target_list_trial>("TRIAL");
 	}
 

@@ -104,7 +104,10 @@ namespace database::wormholes
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id,
 		const wormhole_flag flag, const bool is_open, const std::uint32_t retaliate_point);
 
-	std::unordered_map<std::uint64_t, wormhole_status> find_active_wormholes(const std::uint64_t player_id);
+	std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t to_player_id);
+	std::vector<wormhole> find_active_wormholes_from(const std::uint64_t player_id);
+	std::vector<wormhole> find_active_wormholes_from_friends(const std::uint64_t player_id);
 
+	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t from_player_id);
 	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id);
 }
