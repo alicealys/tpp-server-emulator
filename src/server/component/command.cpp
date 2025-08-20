@@ -154,7 +154,7 @@ namespace command
 					resource_arrays[database::player_data::unprocessed_local][i] = database::player_data::local_processed_resource_caps[i];
 				}
 
-				database::player_data::set_resources_as_sync(player_id, resource_arrays, database::vars.max_local_gmp, database::vars.max_server_gmp);
+				database::player_data::set_resources(player_id, resource_arrays, database::vars.max_local_gmp, database::vars.max_server_gmp);
 			});
 
 			add("query", [](const params& params)
