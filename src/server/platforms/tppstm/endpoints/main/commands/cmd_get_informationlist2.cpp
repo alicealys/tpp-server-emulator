@@ -24,7 +24,7 @@ namespace emulator::tpp
 			for (auto i = 0ull; i < current_event->information.size(); i++)
 			{
 				result["info_list"][i]["important"] = "FALSE";
-				result["info_list"][i]["date"] = std::time(nullptr);
+				result["info_list"][i]["date"] = current_event->date_range.start.count();
 				result["info_list"][i]["info_id"] = current_event->information[i].info_id;
 				result["info_list"][i]["mes_body"] = current_event->information[i].mes_body;
 				result["info_list"][i]["mes_subject"] = current_event->information[i].mes_subject;

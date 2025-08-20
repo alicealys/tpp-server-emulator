@@ -183,7 +183,7 @@ namespace emulator::tpp
 		{
 			if (!is_sham)
 			{
-				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), fob->get_player_id());
+				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
 				if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
 				{
 					return error(ERR_SNEAK_RESTRICTION);

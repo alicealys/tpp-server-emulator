@@ -26,15 +26,16 @@ namespace emulator::tpp
 			return error(ERR_INVALID_SESSION);
 		}
 
-		const auto& soldier_num_val = data["soldier_num"];
-		const auto& soldier_param_val = data["soldier_param"];
+		const auto& soldier_num_j = data["soldier_num"];
+		const auto& soldier_param_j = data["soldier_param"];
 
-		if (!soldier_num_val.is_number_integer() || !soldier_param_val.is_string())
+		if (!soldier_num_j.is_number_integer() || !soldier_param_j.is_string())
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto soldier_param = soldier_param_val.get<std::string>();
+		auto soldier_num = soldier_num_j.get<std::uint32_t>();
+		const auto soldier_param = soldier_param_j.get<std::string>();
 		auto soldier_bin = utils::cryptography::base64::decode(utils::encoding::decode_url_string(soldier_param));
 
 		if (soldier_bin.empty())
@@ -42,7 +43,7 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		if (soldier_bin.size() > sizeof(database::player_data::staff_array_t) || (soldier_bin.size() % 24) != 0)
+		if (soldier_bin.size() != sizeof(database::player_data::staff_array_t))
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -73,30 +74,22 @@ namespace emulator::tpp
 			}
 		}
 
-		auto soldier_count = 0;
-		const auto array_size = static_cast<std::uint32_t>(soldier_bin.size() / 24);
-
-		for (auto i = 0u; i < array_size; i++)
+		if (soldier_num > database::player_data::max_staff_count)
 		{
-			auto staff = *reinterpret_cast<database::player_data::staff_t*>(&soldier_bin[i * 24]);
-			staff.fields.packed_status_sync = BSWAP32(staff.fields.packed_status_sync);
-			if (staff.fields.status_sync.designation != 0)
-			{
-				++soldier_count;
-			}
+			return error(ERR_INVALIDARG);
 		}
 
-		database::player_data::set_soldier_data(player->get_id(), soldier_count, soldier_bin, levels, counts);
+		database::player_data::set_soldier_data(player->get_id(), soldier_num, soldier_bin, levels, counts);
 
 		std::string soldier_bin_resp;
-		soldier_bin_resp.reserve(array_size * 16);
-		for (auto i = 0u; i < array_size; i++)
+		soldier_bin_resp.reserve(database::player_data::max_staff_count * 16ull);
+		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
 		{
-			soldier_bin_resp.append(&soldier_bin[i * 24 + 8], 16);
+			soldier_bin_resp.append(&soldier_bin[i * 24ull + 8], 16);
 		}
 
 		result["result"] = "NOERR";
-		result["soldier_num"] = soldier_count;
+		result["soldier_num"] = soldier_num;
 		result["soldier_param"] = utils::cryptography::base64::encode(soldier_bin_resp);
 		result["version"] = player_data->get_version();
 

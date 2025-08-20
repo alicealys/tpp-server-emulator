@@ -199,6 +199,9 @@ namespace database::wormholes
 			}
 		}
 
+		status.player_id = from_player_id;
+		status.to_player_id = to_player_id;
+
 		status.expire += vars.wormhole_duration;
 		status.open = status.score > 0;
 

@@ -41,6 +41,7 @@ namespace emulator::tpp
 		}
 
 		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
+		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
 		const auto mode_str = mode_j.get<std::string>();
 
 		const auto mode = database::players::get_sneak_mode_id(mode_str);
@@ -135,7 +136,7 @@ namespace emulator::tpp
 			}
 		}
 
-		result["is_event"] = is_event_j;
+		result["is_event"] = is_event ? 1 : 0;
 		result["is_security_contract"] = 0;
 
 		result["owner_gmp"] = player_data->get_server_gmp();
@@ -156,27 +157,9 @@ namespace emulator::tpp
 		result["reward_soldier_rank"] = 0;
 		result["reward_soldier_type"] = 0;
 
-		auto soldier_index = 0;
-
-		for (auto i = 0u; i < player_data->get_staff_count(); i++)
-		{
-			const auto staff = player_data->get_staff(i);
-			if (!database::player_data::is_usable_staff(staff) ||
-				staff.status_sync.designation != database::player_data::des_security)
-			{
-				continue;
-			}
-
-			result["security_soldier"][soldier_index]["header"] = staff.packed_header;
-			result["security_soldier"][soldier_index]["seed"] = staff.packed_seed;
-			result["security_soldier"][soldier_index]["status_no_sync"] = staff.packed_status_no_sync;
-			result["security_soldier"][soldier_index]["status_sync"] = staff.packed_status_sync;
-			++soldier_index;
-		}
-
-		// idk
-		//result["security_soldier_num"] = soldier_index;
-		//result["security_soldier_rank"] = 0;
+		result["security_soldier"] = nlohmann::json::array();
+		result["security_soldier_num"] = 0;
+		result["security_soldier_rank"] = 0;
 
 		auto& stage_param = result["stage_param"];
 
@@ -188,15 +171,39 @@ namespace emulator::tpp
 		const auto mapped_index = database::player_data::cluster_index_map[platform];
 		const auto& mapped_cluster_param = cluster_param[mapped_index];
 
-		// idk where it gets this for event fobs but whatever
-		result["security_soldier_rank"] = mapped_cluster_param["soldier_rank"];
-		auto security_soldier_num = 0u;
-		for (const auto& key : database::player_data::platform_keys)
+		if (is_event)
 		{
-			security_soldier_num += mapped_cluster_param[key]["soldier"].get<std::uint32_t>();
-		}
+			result["security_soldier_rank"] = mapped_cluster_param["soldier_rank"];
+			auto security_soldier_num = 0u;
+			for (const auto& key : database::player_data::platform_keys)
+			{
+				security_soldier_num += mapped_cluster_param[key]["soldier"].get<std::uint32_t>();
+			}
 
-		result["security_soldier_num"] = security_soldier_num;
+			result["security_soldier_num"] = security_soldier_num;
+		}
+		else
+		{
+			auto soldier_index = 0;
+			for (auto i = 0u; i < player_data->get_staff_count(); i++)
+			{
+				const auto staff = player_data->get_staff(i);
+				if (!database::player_data::is_usable_staff(staff) ||
+					staff.status_sync.designation != database::player_data::des_security)
+				{
+					continue;
+				}
+
+				result["security_soldier"][soldier_index]["header"] = staff.packed_header;
+				result["security_soldier"][soldier_index]["seed"] = staff.packed_seed;
+				result["security_soldier"][soldier_index]["status_no_sync"] = staff.packed_status_no_sync;
+				result["security_soldier"][soldier_index]["status_sync"] = staff.packed_status_sync;
+				++soldier_index;
+			}
+
+			result["security_soldier_num"] = soldier_index;
+			result["security_soldier_rank"] = 0;
+		}
 
 		stage_param["cluster_param"] = mapped_cluster_param;
 		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
