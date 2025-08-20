@@ -3,6 +3,7 @@
 #include "cmd_update_session.hpp"
 
 #include "database/models/players.hpp"
+#include "database/models/player_follows.hpp"
 
 namespace emulator::tpp
 {
@@ -20,13 +21,32 @@ namespace emulator::tpp
 			return error(ERR_DATABASE);
 		}
 
-		const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);
-		auto sneak_mode = active_sneak.has_value() ? 0 : -1;
-		auto fob_index = active_sneak.has_value() ? 0 : -1;
+		result["fob_index"] = -1;
+		result["sneak_mode"] = -1;
 
-		result["fob_index"] = sneak_mode;
-		result["sneak_mode"] = fob_index;
-		result["result"] = utils::tpp::get_error(NOERR);
+		{
+			const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);
+			if (active_sneak.has_value())
+			{
+				result["fob_index"] = 0;
+				result["sneak_mode"] = 0;
+				return result;
+			}
+		}
+
+		{
+			const auto follows = database::player_follows::get_follows(player->get_id());
+			for (const auto& follow_id : follows)
+			{
+				const auto active_sneak = database::players::find_active_sneak(follow_id, true, true);
+				if (active_sneak.has_value())
+				{
+					result["fob_index"] = 0;
+					result["sneak_mode"] = 0;
+					return result;
+				}
+			}
+		}
 
 		return result;
 	}
