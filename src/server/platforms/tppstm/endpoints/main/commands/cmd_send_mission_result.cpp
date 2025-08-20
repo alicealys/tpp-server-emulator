@@ -2,14 +2,10 @@
 
 #include "cmd_send_mission_result.hpp"
 
-// unimplemented
-
 namespace emulator::tpp
 {
 	nlohmann::json cmd_send_mission_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
-		return result;
+		return {};
 	}
 }

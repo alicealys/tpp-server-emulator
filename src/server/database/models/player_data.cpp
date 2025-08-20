@@ -405,6 +405,17 @@ namespace database::player_data
 		return is_usable_staff(staff.fields);
 	}
 
+	void reverse_staff_array_bytes(staff_t* staff_array)
+	{
+		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+		{
+			for (auto o = 0; o < 6; o++)
+			{
+				staff_array[i].packed[o] = BSWAP32(staff_array[i].packed[o]);
+			}
+		}
+	}
+
 	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage)
 	{
 		if (!deploy_damage.has_value())
@@ -566,7 +577,34 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = encode_buffer(data))
+							 player_data::table.staff_bin = encode_buffer(data),
+							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void sync_client_staff_version(const std::uint64_t player_id)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.client_staff_version = player_data::table.server_staff_version)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+
+		template <database_type_t Type>
+		void sync_client_resource_version(const std::uint64_t player_id)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.client_resource_version = player_data::table.server_resource_version)
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -583,7 +621,8 @@ namespace database::player_data
 						.set(player_data::table.staff_count = staff_count,
 							 player_data::table.staff_bin = encode_buffer(data),
 							 player_data::table.unit_levels = encode(levels),
-							 player_data::table.unit_counts = encode(counts))
+							 player_data::table.unit_counts = encode(counts),
+							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -597,7 +636,8 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.unit_levels = encode(levels),
-							 player_data::table.unit_counts = encode(counts))
+							 player_data::table.unit_counts = encode(counts),
+							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -619,7 +659,7 @@ namespace database::player_data
 							 player_data::table.local_gmp = local_gmp,
 							 player_data::table.server_gmp = server_gmp,
 							 player_data::table.nuke_count = nuke_count,
-							 player_data::table.version = player_data::table.version + 1)
+							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -639,7 +679,7 @@ namespace database::player_data
 							 player_data::table.local_gmp = local_gmp,
 							 player_data::table.server_gmp = server_gmp,
 							 player_data::table.last_sync = std::chrono::system_clock::now(),
-							 player_data::table.version = player_data::table.version + 1)
+							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -873,12 +913,20 @@ namespace database::player_data
 		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, data, levels, counts);
 	}
 
-	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_t* staff,
+	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, staff_t* staff_array,
 		unit_levels_t& levels, unit_counts_t& counts)
 	{
+		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+		{
+			for (auto o = 0; o < 6; o++)
+			{
+				staff_array[i].packed[o] = BSWAP32(staff_array[i].packed[o]);
+			}
+		}
+
 		std::string staff_buffer;
 		staff_buffer.resize(sizeof(staff_array_t));
-		std::memcpy(staff_buffer.data(), *staff, sizeof(staff_array_t));
+		std::memcpy(staff_buffer.data(), staff_array, sizeof(staff_array_t));
 
 		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, staff_buffer, levels, counts);
 	}
@@ -946,6 +994,16 @@ namespace database::player_data
 	std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit)
 	{
 		RUN_IMPL(impl::find_with_nukes, limit);
+	}
+
+	void sync_client_resource_version(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::sync_client_resource_version, player_id);
+	}
+
+	void sync_client_staff_version(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::sync_client_staff_version, player_id);
 	}
 
 	class table final : public table_interface

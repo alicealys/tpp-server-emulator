@@ -285,6 +285,8 @@ namespace database::player_data
 	bool is_usable_staff(const staff_t& staff);
 	bool is_usable_staff(const staff_fields_t& staff);
 
+	void reverse_staff_array_bytes(staff_t* staff_array);
+
 	class player_data
 	{
 	public:
@@ -306,12 +308,17 @@ namespace database::player_data
 		DEFINE_FIELD(injury_gmp, sqlpp::integer);
 		DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
 		DEFINE_FIELD(last_sync, sqlpp::time_point);
-		DEFINE_FIELD(version, sqlpp::integer_unsigned);
+		DEFINE_FIELD(client_resource_version, sqlpp::integer_unsigned);
+		DEFINE_FIELD(client_staff_version, sqlpp::integer_unsigned);
+		DEFINE_FIELD(server_resource_version, sqlpp::integer_unsigned);
+		DEFINE_FIELD(server_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
 		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
 			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
-			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, version_field_t,
+			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, 
+			client_resource_version_field_t, client_staff_version_field_t,
+			server_resource_version_field_t, server_staff_version_field_t,
 			fob_deploy_damage_param_field_t);
 
 		inline static table_t table;
@@ -355,15 +362,13 @@ namespace database::player_data
 
 			this->mb_coin_ = row.mb_coin;
 			this->last_sync_ = row.last_sync.value().time_since_epoch();
-			this->version_ = static_cast<std::uint32_t>(row.version);
 
-			for (auto i = 0u; i < this->staff_count_; i++)
-			{
-				for (auto o = 0; o < 6; o++)
-				{
-					this->staff_array_[i].packed[o] = BSWAP32(this->staff_array_[i].packed[o]);
-				}
-			}
+			this->client_resource_version_ = static_cast<std::uint32_t>(row.client_resource_version);
+			this->client_staff_version_ = static_cast<std::uint32_t>(row.client_staff_version);
+			this->server_resource_version_ = static_cast<std::uint32_t>(row.server_resource_version);
+			this->server_staff_version_ = static_cast<std::uint32_t>(row.server_staff_version);
+
+			reverse_staff_array_bytes(this->staff_array_);
 
 			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
 
@@ -470,6 +475,11 @@ namespace database::player_data
 			std::memcpy(arrays, this->resource_arrays_, sizeof(resource_arrays_t));
 		}
 
+		void copy_staff_array(staff_t* staff_array) const
+		{
+			std::memcpy(staff_array, this->staff_array_, sizeof(staff_array_t));
+		}
+
 		std::uint64_t get_player_id() const
 		{
 			return this->player_id_;
@@ -557,9 +567,24 @@ namespace database::player_data
 			return this->mb_coin_;
 		}
 
-		std::uint32_t get_version() const
+		std::uint32_t get_client_resource_version() const
 		{
-			return this->version_;
+			return this->client_resource_version_;
+		}
+
+		std::uint32_t get_client_staff_version() const
+		{
+			return this->client_staff_version_;
+		}
+
+		std::uint32_t get_server_resource_version() const
+		{
+			return this->server_resource_version_;
+		}
+
+		std::uint32_t get_server_staff_version() const
+		{
+			return this->server_staff_version_;
 		}
 
 		std::chrono::microseconds get_last_sync() const
@@ -603,8 +628,11 @@ namespace database::player_data
 		std::int32_t injury_gmp_{};
 
 		std::chrono::microseconds last_sync_;
-		std::uint32_t version_{};
 
+		std::uint32_t client_resource_version_{};
+		std::uint32_t client_staff_version_{};
+		std::uint32_t server_resource_version_{};
+		std::uint32_t server_staff_version_{};
 	};
 
 	using player_data_ptr = std::unique_ptr<player_data>;
@@ -625,7 +653,7 @@ namespace database::player_data
 	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
 		unit_levels_t& levels, unit_counts_t& counts);
 
-	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_t* staff,
+	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, staff_t* staff,
 		unit_levels_t& levels, unit_counts_t& counts);
 
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
@@ -647,4 +675,7 @@ namespace database::player_data
 	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param);
 
 	std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit);
+
+	void sync_client_resource_version(const std::uint64_t player_id);
+	void sync_client_staff_version(const std::uint64_t player_id);
 }
