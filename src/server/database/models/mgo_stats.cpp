@@ -1,11 +1,11 @@
 #include <std_include.hpp>
 
-#include "mgo_stat.hpp"
+#include "mgo_stats.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
-namespace database::mgo_stat
+namespace database::mgo_stats
 {
 	std::vector<std::uint32_t> get_id_list()
 	{
@@ -154,9 +154,9 @@ namespace database::mgo_stat
 	public:
 		void create(database_t& database) override
 		{
-			database.run_query("mgstpp.mgo_stat.create");
+			database.run_query("mgstpp.mgo_stats.create");
 		}
 	};
 }
 
-REGISTER_TABLE(database::mgo_stat::table, -1)
+REGISTER_TABLE(database::mgo_stats::table, -1)

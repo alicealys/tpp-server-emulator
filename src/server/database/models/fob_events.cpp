@@ -1,17 +1,17 @@
 #include <std_include.hpp>
 
-#include "fob_event.hpp"
+#include "fob_events.hpp"
 #include "players.hpp"
 #include "player_data.hpp"
 #include "player_records.hpp"
 #include "fobs.hpp"
-#include "variable.hpp"
+#include "variables.hpp"
 #include "event_rankings.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
-namespace database::fob_event
+namespace database::fob_events
 {
 	namespace
 	{
@@ -255,12 +255,12 @@ namespace database::fob_event
 			last_update = now;
 
 			const auto current_event_number = get_event_number();
-			const auto stored_event_number = variable::get(event_number_variable_name);
+			const auto stored_event_number = variables::get(event_number_variable_name);
 
 			if (!stored_event_number.has_value() || !stored_event_number->is_number_unsigned())
 			{
 				reset_values();
-				variable::set(event_number_variable_name, current_event_number);
+				variables::set(event_number_variable_name, current_event_number);
 				return;
 			}
 
@@ -271,7 +271,7 @@ namespace database::fob_event
 			}
 
 			reset_values();
-			variable::set(event_number_variable_name, current_event_number);
+			variables::set(event_number_variable_name, current_event_number);
 		}
 	}
 
@@ -325,4 +325,4 @@ namespace database::fob_event
 	};
 }
 
-REGISTER_TABLE(database::fob_event::table, -1000)
+REGISTER_TABLE(database::fob_events::table, -1000)

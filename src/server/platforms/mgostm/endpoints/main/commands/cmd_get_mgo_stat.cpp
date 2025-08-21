@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/mgo_stat.hpp"
+#include "database/models/mgo_stats.hpp"
 
 #include "cmd_get_mgo_stat.hpp"
 
@@ -20,8 +20,8 @@ namespace emulator::mgo
 		stat["rule_stat_list"] = this->rule_list_;
 		stat["stat_list"] = nlohmann::json::array();
 
-		const auto stats = database::mgo_stat::get_stats(player->get_id());
-		const auto stat_id_list = database::mgo_stat::get_id_list();
+		const auto stats = database::mgo_stats::get_stats(player->get_id());
+		const auto stat_id_list = database::mgo_stats::get_id_list();
 
 		for (auto i = 0ull; i < stat_id_list.size(); i++)
 		{

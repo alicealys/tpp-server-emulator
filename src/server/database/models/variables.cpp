@@ -1,8 +1,8 @@
 #include <std_include.hpp>
 
-#include "variable.hpp"
+#include "variables.hpp"
 
-namespace database::variable
+namespace database::variables
 {
 	namespace impl
 	{
@@ -68,9 +68,9 @@ namespace database::variable
 	public:
 		void create(database_t& database) override
 		{
-			database.run_query("mgstpp.variable.create");
+			database.run_query("mgstpp.variables.create");
 		}
 	};
 }
 
-REGISTER_TABLE(database::variable::table, -1)
+REGISTER_TABLE(database::variables::table, -1)

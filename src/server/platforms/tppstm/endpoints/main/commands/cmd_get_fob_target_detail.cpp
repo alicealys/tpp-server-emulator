@@ -6,7 +6,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/wormholes.hpp"
-#include "database/models/fob_event.hpp"
+#include "database/models/fob_events.hpp"
 
 namespace emulator::tpp
 {
@@ -116,7 +116,7 @@ namespace emulator::tpp
 		detail["placement"][resource_names[4]] = target_data->get_resource_value(database::player_data::processed_server, 37);
 		detail["placement"][resource_names[5]] = target_data->get_resource_value(database::player_data::processed_server, 38);
 
-		const auto event_player = database::fob_event::get_player(owner->get_id());
+		const auto event_player = database::fob_events::get_player(owner->get_id());
 		if (is_event && event_player.has_value())
 		{
 			detail["primary_reward"] = event_player->reward["primary_reward"];
