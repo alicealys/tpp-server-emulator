@@ -4,7 +4,7 @@
 
 #include "utils/tpp.hpp"
 
-namespace database::mgo_stat
+namespace database::mgo_stats
 {
 	std::vector<std::uint32_t> get_id_list();
 	std::unordered_set<std::uint32_t> get_id_set();
@@ -16,7 +16,7 @@ namespace database::mgo_stat
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(stat_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(stat_value, sqlpp::integer_unsigned);
-		DEFINE_TABLE(mgo_stat, id_field_t, player_id_field_t, stat_id_field_t, stat_value_field_t);
+		DEFINE_TABLE(mgo_stats, id_field_t, player_id_field_t, stat_id_field_t, stat_value_field_t);
 
 		inline static table_t table;
 

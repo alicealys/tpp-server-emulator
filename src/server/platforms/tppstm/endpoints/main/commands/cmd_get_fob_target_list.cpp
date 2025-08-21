@@ -5,7 +5,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/fobs.hpp"
-#include "database/models/fob_event.hpp"
+#include "database/models/fob_events.hpp"
 
 #include "cmd_get_fob_target_list/target_list_challenge.hpp"
 #include "cmd_get_fob_target_list/target_list_deployed.hpp"
@@ -219,9 +219,9 @@ namespace emulator::tpp
 				return process_local + process_server + unprocess_local + unprocess_server;
 			};
 
-			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_resource_value(0);
-			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_resource_value(1);
-			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_resource_value(2);
+			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_resource_value(0);
+			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_resource_value(1);
+			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_resource_value(2);
 			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_resource_value(3);
 			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_resource_value(4);
 

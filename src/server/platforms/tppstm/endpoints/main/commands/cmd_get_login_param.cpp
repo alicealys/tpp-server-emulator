@@ -3,7 +3,7 @@
 #include "cmd_get_login_param.hpp"
 
 #include "database/models/items.hpp"
-#include "database/models/fob_event.hpp"
+#include "database/models/fob_events.hpp"
 
 namespace emulator::tpp
 {
@@ -18,7 +18,7 @@ namespace emulator::tpp
 
 		result["server_product_params"] = database::items::get_static_list_json();
 
-		const auto current_event = database::fob_event::get_current_event();
+		const auto current_event = database::fob_events::get_current_event();
 		if (current_event.has_value())
 		{
 			result["fob_event_task_list"]["one_event_task"] = current_event->one_event_task;

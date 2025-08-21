@@ -4,7 +4,7 @@
 
 #include "utils/tpp.hpp"
 
-namespace database::variable
+namespace database::variables
 {
 	class variable
 	{
@@ -12,7 +12,7 @@ namespace database::variable
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(variable_name, sqlpp::text);
 		DEFINE_FIELD(variable_value, sqlpp::text);
-		DEFINE_TABLE(variable, id_field_t, variable_name_field_t, variable_value_field_t);
+		DEFINE_TABLE(variables, id_field_t, variable_name_field_t, variable_value_field_t);
 
 		inline static table_t table;
 

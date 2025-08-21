@@ -3,7 +3,7 @@
 #include "cmd_send_sneak_result.hpp"
 
 #include "database/models/fobs.hpp"
-#include "database/models/fob_event.hpp"
+#include "database/models/fob_events.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/sneak_results.hpp"
@@ -297,7 +297,7 @@ namespace emulator::tpp
 			return NOERR;
 		};
 
-		if (is_event && database::fob_event::is_event_player(owner->get_id()))
+		if (is_event && database::fob_events::is_event_player(owner->get_id()))
 		{
 			database::player_records::add_event_points(player->get_id(), event_point);
 			database::event_rankings::set_value_if_bigger(player->get_id(), database::event_rankings::most_ep_in_mission, sneak_point);

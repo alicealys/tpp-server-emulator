@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/fob_event.hpp"
+#include "database/models/fob_events.hpp"
 
 #include "target_list_event.hpp"
 
@@ -10,7 +10,7 @@ namespace emulator::tpp
 	{
 		target_list_t targets;
 
-		const auto fob_event = database::fob_event::get_current_event();
+		const auto fob_event = database::fob_events::get_current_event();
 		if (!fob_event.has_value())
 		{
 			return {};
@@ -20,7 +20,7 @@ namespace emulator::tpp
 
 		for (const auto& player_id : fob_event->player_ids)
 		{
-			const auto event_player = database::fob_event::get_player(player_id);
+			const auto event_player = database::fob_events::get_player(player_id);
 			if (!event_player.has_value())
 			{
 				continue;

@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/mgo_stat.hpp"
+#include "database/models/mgo_stats.hpp"
 
 #include "cmd_set_mgo_stat.hpp"
 
@@ -17,7 +17,7 @@ namespace emulator::mgo
 		}
 
 		auto& list = stat["stat_list"];
-		const auto id_set = database::mgo_stat::get_id_set();
+		const auto id_set = database::mgo_stats::get_id_set();
 
 		for (auto i = 0ull; i < list.size(); i++)
 		{
@@ -36,7 +36,7 @@ namespace emulator::mgo
 				continue;
 			}
 
-			database::mgo_stat::set_stat(player->get_id(), id, value);
+			database::mgo_stats::set_stat(player->get_id(), id, value);
 		}
 
 		return result;

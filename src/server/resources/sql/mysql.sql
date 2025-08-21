@@ -248,8 +248,8 @@ create table if not exists `mgo_data`
 	foreign key (`player_id`) references players(`id`),
 	unique key `unique_mgo_data_player_id` (`player_id`)
 )
--- query:mgstpp.mgo_stat.create
-create table if not exists `mgo_stat`
+-- query:mgstpp.mgo_stats.create
+create table if not exists `mgo_stats`
 (
 	id						bigint unsigned	not null	auto_increment,
 	player_id				bigint unsigned	not null,
@@ -270,8 +270,8 @@ create table if not exists `mgo_color_purchase`
 	foreign key (`player_id`) references players(`id`),
 	unique key `unique_mgo_color_purchase_player_id_gear_id_color_id` (`player_id`, `gear_id`, `color_id`)
 )
--- query:mgstpp.variable.create
-create table if not exists `variable`
+-- query:mgstpp.variables.create
+create table if not exists `variables`
 (
 	id						bigint unsigned	not null	auto_increment,
 	variable_name			varchar(256) 	not null	unique,

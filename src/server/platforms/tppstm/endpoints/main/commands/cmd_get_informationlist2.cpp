@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/fob_event.hpp"
+#include "database/models/fob_events.hpp"
 
 #include "cmd_get_informationlist2.hpp"
 
@@ -15,7 +15,7 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		const auto current_event = database::fob_event::get_current_event();
+		const auto current_event = database::fob_events::get_current_event();
 		auto start_index = 0ull;
 
 		if (current_event.has_value())
