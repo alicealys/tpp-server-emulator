@@ -21,9 +21,9 @@ namespace emulator::tpp
 
 		enum soldier_array_action
 		{
-			kill = 0,
-			injure = 1,
-			capture = 2
+			soldier_kill = 0,
+			soldier_injure = 1,
+			soldier_capture = 2
 		};
 
 		std::unordered_set<std::uint32_t> parse_soldier_id_list(nlohmann::json& list)
@@ -38,14 +38,9 @@ namespace emulator::tpp
 			for (auto i = 0ull; i < list.size(); i++)
 			{
 				auto& soldier_param = list[i]["param"];
-				if (soldier_param.size() != 2)
+				if (soldier_param.size() != 2 || !soldier_param[0].is_number_unsigned() || !soldier_param[1].is_number_unsigned())
 				{
 					continue;
-				}
-
-				if (!soldier_param[0].is_number_unsigned() || !soldier_param[1].is_number_unsigned())
-				{
-
 				}
 
 				//const auto param_1 = soldier_param[0].get<std::uint32_t>();
@@ -56,25 +51,28 @@ namespace emulator::tpp
 			return soldier_ids;
 		}
 
-		void modify_staff_array(database::player_data::staff_t* staff_array, 
-			const std::unordered_set<std::uint32_t>& soldier_ids, const soldier_array_action action)
+		void modify_staff_array(database::player_data::staff_array_container& staff_array, 
+			std::unordered_set<std::uint32_t>& soldier_ids, const soldier_array_action action)
 		{
 			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
 			{
 				auto staff = &staff_array[i];
-				if (!soldier_ids.contains(staff->fields.seed.data))
+				const auto iter = soldier_ids.find(staff->fields.seed.data);
+				if (iter == soldier_ids.end())
 				{
 					continue;
 				}
 
+				soldier_ids.erase(iter);
+
 				switch (action)
 				{
-				case injure:
+				case soldier_injure:
 					staff->fields.status_sync.health_state = 1;
 					staff->fields.status_sync.designation = database::player_data::des_sickbay;
 					break;
-				case capture:
-				case kill:
+				case soldier_capture: // todo: implement fob prison list
+				case soldier_kill:
 					std::memset(staff, 0, sizeof(database::player_data::staff_t));
 					break;
 				}
@@ -83,29 +81,25 @@ namespace emulator::tpp
 
 		void update_staff(
 			const std::optional<database::players::player>& attacker, 
-			const database::player_data::player_data_ptr& attacker_data,
+			const std::optional<database::player_data::player_data>& attacker_data,
 			const std::optional<database::players::player>& owner,
 			nlohmann::json& data)
 		{
-			const auto owner_data = database::player_data::find(owner->get_id());
+			auto owner_data = database::player_data::find(owner->get_id());
+			auto& new_staff_array = owner_data->get_staff_array();
 
-			auto& capture_soldier_id = data["capture_soldier_id"];
-			auto& injure_soldier_id = data["injure_soldier_id"];
-			auto& kill_soldier_id = data["kill_soldier_id"];
-
-			auto new_staff_array_ptr = utils::memory::allocate<database::player_data::staff_array_t>();
-			const auto _1 = gsl::finally([&]
+			static std::vector<std::pair<std::string, soldier_array_action>> soldier_list_map =
 			{
-				utils::memory::free(new_staff_array_ptr);
-			});
+				{"capture_soldier_id", soldier_capture},
+				{"injure_soldier_id", soldier_injure},
+				{"kill_soldier_id", soldier_kill},
+			};
 
-			auto new_staff_array = *new_staff_array_ptr;
-
-			owner_data->copy_staff_array(new_staff_array);
-
-			modify_staff_array(new_staff_array, parse_soldier_id_list(capture_soldier_id), capture);
-			modify_staff_array(new_staff_array, parse_soldier_id_list(injure_soldier_id), injure);
-			modify_staff_array(new_staff_array, parse_soldier_id_list(kill_soldier_id), kill);
+			for (const auto& [name, action] : soldier_list_map)
+			{
+				auto list = parse_soldier_id_list(data[name]);
+				modify_staff_array(new_staff_array, list, action);
+			}
 
 			database::player_data::unit_counts_t counts{};
 			database::player_data::unit_levels_t levels{};
@@ -131,7 +125,7 @@ namespace emulator::tpp
 				levels[i] = owner_data->get_unit_level(i);
 			}
 
-			database::player_data::set_soldier_data_raw(owner->get_id(), new_staff_count, new_staff_array, levels, counts);
+			database::player_data::set_soldier_data(owner->get_id(), new_staff_count, new_staff_array, levels, counts);
 		}
 	}
 
@@ -152,7 +146,7 @@ namespace emulator::tpp
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.get())
+		if (!player_data.has_value())
 		{
 			return error(ERR_DATABASE);
 		}

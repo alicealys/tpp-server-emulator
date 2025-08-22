@@ -10,7 +10,7 @@ namespace emulator::tpp
 	nlohmann::json create_nuclear(const std::optional<database::players::player>& player)
 	{
 		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.get())
+		if (!player_data.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}

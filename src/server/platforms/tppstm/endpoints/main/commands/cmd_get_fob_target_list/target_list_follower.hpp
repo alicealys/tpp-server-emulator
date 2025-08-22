@@ -7,6 +7,6 @@ namespace emulator::tpp
 	class target_list_follower final : public base_list
 	{
 	public:
-		target_list_t generate(const database::players::player& player, const database::player_data::player_data_ptr& player_data, const std::uint32_t limit) override;
+		target_list_t generate(const database::players::player& player, const std::optional<database::player_data::player_data>& player_data, const std::uint32_t limit) override;
 	};
 }

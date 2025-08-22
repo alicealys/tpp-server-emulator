@@ -25,7 +25,7 @@ namespace emulator::tpp
 
 		result["player_num"] = 0;
 
-		if (stats.has_value() && player_data.get())
+		if (stats.has_value() && player_data.has_value())
 		{
 			result["player_num"] = 1;
 

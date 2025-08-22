@@ -22,7 +22,7 @@ namespace emulator::tpp
 		{
 		}
 
-		virtual target_list_t generate(const database::players::player& player, const database::player_data::player_data_ptr& player_data, const std::uint32_t limit)
+		virtual target_list_t generate(const database::players::player& player, const std::optional<database::player_data::player_data>& player_data, const std::uint32_t limit)
 		{
 			return {};
 		}

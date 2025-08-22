@@ -21,7 +21,7 @@ namespace emulator::tpp
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.get())
+		if (!player_data.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -54,7 +54,7 @@ namespace emulator::tpp
 		}
 
 		const auto target_data = database::player_data::find(fob->get_player_id());
-		if (!target_data.get())
+		if (!target_data.has_value())
 		{
 			return error(ERR_DATABASE);
 		}

@@ -41,7 +41,7 @@ namespace emulator::tpp
 	}
 
 	target_list_t cmd_get_fob_target_list::get_target_list(const std::string& name, const database::players::player& player, 
-		const database::player_data::player_data_ptr& player_data, 
+		const std::optional<database::player_data::player_data>& player_data, 
 		const std::uint32_t limit)
 	{
 		const auto iter = this->handlers_.find(name);
@@ -70,7 +70,7 @@ namespace emulator::tpp
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.get())
+		if (!player_data.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -123,7 +123,7 @@ namespace emulator::tpp
 			const auto target_fobs = database::fobs::get_fob_list(target_entry.player_id);
 			const auto target_data = database::player_data::find(target_entry.player_id, true, false, true);
 
-			if (!target_stats.has_value() || target_fobs.size() == 0 || !target_data.get())
+			if (!target_stats.has_value() || target_fobs.size() == 0 || !target_data.has_value())
 			{
 				continue;
 			}

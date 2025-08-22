@@ -17,7 +17,7 @@ namespace emulator::tpp
 		}
 
 		const auto p_data = database::player_data::find(player->get_id());
-		if (!p_data.get())
+		if (!p_data.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}

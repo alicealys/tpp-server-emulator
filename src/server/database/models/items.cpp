@@ -106,7 +106,7 @@ namespace database::items
 		return iter->second;
 	}
 
-	void item_status::set_data(const item_t& item_data, std::unique_ptr<player_data::player_data>& p_data)
+	void item_status::set_data(const item_t& item_data, std::optional<player_data::player_data>& p_data)
 	{
 		const auto now = std::chrono::system_clock::now();
 
@@ -151,7 +151,7 @@ namespace database::items
 			this->left_second_ = 0;
 		}
 
-		if (!this->open_ && p_data.get())
+		if (!this->open_ && p_data.has_value())
 		{
 			const auto count_1 = p_data->get_resource_value(player_data::processed_server, item_data.dev_resource_ids[0]);
 			const auto count_2 = p_data->get_resource_value(player_data::processed_server, item_data.dev_resource_ids[1]);

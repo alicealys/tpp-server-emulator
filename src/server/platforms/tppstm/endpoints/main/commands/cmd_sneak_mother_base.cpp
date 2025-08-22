@@ -75,7 +75,7 @@ namespace emulator::tpp
 		const auto attacker_data = database::player_data::find(attacker_id, true);
 		const auto player_data = database::player_data::find(fob->get_player_id(), true);
 
-		if (!attacker_data.get() || !player_data.get())
+		if (!attacker_data.has_value() || !player_data.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}

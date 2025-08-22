@@ -33,7 +33,7 @@ namespace emulator::tpp
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.get())
+		if (!player_data.has_value())
 		{
 			return error(ERR_PLAYER_NOTFOUND);
 		}

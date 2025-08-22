@@ -6,7 +6,7 @@
 
 namespace emulator::tpp
 {
-	target_list_t target_list_deployed::generate(const database::players::player& player, const database::player_data::player_data_ptr& player_data, const std::uint32_t limit)
+	target_list_t target_list_deployed::generate(const database::players::player& player, const std::optional<database::player_data::player_data>& player_data, const std::uint32_t limit)
 	{
 		target_data_t target;
 
