@@ -86,15 +86,15 @@ namespace emulator::tpp
 		const auto client_version = player_data->get_client_resource_version();
 		auto server_version = player_data->get_server_resource_version();
 
-		const auto update_client = client_version != server_version || local_version == client_version - 1;
+		const auto update_server = client_version == server_version && local_version != client_version - 1;
 
-		if (!sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, !update_client) ||
-			!sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, !update_client))
+		if (!sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, update_server) ||
+			!sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, update_server))
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		if (!update_client)
+		if (update_server)
 		{
 			const auto total_gmp = local_gmp + server_gmp;
 			local_gmp = std::min(database::vars.max_local_gmp, static_cast<std::int32_t>(database::vars.gmp_ratio * total_gmp));

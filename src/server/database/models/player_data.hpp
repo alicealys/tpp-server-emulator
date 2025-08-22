@@ -279,9 +279,6 @@ namespace database::player_data
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
 	std::uint32_t designation_from_unit_name(const std::string unit_name);
 
-	std::string decode_buffer(const std::string& buffer);
-	std::string decode_buffer(const std::vector<std::uint8_t>& buffer);
-
 	bool is_usable_staff(const staff_t& staff);
 	bool is_usable_staff(const staff_fields_t& staff);
 
@@ -296,6 +293,7 @@ namespace database::player_data
 		const staff_t* data() const;
 		staff_t* data();
 
+		size_t data_size() const;
 		size_t size() const;
 
 		std::string encode_client() const;
@@ -313,12 +311,12 @@ namespace database::player_data
 	public:
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
-		DEFINE_FIELD(unit_counts, sqlpp::blob);
-		DEFINE_FIELD(unit_levels, sqlpp::blob);
-		DEFINE_FIELD(resource_arrays, sqlpp::mediumblob);
+		DEFINE_FIELD(unit_counts, sqlpp::binary);
+		DEFINE_FIELD(unit_levels, sqlpp::binary);
+		DEFINE_FIELD(resource_arrays, sqlpp::binary);
 		DEFINE_FIELD(nuke_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
-		DEFINE_FIELD(staff_bin, sqlpp::mediumblob);
+		DEFINE_FIELD(staff_bin, sqlpp::binary);
 		DEFINE_FIELD(loadout, sqlpp::text);
 		DEFINE_FIELD(motherbase, sqlpp::text);
 		DEFINE_FIELD(emblem, sqlpp::text);
@@ -347,10 +345,10 @@ namespace database::player_data
 		template <typename ...Args>
 		player_data(const sqlpp::result_row_t<Args...>& row)
 		{
-			const auto resource_arrays_str = decode_buffer(row.resource_arrays.value());
-			const auto staff_bin_str = decode_buffer(row.staff_bin.value());
-			const auto unit_counts_str = decode_buffer(row.unit_counts.value());
-			const auto unit_levels_str = decode_buffer(row.unit_levels.value());
+			const auto resource_arrays_str = row.resource_arrays.value();
+			const auto staff_bin_str = row.staff_bin.value();
+			const auto unit_counts_str = row.unit_counts.value();
+			const auto unit_levels_str = row.unit_levels.value();
 
 			if (resource_arrays_str.size() == sizeof(resource_arrays_t))
 			{

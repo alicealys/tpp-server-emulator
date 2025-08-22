@@ -78,7 +78,7 @@ create table if not exists `player_data`
 	player_id				bigint unsigned	not null,
 	unit_counts				blob default null,
 	unit_levels				blob default null,
-	resource_arrays			mediumblob default null,
+	resource_arrays			blob default null,
 	nuke_count				bigint unsigned default 0,
 	staff_count				int unsigned not null,
 	staff_bin				mediumblob default null,

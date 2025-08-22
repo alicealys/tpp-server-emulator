@@ -74,9 +74,9 @@ namespace emulator::tpp
 			}
 
 			auto client_staff_array = database::player_data::staff_array_container::decode_client_staff_array(soldier_param);
-			if (client_staff_array.has_value())
+			if (!client_staff_array.has_value())
 			{
-				result["error"] = ERR_INVALIDARG;
+				result["error"] = utils::tpp::get_error(ERR_INVALIDARG);
 				return;
 			}
 
