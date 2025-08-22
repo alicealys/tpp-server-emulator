@@ -11,11 +11,17 @@ namespace database::player_data
 {
 	namespace
 	{
+		std::string encode_as_hex(const std::string& data)
+		{
+			return std::format("x'{}'", utils::string::dump_hex(data, ""));
+		}
+
 		template <typename T>
-		std::string encode(T& value)
+		std::string encode_binary(T& value)
 		{
 			const std::string str = {reinterpret_cast<char*>(&value), sizeof(T)};
-			return utils::cryptography::base64::encode(str);
+			const auto encoded = encode_as_hex(str);
+			return encoded;
 		}
 	}
 
@@ -339,26 +345,6 @@ namespace database::player_data
 		return des_none;
 	}
 
-	std::string encode_buffer(const std::string& buffer)
-	{
-		return utils::cryptography::base64::encode(buffer);
-	}
-
-	std::string encode_buffer(const std::vector<std::uint8_t>& buffer)
-	{
-		return encode_buffer(std::string{buffer.begin(), buffer.end()});
-	}
-
-	std::string decode_buffer(const std::string& buffer)
-	{
-		return utils::cryptography::base64::decode(buffer);
-	}
-
-	std::string decode_buffer(const std::vector<std::uint8_t>& buffer)
-	{
-		return decode_buffer(std::string{buffer.begin(), buffer.end()});
-	}
-
 	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index)
 	{
 		switch (type)
@@ -432,9 +418,14 @@ namespace database::player_data
 		return std::vector<staff_t>::data();
 	}
 
-	size_t staff_array_container::size() const
+	size_t staff_array_container::data_size() const
 	{
 		return std::vector<staff_t>::size() * sizeof(staff_t);
+	}
+
+	size_t staff_array_container::size() const
+	{
+		return std::vector<staff_t>::size();
 	}
 
 	void staff_array_container::swap_bytes()
@@ -471,7 +462,10 @@ namespace database::player_data
 
 	std::string staff_array_container::encode_database() const
 	{
-		return utils::cryptography::base64::encode(reinterpret_cast<const std::uint8_t*>(this->data()), this->size());
+		const auto ptr = reinterpret_cast<const std::uint8_t*>(this->data());
+		const auto data = std::string{ptr, ptr + this->data_size()};
+		const auto encoded = encode_as_hex(data);
+		return encoded;
 	}
 
 	std::optional<staff_array_container> staff_array_container::decode_client_staff_array(const std::string& data)
@@ -651,7 +645,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = staff_array.encode_database(),
+							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -693,9 +687,9 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = staff_array.encode_database(),
-							 player_data::table.unit_levels = encode(levels),
-							 player_data::table.unit_counts = encode(counts),
+							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
+							 player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(encode_binary(levels)),
+							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(counts)),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -709,8 +703,8 @@ namespace database::player_data
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.unit_levels = encode(levels),
-							 player_data::table.unit_counts = encode(counts),
+						.set(player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(encode_binary(levels)),
+							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(counts)),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -720,8 +714,6 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
-			const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
-
 			const auto nuke_count = arrays[processed_local][nuclear] + arrays[processed_server][nuclear];
 
 			database::access([&](database::database_t& db)
@@ -729,7 +721,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = encode_buffer(resource_buf),
+							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(encode_binary(arrays)),
 							 player_data::table.local_gmp = local_gmp,
 							 player_data::table.server_gmp = server_gmp,
 							 player_data::table.nuke_count = nuke_count,
@@ -742,14 +734,12 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
-			const auto resource_buf = std::string{reinterpret_cast<char*>(arrays), sizeof(resource_arrays_t)};
-
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = encode_buffer(resource_buf),
+							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(encode_binary(arrays)),
 							 player_data::table.local_gmp = local_gmp,
 							 player_data::table.server_gmp = server_gmp,
 							 player_data::table.last_sync = std::chrono::system_clock::now(),
