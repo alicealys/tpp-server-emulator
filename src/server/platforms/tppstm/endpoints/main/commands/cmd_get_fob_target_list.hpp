@@ -10,7 +10,7 @@ namespace emulator::tpp
 	public:
 		cmd_get_fob_target_list();
 		target_list_t get_target_list(const std::string& name, const database::players::player& player,
-			const database::player_data::player_data_ptr& player_data,
+			const std::optional<database::player_data::player_data>& player_data,
 			const std::uint32_t limit);
 
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;

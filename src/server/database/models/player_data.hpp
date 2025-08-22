@@ -285,7 +285,28 @@ namespace database::player_data
 	bool is_usable_staff(const staff_t& staff);
 	bool is_usable_staff(const staff_fields_t& staff);
 
-	void reverse_staff_array_bytes(staff_t* staff_array);
+	class staff_array_container : std::vector<staff_t>
+	{
+	public:
+		staff_array_container();
+
+		const staff_t& operator[](const size_t index) const;
+		staff_t& operator[](const size_t index);
+
+		const staff_t* data() const;
+		staff_t* data();
+
+		size_t size() const;
+
+		std::string encode_client() const;
+		std::string encode_database() const;
+
+		static std::optional<staff_array_container> decode_client_staff_array(const std::string& data);
+
+	private:
+		void swap_bytes();
+
+	};
 
 	class player_data
 	{
@@ -338,7 +359,7 @@ namespace database::player_data
 
 			if (staff_bin_str.size() == sizeof(staff_array_t))
 			{
-				std::memcpy(this->staff_array_, staff_bin_str.data(), sizeof(staff_array_t));
+				std::memcpy(this->staff_array_.data(), staff_bin_str.data(), sizeof(staff_array_t));
 			}
 
 			if (unit_counts_str.size() == sizeof(unit_counts_t))
@@ -360,15 +381,13 @@ namespace database::player_data
 
 			this->player_id_ = row.player_id;
 
-			this->mb_coin_ = row.mb_coin;
+			this->mb_coin_ = static_cast<std::uint32_t>(row.mb_coin);
 			this->last_sync_ = row.last_sync.value().time_since_epoch();
 
 			this->client_resource_version_ = static_cast<std::uint32_t>(row.client_resource_version);
 			this->client_staff_version_ = static_cast<std::uint32_t>(row.client_staff_version);
 			this->server_resource_version_ = static_cast<std::uint32_t>(row.server_resource_version);
 			this->server_staff_version_ = static_cast<std::uint32_t>(row.server_staff_version);
-
-			reverse_staff_array_bytes(this->staff_array_);
 
 			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
 
@@ -475,11 +494,6 @@ namespace database::player_data
 			std::memcpy(arrays, this->resource_arrays_, sizeof(resource_arrays_t));
 		}
 
-		void copy_staff_array(staff_t* staff_array) const
-		{
-			std::memcpy(staff_array, this->staff_array_, sizeof(staff_array_t));
-		}
-
 		std::uint64_t get_player_id() const
 		{
 			return this->player_id_;
@@ -527,7 +541,7 @@ namespace database::player_data
 
 			for (auto i = 0u; i < max; i++)
 			{
-				const auto staff = this->staff_array_[i];
+				const auto& staff = this->staff_array_[i];
 				if (is_usable_staff(staff))
 				{
 					++count;
@@ -602,6 +616,21 @@ namespace database::player_data
 			return this->fob_deploy_damage_param_;
 		}
 
+		const staff_array_container& get_staff_array() const
+		{
+			return this->staff_array_;
+		}
+
+		staff_array_container& get_staff_array()
+		{
+			return this->staff_array_;
+		}
+
+		staff_array_container copy_staff_array()
+		{
+			return this->staff_array_;
+		}
+
 	private:
 		std::uint64_t player_id_;
 
@@ -612,7 +641,7 @@ namespace database::player_data
 		unit_counts_t unit_counts_{};
 
 		std::uint32_t staff_count_{};
-		staff_array_t staff_array_{};
+		staff_array_container staff_array_{};
 
 		nlohmann::json loadout_{};
 		nlohmann::json motherbase_{};
@@ -635,8 +664,6 @@ namespace database::player_data
 		std::uint32_t server_staff_version_{};
 	};
 
-	using player_data_ptr = std::unique_ptr<player_data>;
-
 	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index);
 	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value);
 
@@ -645,15 +672,12 @@ namespace database::player_data
 	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
 	void create(const std::uint64_t player_id);
-	player_data_ptr find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
-	player_data_ptr find_or_create(const std::uint64_t player_id);
+	std::optional<player_data> find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
+	std::optional<player_data> find_or_create(const std::uint64_t player_id);
 
-	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data);
+	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array);
 
-	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
-		unit_levels_t& levels, unit_counts_t& counts);
-
-	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, staff_t* staff,
+	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
 		unit_levels_t& levels, unit_counts_t& counts);
 
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);

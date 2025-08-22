@@ -23,7 +23,7 @@ namespace emulator::tpp
 		const auto p_data = database::player_data::find(player->get_id());
 		const auto fob_list = database::fobs::get_fob_list(player->get_id());
 
-		if (!p_data.get() || fob_list.size() >= 4 || fob_list.size() < 1 || !area_id_j.is_number_integer())
+		if (!p_data.has_value() || fob_list.size() >= 4 || fob_list.size() < 1 || !area_id_j.is_number_integer())
 		{
 			return error(ERR_INVALIDARG);
 		}

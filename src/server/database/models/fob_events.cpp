@@ -92,9 +92,6 @@ namespace database::fob_events
 				{
 					unit_levels[i] = section_level[database::player_data::unit_names[i]].get<std::uint32_t>();
 				}
-				
-				player.motherbase.staff_array = utils::memory::allocate<database::player_data::staff_array_t>();
-				auto staff_array = *player.motherbase.staff_array;
 
 				auto total_staff = 0;
 				for (auto i = 0ull; i < section_staff.size(); i++)
@@ -110,8 +107,8 @@ namespace database::fob_events
 						for (auto l = 0u; l < staff_count; l++)
 						{
 							auto staff_index = total_staff++;
-							staff_array[staff_index].fields.header.peak_rank = i;
-							staff_array[staff_index].fields.status_sync.designation = database::player_data::des_units_start + o;
+							player.motherbase.staff_array[staff_index].fields.header.peak_rank = i;
+							player.motherbase.staff_array[staff_index].fields.status_sync.designation = database::player_data::des_units_start + o;
 						}
 					}
 				}
@@ -201,7 +198,7 @@ namespace database::fob_events
 			database::player_data::sync_motherbase(player.get_id(), event_player.motherbase.motherbase);
 			database::player_data::set_resources(player.get_id(), event_player.motherbase.resource_arrays, 0, 0);
 
-			database::player_data::set_soldier_data_raw(player.get_id(), event_player.motherbase.staff_count, *event_player.motherbase.staff_array,
+			database::player_data::set_soldier_data(player.get_id(), event_player.motherbase.staff_count, event_player.motherbase.staff_array,
 				event_player.motherbase.unit_levels, event_player.motherbase.unit_counts);
 
 			database::player_records::find_or_create(player.get_id());

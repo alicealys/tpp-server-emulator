@@ -37,7 +37,7 @@ namespace database::fob_events
 		database::player_data::resource_arrays_t resource_arrays{};
 		database::player_data::unit_levels_t unit_levels{};
 		database::player_data::unit_counts_t unit_counts{};
-		database::player_data::staff_array_t* staff_array{};
+		database::player_data::staff_array_container staff_array;
 		std::uint32_t staff_count;
 	};
 

@@ -21,7 +21,7 @@ namespace emulator::tpp
 		}
 
 		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.get())
+		if (!player_data.has_value())
 		{
 			return error(ERR_INVALID_SESSION);
 		}
@@ -35,20 +35,8 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		auto soldier_num = soldier_num_j.get<std::uint32_t>();
+		const auto soldier_num = soldier_num_j.get<std::uint32_t>();
 		const auto soldier_param = soldier_param_j.get<std::string>();
-
-		auto soldier_bin = utils::cryptography::base64::decode(utils::encoding::decode_url_string(soldier_param));
-
-		if (soldier_bin.empty())
-		{
-			return error(ERR_INVALIDARG);
-		}
-
-		if (soldier_bin.size() != sizeof(database::player_data::staff_array_t))
-		{
-			return error(ERR_INVALIDARG);
-		}
 
 		const auto& section = data["section"];
 		const auto& section_soldier = data["section_soldier"];
@@ -85,30 +73,29 @@ namespace emulator::tpp
 				}
 			}
 
-			database::player_data::set_soldier_data(player->get_id(), soldier_num, soldier_bin, levels, counts);
-
-			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+			auto client_staff_array = database::player_data::staff_array_container::decode_client_staff_array(soldier_param);
+			if (client_staff_array.has_value())
 			{
-				soldier_bin_resp.append(&soldier_bin[i * 24ull + 8], 16);
+				result["error"] = ERR_INVALIDARG;
+				return;
 			}
 
-			server_version++;
+			database::player_data::set_soldier_data(player->get_id(), soldier_num, client_staff_array.value(), levels, counts);
+			database::player_data::sync_client_staff_version(player->get_id());
+
+			result["soldier_num"] = soldier_num;
+			result["soldier_param"] = client_staff_array->encode_client();
+			result["version"] = server_version + 1;
 		};
 
 		const auto read_from_database = [&]
 		{
-			std::string current_soldier_bin;
-			current_soldier_bin.resize(sizeof(database::player_data::staff_array_t));
-			auto staff_array = reinterpret_cast<database::player_data::staff_t*>(current_soldier_bin.data());
-			player_data->copy_staff_array(staff_array);
-			database::player_data::reverse_staff_array_bytes(staff_array);
+			database::player_data::sync_client_staff_version(player->get_id());
 
-			soldier_num = player_data->get_staff_count();
-
-			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
-			{
-				soldier_bin_resp.append(&current_soldier_bin[i * 24ull + 8], 16);
-			}
+			const auto& staff_array = player_data->get_staff_array();
+			result["soldier_num"] = player_data->get_staff_count();
+			result["soldier_param"] = staff_array.encode_client();
+			result["version"] = server_version;
 		};
 
 		if (client_version != server_version || local_version == client_version - 1)
@@ -119,13 +106,6 @@ namespace emulator::tpp
 		{
 			write_to_database();
 		}
-
-		database::player_data::sync_client_staff_version(player->get_id());
-
-		result["result"] = "NOERR";
-		result["soldier_num"] = soldier_num;
-		result["soldier_param"] = utils::cryptography::base64::encode(soldier_bin_resp);
-		result["version"] = server_version;
 
 		return result;
 	}

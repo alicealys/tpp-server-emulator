@@ -2,6 +2,8 @@
 
 #include "player_data.hpp"
 
+#include "utils/encoding.hpp"
+
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
@@ -405,15 +407,87 @@ namespace database::player_data
 		return is_usable_staff(staff.fields);
 	}
 
-	void reverse_staff_array_bytes(staff_t* staff_array)
+	staff_array_container::staff_array_container()
 	{
-		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+		this->resize(database::player_data::max_staff_count);
+	}
+
+	const staff_t& staff_array_container::operator[](const size_t index) const
+	{
+		return std::vector<staff_t>::operator[](index);
+	}
+
+	staff_t& staff_array_container::operator[](const size_t index)
+	{
+		return std::vector<staff_t>::operator[](index);
+	}
+
+	const staff_t* staff_array_container::data() const
+	{
+		return std::vector<staff_t>::data();
+	}
+
+	staff_t* staff_array_container::data()
+	{
+		return std::vector<staff_t>::data();
+	}
+
+	size_t staff_array_container::size() const
+	{
+		return std::vector<staff_t>::size() * sizeof(staff_t);
+	}
+
+	void staff_array_container::swap_bytes()
+	{
+		for (auto i = 0ull; i < this->size(); i++)
 		{
 			for (auto o = 0; o < 6; o++)
 			{
-				staff_array[i].packed[o] = BSWAP32(staff_array[i].packed[o]);
+				this->operator[](i).packed[o] = BSWAP32(this->operator[](i).packed[o]);
 			}
 		}
+	}
+
+	std::string staff_array_container::encode_client() const
+	{
+		std::string buffer;
+		buffer.reserve(database::player_data::max_staff_count * 16ull);
+
+		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+		{
+			std::uint32_t values[4]{};
+
+			const auto& staff = this->operator[](i);
+			for (auto o = 0; o < 4; o++)
+			{
+				values[o] = BSWAP32(staff.packed[o + 2]);
+			}
+
+			buffer.append(reinterpret_cast<const char*>(values), 16);
+		}
+
+		return utils::cryptography::base64::encode(buffer);
+	}
+
+	std::string staff_array_container::encode_database() const
+	{
+		return utils::cryptography::base64::encode(reinterpret_cast<const std::uint8_t*>(this->data()), this->size());
+	}
+
+	std::optional<staff_array_container> staff_array_container::decode_client_staff_array(const std::string& data)
+	{
+		const auto staff_bin = utils::cryptography::base64::decode(utils::encoding::decode_url_string(data));
+
+		if (staff_bin.size() != sizeof(staff_array_t))
+		{
+			return {};
+		}
+		
+		staff_array_container staff_array;
+		std::memcpy(staff_array.data(), staff_bin.data(), sizeof(staff_array_t));
+		staff_array.swap_bytes();
+
+		return {staff_array};
 	}
 
 	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage)
@@ -532,10 +606,10 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		player_data_ptr find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+		std::optional<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
 		{
-			return database::access<player_data_ptr>([&](database::database_t& db)
-				->player_data_ptr
+			return database::access<std::optional<player_data>>([&](database::database_t& db)
+				-> std::optional<player_data>
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
@@ -549,35 +623,35 @@ namespace database::player_data
 				}
 
 				const auto& row = results.front();
-				auto p_data = std::make_unique<player_data>(row);
+				player_data p_data{row};
 				if (parse_motherbase)
 				{
-					p_data->parse_motherbase(row);
+					p_data.parse_motherbase(row);
 				}
 
 				if (parse_loadout)
 				{
-					p_data->parse_loadout(row);
+					p_data.parse_loadout(row);
 				}
 
 				if (parse_emblem)
 				{
-					p_data->parse_emblem(row);
+					p_data.parse_emblem(row);
 				}
 
-				return std::move(p_data);
+				return {p_data};
 			});
 		}
 
 		template <database_type_t Type>
-		void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data)
+		void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array)
 		{
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = encode_buffer(data),
+							 player_data::table.staff_bin = staff_array.encode_database(),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -611,7 +685,7 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
+		void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
 			unit_levels_t& levels, unit_counts_t& counts)
 		{
 			database::access([&](database::database_t& db)
@@ -619,7 +693,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = encode_buffer(data),
+							 player_data::table.staff_bin = staff_array.encode_database(),
 							 player_data::table.unit_levels = encode(levels),
 							 player_data::table.unit_counts = encode(counts),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
@@ -885,15 +959,15 @@ namespace database::player_data
 		RUN_IMPL(impl::create, player_id);
 	}
 
-	player_data_ptr find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+	std::optional<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
 	{
 		RUN_IMPL(impl::find, player_id, parse_motherbase, parse_loadout, parse_emblem);
 	}
 
-	player_data_ptr find_or_create(const std::uint64_t player_id)
+	std::optional<player_data> find_or_create(const std::uint64_t player_id)
 	{
 		auto found = find(player_id);
-		if (found.get())
+		if (found.has_value())
 		{
 			return found;
 		}
@@ -902,33 +976,15 @@ namespace database::player_data
 		return find(player_id);
 	}
 
-	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data)
+	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array)
 	{
-		RUN_IMPL(impl::set_soldier_bin, player_id, staff_count, data);
+		RUN_IMPL(impl::set_soldier_bin, player_id, staff_count, staff_array);
 	}
 
-	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const std::string& data,
+	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
 		unit_levels_t& levels, unit_counts_t& counts)
 	{
-		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, data, levels, counts);
-	}
-
-	void set_soldier_data_raw(const std::uint64_t player_id, const std::uint32_t staff_count, staff_t* staff_array,
-		unit_levels_t& levels, unit_counts_t& counts)
-	{
-		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
-		{
-			for (auto o = 0; o < 6; o++)
-			{
-				staff_array[i].packed[o] = BSWAP32(staff_array[i].packed[o]);
-			}
-		}
-
-		std::string staff_buffer;
-		staff_buffer.resize(sizeof(staff_array_t));
-		std::memcpy(staff_buffer.data(), staff_array, sizeof(staff_array_t));
-
-		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, staff_buffer, levels, counts);
+		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, staff_array, levels, counts);
 	}
 
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
