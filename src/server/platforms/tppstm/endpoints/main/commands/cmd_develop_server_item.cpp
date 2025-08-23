@@ -16,8 +16,8 @@ namespace emulator::tpp
 			return error(ERR_INVALID_SESSION);
 		}
 
-		const auto p_data = database::player_data::find(player->get_id());
-		if (!p_data.has_value())
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -58,15 +58,15 @@ namespace emulator::tpp
 		}
 
 		database::player_data::resource_arrays_t resource_arrays{};
-		p_data->copy_resources(resource_arrays);
+		player_data->get_resource_arrays(resource_arrays);
 		const auto& item = item_list[item_id];
 
 		resource_arrays[database::player_data::processed_server][item.get_resource_id(0)] -= item.get_resource_value(0);
 		resource_arrays[database::player_data::processed_server][item.get_resource_id(1)] -= item.get_resource_value(1);
-		const auto server_gmp = p_data->get_server_gmp() - item.get_gmp();
+		const auto server_gmp = player_data->get_server_gmp() - item.get_gmp();
 
 		database::items::create(player->get_id(), item_id);
-		database::player_data::set_resources(player->get_id(), resource_arrays, p_data->get_local_gmp(), server_gmp);
+		database::player_data::set_resources(player->get_id(), resource_arrays, player_data->get_local_gmp(), server_gmp);
 
 		result["result"] = utils::tpp::get_error(NOERR);
 		result["xuid"] = {};

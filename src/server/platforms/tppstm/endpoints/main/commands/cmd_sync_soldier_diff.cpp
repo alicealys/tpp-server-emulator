@@ -133,24 +133,27 @@ namespace emulator::tpp
 		if (update_staff)
 		{
 			auto staff_index = 0u;
+			database::player_data::staff_array_container old_staff_array;
 			database::player_data::staff_array_container new_staff_array;
+
+			player_data->get_staff_array(old_staff_array);
 
 			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
 			{
-				const auto old_staff = player_data->get_staff(i);
-				if (old_staff.packed_seed == 0)
+				const auto& old_staff = old_staff_array[i];
+				if (old_staff.fields.packed_seed == 0)
 				{
 					continue;
 				}
 
 				const auto iter = std::find_if(staff_diffs.begin(), staff_diffs.end(), [&](staff_diff_t& diff)
 				{
-					return old_staff.packed_header == diff.staff.fields.packed_header && old_staff.packed_seed == diff.staff.fields.packed_seed;
+					return old_staff.fields.packed_header == diff.staff.fields.packed_header && old_staff.fields.packed_seed == diff.staff.fields.packed_seed;
 				});
 
 				if (iter == staff_diffs.end())
 				{
-					new_staff_array[staff_index++].fields = old_staff;
+					new_staff_array[staff_index++] = old_staff;
 					continue;
 				}
 

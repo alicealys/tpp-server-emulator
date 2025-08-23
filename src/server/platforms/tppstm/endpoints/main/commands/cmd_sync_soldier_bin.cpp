@@ -92,7 +92,9 @@ namespace emulator::tpp
 		{
 			database::player_data::sync_client_staff_version(player->get_id());
 
-			const auto& staff_array = player_data->get_staff_array();
+			database::player_data::staff_array_container staff_array;
+			player_data->get_staff_array(staff_array);
+
 			result["soldier_num"] = player_data->get_staff_count();
 			result["soldier_param"] = staff_array.encode_client();
 			result["version"] = server_version;

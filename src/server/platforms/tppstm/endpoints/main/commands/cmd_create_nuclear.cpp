@@ -27,7 +27,7 @@ namespace emulator::tpp
 		}
 
 		database::player_data::resource_arrays_t resources{};
-		player_data->copy_resources(resources);
+		player_data->get_resource_arrays(resources);
 
 		const auto inc = resources[database::player_data::processed_server][database::player_data::nuclear] + 1;
 		const auto capped = database::player_data::cap_resource_value(database::player_data::processed_server, database::player_data::nuclear, inc);

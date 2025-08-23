@@ -86,7 +86,9 @@ namespace emulator::tpp
 			nlohmann::json& data)
 		{
 			auto owner_data = database::player_data::find(owner->get_id());
-			auto& new_staff_array = owner_data->get_staff_array();
+
+			database::player_data::staff_array_container new_staff_array;
+			owner_data->get_staff_array(new_staff_array);
 
 			static std::vector<std::pair<std::string, soldier_array_action>> soldier_list_map =
 			{

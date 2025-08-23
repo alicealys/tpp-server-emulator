@@ -40,7 +40,7 @@ namespace emulator::tpp
 		}
 
 		database::player_data::resource_arrays_t resource_arrays{};
-		player_data->copy_resources(resource_arrays);
+		player_data->get_resource_arrays(resource_arrays);
 
 		const auto sync_resources = [&](const nlohmann::json& resources, 
 			const database::player_data::resource_array_types local_type, 

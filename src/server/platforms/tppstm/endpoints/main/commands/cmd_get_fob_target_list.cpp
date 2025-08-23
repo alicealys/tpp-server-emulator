@@ -121,7 +121,7 @@ namespace emulator::tpp
 			const auto target_player = database::players::find(target_entry.player_id);
 			const auto target_stats = database::player_records::find(target_entry.player_id);
 			const auto target_fobs = database::fobs::get_fob_list(target_entry.player_id);
-			const auto target_data = database::player_data::find(target_entry.player_id, true, false, true);
+			const auto target_data = database::player_data::find(target_entry.player_id);
 
 			if (!target_stats.has_value() || target_fobs.size() == 0 || !target_data.has_value())
 			{
@@ -210,20 +210,21 @@ namespace emulator::tpp
 			target["owner_fob_record"]["name_plate_id"] = target_mother_base["name_plate_id"];
 			target["owner_fob_record"]["nuclear"] = target_data->get_nuke_count();
 
-			const auto get_resource_value = [&](const std::uint32_t id)
+			database::player_data::resource_arrays_t target_resources{};
+			target_data->get_resource_arrays(target_resources);
+
+			const auto get_processing_resource_value = [&](const std::uint32_t id)
 			{
-				const auto process_local = target_data->get_resource_value(database::player_data::processed_local, id);
-				const auto process_server = target_data->get_resource_value(database::player_data::processed_server, id);
-				const auto unprocess_local = target_data->get_resource_value(database::player_data::unprocessed_local, id);
-				const auto unprocess_server = target_data->get_resource_value(database::player_data::unprocessed_server, id);
-				return process_local + process_server + unprocess_local + unprocess_server;
+				const auto process_local = target_resources[database::player_data::processed_local][id];
+				const auto process_server = target_resources[database::player_data::processed_server][id];
+				return process_local + process_server;
 			};
 
-			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_resource_value(0);
-			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_resource_value(1);
-			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_resource_value(2);
-			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_resource_value(3);
-			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_resource_value(4);
+			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_processing_resource_value(database::player_data::fuel_resource);
+			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_processing_resource_value(database::player_data::biotic_resource);
+			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_processing_resource_value(database::player_data::common_metal);
+			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_processing_resource_value(database::player_data::minor_metal);
+			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_processing_resource_value(database::player_data::precious_metal);
 
 			auto& staff_counts = target["owner_fob_record"]["staff_count"];
 			for (auto i = 0; i < 10; i++)
@@ -231,14 +232,9 @@ namespace emulator::tpp
 				staff_counts[i] = 0;
 			}
 
-			for (auto i = 0u; i < target_data->get_staff_count(); i++)
+			for (auto i = 0u; i < database::player_data::rank_count; i++)
 			{
-				const auto staff = target_data->get_staff(i);
-				if (database::player_data::is_usable_staff(staff))
-				{
-					const auto value = staff_counts[staff.header.peak_rank].get<std::uint32_t>();
-					staff_counts[staff.header.peak_rank] = value + 1;
-				}
+				staff_counts[i] = target_data->get_staff_count_of_rank(i);
 			}
 
 			target["owner_fob_record"]["support_count"] = 0;
