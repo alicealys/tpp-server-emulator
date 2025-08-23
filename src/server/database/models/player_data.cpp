@@ -1033,7 +1033,7 @@ namespace database::player_data
 		{
 			return database::access([&](database::database_t& db)
 			{
-				auto results = db.get_mysql()->operator()(
+				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.resource_arrays)
 							.from(player_data::table)
 								.where(player_data::table.player_id == player_id));
@@ -1058,7 +1058,7 @@ namespace database::player_data
 		{
 			return database::access([&](database::database_t& db)
 			{
-				auto results = db.get_mysql()->operator()(
+				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.staff_bin)
 							.from(player_data::table)
 								.where(player_data::table.player_id == player_id));
