@@ -27,7 +27,7 @@ namespace emulator::tpp
 		}
 
 		const auto resource_id = resource_id_j.get<std::uint32_t>();
-		if (resource_id > database::player_data::resource_type_count)
+		if (resource_id > game::resource_type_count)
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -44,12 +44,12 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		player_data->get_resource_arrays(resource_arrays);
 
-		if (resource_arrays[database::player_data::processed_server][resource_id] < num)
+		if (resource_arrays[game::processed_server][resource_id] < num)
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		resource_arrays[database::player_data::processed_server][resource_id] -= num;
+		resource_arrays[game::processed_server][resource_id] -= num;
 
 		auto server_gmp = player_data->get_server_gmp();
 		auto local_gmp = player_data->get_local_gmp();
@@ -72,7 +72,7 @@ namespace emulator::tpp
 		}
 
 		result["result_gmp"] = server_gmp;
-		result["result_num"] = resource_arrays[database::player_data::processed_server][resource_id];
+		result["result_num"] = resource_arrays[game::processed_server][resource_id];
 		result["resouce_id"] = resource_id;
 
 		database::player_data::set_resources(player->get_id(), resource_arrays, local_gmp, server_gmp);

@@ -6,8 +6,6 @@
 #include "players.hpp"
 #include "player_data.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::fob_events
 {
 	struct fob_event_point_exchange_param_t

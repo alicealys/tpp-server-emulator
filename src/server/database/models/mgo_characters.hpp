@@ -2,8 +2,6 @@
 
 #include "../database.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::mgo_characters
 {
 	struct character_params

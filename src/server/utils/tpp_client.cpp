@@ -1,14 +1,14 @@
 #include <std_include.hpp>
 
 #include "tpp_client.hpp"
-#include "tpp.hpp"
+#include "game/game.hpp"
 
 namespace utils::tpp
 {
 	tpp_client::tpp_client()
 	{
 		this->set_url("https://mgstpp-game.konamionline.com");
-		this->static_blow_.set_key(utils::tpp::get_static_key(), utils::tpp::get_static_key_len());
+		this->static_blow_.set_key(game::get_static_key(), game::get_static_key_len());
 	}
 
 	tpp_client::~tpp_client()

@@ -4,8 +4,6 @@
 
 #include "players.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::player_follows
 {
 	constexpr auto max_follows = 30;

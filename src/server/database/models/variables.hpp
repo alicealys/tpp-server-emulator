@@ -2,8 +2,6 @@
 
 #include "../database.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::variables
 {
 	class variable

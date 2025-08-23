@@ -31,10 +31,10 @@ namespace emulator::tpp
 		{
 			if (kind == "PLATFORM_CONSTRUCTION")
 			{
-				return utils::tpp::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
+				return game::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
 			}
 
-			return utils::tpp::calculate_mb_coins(remaining_time, database::vars.cost_factor_generic);
+			return game::calculate_mb_coins(remaining_time, database::vars.cost_factor_generic);
 		};
 
 		result["cost"] = get_cost();

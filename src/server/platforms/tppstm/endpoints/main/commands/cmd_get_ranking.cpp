@@ -78,7 +78,7 @@ namespace emulator::tpp
 
 		result["ranking_num"] = entries.size();
 		result["update_date"] = database::event_rankings::get_last_update().count();
-		result["result"] = utils::tpp::get_error(NOERR);
+		result["result"] = game::get_error(NOERR);
 
 		return result;
 	}

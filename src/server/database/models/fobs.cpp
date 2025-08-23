@@ -126,7 +126,7 @@ namespace database::fobs
 						continue;
 					}
 
-					for (const auto& key : database::player_data::platform_keys)
+					for (const auto& key : game::platform_keys)
 					{
 						merge_custom_security(data[key], server_data[key], "voluntary_coord_camera_params");
 						merge_custom_security(data[key], server_data[key], "voluntary_coord_mine_params");

@@ -94,7 +94,7 @@ namespace emulator::tpp
 			if (damage_values.is_array())
 			{
 				const auto count = static_cast<std::int32_t>(
-					std::min(static_cast<size_t>(database::player_data::damage_param_count), damage_values.size()));
+					std::min(static_cast<size_t>(game::damage_param_count), damage_values.size()));
 				for (auto i = 0; i < count; i++)
 				{
 					if (!damage_values[i].is_number_unsigned())
@@ -103,7 +103,7 @@ namespace emulator::tpp
 					}
 
 					const auto value = damage_values[i].get<std::uint32_t>();
-					const auto value_capped = std::min(value, database::player_data::deploy_damage_param_caps[i]);
+					const auto value_capped = std::min(value, game::deploy_damage_param_caps[i]);
 
 					if (i == 9)
 					{

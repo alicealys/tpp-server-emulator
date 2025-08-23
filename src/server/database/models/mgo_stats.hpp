@@ -2,8 +2,6 @@
 
 #include "../database.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::mgo_stats
 {
 	std::vector<std::uint32_t> get_id_list();

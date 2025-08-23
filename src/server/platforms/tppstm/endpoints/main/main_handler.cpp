@@ -135,15 +135,6 @@
 #include "commands/cmd_use_pf_item.hpp"
 #include "commands/cmd_use_short_pf_item.hpp"
 
-#include "database/database.hpp"
-#include "database/models/players.hpp"
-
-#include "utils/encoding.hpp"
-#include "utils/tpp.hpp"
-
-#include <utils/string.hpp>
-#include <utils/compression.hpp>
-
 namespace emulator::tpp
 {
 	main_handler::main_handler()

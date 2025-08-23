@@ -125,6 +125,10 @@ namespace utils::cryptography
 	{
 		uint32_t get_integer();
 		uint32_t get_integer(const std::uint32_t min, const std::uint32_t max);
+
+		uint64_t get_integer64();
+		uint64_t get_integer64(const std::uint64_t min, const std::uint64_t max);
+
 		std::string get_challenge();
 		void get_data(void* data, size_t size);
 		std::string get_data(const size_t size);

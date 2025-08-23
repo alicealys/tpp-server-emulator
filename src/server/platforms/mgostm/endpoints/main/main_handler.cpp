@@ -58,15 +58,6 @@
 #include "../../../tppstm/endpoints/main/commands/cmd_update_session.hpp"
 #include "commands/cmd_use_mgo_survival_free_ticket.hpp"
 
-#include "database/database.hpp"
-#include "database/models/players.hpp"
-
-#include "utils/encoding.hpp"
-#include "utils/tpp.hpp"
-
-#include <utils/compression.hpp>
-#include <utils/string.hpp>
-
 namespace emulator::mgo
 {
 	main_handler::main_handler()

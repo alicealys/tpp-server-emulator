@@ -41,14 +41,14 @@ namespace emulator::tpp
 		const auto& section = data["section"];
 		const auto& section_soldier = data["section_soldier"];
 
-		if (soldier_num > database::player_data::max_staff_count || !section.is_object() || section.size() != database::player_data::unit_count ||
-			!section_soldier.is_object() || section_soldier.size() != database::player_data::unit_count)
+		if (soldier_num > game::max_staff_count || !section.is_object() || section.size() != game::unit_count ||
+			!section_soldier.is_object() || section_soldier.size() != game::unit_count)
 		{
 			return error(ERR_INVALIDARG);
 		}
 
 		std::string soldier_bin_resp;
-		soldier_bin_resp.reserve(database::player_data::max_staff_count * 16ull);
+		soldier_bin_resp.reserve(game::max_staff_count * 16ull);
 
 		const auto local_version = version_j.get<std::uint32_t>();
 		const auto client_version = player_data->get_client_staff_version();
@@ -59,9 +59,9 @@ namespace emulator::tpp
 			database::player_data::unit_levels_t levels{};
 			database::player_data::unit_counts_t counts{};
 
-			for (auto i = 0; i < database::player_data::unit_count; i++)
+			for (auto i = 0; i < game::unit_count; i++)
 			{
-				const auto& key = database::player_data::unit_names[i];
+				const auto& key = game::unit_names[i];
 				if (section[key].is_number_integer())
 				{
 					levels[i] = section[key].get<std::uint32_t>();
@@ -76,7 +76,7 @@ namespace emulator::tpp
 			auto client_staff_array = database::player_data::staff_array_container::decode_client_staff_array(soldier_param);
 			if (!client_staff_array.has_value())
 			{
-				result["error"] = utils::tpp::get_error(ERR_INVALIDARG);
+				result["error"] = game::get_error(ERR_INVALIDARG);
 				return;
 			}
 

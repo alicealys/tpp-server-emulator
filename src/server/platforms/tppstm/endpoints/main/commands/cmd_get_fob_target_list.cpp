@@ -215,16 +215,16 @@ namespace emulator::tpp
 
 			const auto get_processing_resource_value = [&](const std::uint32_t id)
 			{
-				const auto process_local = target_resources[database::player_data::processed_local][id];
-				const auto process_server = target_resources[database::player_data::processed_server][id];
+				const auto process_local = target_resources[game::processed_local][id];
+				const auto process_server = target_resources[game::processed_server][id];
 				return process_local + process_server;
 			};
 
-			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_processing_resource_value(database::player_data::fuel_resource);
-			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_processing_resource_value(database::player_data::biotic_resource);
-			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_processing_resource_value(database::player_data::common_metal);
-			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_processing_resource_value(database::player_data::minor_metal);
-			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_processing_resource_value(database::player_data::precious_metal);
+			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_processing_resource_value(game::fuel_resource);
+			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_processing_resource_value(game::biotic_resource);
+			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_processing_resource_value(game::common_metal);
+			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_processing_resource_value(game::minor_metal);
+			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_processing_resource_value(game::precious_metal);
 
 			auto& staff_counts = target["owner_fob_record"]["staff_count"];
 			for (auto i = 0; i < 10; i++)
@@ -232,7 +232,7 @@ namespace emulator::tpp
 				staff_counts[i] = 0;
 			}
 
-			for (auto i = 0u; i < database::player_data::rank_count; i++)
+			for (auto i = 0u; i < game::rank_count; i++)
 			{
 				staff_counts[i] = target_data->get_staff_count_of_rank(i);
 			}

@@ -4,8 +4,6 @@
 
 #include "player_data.hpp"
 
-#include "utils/tpp.hpp"
-
 #define ITEM_DEBUG
 
 namespace database::items

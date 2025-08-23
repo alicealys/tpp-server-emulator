@@ -61,14 +61,14 @@ namespace emulator::tpp
 		player_data->get_resource_arrays(resource_arrays);
 		const auto& item = item_list[item_id];
 
-		resource_arrays[database::player_data::processed_server][item.get_resource_id(0)] -= item.get_resource_value(0);
-		resource_arrays[database::player_data::processed_server][item.get_resource_id(1)] -= item.get_resource_value(1);
+		resource_arrays[game::processed_server][item.get_resource_id(0)] -= item.get_resource_value(0);
+		resource_arrays[game::processed_server][item.get_resource_id(1)] -= item.get_resource_value(1);
 		const auto server_gmp = player_data->get_server_gmp() - item.get_gmp();
 
 		database::items::create(player->get_id(), item_id);
 		database::player_data::set_resources(player->get_id(), resource_arrays, player_data->get_local_gmp(), server_gmp);
 
-		result["result"] = utils::tpp::get_error(NOERR);
+		result["result"] = game::get_error(NOERR);
 		result["xuid"] = {};
 
 		return result;

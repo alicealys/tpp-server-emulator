@@ -146,12 +146,12 @@ namespace command
 				const auto player_id = std::strtoull(arg.data(), nullptr, 10);
 				database::player_data::resource_arrays_t resource_arrays{};
 
-				for (auto i = 0; i < database::player_data::resource_type_count; i++)
+				for (auto i = 0; i < game::resource_type_count; i++)
 				{
-					resource_arrays[database::player_data::processed_server][i] = database::player_data::server_processed_resource_caps[i];
-					resource_arrays[database::player_data::unprocessed_server][i] = database::player_data::server_unprocessed_resource_caps[i];
-					resource_arrays[database::player_data::processed_local][i] = database::player_data::local_processed_resource_caps[i];
-					resource_arrays[database::player_data::unprocessed_local][i] = database::player_data::local_processed_resource_caps[i];
+					resource_arrays[game::processed_server][i] = game::server_processed_resource_caps[i];
+					resource_arrays[game::unprocessed_server][i] = game::server_unprocessed_resource_caps[i];
+					resource_arrays[game::processed_local][i] = game::local_processed_resource_caps[i];
+					resource_arrays[game::unprocessed_local][i] = game::local_processed_resource_caps[i];
 				}
 
 				database::player_data::set_resources(player_id, resource_arrays, database::vars.max_local_gmp, database::vars.max_server_gmp);

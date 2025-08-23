@@ -4,8 +4,6 @@
 
 #include "player_data.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::wormholes
 {
 	enum wormhole_flag

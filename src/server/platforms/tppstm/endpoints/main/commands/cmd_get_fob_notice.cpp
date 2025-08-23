@@ -13,7 +13,6 @@ namespace emulator::tpp
 	nlohmann::json cmd_get_fob_notice::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = utils::tpp::get_error(NOERR);
 
 		if (!player.has_value())
 		{

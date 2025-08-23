@@ -16,7 +16,7 @@ namespace emulator::tpp
 		struct staff_diff_t
 		{
 			bool removed;
-			database::player_data::staff_t staff;
+			game::staff_t staff;
 		};
 	}
 
@@ -39,8 +39,8 @@ namespace emulator::tpp
 		const auto& section_soldier = data["section_soldier"];
 		const auto& client_version_j = data["version"];
 
-		if (!section.is_object() || section.size() != database::player_data::unit_count ||
-			!section_soldier.is_object() || section_soldier.size() != database::player_data::unit_count ||
+		if (!section.is_object() || section.size() != game::unit_count ||
+			!section_soldier.is_object() || section_soldier.size() != game::unit_count ||
 			!client_version_j.is_number_unsigned())
 		{
 			return error(ERR_INVALIDARG);
@@ -49,9 +49,9 @@ namespace emulator::tpp
 		database::player_data::unit_levels_t levels{};
 		database::player_data::unit_counts_t counts{};
 
-		for (auto i = 0; i < database::player_data::unit_count; i++)
+		for (auto i = 0; i < game::unit_count; i++)
 		{
-			const auto& key = database::player_data::unit_names[i];
+			const auto& key = game::unit_names[i];
 			if (section[key].is_number_integer())
 			{
 				levels[i] = section[key].get<std::uint32_t>();
@@ -138,7 +138,7 @@ namespace emulator::tpp
 
 			player_data->get_staff_array(old_staff_array);
 
-			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+			for (auto i = 0u; i < game::max_staff_count; i++)
 			{
 				const auto& old_staff = old_staff_array[i];
 				if (old_staff.fields.packed_seed == 0)
