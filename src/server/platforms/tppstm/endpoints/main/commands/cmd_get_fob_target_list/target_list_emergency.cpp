@@ -26,7 +26,7 @@ namespace emulator::tpp
 
 			const auto attacker = database::players::find(active_sneak->get_player_id());
 			const auto attacker_record = database::player_records::find(active_sneak->get_player_id());
-			const auto attacker_data = database::player_data::find(active_sneak->get_player_id(), false, false, true);
+			const auto attacker_data = database::player_data::find(active_sneak->get_player_id());
 			const auto fob_list = database::fobs::get_fob_list(active_sneak->get_owner_id());
 
 			for (auto i = 0ull; i < fob_list.size(); i++)

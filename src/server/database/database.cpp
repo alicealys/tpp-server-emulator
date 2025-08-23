@@ -100,6 +100,11 @@ namespace database
 		return config;
 	}
 
+	std::string get_database_name()
+	{
+		return get_config().database_name;
+	}
+
 	mysql_connection* database_container::get_mysql() const
 	{
 		return this->dbs_.mysql_.get();

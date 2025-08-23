@@ -42,7 +42,7 @@ namespace emulator::tpp
 		const auto unit_price = unit_price_j.get<std::uint32_t>();
 
 		database::player_data::resource_arrays_t resource_arrays{};
-		player_data->copy_resources(resource_arrays);
+		player_data->get_resource_arrays(resource_arrays);
 
 		if (resource_arrays[database::player_data::processed_server][resource_id] < num)
 		{

@@ -140,6 +140,7 @@ namespace database::player_data
 	};
 
 	constexpr auto unit_count = 7;
+	constexpr auto rank_count = 10;
 	constexpr auto max_staff_count = 3500u;
 
 	using resource_array_t = std::uint32_t[resource_type_count];
@@ -147,6 +148,7 @@ namespace database::player_data
 	using staff_array_t = staff_t[max_staff_count];
 	using unit_levels_t = std::uint32_t[unit_count];
 	using unit_counts_t = std::uint32_t[unit_count];
+	using staff_counts_t = std::uint32_t[rank_count];
 
 	extern std::array<std::uint32_t, resource_type_count> local_processed_resource_caps;
 	extern std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps;
@@ -316,6 +318,7 @@ namespace database::player_data
 		DEFINE_FIELD(resource_arrays, sqlpp::binary);
 		DEFINE_FIELD(nuke_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
+		DEFINE_FIELD(staff_counts, sqlpp::binary);
 		DEFINE_FIELD(staff_bin, sqlpp::binary);
 		DEFINE_FIELD(loadout, sqlpp::text);
 		DEFINE_FIELD(motherbase, sqlpp::text);
@@ -333,7 +336,7 @@ namespace database::player_data
 		DEFINE_FIELD(server_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
 		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_bin_field_t, loadout_field_t,
+			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_counts_field_t, staff_bin_field_t, loadout_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
 			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, 
 			client_resource_version_field_t, client_staff_version_field_t,
@@ -345,20 +348,9 @@ namespace database::player_data
 		template <typename ...Args>
 		player_data(const sqlpp::result_row_t<Args...>& row)
 		{
-			const auto resource_arrays_str = row.resource_arrays.value();
-			const auto staff_bin_str = row.staff_bin.value();
 			const auto unit_counts_str = row.unit_counts.value();
 			const auto unit_levels_str = row.unit_levels.value();
-
-			if (resource_arrays_str.size() == sizeof(resource_arrays_t))
-			{
-				std::memcpy(this->resource_arrays_, resource_arrays_str.data(), sizeof(resource_arrays_t));
-			}
-
-			if (staff_bin_str.size() == sizeof(staff_array_t))
-			{
-				std::memcpy(this->staff_array_.data(), staff_bin_str.data(), sizeof(staff_array_t));
-			}
+			const auto staff_counts_str = row.staff_counts.value();
 
 			if (unit_counts_str.size() == sizeof(unit_counts_t))
 			{
@@ -368,6 +360,11 @@ namespace database::player_data
 			if (unit_levels_str.size() == sizeof(unit_levels_t))
 			{
 				std::memcpy(this->unit_levels_, unit_levels_str.data(), sizeof(unit_levels_t));
+			}
+
+			if (staff_counts_str.size() == sizeof(staff_counts_t))
+			{
+				std::memcpy(this->staff_counts_, staff_counts_str.data(), sizeof(staff_counts_t));
 			}
 
 			this->staff_count_ = static_cast<std::uint32_t>(row.staff_count);
@@ -414,97 +411,9 @@ namespace database::player_data
 			}
 		}
 
-		template <typename ...Args>
-		void parse_motherbase(const sqlpp::result_row_t<Args...>& row)
-		{
-			try
-			{
-				if (!row.motherbase.value().empty())
-				{
-					this->motherbase_ = nlohmann::json::parse(row.motherbase.value());
-				}
-			}
-			catch (const std::exception& e)
-			{
-				printf("error parsing motherbase: %s\n", e.what());
-			}
-
-			if (!this->motherbase_.is_object())
-			{
-				this->motherbase_ = nlohmann::json::object();
-			}
-		}
-
-		template <typename ...Args>
-		void parse_loadout(const sqlpp::result_row_t<Args...>& row)
-		{
-			try
-			{
-				if (!row.loadout.value().empty())
-				{
-					this->loadout_ = nlohmann::json::parse(row.loadout.value());
-				}
-			}
-			catch (const std::exception& e)
-			{
-				printf("error parsing loadout: %s\n", e.what());
-			}
-
-			if (!this->loadout_.is_object())
-			{
-				this->loadout_ = nlohmann::json::object();
-			}
-		}
-
-		template <typename ...Args>
-		void parse_emblem(const sqlpp::result_row_t<Args...>& row)
-		{
-			try
-			{
-				if (!row.motherbase.value().empty())
-				{
-					this->emblem_ = nlohmann::json::parse(row.emblem.value());
-				}
-			}
-			catch (const std::exception& e)
-			{
-				printf("error parsing emblem: %s\n", e.what());
-			}
-
-			if (!this->emblem_.is_object())
-			{
-				this->emblem_ = nlohmann::json::object();
-			}
-		}
-
-		std::uint32_t get_resource_value(const resource_array_types type, const std::uint32_t index) const
-		{
-			if (type >= resource_array_types::count || index >= resource_type_count)
-			{
-				return 0;
-			}
-
-			return this->resource_arrays_[type][index];
-		}
-
-		void copy_resources(resource_arrays_t& arrays) const
-		{
-			std::memcpy(arrays, this->resource_arrays_, sizeof(resource_arrays_t));
-		}
-
 		std::uint64_t get_player_id() const
 		{
 			return this->player_id_;
-		}
-
-		staff_fields_t get_staff(const std::uint32_t index) const
-		{
-			if (index >= max_staff_count)
-			{
-				return {};
-			}
-
-			return this->staff_array_[index].fields;
 		}
 
 		std::uint32_t get_unit_level(const std::uint32_t unit) const
@@ -534,34 +443,19 @@ namespace database::player_data
 
 		std::uint32_t get_usable_staff_count() const
 		{
-			auto count = 0;
-			const auto max = this->get_staff_count();
+			auto total = 0u;
 
-			for (auto i = 0u; i < max; i++)
+			for (auto i = 0u; i < rank_count; i++)
 			{
-				const auto& staff = this->staff_array_[i];
-				if (is_usable_staff(staff))
-				{
-					++count;
-				}
+				total += this->staff_counts_[i];
 			}
 
-			return count;
+			return total;
 		}
 
-		nlohmann::json get_motherbase() const
+		std::uint32_t get_staff_count_of_rank(const std::uint32_t rank) const
 		{
-			return this->motherbase_;
-		}
-
-		nlohmann::json get_loadout() const
-		{
-			return this->loadout_;
-		}
-
-		nlohmann::json get_emblem() const
-		{
-			return this->emblem_;
+			return this->staff_counts_[rank];
 		}
 
 		std::int32_t get_server_gmp() const
@@ -614,36 +508,24 @@ namespace database::player_data
 			return this->fob_deploy_damage_param_;
 		}
 
-		const staff_array_container& get_staff_array() const
-		{
-			return this->staff_array_;
-		}
+		nlohmann::json get_motherbase() const;
+		nlohmann::json get_loadout() const;
+		nlohmann::json get_emblem() const;
 
-		staff_array_container& get_staff_array()
-		{
-			return this->staff_array_;
-		}
-
-		staff_array_container copy_staff_array()
-		{
-			return this->staff_array_;
-		}
+		void get_resource_arrays(resource_arrays_t& arrays) const;
+		void get_staff_array(staff_array_container& staff_array) const;
 
 	private:
 		std::uint64_t player_id_;
 
-		resource_arrays_t resource_arrays_{};
 		std::uint32_t nuke_count_;
 
 		unit_levels_t unit_levels_{};
 		unit_counts_t unit_counts_{};
 
+		staff_counts_t staff_counts_{};
 		std::uint32_t staff_count_{};
-		staff_array_container staff_array_{};
 
-		nlohmann::json loadout_{};
-		nlohmann::json motherbase_{};
-		nlohmann::json emblem_{};
 		std::optional<nlohmann::json> fob_deploy_damage_param_{};
 
 		std::uint32_t mb_coin_{};
@@ -670,7 +552,7 @@ namespace database::player_data
 	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
 	void create(const std::uint64_t player_id);
-	std::optional<player_data> find(const std::uint64_t player_id, bool parse_motherbase = false, bool parse_loadout = false, bool parse_emblem = false);
+	std::optional<player_data> find(const std::uint64_t player_id);
 	std::optional<player_data> find_or_create(const std::uint64_t player_id);
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array);

@@ -52,6 +52,7 @@ namespace database
 
 	database_type_t get_database_type();
 	database_def_t get_database_def();
+	std::string get_database_name();
 
 	struct dummy_mysql_connection
 	{

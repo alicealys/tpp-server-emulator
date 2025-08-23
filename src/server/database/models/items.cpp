@@ -106,7 +106,8 @@ namespace database::items
 		return iter->second;
 	}
 
-	void item_status::set_data(const item_t& item_data, std::optional<player_data::player_data>& p_data)
+	void item_status::set_data(const item_t& item_data, const std::optional<player_data::player_data>& player_data,
+		const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array)
 	{
 		const auto now = std::chrono::system_clock::now();
 
@@ -151,11 +152,11 @@ namespace database::items
 			this->left_second_ = 0;
 		}
 
-		if (!this->open_ && p_data.has_value())
+		if (!this->open_)
 		{
-			const auto count_1 = p_data->get_resource_value(player_data::processed_server, item_data.dev_resource_ids[0]);
-			const auto count_2 = p_data->get_resource_value(player_data::processed_server, item_data.dev_resource_ids[1]);
-			const auto gmp = p_data->get_server_gmp();
+			const auto count_1 = resource_arrays[player_data::processed_server][item_data.dev_resource_ids[0]];
+			const auto count_2 = resource_arrays[player_data::processed_server][item_data.dev_resource_ids[1]];
+			const auto gmp = player_data->get_server_gmp();
 
 			auto should_be_open = false;
 			if (gmp >= item_data.dev_gmp && 
@@ -166,7 +167,7 @@ namespace database::items
 
 				for (auto i = 0; i < player_data::unit_count; i++)
 				{
-					if (p_data->get_unit_level(i) < item_data.dev_platform_levels[i])
+					if (player_data->get_unit_level(i) < item_data.dev_platform_levels[i])
 					{
 						should_be_open = false;
 						break;
@@ -176,10 +177,10 @@ namespace database::items
 				auto has_skill = item_data.dev_skill == 0;
 				if (should_be_open && item_data.dev_skill != 0)
 				{
-					for (auto i = 0u; i < p_data->get_staff_count(); i++)
+					for (auto i = 0u; i < player_data->get_staff_count(); i++)
 					{
-						const auto staff = p_data->get_staff(i);
-						if (staff.header.skill == item_data.dev_skill)
+						const auto& staff = staff_array[i];
+						if (staff.fields.header.skill == item_data.dev_skill)
 						{
 							has_skill = true;
 							break;
@@ -219,7 +220,17 @@ namespace database::items
 					list.insert(std::make_pair(status.get_id(), status));
 				}
 
-				auto p_data = player_data::find(player_id);
+				const auto player_data = player_data::find(player_id);
+				if (!player_data.has_value())
+				{
+					return list;
+				}
+
+				database::player_data::resource_arrays_t resource_arrays{};
+				database::player_data::staff_array_container staff_array{};
+
+				player_data->get_resource_arrays(resource_arrays);
+				player_data->get_staff_array(staff_array);
 
 				const auto& static_list = get_static_list();
 				for (const auto& item : static_list)
@@ -228,12 +239,12 @@ namespace database::items
 					if (iter == list.end())
 					{
 						item_status status(item.id, player_id);
-						status.set_data(item, p_data);
+						status.set_data(item, player_data, resource_arrays, staff_array);
 						list.insert(std::make_pair(item.id, status));
 					}
 					else
 					{
-						iter->second.set_data(item, p_data);
+						iter->second.set_data(item, player_data, resource_arrays, staff_array);
 					}
 				}
 
@@ -261,17 +272,27 @@ namespace database::items
 					return {};
 				}
 
-				auto p_data = player_data::find(player_id);
+				const auto player_data = player_data::find(player_id);
+				if (!player_data.has_value())
+				{
+					return {};
+				}
+
+				database::player_data::resource_arrays_t resource_arrays{};
+				database::player_data::staff_array_container staff_array{};
+
+				player_data->get_resource_arrays(resource_arrays);
+				player_data->get_staff_array(staff_array);
 
 				if (results.empty())
 				{
 					item_status status(item_id, player_id);
-					status.set_data(iter->second, p_data);
+					status.set_data(iter->second, player_data, resource_arrays, staff_array);
 					return status;
 				}
 
 				item_status status(results.front());
-				status.set_data(iter->second, p_data);
+				status.set_data(iter->second, player_data, resource_arrays, staff_array);
 				return status;
 			});
 		}

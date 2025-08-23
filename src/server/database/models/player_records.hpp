@@ -219,4 +219,6 @@ namespace database::player_records
 
 	void set_shield_date(const std::uint64_t player_id, const bool is_win);
 	void clear_shield_date(const std::uint64_t player_id);
+
+	void set_fob_point(const std::uint64_t player_id, const std::uint32_t value);
 }

@@ -600,14 +600,30 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		std::optional<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+		std::optional<player_data> find(const std::uint64_t player_id)
 		{
 			return database::access<std::optional<player_data>>([&](database::database_t& db)
 				-> std::optional<player_data>
 			{
 				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(
-						sqlpp::all_of(player_data::table))
+					sqlpp::select(player_data::table.player_id,
+								  player_data::table.unit_counts,
+								  player_data::table.unit_levels,
+								  player_data::table.nuke_count,
+								  player_data::table.staff_count,
+								  player_data::table.staff_counts,
+								  player_data::table.local_gmp,
+								  player_data::table.server_gmp,
+								  player_data::table.loadout_gmp,
+								  player_data::table.insurance_gmp,
+								  player_data::table.injury_gmp,
+								  player_data::table.mb_coin,
+								  player_data::table.last_sync,
+								  player_data::table.client_resource_version,
+								  player_data::table.client_staff_version,
+								  player_data::table.server_resource_version,
+								  player_data::table.server_staff_version,
+								  player_data::table.fob_deploy_damage_param)
 							.from(player_data::table)
 								.where(player_data::table.player_id == player_id));
 
@@ -616,24 +632,7 @@ namespace database::player_data
 					return {};
 				}
 
-				const auto& row = results.front();
-				player_data p_data{row};
-				if (parse_motherbase)
-				{
-					p_data.parse_motherbase(row);
-				}
-
-				if (parse_loadout)
-				{
-					p_data.parse_loadout(row);
-				}
-
-				if (parse_emblem)
-				{
-					p_data.parse_emblem(row);
-				}
-
-				return {p_data};
+				return {results.front()};
 			});
 		}
 
@@ -682,6 +681,13 @@ namespace database::player_data
 		void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
 			unit_levels_t& levels, unit_counts_t& counts)
 		{
+			staff_counts_t staff_counts{};
+
+			for (auto i = 0u; i < staff_count; i++)
+			{
+				staff_counts[staff_array[i].fields.header.peak_rank]++;
+			}
+
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
@@ -690,6 +696,7 @@ namespace database::player_data
 							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
 							 player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(encode_binary(levels)),
 							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(counts)),
+							 player_data::table.staff_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(staff_counts)),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -942,6 +949,159 @@ namespace database::player_data
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		nlohmann::json get_emblem(const std::uint64_t player_id)
+		{
+			return database::access<nlohmann::json>([&](database::database_t& db)
+				-> nlohmann::json
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_data::table.emblem)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				const auto json = nlohmann::json::parse(results.front().emblem.value(), nullptr, false);
+				if (json.is_discarded())
+				{
+					return {};
+				}
+
+				return json;
+			});
+		}
+
+		template <database_type_t Type>
+		nlohmann::json get_motherbase(const std::uint64_t player_id)
+		{
+			return database::access<nlohmann::json>([&](database::database_t& db)
+				-> nlohmann::json
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_data::table.motherbase)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				const auto json = nlohmann::json::parse(results.front().motherbase.value(), nullptr, false);
+				if (json.is_discarded())
+				{
+					return {};
+				}
+
+				return json;
+			});
+		}
+
+		template <database_type_t Type>
+		nlohmann::json get_loadout(const std::uint64_t player_id)
+		{
+			return database::access<nlohmann::json>([&](database::database_t& db)
+				-> nlohmann::json
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_data::table.loadout)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				const auto json = nlohmann::json::parse(results.front().loadout.value(), nullptr, false);
+				if (json.is_discarded())
+				{
+					return {};
+				}
+
+				return json;
+			});
+		}
+		
+		template <database_type_t Type>
+		void get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& out_arrays)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				auto results = db.get_mysql()->operator()(
+					sqlpp::select(player_data::table.resource_arrays)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return;
+				}
+
+				const auto resource_arrays = results.front().resource_arrays.value();
+				if (resource_arrays.size() != sizeof(resource_arrays_t))
+				{
+					return;
+				}
+
+				std::memcpy(out_arrays, resource_arrays.data(), sizeof(resource_arrays_t));
+			});
+		}
+				
+		template <database_type_t Type>
+		void get_staff_array(const std::uint64_t player_id, staff_array_container& out_staff)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				auto results = db.get_mysql()->operator()(
+					sqlpp::select(player_data::table.staff_bin)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return;
+				}
+
+				const auto staff_bin = results.front().staff_bin.value();
+				if (staff_bin.size() != sizeof(staff_array_t))
+				{
+					return;
+				}
+
+				std::memcpy(out_staff.data(), staff_bin.data(), sizeof(staff_array_t));
+			});
+		}
+	}
+
+	nlohmann::json player_data::get_emblem() const
+	{
+		RUN_IMPL(impl::get_emblem, this->player_id_);
+	}
+
+	nlohmann::json player_data::get_motherbase() const
+	{
+		RUN_IMPL(impl::get_motherbase, this->player_id_);
+	}
+
+	nlohmann::json player_data::get_loadout() const
+	{
+		RUN_IMPL(impl::get_loadout, this->player_id_);
+	}
+
+	void player_data::get_resource_arrays(resource_arrays_t& resource_arrays) const
+	{
+		RUN_IMPL(impl::get_resource_arrays, this->player_id_, resource_arrays);
+	}
+
+	void player_data::get_staff_array(staff_array_container& staff_array) const
+	{
+		RUN_IMPL(impl::get_staff_array, this->player_id_, staff_array);
 	}
 
 	void create(const std::uint64_t player_id)
@@ -949,9 +1109,9 @@ namespace database::player_data
 		RUN_IMPL(impl::create, player_id);
 	}
 
-	std::optional<player_data> find(const std::uint64_t player_id, bool parse_motherbase, bool parse_loadout, bool parse_emblem)
+	std::optional<player_data> find(const std::uint64_t player_id)
 	{
-		RUN_IMPL(impl::find, player_id, parse_motherbase, parse_loadout, parse_emblem);
+		RUN_IMPL(impl::find, player_id);
 	}
 
 	std::optional<player_data> find_or_create(const std::uint64_t player_id)

@@ -170,6 +170,17 @@ namespace database::fobs
 				return fob(results.front());
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_all(const std::uint64_t player_id)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(fob::table)
+						.where(fob::table.player_id == player_id));
+			});
+		}
 	}
 	
 	std::vector<fob> get_fob_list(const std::uint64_t player_id)
@@ -192,13 +203,18 @@ namespace database::fobs
 		RUN_IMPL(impl::get_fob, id);
 	}
 
+	void delete_all(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_all, player_id);
+	}
+
 	class table final : public table_interface
 	{
 	public:
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.fobs.create");
-			database.run_query("mgstpp.fobs.set_auto_increment", fob_id_reserve_count);
+			database.run_query("mgstpp.fobs.set_auto_increment", database::get_database_name(), fob_id_reserve_count);
 		}
 	};
 }

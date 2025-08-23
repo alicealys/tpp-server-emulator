@@ -86,7 +86,8 @@ namespace database::items
 			this->valid_ = false;
 		}
 
-		void set_data(const item_t& item_data, std::optional<player_data::player_data>& p_data);
+		void set_data(const item_t& item_data, const std::optional<player_data::player_data>& player_data,
+			const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array);
 
 		int is_open() const
 		{

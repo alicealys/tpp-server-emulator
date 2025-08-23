@@ -336,6 +336,19 @@ namespace database::player_records
 					);
 			});
 		}
+
+		template <database_type_t Type>
+		void set_fob_point(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.fob_point = value)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
 	}
 
 	std::optional<player_record> find(const std::uint64_t player_id)
@@ -402,6 +415,11 @@ namespace database::player_records
 	void update_fob_ranking(database_t& database)
 	{
 		RUN_IMPL(impl::update_fob_ranking, database);
+	}
+
+	void set_fob_point(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::set_fob_point, player_id, value);
 	}
 
 	class table final : public table_interface
