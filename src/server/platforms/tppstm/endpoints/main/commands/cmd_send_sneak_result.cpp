@@ -54,7 +54,7 @@ namespace emulator::tpp
 		void modify_staff_array(database::player_data::staff_array_container& staff_array, 
 			std::unordered_set<std::uint32_t>& soldier_ids, const soldier_array_action action)
 		{
-			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+			for (auto i = 0u; i < game::max_staff_count; i++)
 			{
 				auto staff = &staff_array[i];
 				const auto iter = soldier_ids.find(staff->fields.seed.data);
@@ -69,11 +69,11 @@ namespace emulator::tpp
 				{
 				case soldier_injure:
 					staff->fields.status_sync.health_state = 1;
-					staff->fields.status_sync.designation = database::player_data::des_sickbay;
+					staff->fields.status_sync.designation = game::des_sickbay;
 					break;
 				case soldier_capture: // todo: implement fob prison list
 				case soldier_kill:
-					std::memset(staff, 0, sizeof(database::player_data::staff_t));
+					std::memset(staff, 0, sizeof(game::staff_t));
 					break;
 				}
 			}
@@ -107,22 +107,22 @@ namespace emulator::tpp
 			database::player_data::unit_levels_t levels{};
 
 			auto new_staff_count = 0;
-			for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+			for (auto i = 0u; i < game::max_staff_count; i++)
 			{
 				const auto staff = &new_staff_array[i];
 				if (staff->fields.status_sync.designation != 0)
 				{
 					new_staff_count++;
 					
-					if (staff->fields.status_sync.designation >= database::player_data::des_units_start &&
-						staff->fields.status_sync.designation < database::player_data::des_units_end)
+					if (staff->fields.status_sync.designation >= game::des_units_start &&
+						staff->fields.status_sync.designation < game::des_units_end)
 					{
-						counts[staff->fields.status_sync.designation - database::player_data::des_units_start]++;
+						counts[staff->fields.status_sync.designation - game::des_units_start]++;
 					}
 				}
 			}
 
-			for (auto i = 0; i < database::player_data::unit_count; i++)
+			for (auto i = 0; i < game::unit_count; i++)
 			{
 				levels[i] = owner_data->get_unit_level(i);
 			}
@@ -254,7 +254,7 @@ namespace emulator::tpp
 					auto& active_sneak_val = active_sneak.value();
 					if (!database::sneak_results::add_sneak_result(player.value(), fob.value(), active_sneak_val, is_win, sneak_data))
 					{
-						result["result"] = utils::tpp::get_error(ERR_DATABASE);
+						result["result"] = game::get_error(ERR_DATABASE);
 					}
 				}
 				else // defense

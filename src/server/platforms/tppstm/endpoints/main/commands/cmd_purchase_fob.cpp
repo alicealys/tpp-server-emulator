@@ -44,7 +44,7 @@ namespace emulator::tpp
 		}
 		else
 		{
-			result["result"] = utils::tpp::get_error(ERR_MBCOIN_SHORTAGE);
+			result["result"] = game::get_error(ERR_MBCOIN_SHORTAGE);
 		}
 		
 		return result;

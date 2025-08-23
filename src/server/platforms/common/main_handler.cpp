@@ -6,7 +6,7 @@
 #include "database/models/players.hpp"
 
 #include "utils/encoding.hpp"
-#include "utils/tpp.hpp"
+#include "game/game.hpp"
 
 #include <utils/string.hpp>
 #include <utils/compression.hpp>
@@ -15,7 +15,7 @@ namespace emulator
 {
 	main_handler::main_handler()
 	{
-		blow_.set_key(utils::tpp::get_static_key(), utils::tpp::get_static_key_len());
+		blow_.set_key(game::get_static_key(), game::get_static_key_len());
 	}
 
 	std::optional<nlohmann::json> main_handler::decrypt_request(const std::string& data, std::optional<database::players::player>& player)

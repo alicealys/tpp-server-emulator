@@ -23,7 +23,7 @@ namespace emulator::mgo
 			const auto target_player = get_target_player(target_list[i]);
 
 			result["result_list"][i]["rank_xp"] = 0;
-			result["result_list"][i]["result"] = utils::tpp::get_error(NOERR);
+			result["result_list"][i]["result"] = game::get_error(NOERR);
 
 			if (target_player.has_value())
 			{

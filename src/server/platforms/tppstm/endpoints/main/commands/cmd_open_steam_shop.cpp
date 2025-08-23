@@ -18,7 +18,7 @@ namespace emulator::tpp
 		nlohmann::json result;
 		result["orderid"] = 0;
 		result["transid"] = 0;
-		result["result"] = utils::tpp::get_error(ERR_INVALIDARG); // intentional error
+		result["result"] = game::get_error(ERR_INVALIDARG); // intentional error
 
 		if (!steam_item_id_j.is_number_unsigned())
 		{

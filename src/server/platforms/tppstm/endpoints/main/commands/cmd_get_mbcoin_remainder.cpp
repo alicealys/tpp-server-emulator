@@ -17,7 +17,6 @@ namespace emulator::tpp
 		}
 
 		result["remainder"] = database::player_data::get_mb_coins(player->get_id());
-		result["result"] = utils::tpp::get_error(NOERR);
 
 		return result;
 	}

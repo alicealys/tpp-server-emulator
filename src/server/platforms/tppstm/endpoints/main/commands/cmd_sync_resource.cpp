@@ -27,8 +27,8 @@ namespace emulator::tpp
 
 		if (!gmp_j.is_number_integer() ||
 			!diff_resource_1.is_array() || !diff_resource_2.is_array() ||
-			diff_resource_1.size() < database::player_data::resource_type_count ||
-			diff_resource_2.size() < database::player_data::resource_type_count)
+			diff_resource_1.size() < game::resource_type_count ||
+			diff_resource_2.size() < game::resource_type_count)
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -43,11 +43,11 @@ namespace emulator::tpp
 		player_data->get_resource_arrays(resource_arrays);
 
 		const auto sync_resources = [&](const nlohmann::json& resources, 
-			const database::player_data::resource_array_types local_type, 
-			const database::player_data::resource_array_types server_type,
+			const game::resource_array_types local_type,
+			const game::resource_array_types server_type,
 			bool sync)
 		{
-			const auto id = local_type == database::player_data::unprocessed_local ? "2"s : "1"s;
+			const auto id = local_type == game::unprocessed_local ? "2"s : "1"s;
 			for (auto i = 0; i < static_cast<std::int32_t>(resources.size()); i++)
 			{
 				if (sync)
@@ -58,15 +58,15 @@ namespace emulator::tpp
 						return false;
 					}
 
-					const auto ratio = database::player_data::get_local_resource_ratio(local_type, server_type, i);
+					const auto ratio = game::get_local_resource_ratio(local_type, server_type, i);
 
-					const auto current_local_value = database::player_data::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
-					const auto current_server_value = database::player_data::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
+					const auto current_local_value = game::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
+					const auto current_server_value = game::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
 
 					const auto total = current_local_value + current_server_value;
 
-					const auto local_value = database::player_data::cap_resource_value(local_type, i, static_cast<std::uint32_t>(total * ratio));
-					const auto server_value = database::player_data::cap_resource_value(server_type, i, total - local_value);
+					const auto local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(total * ratio));
+					const auto server_value = game::cap_resource_value(server_type, i, total - local_value);
 
 					resource_arrays[local_type][i] = local_value;
 					resource_arrays[server_type][i] = server_value;
@@ -88,8 +88,8 @@ namespace emulator::tpp
 
 		const auto update_server = client_version == server_version && local_version != client_version - 1;
 
-		if (!sync_resources(diff_resource_1, database::player_data::processed_local, database::player_data::processed_server, update_server) ||
-			!sync_resources(diff_resource_2, database::player_data::unprocessed_local, database::player_data::unprocessed_server, update_server))
+		if (!sync_resources(diff_resource_1, game::processed_local, game::processed_server, update_server) ||
+			!sync_resources(diff_resource_2, game::unprocessed_local, game::unprocessed_server, update_server))
 		{
 			return error(ERR_INVALIDARG);
 		}

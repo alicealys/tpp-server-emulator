@@ -65,41 +65,41 @@ namespace database::fob_events
 				auto& section_level = staff_resources["section_level"];
 				auto& section_staff = staff_resources["section_staff"];
 
-				auto& processed = player.motherbase.resource_arrays[database::player_data::processed_server];
-				auto& unprocessed = player.motherbase.resource_arrays[database::player_data::unprocessed_server];
+				auto& processed = player.motherbase.resource_arrays[game::processed_server];
+				auto& unprocessed = player.motherbase.resource_arrays[game::unprocessed_server];
 				auto& unit_levels = player.motherbase.unit_levels;
 				auto& unit_counts = player.motherbase.unit_counts;
 
-				processed[database::player_data::emplacement_gun_east] = placement["emplacement_gun_east"].get<std::uint32_t>();
-				processed[database::player_data::emplacement_gun_west] = placement["emplacement_gun_west"].get<std::uint32_t>();
-				processed[database::player_data::gatling_gun_east] = placement["gatling_gun_east"].get<std::uint32_t>();
-				processed[database::player_data::gatling_gun_west] = placement["gatling_gun_west"].get<std::uint32_t>();
-				processed[database::player_data::mortar_normal] = placement["mortar_normal"].get<std::uint32_t>();
+				processed[game::emplacement_gun_east] = placement["emplacement_gun_east"].get<std::uint32_t>();
+				processed[game::emplacement_gun_west] = placement["emplacement_gun_west"].get<std::uint32_t>();
+				processed[game::gatling_gun_east] = placement["gatling_gun_east"].get<std::uint32_t>();
+				processed[game::gatling_gun_west] = placement["gatling_gun_west"].get<std::uint32_t>();
+				processed[game::mortar_normal] = placement["mortar_normal"].get<std::uint32_t>();
 
-				processed[database::player_data::biotic_resource] = usable_resource["biotic_resource"].get<std::uint32_t>();
-				processed[database::player_data::common_metal] = usable_resource["common_metal"].get<std::uint32_t>();
-				processed[database::player_data::fuel_resource] = usable_resource["fuel_resource"].get<std::uint32_t>();
-				processed[database::player_data::minor_metal] = usable_resource["minor_metal"].get<std::uint32_t>();
-				processed[database::player_data::precious_metal] = usable_resource["precious_metal"].get<std::uint32_t>();
+				processed[game::biotic_resource] = usable_resource["biotic_resource"].get<std::uint32_t>();
+				processed[game::common_metal] = usable_resource["common_metal"].get<std::uint32_t>();
+				processed[game::fuel_resource] = usable_resource["fuel_resource"].get<std::uint32_t>();
+				processed[game::minor_metal] = usable_resource["minor_metal"].get<std::uint32_t>();
+				processed[game::precious_metal] = usable_resource["precious_metal"].get<std::uint32_t>();
 
-				unprocessed[database::player_data::biotic_resource] = processing_resource["biotic_resource"].get<std::uint32_t>();
-				unprocessed[database::player_data::common_metal] = processing_resource["common_metal"].get<std::uint32_t>();
-				unprocessed[database::player_data::fuel_resource] = processing_resource["fuel_resource"].get<std::uint32_t>();
-				unprocessed[database::player_data::minor_metal] = processing_resource["minor_metal"].get<std::uint32_t>();
-				unprocessed[database::player_data::precious_metal] = processing_resource["precious_metal"].get<std::uint32_t>();
+				unprocessed[game::biotic_resource] = processing_resource["biotic_resource"].get<std::uint32_t>();
+				unprocessed[game::common_metal] = processing_resource["common_metal"].get<std::uint32_t>();
+				unprocessed[game::fuel_resource] = processing_resource["fuel_resource"].get<std::uint32_t>();
+				unprocessed[game::minor_metal] = processing_resource["minor_metal"].get<std::uint32_t>();
+				unprocessed[game::precious_metal] = processing_resource["precious_metal"].get<std::uint32_t>();
 
-				for (auto i = 0; i < database::player_data::unit_count; i++)
+				for (auto i = 0; i < game::unit_count; i++)
 				{
-					unit_levels[i] = section_level[database::player_data::unit_names[i]].get<std::uint32_t>();
+					unit_levels[i] = section_level[game::unit_names[i]].get<std::uint32_t>();
 				}
 
 				auto total_staff = 0;
 				for (auto i = 0ull; i < section_staff.size(); i++)
 				{
 					const auto& staff_of_rank_at_unit = section_staff[i];
-					for (auto o = 0; o < database::player_data::unit_count; o++)
+					for (auto o = 0; o < game::unit_count; o++)
 					{
-						const auto& unit_name = database::player_data::unit_names[o];
+						const auto& unit_name = game::unit_names[o];
 						const auto& staff_count = staff_of_rank_at_unit[unit_name].get<std::uint32_t>();
 						unit_counts[o] += staff_count;
 						player.motherbase.staff_count += staff_count;
@@ -108,7 +108,7 @@ namespace database::fob_events
 						{
 							auto staff_index = total_staff++;
 							player.motherbase.staff_array[staff_index].fields.header.peak_rank = i;
-							player.motherbase.staff_array[staff_index].fields.status_sync.designation = database::player_data::des_units_start + o;
+							player.motherbase.staff_array[staff_index].fields.status_sync.designation = game::des_units_start + o;
 						}
 					}
 				}

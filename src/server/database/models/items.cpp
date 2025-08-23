@@ -2,8 +2,7 @@
 
 #include "items.hpp"
 
-#include <utils/cryptography.hpp>
-#include <utils/string.hpp>
+#include "game/game.hpp"
 
 namespace database::items
 {
@@ -141,7 +140,7 @@ namespace database::items
 			this->develop_ = 0;
 		}
 
-		this->mb_coin_ = utils::tpp::calculate_mb_coins(this->left_second_, database::vars.cost_factor_item_dev);
+		this->mb_coin_ = game::calculate_mb_coins(this->left_second_, database::vars.cost_factor_item_dev);
 
 		this->open_ = this->left_second_ == 0;
 
@@ -154,8 +153,8 @@ namespace database::items
 
 		if (!this->open_)
 		{
-			const auto count_1 = resource_arrays[player_data::processed_server][item_data.dev_resource_ids[0]];
-			const auto count_2 = resource_arrays[player_data::processed_server][item_data.dev_resource_ids[1]];
+			const auto count_1 = resource_arrays[game::processed_server][item_data.dev_resource_ids[0]];
+			const auto count_2 = resource_arrays[game::processed_server][item_data.dev_resource_ids[1]];
 			const auto gmp = player_data->get_server_gmp();
 
 			auto should_be_open = false;
@@ -165,7 +164,7 @@ namespace database::items
 			{
 				should_be_open = true;
 
-				for (auto i = 0; i < player_data::unit_count; i++)
+				for (auto i = 0; i < game::unit_count; i++)
 				{
 					if (player_data->get_unit_level(i) < item_data.dev_platform_levels[i])
 					{

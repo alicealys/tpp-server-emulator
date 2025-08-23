@@ -658,6 +658,20 @@ namespace utils::cryptography
 		return value % range + min;
 	}
 
+	uint64_t random::get_integer64()
+	{
+		uint64_t result;
+		random::get_data(&result, sizeof(result));
+		return result;
+	}
+
+	uint64_t random::get_integer64(const std::uint64_t min, const std::uint64_t max)
+	{
+		const auto range = max - min + 1;
+		const auto value = random::get_integer64();
+		return value % range + min;
+	}
+
 	std::string random::get_challenge()
 	{
 		std::string result;

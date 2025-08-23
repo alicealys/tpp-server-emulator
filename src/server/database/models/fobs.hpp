@@ -4,8 +4,6 @@
 
 #include "player_data.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::fobs
 {
 	nlohmann::json& get_area_list();

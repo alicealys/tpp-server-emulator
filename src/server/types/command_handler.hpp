@@ -1,7 +1,7 @@
 #pragma once
 
 #include "database/models/players.hpp"
-#include "utils/tpp.hpp"
+#include "game/game.hpp"
 
 namespace emulator
 {

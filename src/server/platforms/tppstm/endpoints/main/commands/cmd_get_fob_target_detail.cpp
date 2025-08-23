@@ -102,12 +102,12 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		owner_data->get_resource_arrays(resource_arrays);
 
-		detail["placement"]["emplacement_gun_east"] = resource_arrays[database::player_data::processed_server][database::player_data::emplacement_gun_east];
-		detail["placement"]["emplacement_gun_west"] = resource_arrays[database::player_data::processed_server][database::player_data::emplacement_gun_west];
+		detail["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::emplacement_gun_east];
+		detail["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::emplacement_gun_west];
 		detail["placement"]["gatling_gun"] = 0;
-		detail["placement"]["gatling_gun_east"] = resource_arrays[database::player_data::processed_server][database::player_data::gatling_gun_east];
-		detail["placement"]["gatling_gun_west"] = resource_arrays[database::player_data::processed_server][database::player_data::gatling_gun_west];
-		detail["placement"]["mortar_normal"] = resource_arrays[database::player_data::processed_server][database::player_data::mortar_normal];
+		detail["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::gatling_gun_east];
+		detail["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::gatling_gun_west];
+		detail["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::mortar_normal];
 
 		const auto event_player = database::fob_events::get_player(owner->get_id());
 		if (is_event && event_player.has_value())
@@ -125,7 +125,7 @@ namespace emulator::tpp
 
 		for (auto i = 0u; i < 10; i++)
 		{
-			for (const auto& name : database::player_data::unit_names)
+			for (const auto& name : game::unit_names)
 			{
 				detail["section_staff"][i][name] = 0;
 			}
@@ -137,13 +137,13 @@ namespace emulator::tpp
 		for (auto i = 0u; i < owner_data->get_staff_count(); i++)
 		{
 			const auto& staff = staff_array[i];
-			const auto key_opt = database::player_data::unit_name_from_designation(staff.fields.status_sync.designation);
+			const auto key_opt = game::unit_name_from_designation(staff.fields.status_sync.designation);
 			if (!key_opt.has_value())
 			{
 				continue;
 			}
 
-			if (!database::player_data::is_usable_staff(staff))
+			if (!game::is_usable_staff(staff))
 			{
 				continue;
 			}
@@ -153,7 +153,7 @@ namespace emulator::tpp
 			detail["section_staff"][staff.fields.header.peak_rank][key] = 1 + value.get<std::uint32_t>();
 		}
 
-		detail["security_section_rank"] = owner_data->get_unit_level(database::player_data::unit_security);
+		detail["security_section_rank"] = owner_data->get_unit_level(game::unit_security);
 
 		const auto is_sham = mode == database::players::mode_sham;
 

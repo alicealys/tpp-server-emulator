@@ -43,9 +43,9 @@ namespace emulator::tpp
 			for (auto i = 0ull; i < sneak_data["injure_soldier_id"].size(); i++)
 			{
 				const auto header_val = sneak_data["injure_soldier_id"][i]["param"][0].get<std::uint32_t>();
-				database::player_data::staff_header_t header{};
+				game::staff_header_t header{};
 
-				std::memcpy(&header, &header_val, sizeof(database::player_data::staff_header_t));
+				std::memcpy(&header, &header_val, sizeof(game::staff_header_t));
 				auto& value = target.extra_data["owner_fob_record"]["injury_staff_count"][header.peak_rank];
 
 				const auto current = value.get<std::uint32_t>();

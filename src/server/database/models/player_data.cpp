@@ -25,409 +25,6 @@ namespace database::player_data
 		}
 	}
 
-	std::array<std::uint32_t, resource_type_count> local_processed_resource_caps =
-	{
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		6000,
-		6000,
-		6000,
-		6000,
-		6000,
-		6000,
-		6000,
-		6000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		0,
-		1000000,
-		3000,
-		3000,
-		3000,
-		3000,
-		200000,
-		200000,
-		200000,
-		200000,
-		200000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		0,
-		0,
-		0,
-		0,
-		0
-	};
-
-	std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps =
-	{
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
-	};
-
-	std::array<std::uint32_t, resource_type_count> server_processed_resource_caps =
-	{
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		16,
-		0,
-		0,
-		0,
-		0,
-		0,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
-	};
-
-	std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps =
-	{
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		16,
-		0,
-		0,
-		0,
-		0,
-		0,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
-	};
-
-	std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps =
-	{
-		{damage_param_unknown, 0},
-		{damage_param_num_guards, 7},
-		{damage_param_num_grade, 5},
-		{damage_param_num_sensors, 4},
-		{damage_param_num_anti_theft_device, 8},
-		{damage_param_num_cameras, 6},
-		{damage_param_num_claymores, 8},
-		{damage_param_num_decoy, 8},
-		{damage_param_anti_reflex_research, 3},
-		{damage_param_reinforcements, 1},
-		{damage_param_num_drones, 2},
-	};
-
-	std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map =
-	{
-		{0, 0},
-		{1, 1},
-		{2, 2},
-		{3, 4},
-		{4, 6},
-		{5, 5},
-		{6, 3},
-	};
-
-	std::vector<std::string> unit_names =
-	{
-		"combat",
-		"develop",
-		"base",
-		"suport",
-		"spy",
-		"medical",
-		"security"
-	};
-
-	std::vector<std::string> platform_keys =
-	{
-		{"common3_security"},
-		{"common2_security"},
-		{"common1_security"},
-		{"unique_security"},
-	};
-
-	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation)
-	{
-		if (designation < des_combat || designation > des_security)
-		{
-			return {};
-		}
-
-		return {unit_names[designation - 1]};
-	}
-
-	std::uint32_t designation_from_unit_name(const std::string unit_name)
-	{
-		for (auto i = 0ull; i < unit_names.size(); i++)
-		{
-			if (unit_names[i] == unit_name)
-			{
-				return des_units_start + static_cast<std::uint32_t>(i);
-			}
-		}
-
-		return des_none;
-	}
-
-	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index)
-	{
-		switch (type)
-		{
-		case processed_local:
-			return local_processed_resource_caps[index];
-		case unprocessed_local:
-			return local_unprocessed_resource_caps[index];
-		case processed_server:
-			return server_processed_resource_caps[index];
-		case unprocessed_server:
-			return server_unprocessed_resource_caps[index];
-		}
-
-		return 0;
-	}
-
-	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value)
-	{
-		return std::max(0u, std::min(value, get_max_resource_value(type, index)));
-	}
-
-	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index)
-	{
-		const auto local_max = get_max_resource_value(local_type, index);
-		const auto server_max = get_max_resource_value(server_type, index);
-		const auto total = local_max + server_max;
-
-		if (total == 0)
-		{
-			return 0.f;
-		}
-
-		return static_cast<float>(local_max) / static_cast<float>(total);
-	}
-
-	bool is_usable_staff(const staff_fields_t& staff)
-	{
-		return staff.header.stat_distribution != stat_dist_special_character &&
-			staff.status_sync.designation >= des_combat && staff.status_sync.designation <= des_security &&
-			staff.status_sync.direct_contract == 0;
-	}
-
-	bool is_usable_staff(const staff_t& staff)
-	{
-		return is_usable_staff(staff.fields);
-	}
-
-	staff_array_container::staff_array_container()
-	{
-		this->resize(database::player_data::max_staff_count);
-	}
-
-	const staff_t& staff_array_container::operator[](const size_t index) const
-	{
-		return std::vector<staff_t>::operator[](index);
-	}
-
-	staff_t& staff_array_container::operator[](const size_t index)
-	{
-		return std::vector<staff_t>::operator[](index);
-	}
-
-	const staff_t* staff_array_container::data() const
-	{
-		return std::vector<staff_t>::data();
-	}
-
-	staff_t* staff_array_container::data()
-	{
-		return std::vector<staff_t>::data();
-	}
-
-	size_t staff_array_container::data_size() const
-	{
-		return std::vector<staff_t>::size() * sizeof(staff_t);
-	}
-
-	size_t staff_array_container::size() const
-	{
-		return std::vector<staff_t>::size();
-	}
-
 	void staff_array_container::swap_bytes()
 	{
 		for (auto i = 0ull; i < this->size(); i++)
@@ -442,9 +39,9 @@ namespace database::player_data
 	std::string staff_array_container::encode_client() const
 	{
 		std::string buffer;
-		buffer.reserve(database::player_data::max_staff_count * 16ull);
+		buffer.reserve(game::max_staff_count * 16ull);
 
-		for (auto i = 0u; i < database::player_data::max_staff_count; i++)
+		for (auto i = 0u; i < game::max_staff_count; i++)
 		{
 			std::uint32_t values[4]{};
 
@@ -496,7 +93,7 @@ namespace database::player_data
 		auto& cluster_index_j = deploy_damage_params["cluster_index"];
 		auto& mother_base_id_j = deploy_damage_params["motherbase_id"];
 		if (!mother_base_id_j.is_number_unsigned() || !damage_values.is_array() || 
-			damage_values.size() < database::player_data::damage_param_count ||
+			damage_values.size() < game::damage_param_count ||
 			!cluster_index_j.is_number_unsigned())
 		{
 			return;
@@ -514,15 +111,15 @@ namespace database::player_data
 			return;
 		}
 
-		const auto mapped_index = cluster_index_map[cluster_index];
+		const auto mapped_index = game::cluster_index_map[cluster_index];
 		auto& param = cluster_param[mapped_index];
 		const auto& cluster_security_j = param["cluster_security"];
 
 		if (cluster_security_j.is_number_unsigned())
 		{
-			database::player_data::cluster_security cluster_security{};
+			game::cluster_security cluster_security{};
 			cluster_security.packed = cluster_security_j.get<std::uint32_t>();
-			const auto& grade_damage_j = damage_values[database::player_data::damage_param_num_grade];
+			const auto& grade_damage_j = damage_values[game::damage_param_num_grade];
 
 			if (grade_damage_j.is_number_unsigned())
 			{
@@ -548,7 +145,7 @@ namespace database::player_data
 			}
 
 			auto amount_left = total_j.get<std::int32_t>();
-			for (auto& platform : platform_keys)
+			for (auto& platform : game::platform_keys)
 			{
 				const auto& value_j = param[platform][name];
 				if (!value_j.is_number_unsigned())
@@ -567,13 +164,13 @@ namespace database::player_data
 			}
 		};
 
-		decrement_value("antitheft", damage_values[database::player_data::damage_param_num_anti_theft_device], 2);
-		decrement_value("camera", damage_values[database::player_data::damage_param_num_cameras], 2);
-		decrement_value("decoy", damage_values[database::player_data::damage_param_num_decoy], 2);
-		decrement_value("ir_sensor", damage_values[database::player_data::damage_param_num_sensors], 1);
-		decrement_value("mine", damage_values[database::player_data::damage_param_num_claymores], 2);
-		decrement_value("soldier", damage_values[database::player_data::damage_param_num_guards], 6);
-		decrement_value("uav", damage_values[database::player_data::damage_param_num_drones], 1);
+		decrement_value("antitheft", damage_values[game::damage_param_num_anti_theft_device], 2);
+		decrement_value("camera", damage_values[game::damage_param_num_cameras], 2);
+		decrement_value("decoy", damage_values[game::damage_param_num_decoy], 2);
+		decrement_value("ir_sensor", damage_values[game::damage_param_num_sensors], 1);
+		decrement_value("mine", damage_values[game::damage_param_num_claymores], 2);
+		decrement_value("soldier", damage_values[game::damage_param_num_guards], 6);
+		decrement_value("uav", damage_values[game::damage_param_num_drones], 1);
 	}
 
 	namespace impl
@@ -721,7 +318,7 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
-			const auto nuke_count = arrays[processed_local][nuclear] + arrays[processed_server][nuclear];
+			const auto nuke_count = arrays[game::processed_local][game::nuclear] + arrays[game::processed_server][game::nuclear];
 
 			database::access([&](database::database_t& db)
 			{

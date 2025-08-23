@@ -4,8 +4,6 @@
 
 #include "player_data.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::event_rankings
 {
 	enum event_class

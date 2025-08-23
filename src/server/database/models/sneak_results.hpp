@@ -6,8 +6,6 @@
 #include "players.hpp"
 #include "fobs.hpp"
 
-#include "utils/tpp.hpp"
-
 namespace database::sneak_results
 {
 	class sneak_result

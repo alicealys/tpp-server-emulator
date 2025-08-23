@@ -168,14 +168,14 @@ namespace emulator::tpp
 			database::player_data::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
 		}
 
-		const auto mapped_index = database::player_data::cluster_index_map[platform];
+		const auto mapped_index = game::cluster_index_map[platform];
 		const auto& mapped_cluster_param = cluster_param[mapped_index];
 
 		if (is_event)
 		{
 			result["security_soldier_rank"] = mapped_cluster_param["soldier_rank"];
 			auto security_soldier_num = 0u;
-			for (const auto& key : database::player_data::platform_keys)
+			for (const auto& key : game::platform_keys)
 			{
 				security_soldier_num += mapped_cluster_param[key]["soldier"].get<std::uint32_t>();
 			}
@@ -192,8 +192,8 @@ namespace emulator::tpp
 			for (auto i = 0u; i < owner_data->get_staff_count(); i++)
 			{
 				const auto& staff = staff_array[i];
-				if (!database::player_data::is_usable_staff(staff) ||
-					staff.fields.status_sync.designation != database::player_data::des_security)
+				if (!game::is_usable_staff(staff) ||
+					staff.fields.status_sync.designation != game::des_security)
 				{
 					continue;
 				}
@@ -227,12 +227,12 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		owner_data->get_resource_arrays(resource_arrays);
 
-		stage_param["placement"]["emplacement_gun_east"] = resource_arrays[database::player_data::processed_server][database::player_data::emplacement_gun_east];
-		stage_param["placement"]["emplacement_gun_west"] = resource_arrays[database::player_data::processed_server][database::player_data::emplacement_gun_west];
+		stage_param["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::emplacement_gun_east];
+		stage_param["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::emplacement_gun_west];
 		stage_param["placement"]["gatling_gun"] = 0;
-		stage_param["placement"]["gatling_gun_east"] = resource_arrays[database::player_data::processed_server][database::player_data::gatling_gun_east];
-		stage_param["placement"]["gatling_gun_west"] = resource_arrays[database::player_data::processed_server][database::player_data::gatling_gun_west];
-		stage_param["placement"]["mortar_normal"] = resource_arrays[database::player_data::processed_server][database::player_data::mortar_normal];
+		stage_param["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::gatling_gun_east];
+		stage_param["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::gatling_gun_west];
+		stage_param["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::mortar_normal];
 
 		stage_param["platform"] = platform_j;
 		stage_param["equip_grade"] = mother_base["equip_grade"];
@@ -249,17 +249,17 @@ namespace emulator::tpp
 
 		for (auto i = 0; i < 5; i++)
 		{
-			stage_param["processing_resource"][material_resource_names[i]] = resource_arrays[database::player_data::unprocessed_server][i];
+			stage_param["processing_resource"][material_resource_names[i]] = resource_arrays[game::unprocessed_server][i];
 		}
 
-		for (auto i = 0; i < database::player_data::unit_count; i++)
+		for (auto i = 0; i < game::unit_count; i++)
 		{
-			stage_param["section_level"][database::player_data::unit_names[i]] = owner_data->get_unit_level(i);
+			stage_param["section_level"][game::unit_names[i]] = owner_data->get_unit_level(i);
 		}
 
 		for (auto i = 0; i < 5; i++)
 		{
-			stage_param["usable_resource"][material_resource_names[i]] = resource_arrays[database::player_data::processed_server][i];
+			stage_param["usable_resource"][material_resource_names[i]] = resource_arrays[game::processed_server][i];
 		}
 
 		result["wormhole_player_id"] = wormhole_player_id_j;

@@ -31,7 +31,7 @@ namespace emulator::tpp
 		result["item"]["id"] = item_status.get_id();
 		result["item"]["left_second"] = item_status.get_left_second();
 		result["item"]["max_second"] = item_status.get_max_second();
-		result["item"]["mb_coin"] = utils::tpp::calculate_mb_coins(item_status.get_max_second(), database::vars.cost_factor_item_dev);
+		result["item"]["mb_coin"] = game::calculate_mb_coins(item_status.get_max_second(), database::vars.cost_factor_item_dev);
 		result["item"]["open"] = item_status.is_open();
 
 		result["result"] = "NOERR";

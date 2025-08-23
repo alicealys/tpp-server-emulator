@@ -2,12 +2,6 @@
 
 #include "var_handler.hpp"
 
-#include "utils/encoding.hpp"
-#include "utils/tpp.hpp"
-
-#include <utils/string.hpp>
-#include <utils/compression.hpp>
-
 namespace emulator
 {
 	var_handler::var_handler(const std::string& name, const std::string& value)

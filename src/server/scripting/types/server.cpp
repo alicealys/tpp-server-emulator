@@ -30,14 +30,14 @@ namespace emulator::scripting
 
 		this->state_["server"]["error"] = sol::state::create_table(this->state_.lua_state());
 
-		const auto& error_map = utils::tpp::get_error_map();
+		const auto& error_map = game::get_error_map();
 		for (const auto& [id, error] : error_map)
 		{
 			this->state_["server"]["error"][error] = id;
 		}
 
 		this->state_["server"]["getresource"] = utils::resources::load;
-		this->state_["server"]["geterror"] = utils::tpp::get_error;
+		this->state_["server"]["geterror"] = game::get_error;
 
 		this->state_["server"]["registercommand"] = [&](const std::string& name, const sol::protected_function& handler)
 		{

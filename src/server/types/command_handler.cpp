@@ -14,14 +14,14 @@ namespace emulator
 	nlohmann::json error(const std::uint32_t id)
 	{
 		nlohmann::json result;
-		result["result"] = utils::tpp::get_error(id);
+		result["result"] = game::get_error(id);
 		return result;
 	}
 
 	nlohmann::json resource(const std::uint32_t id)
 	{
 		auto resource = utils::resources::load_json(id);
-		resource["result"] = utils::tpp::get_error(NOERR);
+		resource["result"] = game::get_error(NOERR);
 		return resource;
 	}
 

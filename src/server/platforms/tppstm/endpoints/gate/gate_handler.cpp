@@ -6,12 +6,6 @@
 #include "commands/cmd_get_svrlist.hpp"
 #include "commands/cmd_get_svrtime.hpp"
 
-#include "utils/encoding.hpp"
-#include "utils/tpp.hpp"
-
-#include <utils/string.hpp>
-#include <utils/compression.hpp>
-
 namespace emulator::tpp
 {
 	gate_handler::gate_handler()

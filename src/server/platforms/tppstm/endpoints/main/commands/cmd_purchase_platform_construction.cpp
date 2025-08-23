@@ -17,7 +17,7 @@ namespace emulator::tpp
 		}
 
 		const auto remaining_time = remaining_time_j.get<std::uint32_t>();
-		const auto cost = utils::tpp::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
+		const auto cost = game::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
 		if (!database::player_data::spend_mb_coins(player->get_id(), cost))
 		{
 			return error(ERR_MBCOIN_SHORTAGE);

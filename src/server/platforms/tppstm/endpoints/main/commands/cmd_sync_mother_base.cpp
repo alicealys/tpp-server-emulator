@@ -32,6 +32,13 @@ namespace emulator::tpp
 					return error(ERR_INVALIDARG);
 				}
 
+				const auto cluster_security = param["cluster_param"][0]["cluster_security"].get<std::uint32_t>();
+				printf("cluster security %i\n", cluster_security);
+
+
+				const auto construct_param = param["construct_param"].get<std::uint32_t>();
+				printf("construct_param %i\n", construct_param);
+
 				fobs.emplace_back(param);
 			}
 
@@ -57,7 +64,6 @@ namespace emulator::tpp
 		database::player_data::sync_motherbase(player->get_id(), mb_data);
 		
 		result["version"] = 0;
-		result["result"] = utils::tpp::get_error(NOERR);
 
 		return result;
 	}

@@ -2,7 +2,9 @@
 
 #include "../database.hpp"
 
-#include "utils/tpp.hpp"
+#include "game/game.hpp"
+
+#include "utils/static_vector.hpp"
 
 #include <utils/memory.hpp>
 #include <utils/cryptography.hpp>
@@ -10,294 +12,16 @@
 
 namespace database::player_data
 {
-	enum resource_array_types
-	{
-		processed_local,
-		unprocessed_local,
-		processed_server,
-		unprocessed_server,
-		count
-	};
+	using resource_array_t = std::uint32_t[game::resource_type_count];
+	using resource_arrays_t = resource_array_t[game::resource_array_types::count];
+	using staff_array_t = game::staff_t[game::max_staff_count];
+	using unit_levels_t = std::uint32_t[game::unit_count];
+	using unit_counts_t = std::uint32_t[game::unit_count];
+	using staff_counts_t = std::uint32_t[game::rank_count];
 
-	struct staff_header_t
-	{
-		std::uint32_t suppress_stats : 1;
-		std::uint32_t stat_bonus : 2;
-		std::uint32_t peak_rank : 4;
-		std::uint32_t stat_distribution : 6;
-		std::uint32_t skill : 7;
-		std::uint32_t face_gender : 10;
-	};
-
-	struct staff_status_sync_t
-	{
-		std::uint32_t combat_deployment_team : 4;
-		std::uint32_t player_selected : 3;
-		std::uint32_t direct_contract : 1;
-		std::uint32_t proficiency : 4;
-		std::uint32_t ds_medal : 1;
-		std::uint32_t ds_cross : 1;
-		std::uint32_t honor_medal : 1;
-		std::uint32_t unk : 1;
-		std::uint32_t symptomatic : 1;
-		std::uint32_t health_level : 3;
-		std::uint32_t health_state : 2;
-		std::uint32_t morale : 4;
-		std::uint32_t enemy : 1;
-		std::uint32_t designation : 4;
-		std::uint32_t unselectable : 1;
-	};
-
-	struct staff_status_packed_t
-	{
-		std::uint32_t data;
-	};
-
-	struct staff_seed_t
-	{
-		std::uint32_t data;
-	};
-
-	struct staff_status_no_sync_t
-	{
-		std::uint32_t data;
-	};
-
-	struct staff_unknown1_t
-	{
-		std::uint32_t data;
-	};
-
-	struct staff_unknown2_t
-	{
-		std::uint32_t data;
-	};
-
-	struct staff_fields_t
-	{
-		staff_unknown1_t unk;
-		staff_unknown2_t unk2;
-		union
-		{
-			staff_header_t header;
-			std::uint32_t packed_header;
-		};
-		union
-		{
-			staff_seed_t seed;
-			std::uint32_t packed_seed;
-		};
-		union
-		{
-			staff_status_sync_t status_sync;
-			std::uint32_t packed_status_sync;
-		};
-		union
-		{
-			staff_status_no_sync_t status_no_sync;
-			std::uint32_t packed_status_no_sync;
-		};
-	};
-
-	union staff_t
-	{
-		staff_fields_t fields;
-		std::uint32_t packed[6];
-	};
-
-	struct cluster_security_fields
-	{
-		std::uint32_t unk1 : 2;
-		std::uint32_t grade : 4;
-		std::uint32_t unk2 : 13;
-		std::uint32_t unk3 : 13;
-	};
-
-	union cluster_security
-	{
-		cluster_security_fields fields;
-		std::uint32_t packed;
-	};
-
-	static_assert(sizeof(staff_t) == 24);
-
-	enum resource_type
-	{
-		fuel_resource = 0,
-		biotic_resource = 1,
-		common_metal = 2,
-		minor_metal = 3,
-		precious_metal = 4,
-
-		emplacement_gun_east = 34,
-		emplacement_gun_west = 35,
-		gatling_gun_east = 36,
-		gatling_gun_west = 37,
-		mortar_normal = 38,
-
-		nuclear = 28,
-		resource_type_count = 59,
-	};
-
-	constexpr auto unit_count = 7;
-	constexpr auto rank_count = 10;
-	constexpr auto max_staff_count = 3500u;
-
-	using resource_array_t = std::uint32_t[resource_type_count];
-	using resource_arrays_t = resource_array_t[resource_array_types::count];
-	using staff_array_t = staff_t[max_staff_count];
-	using unit_levels_t = std::uint32_t[unit_count];
-	using unit_counts_t = std::uint32_t[unit_count];
-	using staff_counts_t = std::uint32_t[rank_count];
-
-	extern std::array<std::uint32_t, resource_type_count> local_processed_resource_caps;
-	extern std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps;
-	extern std::array<std::uint32_t, resource_type_count> server_processed_resource_caps;
-	extern std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps;
-
-	enum designation_t
-	{
-		des_none = 0,
-		des_units_start = 1,
-		des_combat = 1,
-		des_rnd = 2,
-		des_base_dev = 3,
-		des_support = 4,
-		des_intel = 5,
-		des_medical = 6,
-		des_security = 7,
-		des_sickbay = 8,
-		des_units_end = 8,
-		des_brig = 9,
-		des_quarantine = 10,
-		des_waiting_room_1 = 11,
-		des_waiting_room_2 = 12,
-		des_waiting_room_3 = 13,
-		des_waiting_room_4 = 14,
-		des_waiting_room_5 = 15,
-		des_count,
-	};
-
-	enum units_t
-	{
-		unit_combat = 0,
-		unit_rnd = 1,
-		unit_base_dev = 2,
-		unit_support = 3,
-		unit_intel = 4,
-		unit_medical = 5,
-		unit_security = 6,
-	};
-
-	enum stat_distribution_t
-	{
-		stat_dist_none_1 = 0b11010,
-		stat_dist_none_2 = 0b11011,
-		stat_dist_none_3 = 0b11100,
-		stat_dist_none_4 = 0b11101,
-		stat_dist_none_5 = 0b100100,
-		stat_dist_none_6 = 0b100101,
-		stat_dist_none_7 = 0b100110,
-		stat_dist_none_8 = 0b100111,
-		stat_dist_none_9 = 0b111011,
-		stat_dist_security = 0b1,
-		stat_dist_base_dev_focus = 0b100,
-		stat_dist_base_dev_and_combat = 0b110011,
-		stat_dist_base_dev_and_intel = 0b10010,
-		stat_dist_base_dev_plus_and_intel_plus = 0b110001,
-		stat_dist_base_dev_and_medical = 0b10011,
-		stat_dist_base_dev_plus_and_medical_plus = 0b110010,
-		stat_dist_base_dev_and_rnd = 0b101110,
-		stat_dist_base_dev_and_support_and_intel_and_medical = 0b100000,
-		stat_dist_base_dev_and_support = 0b10001,
-		stat_dist_base_dev_plus_and_support_plus = 0b110000,
-		stat_dist_combat_focus = 0b10,
-		stat_dist_combat_and_base_dev = 0b101111,
-		stat_dist_combat_and_intel = 0b1001,
-		stat_dist_combat_plus_and_intel_plus = 0b101001,
-		stat_dist_combat_and_medical = 0b1010,
-		stat_dist_combat_and_rnd = 0b1000,
-		stat_dist_combat_and_support_and_intel_and_medical = 0b11111,
-		stat_dist_combat_and_support = 0b101000,
-		stat_dist_intel_focus = 0b110,
-		stat_dist_intel_and_base_dev = 0b10000,
-		stat_dist_intel_plus_and_base_dev_plus = 0b110110,
-		stat_dist_intel_and_combat_and_support_and_medical = 0b100010,
-		stat_dist_intel_and_combat = 0b1110,
-		stat_dist_intel_plus_and_combat_plus = 0b111001,
-		stat_dist_intel_and_medical = 0b111000,
-		stat_dist_intel_and_rnd = 0b1111,
-		stat_dist_intel_and_support = 0b111010,
-		stat_dist_medical_focus = 0b111,
-		stat_dist_medical_and_base_dev_and_support_and_intel = 0b100011,
-		stat_dist_medical_and_base_dev = 0b11000,
-		stat_dist_medical_plus_and_base_dev_plus = 0b111110,
-		stat_dist_medical_and_combat = 0b10111,
-		stat_dist_medical_plus_and_combat_plus = 0b111100,
-		stat_dist_medical_and_intel = 0b110111,
-		stat_dist_medical_and_rnd = 0b111101,
-		stat_dist_medical_and_support = 0b11001,
-		stat_dist_rnd_focus = 0b11,
-		stat_dist_rnd_and_base_dev = 0b1011,
-		stat_dist_rnd_plus_and_base_dev_plus = 0b101011,
-		stat_dist_rnd_and_combat = 0b101010,
-		stat_dist_rnd_and_medical = 0b1101,
-		stat_dist_rnd_plus_and_medical_plus = 0b101101,
-		stat_dist_rnd_and_support_and_intel_and_medical = 0b11110,
-		stat_dist_rnd_and_support = 0b1100,
-		stat_dist_rnd_plus_and_support_plus = 0b101100,
-		stat_dist_support_focus = 0b101,
-		stat_dist_support_and_combat = 0b10100,
-		stat_dist_support_plus_and_combat_plus = 0b110100,
-		stat_dist_support_and_intel = 0b10110,
-		stat_dist_support_plus_and_intel_plus = 0b110101,
-		stat_dist_support_and_rnd_and_intel_and_medical = 0b100001,
-		stat_dist_special_character = 0b111111,
-	};
-
-	enum deploy_damage_params
-	{
-		damage_param_unknown = 0,
-		damage_param_num_guards = 1,
-		damage_param_num_grade = 2,
-		damage_param_num_sensors = 3,
-		damage_param_num_anti_theft_device = 4,
-		damage_param_num_cameras = 5,
-		damage_param_num_claymores = 6,
-		damage_param_num_decoy = 7,
-		damage_param_anti_reflex_research = 8,
-		damage_param_reinforcements = 9,
-		damage_param_num_drones = 10,
-		damage_param_count
-	};
-
-	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
-
-	extern std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map;
-
-	extern std::vector<std::string> unit_names;
-	extern std::vector<std::string> platform_keys;
-
-	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
-	std::uint32_t designation_from_unit_name(const std::string unit_name);
-
-	bool is_usable_staff(const staff_t& staff);
-	bool is_usable_staff(const staff_fields_t& staff);
-
-	class staff_array_container : std::vector<staff_t>
+	class staff_array_container : public utils::static_vector<game::staff_t, game::max_staff_count>
 	{
 	public:
-		staff_array_container();
-
-		const staff_t& operator[](const size_t index) const;
-		staff_t& operator[](const size_t index);
-
-		const staff_t* data() const;
-		staff_t* data();
-
-		size_t data_size() const;
-		size_t size() const;
-
 		std::string encode_client() const;
 		std::string encode_database() const;
 
@@ -418,7 +142,7 @@ namespace database::player_data
 
 		std::uint32_t get_unit_level(const std::uint32_t unit) const
 		{
-			if (unit >= unit_count)
+			if (unit >= game::unit_count)
 			{
 				return 0;
 			}
@@ -428,7 +152,7 @@ namespace database::player_data
 
 		std::uint32_t get_unit_count(const std::uint32_t unit) const
 		{
-			if (unit >= unit_count)
+			if (unit >= game::unit_count)
 			{
 				return 0;
 			}
@@ -438,14 +162,14 @@ namespace database::player_data
 
 		std::uint32_t get_staff_count() const
 		{
-			return std::min(this->staff_count_, max_staff_count);
+			return std::min(this->staff_count_, game::max_staff_count);
 		}
 
 		std::uint32_t get_usable_staff_count() const
 		{
 			auto total = 0u;
 
-			for (auto i = 0u; i < rank_count; i++)
+			for (auto i = 0u; i < game::rank_count; i++)
 			{
 				total += this->staff_counts_[i];
 			}
@@ -543,11 +267,6 @@ namespace database::player_data
 		std::uint32_t server_resource_version_{};
 		std::uint32_t server_staff_version_{};
 	};
-
-	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index);
-	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value);
-
-	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index);
 
 	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
