@@ -311,7 +311,7 @@ namespace database::fobs
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.fobs.create");
-			database.run_query("mgstpp.fobs.set_auto_increment", database::get_database_name(), fob_id_reserve_count);
+			database.run_query("mgstpp.fobs.set_auto_increment", fob_id_reserve_count);
 		}
 	};
 }

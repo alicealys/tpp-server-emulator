@@ -28,7 +28,7 @@ create table if not exists `players`
 	primary key (`id`)
 )
 -- query:mgstpp.players.set_auto_increment
-alter table `{}`.`players` auto_increment = {};
+alter table `players` auto_increment = {};
 -- query:mgstpp.player_records.create
 create table if not exists `player_records`
 (
@@ -138,7 +138,7 @@ create table if not exists `fobs`
 	foreign key (`player_id`) references players(`id`)
 )
 -- query:mgstpp.fobs.set_auto_increment
-alter table `{}`.`fobs` auto_increment = {};
+alter table `fobs` auto_increment = {};
 -- query:mgstpp.sneak_results.create
 create table if not exists `sneak_results`
 (
