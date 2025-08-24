@@ -40,7 +40,7 @@ namespace emulator::tpp
 
 		if (database::player_data::spend_mb_coins(player->get_id(), price))
 		{
-			game::fob_construct_param param{};
+			game::fob_construct_param_t param{};
 			param.packed = fob.get_construct_param().packed;
 			param.fields.area_id = area_id;
 			param.fields.area_code = area_id;

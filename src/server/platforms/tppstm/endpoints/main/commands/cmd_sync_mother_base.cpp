@@ -8,6 +8,12 @@
 
 namespace emulator::tpp
 {
+	template<typename T, size_t N>
+	void a(T(& a)[N])
+	{
+
+	}
+
 	nlohmann::json cmd_sync_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
@@ -20,7 +26,7 @@ namespace emulator::tpp
 		auto& mother_base_param = data["mother_base_param"];
 		if (mother_base_param.is_array())
 		{
-			std::vector<game::fob_param> fob_params;
+			std::vector<game::fob_param_t> fob_params;
 
 			for (auto i = 0ull; i < mother_base_param.size(); i++)
 			{
@@ -33,13 +39,13 @@ namespace emulator::tpp
 					return error(ERR_INVALIDARG);
 				}
 
-				game::fob_param param{};
+				game::fob_param_t param{};
 
 				param.platform_count = param_j["platform_count"].get<std::uint8_t>();
 				param.security_rank = param_j["security_rank"].get<std::uint8_t>();
 				param.construct_param.packed = param_j["construct_param"].get<std::uint32_t>();
 
-				if (!database::fobs::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
+				if (!game::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
 				{
 					return error(ERR_INVALIDARG);
 				}
@@ -53,20 +59,9 @@ namespace emulator::tpp
 			}
 		}
 		
-		nlohmann::json mb_data;
-		mb_data["equip_flag"] = data["equip_flag"];
-		mb_data["equip_grade"] = data["equip_grade"];
-		mb_data["invalid_fob"] = data["invalid_fob"];
-		mb_data["pf_skill_staff"] = data["pf_skill_staff"];
-		mb_data["local_base_param"] = data["local_base_param"];
-		mb_data["name_plate_id"] = data["name_plate_id"];
-		mb_data["mother_base_num"] = data["mother_base_num"];
-		mb_data["pickup_open"] = data["pickup_open"];
-		mb_data["section_open"] = data["section_open"];
-		mb_data["security_level"] = data["security_level"];
-		mb_data["tape_flag"] = data["tape_flag"];
-
-		database::player_data::sync_motherbase(player->get_id(), mb_data);
+		game::motherbase_t motherbase{};
+		game::parse_motherbase(data, motherbase);
+		database::player_data::sync_motherbase(player->get_id(), motherbase);
 		
 		result["version"] = 0;
 

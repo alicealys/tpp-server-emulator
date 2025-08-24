@@ -44,7 +44,8 @@ namespace database::fob_events
 		{
 			fob_event_player_t player{};
 
-			player.emblem = player_j["emblem"];
+			game::parse_emblem(player_j["emblem"], player.emblem);
+			game::parse_motherbase(player_j["motherbase"], player.motherbase);
 			player.reward = player_j["reward"];
 			player.player_id = player_j["player_id"].get<std::uint64_t>();
 			player.player_name = player_j["player_name"].get<std::string>();
@@ -54,14 +55,14 @@ namespace database::fob_events
 			{
 				player.fob_ids.emplace_back(fob_list[i]["mother_base_id"]);
 
-				game::fob_param param{};
+				game::fob_param_t param{};
 
 				param.area_id = fob_list[i]["area_id"].get<std::uint16_t>();
 				param.construct_param.packed = fob_list[i]["construct_param"].get<std::uint32_t>();
 				param.platform_count = fob_list[i]["platform_count"].get<std::uint8_t>();
 				param.security_rank = fob_list[i]["security_rank"].get<std::uint8_t>();
 
-				database::fobs::parse_cluster_param(fob_list[i]["cluster_param"], param.cluster_param);
+				game::parse_cluster_param(fob_list[i]["cluster_param"], param.cluster_param);
 
 				player.fob_params.emplace_back(param);
 			}
@@ -75,10 +76,10 @@ namespace database::fob_events
 				auto& section_level = staff_resources["section_level"];
 				auto& section_staff = staff_resources["section_staff"];
 
-				auto& processed = player.motherbase.resource_arrays[game::processed_server];
-				auto& unprocessed = player.motherbase.resource_arrays[game::unprocessed_server];
-				auto& unit_levels = player.motherbase.unit_levels;
-				auto& unit_counts = player.motherbase.unit_counts;
+				auto& processed = player.staff_resources.resource_arrays[game::processed_server];
+				auto& unprocessed = player.staff_resources.resource_arrays[game::unprocessed_server];
+				auto& unit_levels = player.staff_resources.unit_levels;
+				auto& unit_counts = player.staff_resources.unit_counts;
 
 				processed[game::emplacement_gun_east] = placement["emplacement_gun_east"].get<std::uint32_t>();
 				processed[game::emplacement_gun_west] = placement["emplacement_gun_west"].get<std::uint32_t>();
@@ -112,19 +113,17 @@ namespace database::fob_events
 						const auto& unit_name = game::unit_names[o];
 						const auto& staff_count = staff_of_rank_at_unit[unit_name].get<std::uint32_t>();
 						unit_counts[o] += staff_count;
-						player.motherbase.staff_count += staff_count;
+						player.staff_resources.staff_count += staff_count;
 
 						for (auto l = 0u; l < staff_count; l++)
 						{
 							auto staff_index = total_staff++;
-							player.motherbase.staff_array[staff_index].fields.header.peak_rank = i;
-							player.motherbase.staff_array[staff_index].fields.status_sync.designation = game::des_units_start + o;
+							player.staff_resources.staff_array[staff_index].fields.header.peak_rank = i;
+							player.staff_resources.staff_array[staff_index].fields.status_sync.designation = game::des_units_start + o;
 						}
 					}
 				}
 			}
-
-			player.motherbase.motherbase = player_j["motherbase"];
 
 			return player;
 		}
@@ -205,11 +204,11 @@ namespace database::fob_events
 
 			database::player_data::find_or_create(player.get_id());
 			database::player_data::sync_emblem(player.get_id(), event_player.emblem);
-			database::player_data::sync_motherbase(player.get_id(), event_player.motherbase.motherbase);
-			database::player_data::set_resources(player.get_id(), event_player.motherbase.resource_arrays, 0, 0);
+			database::player_data::sync_motherbase(player.get_id(), event_player.motherbase);
+			database::player_data::set_resources(player.get_id(), event_player.staff_resources.resource_arrays, 0, 0);
 
-			database::player_data::set_soldier_data(player.get_id(), event_player.motherbase.staff_count, event_player.motherbase.staff_array,
-				event_player.motherbase.unit_levels, event_player.motherbase.unit_counts);
+			database::player_data::set_soldier_data(player.get_id(), event_player.staff_resources.staff_count, event_player.staff_resources.staff_array,
+				event_player.staff_resources.unit_levels, event_player.staff_resources.unit_counts);
 
 			database::player_records::find_or_create(player.get_id());
 

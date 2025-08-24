@@ -13,7 +13,7 @@
 namespace database::player_data
 {
 	using resource_array_t = std::uint32_t[game::resource_type_count];
-	using resource_arrays_t = resource_array_t[game::resource_array_types::count];
+	using resource_arrays_t = resource_array_t[game::resource_array_types_t::count];
 	using staff_array_t = game::staff_t[game::max_staff_count];
 	using unit_levels_t = std::uint32_t[game::unit_count];
 	using unit_counts_t = std::uint32_t[game::unit_count];
@@ -45,8 +45,8 @@ namespace database::player_data
 		DEFINE_FIELD(staff_counts, sqlpp::binary);
 		DEFINE_FIELD(staff_bin, sqlpp::binary);
 		DEFINE_FIELD(loadout, sqlpp::text);
-		DEFINE_FIELD(motherbase, sqlpp::text);
-		DEFINE_FIELD(emblem, sqlpp::text);
+		DEFINE_FIELD(motherbase, sqlpp::binary);
+		DEFINE_FIELD(emblem, sqlpp::binary);
 		DEFINE_FIELD(local_gmp, sqlpp::integer);
 		DEFINE_FIELD(server_gmp, sqlpp::integer);
 		DEFINE_FIELD(loadout_gmp, sqlpp::integer);
@@ -232,9 +232,10 @@ namespace database::player_data
 			return this->fob_deploy_damage_param_;
 		}
 
-		nlohmann::json get_motherbase() const;
 		nlohmann::json get_loadout() const;
-		nlohmann::json get_emblem() const;
+
+		void get_motherbase(game::motherbase_t& mother_base) const;
+		void get_emblem(game::emblem_t& emblem) const;
 
 		void get_resource_arrays(resource_arrays_t& arrays) const;
 		void get_staff_array(staff_array_container& staff_array) const;
@@ -282,9 +283,9 @@ namespace database::player_data
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 
-	void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase);
-	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase);
-	void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem);
+	void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase);
+	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout);
+	void sync_emblem(const std::uint64_t player_id, const game::emblem_t& emblem);
 
 	std::uint32_t get_mb_coins(const std::uint64_t player_id);
 	bool spend_mb_coins(const std::uint64_t player_id, const std::uint32_t value);

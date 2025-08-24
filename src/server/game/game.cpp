@@ -396,7 +396,7 @@ namespace game
 		0
 	};
 
-	std::uint32_t get_max_resource_value(const resource_array_types type, const std::uint32_t index)
+	std::uint32_t get_max_resource_value(const resource_array_types_t type, const std::uint32_t index)
 	{
 		switch (type)
 		{
@@ -413,12 +413,12 @@ namespace game
 		return 0;
 	}
 
-	std::uint32_t cap_resource_value(const resource_array_types type, const std::uint32_t index, const std::uint32_t value)
+	std::uint32_t cap_resource_value(const resource_array_types_t type, const std::uint32_t index, const std::uint32_t value)
 	{
 		return std::max(0u, std::min(value, get_max_resource_value(type, index)));
 	}
 
-	float get_local_resource_ratio(const resource_array_types local_type, const resource_array_types server_type, const std::uint32_t index)
+	float get_local_resource_ratio(const resource_array_types_t local_type, const resource_array_types_t server_type, const std::uint32_t index)
 	{
 		const auto local_max = get_max_resource_value(local_type, index);
 		const auto server_max = get_max_resource_value(server_type, index);
@@ -471,7 +471,7 @@ namespace game
 
 	// fobs
 
-	std::array<fob_security, 2> fob_security_caps =
+	std::array<fob_security_t, 2> fob_security_caps =
 	{{
 		// common
 		{
@@ -545,4 +545,303 @@ namespace game
 		{"common1_security"},
 		{"unique_security"},
 	};
+
+	void parse_cluster_param_security(nlohmann::json& security_j, game::fob_security_t& security, bool is_unique)
+	{
+		if (!security_j.is_object())
+		{
+			return;
+		}
+
+		const auto get = [&](const std::string& name, const std::uint8_t cap)
+			-> std::uint8_t
+		{
+			const auto& value_j = security_j[name];
+			if (!value_j.is_number_unsigned())
+			{
+				return 0u;
+			}
+
+			const auto value = value_j.get<std::uint8_t>();
+			if (cap == 0u)
+			{
+				return value;
+			}
+
+			return std::min(cap, value);
+		};
+
+		security.antitheft = get("antitheft", game::fob_security_caps[is_unique].antitheft);
+		security.camera = get("camera", game::fob_security_caps[is_unique].camera);
+		security.caution_area = get("caution_area", game::fob_security_caps[is_unique].caution_area);
+		security.decoy = get("decoy", game::fob_security_caps[is_unique].decoy);
+		security.ir_sensor = get("ir_sensor", game::fob_security_caps[is_unique].ir_sensor);
+		security.mine = get("mine", game::fob_security_caps[is_unique].mine);
+		security.soldier = get("soldier", game::fob_security_caps[is_unique].soldier);
+		security.uav = get("uav", game::fob_security_caps[is_unique].uav);
+
+		const auto parse_coord = [&](nlohmann::json& coord_j, game::fob_voluntary_coord_t& coord)
+		{
+			const auto get_value = [&](const std::string& name)
+			{
+				const auto& value_j = coord_j[name];
+				if (!value_j.is_number_integer())
+				{
+					return 0;
+				}
+
+				return value_j.get<std::int32_t>();
+			};
+
+			const auto& placed_index_j = coord_j["placed_index"];
+			if (!placed_index_j.is_number_integer())
+			{
+				return false;
+			}
+
+			coord.position_x = get_value("position_x");
+			coord.position_y = get_value("position_y");
+			coord.position_z = get_value("position_z");
+
+			coord.rotation_x = get_value("rotation_x");
+			coord.rotation_y = get_value("rotation_y");
+			coord.rotation_z = get_value("rotation_z");
+			coord.rotation_w = get_value("rotation_w");
+
+			coord.placed_index = placed_index_j.get<std::int32_t>();
+			return true;
+		};
+
+		const auto parse_coords = [&](nlohmann::json& coords_j, game::fob_voluntary_coord_t* coords, const std::uint8_t cap)
+			-> std::uint8_t
+		{
+			if (!coords_j.is_array())
+			{
+				return 0u;
+			}
+
+			const auto count = std::min(cap, static_cast<std::uint8_t>(coords_j.size()));
+
+			for (auto i = 0u; i < count; i++)
+			{
+				auto& coord_j = coords_j[i];
+				if (!parse_coord(coord_j, coords[i]))
+				{
+					return 0u;
+				}
+			}
+
+			return count;
+		};
+
+		auto& voluntary_coord_mine_params_j = security_j["voluntary_coord_mine_params"];
+		auto& voluntary_coord_camera_params_j = security_j["voluntary_coord_camera_params"];
+
+		security.voluntary_coord_mine_count =
+			parse_coords(voluntary_coord_mine_params_j, &security.voluntary_coord_mine_params[0], game::max_fob_voluntary_mine_count);
+
+		security.voluntary_coord_camera_count =
+			parse_coords(voluntary_coord_camera_params_j, &security.voluntary_coord_camera_params[0], game::max_fob_voluntary_mine_count);
+	}
+
+	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param)
+	{
+		if (!param_j.is_array() || param_j.size() != game::fob_sections_count)
+		{
+			return false;
+		}
+
+		for (auto i = 0u; i < game::fob_sections_count; i++)
+		{
+			auto& section_param_j = param_j[i];
+			auto& section_param = param.param[i];
+
+			const auto& build_j = section_param_j["build"];
+			const auto& cluster_security_j = section_param_j["cluster_security"];
+			const auto& soldier_rank_j = section_param_j["soldier_rank"];
+
+			if (!build_j.is_number_unsigned() || !cluster_security_j.is_number_unsigned() || !soldier_rank_j.is_number_unsigned())
+			{
+				return false;
+			}
+
+			section_param.build.packed = section_param_j["build"].get<std::uint32_t>();
+			section_param.cluster_security.packed = section_param_j["cluster_security"].get<std::uint32_t>();
+			section_param.soldier_rank = section_param_j["soldier_rank"].get<std::uint8_t>();
+
+			parse_cluster_param_security(section_param_j["unique_security"], section_param.unique_security, true);
+			parse_cluster_param_security(section_param_j["common1_security"], section_param.common_security[0], false);
+			parse_cluster_param_security(section_param_j["common2_security"], section_param.common_security[1], false);
+			parse_cluster_param_security(section_param_j["common3_security"], section_param.common_security[2], false);
+		}
+
+		return true;
+	}
+
+	nlohmann::json game::fob_cluster_param_single_t::to_json() const
+	{
+		nlohmann::json param_j;
+
+		const auto add_security = [&](nlohmann::json& security_j, const game::fob_security_t& security)
+		{
+			security_j["uav"] = security.uav;
+			security_j["mine"] = security.mine;
+			security_j["decoy"] = security.decoy;
+			security_j["camera"] = security.camera;
+			security_j["soldier"] = security.soldier;
+			security_j["antitheft"] = security.antitheft;
+			security_j["ir_sensor"] = security.ir_sensor;
+			security_j["caution_area"] = security.caution_area;
+			security_j["voluntary_coord_mine_count"] = security.voluntary_coord_mine_count;
+			security_j["voluntary_coord_camera_count"] = security.voluntary_coord_camera_count;
+
+			security_j["voluntary_coord_mine_params"] = nlohmann::json::array();
+			security_j["voluntary_coord_camera_params"] = nlohmann::json::array();
+
+			const auto add_coord = [&](nlohmann::json& coord_j, const game::fob_voluntary_coord_t& coord)
+			{
+				coord_j["position_x"] = coord.position_x;
+				coord_j["position_y"] = coord.position_y;
+				coord_j["position_z"] = coord.position_z;
+				coord_j["rotation_x"] = coord.rotation_x;
+				coord_j["rotation_y"] = coord.rotation_y;
+				coord_j["rotation_z"] = coord.rotation_z;
+				coord_j["rotation_w"] = coord.rotation_w;
+				coord_j["placed_index"] = coord.placed_index;
+			};
+
+			for (auto o = 0u; o < security.voluntary_coord_mine_count; o++)
+			{
+				add_coord(security_j["voluntary_coord_mine_params"][o], security.voluntary_coord_mine_params[o]);
+			}
+
+			for (auto o = 0u; o < security.voluntary_coord_camera_count; o++)
+			{
+				add_coord(security_j["voluntary_coord_camera_params"][o], security.voluntary_coord_camera_params[o]);
+			}
+		};
+
+		param_j["build"] = this->build.packed;
+		param_j["soldier_rank"] = this->soldier_rank;
+		param_j["cluster_security"] = this->cluster_security.packed;
+
+		add_security(param_j["unique_security"], this->unique_security);
+		add_security(param_j["common1_security"], this->common_security[0]);
+		add_security(param_j["common2_security"], this->common_security[1]);
+		add_security(param_j["common3_security"], this->common_security[2]);
+
+		return param_j;
+	}
+
+	nlohmann::json game::emblem_t::to_json() const
+	{
+		nlohmann::json emblem_j;
+
+		emblem_j["parts"] = nlohmann::json::array();
+		
+		for (auto i = 0u; i < 4; i++)
+		{
+			emblem_j["parts"][i]["base_color"] = this->parts[i].base_color;
+			emblem_j["parts"][i]["frame_color"] = this->parts[i].frame_color;
+			emblem_j["parts"][i]["texture_tag"] = this->parts[i].texture_tag;
+			emblem_j["parts"][i]["position_x"] = this->parts[i].position_x;
+			emblem_j["parts"][i]["position_y"] = this->parts[i].position_y;
+			emblem_j["parts"][i]["rotate"] = this->parts[i].rotate;
+			emblem_j["parts"][i]["scale"] = this->parts[i].scale;
+		}
+
+		return emblem_j;
+	}
+
+	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase)
+	{
+		const auto copy_array = [&]<typename T>(T * array, nlohmann::json & array_j, const std::size_t size)
+		{
+			if (!array_j.is_array() || array_j.size() != size)
+			{
+				return;
+			}
+
+			for (auto i = 0ull; i < size; i++)
+			{
+				array[i] = array_j[i].get<T>();
+			}
+		};
+
+		const auto copy_value = [&]<typename T>(T & value, nlohmann::json & value_j)
+		{
+			if (!value_j.is_number_unsigned())
+			{
+				return;
+			}
+
+			value = value_j.get<T>();
+		};
+
+		copy_array(&motherbase.equip_flag[0], motherbase_j["equip_flag"], 32);
+		copy_array(&motherbase.equip_grade[0], motherbase_j["equip_grade"], 28);
+		copy_array(&motherbase.pf_skill_staff[0], motherbase_j["pf_skill_staff"], 19);
+		copy_array(&motherbase.local_base_param->packed, motherbase_j["local_base_param"], 7);
+		copy_array(&motherbase.security_level[0], motherbase_j["security_level"], 8);
+		copy_array(&motherbase.tape_flag[0], motherbase_j["tape_flag"], 8);
+
+		copy_value(motherbase.pickup_open, motherbase_j["pickup_open"]);
+		copy_value(motherbase.section_open, motherbase_j["section_open"]);
+		copy_value(motherbase.invalid_fob, motherbase_j["invalid_fob"]);
+		copy_value(motherbase.name_plate_id, motherbase_j["name_plate_id"]);
+	}
+
+	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem)
+	{
+		if (!emblem_j.is_object())
+		{
+			return;
+		}
+
+		auto& parts = emblem_j["parts"];
+		if (!parts.is_array() || parts.size() != 4)
+		{
+			return;
+		}
+
+		const auto parse_part = [&](const std::int32_t index)
+		{
+			auto& part_j = parts[index];
+
+			const auto get_u = [&](const std::string& name)
+			{
+				auto& value_j = part_j[name];
+				if (!value_j.is_number())
+				{
+					return 0u;
+				}
+
+				return value_j.get<std::uint32_t>();
+			};
+
+			const auto get = [&](const std::string& name)
+			{
+				auto& value_j = part_j[name];
+				if (!value_j.is_number())
+				{
+					return 0;
+				}
+
+				return value_j.get<std::int32_t>();
+			};
+
+			emblem.parts[index].base_color = get_u("base_color");
+			emblem.parts[index].frame_color = get_u("frame_color");
+			emblem.parts[index].texture_tag = get_u("texture_tag");
+			emblem.parts[index].position_x = get("position_x");
+			emblem.parts[index].position_y = get("position_y");
+			emblem.parts[index].rotate = get("rotate");
+			emblem.parts[index].scale = get("scale");
+		};
+
+		for (auto i = 0; i < 4; i++)
+		{
+			parse_part(i);
+		}
+	}
 }

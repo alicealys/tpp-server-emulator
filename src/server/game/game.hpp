@@ -115,7 +115,7 @@ namespace game
 
 	// resources
 
-	enum resource_array_types
+	enum resource_array_types_t
 	{
 		processed_local,
 		unprocessed_local,
@@ -124,7 +124,7 @@ namespace game
 		count
 	};
 
-	enum resource_type
+	enum resource_type_t
 	{
 		fuel_resource = 0,
 		biotic_resource = 1,
@@ -147,10 +147,10 @@ namespace game
 	extern std::array<std::uint32_t, resource_type_count> server_processed_resource_caps;
 	extern std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps;
 
-	std::uint32_t get_max_resource_value(const game::resource_array_types type, const std::uint32_t index);
-	std::uint32_t cap_resource_value(const game::resource_array_types type, const std::uint32_t index, const std::uint32_t value);
+	std::uint32_t get_max_resource_value(const game::resource_array_types_t type, const std::uint32_t index);
+	std::uint32_t cap_resource_value(const game::resource_array_types_t type, const std::uint32_t index, const std::uint32_t value);
 
-	float get_local_resource_ratio(const game::resource_array_types local_type, const game::resource_array_types server_type, const std::uint32_t index);
+	float get_local_resource_ratio(const game::resource_array_types_t local_type, const game::resource_array_types_t server_type, const std::uint32_t index);
 
 	// staff
 
@@ -354,7 +354,7 @@ namespace game
 
 	// fobs
 
-	enum deploy_damage_params
+	enum deploy_damage_params_t
 	{
 		damage_param_unknown = 0,
 		damage_param_num_guards = 1,
@@ -370,7 +370,7 @@ namespace game
 		damage_param_count
 	};
 
-	enum area_code
+	enum area_code_t
 	{
 		ocean_area_0 = 0,  // Central Indian Ridge
 		ocean_area_10 = 10, // Mid-Atlantic Ridge
@@ -382,7 +382,7 @@ namespace game
 		ocean_area_70 = 70, // North Atlantic Ocean
 	};
 
-	struct fob_construct_param_fields
+	struct fob_construct_param_fields_t
 	{
 		std::uint32_t unk1 : 1;
 		std::uint32_t area_id : 7;
@@ -391,7 +391,7 @@ namespace game
 		std::uint32_t unk3 : 13;
 	};
 
-	struct fob_cluster_security_fields
+	struct fob_cluster_security_fields_t
 	{
 		std::uint32_t range_type : 2; // 0: close, 1: mid, 2: long
 		std::uint32_t grade : 4;
@@ -404,7 +404,7 @@ namespace game
 		std::uint32_t pad : 7;
 	};
 
-	struct fob_build_fields
+	struct fob_build_fields_t
 	{
 		std::uint32_t unk : 1;
 		std::uint32_t pad1 : 11;
@@ -412,34 +412,34 @@ namespace game
 		std::uint32_t pad2 : 17;
 	};
 
-	struct fob_cluster_security
+	struct fob_cluster_security_t
 	{
 		union
 		{
-			fob_cluster_security_fields fields;
+			fob_cluster_security_fields_t fields;
 			std::uint32_t packed;
 		};
 	};
 
-	struct fob_build
+	struct fob_build_t
 	{
 		union
 		{
-			fob_build_fields fields;
+			fob_build_fields_t fields;
 			std::uint32_t packed;
 		};
 	};
 
-	struct fob_construct_param
+	struct fob_construct_param_t
 	{
 		union
 		{
-			fob_construct_param_fields fields;
+			fob_construct_param_fields_t fields;
 			std::uint32_t packed;
 		};
 	};
 
-	struct fob_voluntary_coord
+	struct fob_voluntary_coord_t
 	{
 		std::int32_t position_x;
 		std::int32_t position_y;
@@ -454,7 +454,7 @@ namespace game
 	constexpr auto max_fob_voluntary_mine_count = 12u;
 	constexpr auto max_fob_voluntary_camera_count = 3u;
 
-	struct fob_security
+	struct fob_security_t
 	{
 		std::uint8_t uav;
 		std::uint8_t mine;
@@ -465,37 +465,40 @@ namespace game
 		std::uint8_t ir_sensor;
 		std::uint8_t caution_area;
 		std::uint8_t voluntary_coord_mine_count;
-		fob_voluntary_coord voluntary_coord_mine_params[max_fob_voluntary_mine_count]{};
+		fob_voluntary_coord_t voluntary_coord_mine_params[max_fob_voluntary_mine_count]{};
 		std::uint8_t voluntary_coord_camera_count;
-		fob_voluntary_coord voluntary_coord_camera_params[max_fob_voluntary_camera_count]{};
+		fob_voluntary_coord_t voluntary_coord_camera_params[max_fob_voluntary_camera_count]{};
 	};
 
-	struct fob_cluster_param_single
+	struct fob_cluster_param_single_t
 	{
-		fob_build build;
+		fob_build_t build;
 		std::uint8_t soldier_rank;
-		fob_cluster_security cluster_security;
-		fob_security unique_security;
-		fob_security common_security[3];
+		fob_cluster_security_t cluster_security;
+		fob_security_t unique_security;
+		fob_security_t common_security[3];
+		nlohmann::json to_json() const;
 	};
 
 	constexpr auto fob_sections_count = 7;
 
-	struct fob_cluster_param
+	struct fob_cluster_param_t
 	{
-		fob_cluster_param_single param[fob_sections_count];
+		fob_cluster_param_single_t param[fob_sections_count];
 	};
 
-	struct fob_param
+	struct fob_param_t
 	{
 		std::uint16_t area_id;
 		std::uint8_t platform_count;
 		std::uint8_t security_rank;
-		fob_construct_param construct_param;
-		fob_cluster_param cluster_param;
+		fob_construct_param_t construct_param;
+		fob_cluster_param_t cluster_param;
 	};
 
-	extern std::array<fob_security, 2> fob_security_caps;
+	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param);
+
+	extern std::array<fob_security_t, 2> fob_security_caps;
 
 	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
 
@@ -503,4 +506,61 @@ namespace game
 
 	extern std::vector<std::string> unit_names;
 	extern std::vector<std::string> platform_keys;
+
+	enum pf_skill_staff_type_t
+	{
+		all_staff_num = 0,
+		defender1_num = 1,
+		defender2_num = 2,
+		defender3_num = 3,
+		interceptor_missile1_num = 4,
+		interceptor_missile2_num = 5,
+		interceptor_missile3_num = 6,
+		liquid_carbon_missile1_num = 7,
+		liquid_carbon_missile2_num = 8,
+		liquid_carbon_missile3_num = 9,
+		medic1_num = 10,
+		medic2_num = 11,
+		medic3_num = 12,
+		ranger1_num = 13,
+		ranger2_num = 14,
+		ranger3_num = 15,
+		sentry1_num = 16,
+		sentry2_num = 17,
+		sentry3_num = 18,
+	};
+
+	struct emblem_part_t
+	{
+		std::uint32_t base_color;
+		std::uint32_t frame_color;
+		std::uint32_t texture_tag;
+		std::int32_t position_x;
+		std::int32_t position_y;
+		std::int32_t rotate;
+		std::int32_t scale;
+	};
+
+	struct emblem_t
+	{
+		emblem_part_t parts[4];
+		nlohmann::json to_json() const;
+	};
+
+	struct motherbase_t
+	{
+		std::uint32_t equip_flag[32];
+		std::uint32_t tape_flag[8];
+		std::uint8_t equip_grade[28];
+		fob_build_t local_base_param[7];
+		std::uint8_t security_level[18];
+		std::uint16_t pf_skill_staff[19];
+		std::uint8_t pickup_open;
+		std::uint8_t section_open;
+		std::uint8_t invalid_fob;
+		std::uint16_t name_plate_id;
+	};
+
+	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase);
+	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem);
 }

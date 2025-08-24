@@ -128,7 +128,9 @@ namespace emulator::tpp
 				continue;
 			}
 
-			auto target_mother_base = target_data->get_motherbase();
+			game::motherbase_t target_motherbase{};
+			target_data->get_motherbase(target_motherbase);
+
 			auto& target = result["target_list"][index];
 
 			target["attacker_emblem"]["parts"] = nlohmann::json::array();
@@ -162,8 +164,11 @@ namespace emulator::tpp
 				target["mother_base_param"][idx]["platform_count"] = target_fobs[i].get_platform_count();
 				target["mother_base_param"][idx]["security_rank"] = target_fobs[i].get_security_rank();
 			}
+			
+			game::emblem_t target_emblem{};
+			target_data->get_emblem(target_emblem);
 
-			target["owner_detail_record"]["emblem"] = target_data->get_emblem();
+			target["owner_detail_record"]["emblem"] = target_emblem.to_json();
 			target["owner_detail_record"]["enemy"] = 0;
 			target["owner_detail_record"]["espionage"]["win"] = target_stats->get_sneak_win();
 			target["owner_detail_record"]["espionage"]["lose"] = target_stats->get_sneak_lose();
@@ -181,7 +186,7 @@ namespace emulator::tpp
 			target["owner_detail_record"]["league_rank"]["rank"] = target_stats->get_league_rank();
 			target["owner_detail_record"]["league_rank"]["score"] = target_stats->get_league_point();
 
-			target["owner_detail_record"]["name_plate_id"] = target_mother_base["name_plate_id"];
+			target["owner_detail_record"]["name_plate_id"] = target_motherbase.name_plate_id;
 			target["owner_detail_record"]["nuclear"] = target_data->get_nuke_count();
 			target["owner_detail_record"]["online"] = 0;
 
@@ -207,7 +212,7 @@ namespace emulator::tpp
 			target["owner_fob_record"]["injury_staff_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 			target["owner_fob_record"]["left_hour"] = 0;
-			target["owner_fob_record"]["name_plate_id"] = target_mother_base["name_plate_id"];
+			target["owner_fob_record"]["name_plate_id"] = target_motherbase.name_plate_id;
 			target["owner_fob_record"]["nuclear"] = target_data->get_nuke_count();
 
 			database::player_data::resource_arrays_t target_resources{};

@@ -43,8 +43,8 @@ namespace emulator::tpp
 		player_data->get_resource_arrays(resource_arrays);
 
 		const auto sync_resources = [&](const nlohmann::json& resources, 
-			const game::resource_array_types local_type,
-			const game::resource_array_types server_type,
+			const game::resource_array_types_t local_type,
+			const game::resource_array_types_t server_type,
 			bool sync)
 		{
 			const auto id = local_type == game::unprocessed_local ? "2"s : "1"s;

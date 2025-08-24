@@ -25,9 +25,9 @@ namespace emulator::scripting
 		//REGISTER_METHOD(get_unit_count);
 		REGISTER_METHOD(get_staff_count);
 		REGISTER_METHOD(get_usable_staff_count);
-		REGISTER_METHOD(get_motherbase);
+		//REGISTER_METHOD(get_motherbase);
 		REGISTER_METHOD(get_loadout);
-		REGISTER_METHOD(get_emblem);
+		//REGISTER_METHOD(get_emblem);
 		REGISTER_METHOD(get_server_gmp);
 		REGISTER_METHOD(get_local_gmp);
 		REGISTER_METHOD(get_mb_coin);
