@@ -20,31 +20,36 @@ namespace emulator::tpp
 		auto& mother_base_param = data["mother_base_param"];
 		if (mother_base_param.is_array())
 		{
-			std::vector<database::fobs::fob> fobs;
+			std::vector<game::fob_param> fob_params;
+
 			for (auto i = 0ull; i < mother_base_param.size(); i++)
 			{
-				auto& param = mother_base_param[i];
-				if (!param["construct_param"].is_number_integer() ||
-					!param["platform_count"].is_number_integer() ||
-					!param["security_rank"].is_number_integer() ||
-					!param["cluster_param"].is_array())
+				auto& param_j = mother_base_param[i];
+				if (!param_j["construct_param"].is_number_integer() ||
+					!param_j["platform_count"].is_number_integer() ||
+					!param_j["security_rank"].is_number_integer() ||
+					!param_j["cluster_param"].is_array())
 				{
 					return error(ERR_INVALIDARG);
 				}
 
-				const auto cluster_security = param["cluster_param"][0]["cluster_security"].get<std::uint32_t>();
-				printf("cluster security %i\n", cluster_security);
+				game::fob_param param{};
 
+				param.platform_count = param_j["platform_count"].get<std::uint32_t>();
+				param.security_rank = param_j["security_rank"].get<std::uint32_t>();
+				param.construct_param.packed = param_j["construct_param"].get<std::uint32_t>();
 
-				const auto construct_param = param["construct_param"].get<std::uint32_t>();
-				printf("construct_param %i\n", construct_param);
+				if (!database::fobs::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
+				{
+					return error(ERR_INVALIDARG);
+				}
 
-				fobs.emplace_back(param);
+				fob_params.emplace_back(param);
 			}
 
-			if (fobs.size() > 0)
+			if (fob_params.size() > 0)
 			{
-				database::fobs::sync_data(player->get_id(), fobs);
+				database::fobs::sync_data(player->get_id(), fob_params);
 			}
 		}
 		

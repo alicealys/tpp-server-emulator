@@ -370,15 +370,38 @@ namespace game
 		damage_param_count
 	};
 
-	struct cluster_security_fields
+	enum area_code
+	{
+		ocean_area_0 = 0,  // Central Indian Ridge
+		ocean_area_10 = 10, // Mid-Atlantic Ridge
+		ocean_area_20 = 20, // East of the Hawaiian Islands
+		ocean_area_30 = 30, // South Atlantic Ocean
+		ocean_area_40 = 40, // Indian Ocean
+		ocean_area_50 = 50, // North Pacific Ocean
+		ocean_area_60 = 60, // South Pacific Ocean
+		ocean_area_70 = 70, // North Atlantic Ocean
+	};
+
+	struct fob_construct_param_fields
+	{
+		std::uint32_t unk1 : 1;
+		std::uint32_t area_id : 7;
+		std::uint32_t color : 4;
+		std::uint32_t area_code : 7;
+		std::uint32_t unk3 : 13;
+	};
+
+	struct fob_cluster_security_fields
 	{
 		std::uint32_t range_type : 2; // 0: close, 1: mid, 2: long
 		std::uint32_t grade : 4;
 		std::uint32_t unk1 : 3;
-		std::uint32_t unk2 : 3;
+		std::uint32_t has_guards : 1;
+		std::uint32_t non_lethal : 1;
+		std::uint32_t unk2 : 1;
 		std::uint32_t level : 7;
-		std::uint32_t unk3 : 13;
-		std::uint32_t pad : 9;
+		std::uint32_t swimwear_index : 6;
+		std::uint32_t pad : 7;
 	};
 
 	struct fob_build_fields
@@ -389,11 +412,11 @@ namespace game
 		std::uint32_t pad2 : 17;
 	};
 
-	struct cluster_security
+	struct fob_cluster_security
 	{
 		union
 		{
-			cluster_security_fields fields;
+			fob_cluster_security_fields fields;
 			std::uint32_t packed;
 		};
 	};
@@ -406,6 +429,73 @@ namespace game
 			std::uint32_t packed;
 		};
 	};
+
+	struct fob_construct_param
+	{
+		union
+		{
+			fob_construct_param_fields fields;
+			std::uint32_t packed;
+		};
+	};
+
+	struct fob_voluntary_coord
+	{
+		std::int32_t position_x;
+		std::int32_t position_y;
+		std::int32_t position_z;
+		std::int32_t rotation_w;
+		std::int32_t rotation_x;
+		std::int32_t rotation_y;
+		std::int32_t rotation_z;
+		std::int32_t placed_index;
+	};
+
+	constexpr auto max_fob_voluntary_mine_count = 12u;
+	constexpr auto max_fob_voluntary_camera_count = 4u;
+
+	struct fob_security
+	{
+		std::uint32_t uav;
+		std::uint32_t mine;
+		std::uint32_t decoy;
+		std::uint32_t camera;
+		std::uint32_t soldier;
+		std::uint32_t antitheft;
+		std::uint32_t ir_sensor;
+		std::uint32_t caution_area;
+		std::uint32_t voluntary_coord_mine_count;
+		fob_voluntary_coord voluntary_coord_mine_params[max_fob_voluntary_mine_count];
+		std::uint32_t voluntary_coord_camera_count;
+		fob_voluntary_coord voluntary_coord_camera_params[max_fob_voluntary_camera_count];
+	};
+
+	struct fob_cluster_param_single
+	{
+		fob_build build;
+		std::uint32_t soldier_rank;
+		fob_cluster_security cluster_security;
+		fob_security unique_security;
+		fob_security common_security[3];
+	};
+
+	constexpr auto fob_sections_count = 7;
+
+	struct fob_cluster_param
+	{
+		fob_cluster_param_single param[fob_sections_count];
+	};
+
+	struct fob_param
+	{
+		std::uint32_t area_id;
+		std::uint32_t platform_count;
+		std::uint32_t security_rank;
+		fob_construct_param construct_param;
+		fob_cluster_param cluster_param;
+	};
+
+	extern std::array<fob_security, 2> fob_security_caps;
 
 	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
 

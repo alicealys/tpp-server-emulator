@@ -471,6 +471,44 @@ namespace game
 
 	// fobs
 
+	fob_security unique_security_caps =
+	{
+		.uav = 4,
+		.mine = 12,
+		.decoy = 12,
+		.camera = 8,
+		.soldier = 12,
+		.antitheft = 6,
+		.ir_sensor = 5,
+		.caution_area = 0,
+	};
+
+	std::array<fob_security, 2> fob_security_caps =
+	{{
+		// common
+		{
+			.uav = 4,
+			.mine = 9,
+			.decoy = 9,
+			.camera = 7,
+			.soldier = 8,
+			.antitheft = 10,
+			.ir_sensor = 5,
+			.caution_area = 0,
+		},
+		// unique
+		{
+			.uav = 4,
+			.mine = 12,
+			.decoy = 12,
+			.camera = 8,
+			.soldier = 12,
+			.antitheft = 6,
+			.ir_sensor = 5,
+			.caution_area = 0,
+		},
+	}};
+
 	std::vector<std::string> unit_names =
 	{
 		"combat",

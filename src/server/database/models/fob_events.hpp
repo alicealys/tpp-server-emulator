@@ -52,7 +52,7 @@ namespace database::fob_events
 		nlohmann::json emblem;
 		nlohmann::json reward;
 		std::vector<std::uint64_t> fob_ids;
-		std::vector<database::fobs::fob> fobs;
+		std::vector<game::fob_param> fob_params;
 		fob_event_motherbase_t motherbase;
 	};
 

@@ -157,7 +157,7 @@ namespace emulator::tpp
 				target["mother_base_param"][idx]["cluster_param"] = nlohmann::json::array();
 				target["mother_base_param"][idx]["fob_index"] = 0;
 				target["mother_base_param"][idx]["price"] = 0;
-				target["mother_base_param"][idx]["construct_param"] = target_fobs[i].get_construct_param();
+				target["mother_base_param"][idx]["construct_param"] = target_fobs[i].get_construct_param().packed;
 				target["mother_base_param"][idx]["mother_base_id"] = target_fobs[i].get_id();
 				target["mother_base_param"][idx]["platform_count"] = target_fobs[i].get_platform_count();
 				target["mother_base_param"][idx]["security_rank"] = target_fobs[i].get_security_rank();

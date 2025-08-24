@@ -78,12 +78,24 @@ namespace emulator::tpp
 		detail["mother_base_param"]["platform_count"] = 0;
 		detail["mother_base_param"]["price"] = 0;
 		detail["mother_base_param"]["security_rank"] = 0;
-		detail["mother_base_param"]["cluster_param"] = fob->get_cluster_param();
-		detail["mother_base_param"]["construct_param"] = fob->get_construct_param();
-		detail["mother_base_param"]["mother_base_id"] = fob->get_id();
+
+		detail["mother_base_param"]["cluster_param"] = nlohmann::json::array();
+
+		auto& cluster_param = fob->get_cluster_param();
 
 		auto damage_params = player_data->get_fob_deploy_damage_param();
-		database::player_data::apply_deploy_damage_params(fob->get_id(), detail["mother_base_param"]["cluster_param"], damage_params);
+		database::fobs::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
+
+		for (auto i = 0u; i < game::fob_sections_count; i++)
+		{
+			auto& param_j = detail["mother_base_param"]["cluster_param"][i];
+			const auto& param = cluster_param.param[i];
+			
+			database::fobs::add_cluster_param_to_json(param_j, param);
+		}
+
+		detail["mother_base_param"]["construct_param"] = fob->get_construct_param().packed;
+		detail["mother_base_param"]["mother_base_id"] = fob->get_id();
 
 		detail["owner_player_id"] = fob->get_player_id();
 
