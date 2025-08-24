@@ -33,7 +33,7 @@ namespace emulator::tpp
 			{
 				auto& fob = fob_list[i];
 				target.extra_data["mother_base_param"][i + 1]["area_id"] = 0;
-				target.extra_data["mother_base_param"][i + 1]["construct_param"] = fob.get_construct_param();
+				target.extra_data["mother_base_param"][i + 1]["construct_param"] = fob.get_construct_param().packed;
 				target.extra_data["mother_base_param"][i + 1]["fob_index"] = fob.get_index();
 				target.extra_data["mother_base_param"][i + 1]["mother_base_id"] = fob.get_id();
 				target.extra_data["mother_base_param"][i + 1]["platform_count"] = fob.get_platform_count();

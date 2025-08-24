@@ -96,7 +96,7 @@ namespace emulator::tpp
 		}
 
 		auto& cluster_param = fob->get_cluster_param();
-		if (platform >= cluster_param.size())
+		if (platform >= game::fob_sections_count)
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -165,20 +165,21 @@ namespace emulator::tpp
 
 		if (owner->is_real_player())
 		{
-			database::player_data::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
+			database::fobs::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
 		}
 
 		const auto mapped_index = game::cluster_index_map[platform];
-		const auto& mapped_cluster_param = cluster_param[mapped_index];
+		const auto& mapped_cluster_param = cluster_param.param[mapped_index];
 
 		if (is_event)
 		{
-			result["security_soldier_rank"] = mapped_cluster_param["soldier_rank"];
+			result["security_soldier_rank"] = mapped_cluster_param.soldier_rank;
 			auto security_soldier_num = 0u;
-			for (const auto& key : game::platform_keys)
-			{
-				security_soldier_num += mapped_cluster_param[key]["soldier"].get<std::uint32_t>();
-			}
+
+			security_soldier_num += mapped_cluster_param.unique_security.soldier;
+			security_soldier_num += mapped_cluster_param.common_security[0].soldier;
+			security_soldier_num += mapped_cluster_param.common_security[1].soldier;
+			security_soldier_num += mapped_cluster_param.common_security[2].soldier;
 
 			result["security_soldier_num"] = security_soldier_num;
 		}
@@ -209,15 +210,15 @@ namespace emulator::tpp
 			result["security_soldier_rank"] = 0;
 		}
 
-		stage_param["cluster_param"] = mapped_cluster_param;
+		database::fobs::add_cluster_param_to_json(stage_param["cluster_param"], mapped_cluster_param);
 		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
 
-		for (auto i = 0ull; i < cluster_param.size(); i++)
+		for (auto i = 0ull; i < game::fob_sections_count; i++)
 		{
-			stage_param["build"][i] = cluster_param[i]["build"];
+			stage_param["build"][i] = cluster_param.param[i].build.packed;
 		}
 
-		stage_param["construct_param"] = fob->get_construct_param();
+		stage_param["construct_param"] = fob->get_construct_param().packed;
 
 		stage_param["fob_index"] = fob->get_index();
 		stage_param["mother_base_id"] = fob->get_id();

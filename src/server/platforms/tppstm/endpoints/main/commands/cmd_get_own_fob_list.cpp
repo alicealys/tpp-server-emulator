@@ -30,7 +30,7 @@ namespace emulator::tpp
 
 			result["fob"][index]["area_id"] = fob.get_area_id();
 			result["fob"][index]["cluster_param"] = nlohmann::json::array();
-			result["fob"][index]["construct_param"] = fob.get_construct_param();
+			result["fob"][index]["construct_param"] = fob.get_construct_param().packed;
 			result["fob"][index]["fob_index"] = index;
 			result["fob"][index]["mother_base_id"] = fob.get_id();
 			result["fob"][index]["platform_count"] = 0;

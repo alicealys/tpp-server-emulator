@@ -131,7 +131,7 @@ create table if not exists `fobs`
 	platform_count		int	unsigned	not null default 0,
 	security_rank		int unsigned	not null default 0,
 	area_id	            int unsigned	not null default 0,
-	cluster_param		json,
+	cluster_param		blob					 default null,
 	construct_param		int unsigned	not null default 0,
 	create_date			datetime        default current_timestamp not null,
 	primary key (`id`),

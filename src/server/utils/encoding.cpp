@@ -40,4 +40,9 @@ namespace utils::encoding
 		result = utils::string::replace(result, "\r\n", "");
 		return result;
 	}
+
+	std::string encode_as_hex(const std::string& data)
+	{
+		return std::format("x'{}'", utils::string::dump_hex(data, ""));
+	}
 }

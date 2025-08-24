@@ -9,6 +9,10 @@ namespace database::fobs
 	nlohmann::json& get_area_list();
 	std::optional<nlohmann::json> get_area(const std::uint32_t area_id);
 
+	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param& param);
+	void add_cluster_param_to_json(nlohmann::json& param_j, const game::fob_cluster_param_single& param);
+	void apply_deploy_damage_params(const std::uint64_t fob_id, game::fob_cluster_param& cluster_param, std::optional<nlohmann::json>& deploy_damage);
+
 	constexpr auto fob_id_reserve_count = 1000ull;
 
 	class fob
@@ -20,8 +24,8 @@ namespace database::fobs
 		DEFINE_FIELD(area_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(platform_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(security_rank, sqlpp::integer_unsigned);
-		DEFINE_FIELD(cluster_param, sqlpp::text);
 		DEFINE_FIELD(construct_param, sqlpp::integer_unsigned);
+		DEFINE_FIELD(cluster_param, sqlpp::binary);
 		DEFINE_FIELD(create_date, sqlpp::time_point);
 		DEFINE_TABLE(fobs, id_field_t, player_id_field_t, fob_index_field_t,
 			area_id_field_t, platform_count_field_t, security_rank_field_t,
@@ -32,31 +36,22 @@ namespace database::fobs
 		template <typename ...Args>
 		fob(const sqlpp::result_row_t<Args...>& row)
 		{
-			try
+			const auto cluster_param_str = row.cluster_param.value();
+			if (cluster_param_str.size() == sizeof(game::fob_cluster_param))
 			{
-				this->cluster_param_ = nlohmann::json::parse(row.cluster_param.value());
-			}
-			catch (const std::exception& e)
-			{
-				printf("failed to parse cluster param: %s\n", e.what());
+				std::memcpy(&this->param_.cluster_param, cluster_param_str.data(), sizeof(game::fob_cluster_param));
 			}
 
 			this->id_ = row.id;
 			this->player_id_ = row.player_id;
 			this->index_ = row.fob_index;
-			this->area_id_ = static_cast<std::uint32_t>(row.area_id);
-			this->construct_param_ = static_cast<std::uint32_t>(row.construct_param);
-			this->create_date_ = row.create_date.value().time_since_epoch();
-			this->platform_count_ = static_cast<std::uint32_t>(row.platform_count);
-			this->security_rank_ = static_cast<std::uint32_t>(row.security_rank);
-		}
 
-		fob(const nlohmann::json& json)
-		{
-			this->platform_count_ = json["platform_count"].get<std::uint32_t>();
-			this->security_rank_ = json["security_rank"].get<std::uint32_t>();
-			this->construct_param_ = json["construct_param"].get<std::uint32_t>();
-			this->cluster_param_ = json["cluster_param"];
+			this->param_.area_id = static_cast<std::uint32_t>(row.area_id);
+			this->param_.construct_param.packed = static_cast<std::uint32_t>(row.construct_param);
+			this->param_.platform_count = static_cast<std::uint32_t>(row.platform_count);
+			this->param_.security_rank = static_cast<std::uint32_t>(row.security_rank);
+
+			this->create_date_ = row.create_date.value().time_since_epoch();
 		}
 
 		std::uint64_t get_id() const
@@ -69,24 +64,39 @@ namespace database::fobs
 			return this->player_id_;
 		}
 
+		std::uint64_t get_index() const
+		{
+			return this->index_;
+		}
+
 		std::uint32_t get_area_id() const
 		{
-			return this->area_id_;
+			return this->param_.area_id;
 		}
 
 		std::uint32_t get_platform_count() const
 		{
-			return this->platform_count_;
+			return this->param_.platform_count;
 		}
 
 		std::uint32_t get_security_rank() const
 		{
-			return this->security_rank_;
+			return this->param_.security_rank;
 		}
 
-		std::uint32_t get_construct_param() const
+		game::fob_construct_param get_construct_param() const
 		{
-			return this->construct_param_;
+			return this->param_.construct_param;
+		}
+
+		const game::fob_cluster_param& get_cluster_param() const
+		{
+			return this->param_.cluster_param;
+		}
+
+		game::fob_cluster_param& get_cluster_param()
+		{
+			return this->param_.cluster_param;
 		}
 
 		std::chrono::microseconds get_creation_time() const
@@ -94,32 +104,21 @@ namespace database::fobs
 			return this->create_date_;
 		}
 
-		nlohmann::json& get_cluster_param()
-		{
-			return this->cluster_param_;
-		}
-
-		std::uint64_t get_index() const
-		{
-			return this->index_;
-		}
-
 	private:
-		std::uint64_t id_;
-		std::uint64_t player_id_;
-		std::uint64_t index_;
-		std::uint32_t area_id_;
-		std::uint32_t platform_count_;
-		std::uint32_t security_rank_;
-		std::uint32_t construct_param_;
+		std::uint64_t id_{};
+		std::uint64_t player_id_{};
+		std::uint64_t index_{};
+		game::fob_param param_{};
 		std::chrono::microseconds create_date_;
-		nlohmann::json cluster_param_;
 
 	};
 
-	std::vector<fob> get_fob_list(const std::uint64_t player_id);
-	void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id = 0);
-	void sync_data(const std::uint64_t player_id, std::vector<fob>& fobs);
 	std::optional<fob> get_fob(const std::uint64_t id);
+	std::vector<fob> get_fob_list(const std::uint64_t player_id);
+
+	void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id = 0);
+
+	void sync_data(const std::uint64_t player_id, std::vector<game::fob_param>& fob_params);
+
 	void delete_all(const std::uint64_t player_id);
 }

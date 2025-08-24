@@ -268,8 +268,6 @@ namespace database::player_data
 		std::uint32_t server_staff_version_{};
 	};
 
-	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage);
-
 	void create(const std::uint64_t player_id);
 	std::optional<player_data> find(const std::uint64_t player_id);
 	std::optional<player_data> find_or_create(const std::uint64_t player_id);

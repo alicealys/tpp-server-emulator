@@ -9,22 +9,6 @@
 
 namespace database::player_data
 {
-	namespace
-	{
-		std::string encode_as_hex(const std::string& data)
-		{
-			return std::format("x'{}'", utils::string::dump_hex(data, ""));
-		}
-
-		template <typename T>
-		std::string encode_binary(T& value)
-		{
-			const std::string str = {reinterpret_cast<char*>(&value), sizeof(T)};
-			const auto encoded = encode_as_hex(str);
-			return encoded;
-		}
-	}
-
 	void staff_array_container::swap_bytes()
 	{
 		for (auto i = 0ull; i < this->size(); i++)
@@ -61,7 +45,7 @@ namespace database::player_data
 	{
 		const auto ptr = reinterpret_cast<const std::uint8_t*>(this->data());
 		const auto data = std::string{ptr, ptr + this->data_size()};
-		const auto encoded = encode_as_hex(data);
+		const auto encoded = utils::encoding::encode_as_hex(data);
 		return encoded;
 	}
 
@@ -79,98 +63,6 @@ namespace database::player_data
 		staff_array.swap_bytes();
 
 		return {staff_array};
-	}
-
-	void apply_deploy_damage_params(const std::uint64_t fob_id, nlohmann::json& cluster_param, std::optional<nlohmann::json>& deploy_damage)
-	{
-		if (!deploy_damage.has_value())
-		{
-			return;
-		}
-
-		auto& deploy_damage_params = deploy_damage.value();
-		auto& damage_values = deploy_damage_params["damage_values"];
-		auto& cluster_index_j = deploy_damage_params["cluster_index"];
-		auto& mother_base_id_j = deploy_damage_params["motherbase_id"];
-		if (!mother_base_id_j.is_number_unsigned() || !damage_values.is_array() || 
-			damage_values.size() < game::damage_param_count ||
-			!cluster_index_j.is_number_unsigned())
-		{
-			return;
-		}
-
-		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
-		if (mother_base_id != fob_id)
-		{
-			return;
-		}
-
-		const auto cluster_index = cluster_index_j.get<std::uint32_t>();
-		if (cluster_index >= cluster_param.size())
-		{
-			return;
-		}
-
-		const auto mapped_index = game::cluster_index_map[cluster_index];
-		auto& param = cluster_param[mapped_index];
-		const auto& cluster_security_j = param["cluster_security"];
-
-		if (cluster_security_j.is_number_unsigned())
-		{
-			game::cluster_security cluster_security{};
-			cluster_security.packed = cluster_security_j.get<std::uint32_t>();
-			const auto& grade_damage_j = damage_values[game::damage_param_num_grade];
-
-			if (grade_damage_j.is_number_unsigned())
-			{
-				const auto grade_damage = grade_damage_j.get<std::uint32_t>();
-				if (cluster_security.fields.grade > grade_damage)
-				{
-					cluster_security.fields.grade = std::max(4u, cluster_security.fields.grade - grade_damage);
-				}
-				else
-				{
-					cluster_security.fields.grade = 4u;
-				}
-
-				param["cluster_security"] = cluster_security.packed;
-			}
-		}
-
-		const auto decrement_value = [&](const std::string& name, const nlohmann::json& total_j, const std::int32_t per_platform)
-		{
-			if (!total_j.is_number_unsigned())
-			{
-				return;
-			}
-
-			auto amount_left = total_j.get<std::int32_t>();
-			for (auto& platform : game::platform_keys)
-			{
-				const auto& value_j = param[platform][name];
-				if (!value_j.is_number_unsigned())
-				{
-					continue;
-				}
-				
-				if (amount_left <= 0)
-				{
-					break;
-				}
-
-				const auto value = value_j.get<std::int32_t>();
-				param[platform][name] = value - std::min(amount_left, per_platform);
-				amount_left -= per_platform;
-			}
-		};
-
-		decrement_value("antitheft", damage_values[game::damage_param_num_anti_theft_device], 2);
-		decrement_value("camera", damage_values[game::damage_param_num_cameras], 2);
-		decrement_value("decoy", damage_values[game::damage_param_num_decoy], 2);
-		decrement_value("ir_sensor", damage_values[game::damage_param_num_sensors], 1);
-		decrement_value("mine", damage_values[game::damage_param_num_claymores], 2);
-		decrement_value("soldier", damage_values[game::damage_param_num_guards], 6);
-		decrement_value("uav", damage_values[game::damage_param_num_drones], 1);
 	}
 
 	namespace impl
@@ -291,9 +183,9 @@ namespace database::player_data
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_count = staff_count,
 							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
-							 player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(encode_binary(levels)),
-							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(counts)),
-							 player_data::table.staff_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(staff_counts)),
+							 player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(levels)),
+							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(counts)),
+							 player_data::table.staff_counts = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(staff_counts)),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -307,8 +199,8 @@ namespace database::player_data
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(encode_binary(levels)),
-							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(encode_binary(counts)),
+						.set(player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(levels)),
+							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(counts)),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -325,7 +217,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(encode_binary(arrays)),
+							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays)),
 							 player_data::table.local_gmp = local_gmp,
 							 player_data::table.server_gmp = server_gmp,
 							 player_data::table.nuke_count = nuke_count,
@@ -343,7 +235,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(encode_binary(arrays)),
+							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays)),
 							 player_data::table.local_gmp = local_gmp,
 							 player_data::table.server_gmp = server_gmp,
 							 player_data::table.last_sync = std::chrono::system_clock::now(),

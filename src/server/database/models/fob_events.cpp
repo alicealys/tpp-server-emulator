@@ -40,7 +40,7 @@ namespace database::fob_events
 			return week;
 		}
 
-		fob_event_player_t parse_event_player(const nlohmann::json& player_j)
+		fob_event_player_t parse_event_player(nlohmann::json& player_j)
 		{
 			fob_event_player_t player{};
 
@@ -53,7 +53,17 @@ namespace database::fob_events
 			for (auto i = 0ull; i < fob_list.size(); i++)
 			{
 				player.fob_ids.emplace_back(fob_list[i]["mother_base_id"]);
-				player.fobs.emplace_back(fob_list[i]);
+
+				game::fob_param param{};
+
+				param.area_id = fob_list[i]["area_id"].get<std::uint32_t>();
+				param.construct_param.packed = fob_list[i]["construct_param"].get<std::uint32_t>();
+				param.platform_count = fob_list[i]["platform_count"].get<std::uint32_t>();
+				param.security_rank = fob_list[i]["security_rank"].get<std::uint32_t>();
+
+				database::fobs::parse_cluster_param(fob_list[i]["cluster_param"], param.cluster_param);
+
+				player.fob_params.emplace_back(param);
 			}
 
 			auto& staff_resources = player_j["staff_resources"];
@@ -166,7 +176,7 @@ namespace database::fob_events
 		{
 			fob_events_data_t data;
 
-			const auto data_j = utils::resources::load_json(RESOURCE_FOB_EVENT_LIST);
+			auto data_j = utils::resources::load_json(RESOURCE_FOB_EVENT_LIST);
 			auto& players_j = data_j["players"];
 			auto& event_list_j = data_j["event_list"];
 
@@ -206,14 +216,14 @@ namespace database::fob_events
 			const auto fob_list = database::fobs::get_fob_list(player.get_id());
 			if (fob_list.empty())
 			{
-				for (auto i = 0ull; i < event_player.fobs.size(); i++)
+				for (auto i = 0ull; i < event_player.fob_params.size(); i++)
 				{
 					database::fobs::create(player.get_id(), 0u, event_player.fob_ids[i]);
 				}
 			}
 
 			const auto new_fob_list = database::fobs::get_fob_list(player.get_id());
-			database::fobs::sync_data(player.get_id(), event_player.fobs);
+			database::fobs::sync_data(player.get_id(), event_player.fob_params);
 		}
 
 		std::size_t get_current_event_index()
