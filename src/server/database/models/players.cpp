@@ -661,11 +661,13 @@ namespace database::players
 			return database::access<std::vector<player>>([&](database::database_t& db)
 				-> std::vector<player>
 			{
+				const auto rand = sqlpp::verbatim(database::get_database_def().rand_func);
+
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::all_of(player::table))
 							.from(player::table)
-								.where((player::table.security_challenge == true))
+								.where((player::table.security_challenge == true)).order_by(rand.asc()).limit(limit)
 					);
 
 				std::vector<player> list;

@@ -246,14 +246,14 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase)
+		void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase)
 		{
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.motherbase = motherbase.dump())
+							 player_data::table.motherbase = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(motherbase)))
 								.where(player_data::table.player_id == player_id)
 					);
 			});
@@ -274,14 +274,14 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem)
+		void sync_emblem(const std::uint64_t player_id, const game::emblem_t& emblem)
 		{
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.emblem = emblem.dump())
+							 player_data::table.emblem = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(emblem)))
 								.where(player_data::table.player_id == player_id)
 					);
 			});
@@ -440,10 +440,9 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		nlohmann::json get_emblem(const std::uint64_t player_id)
+		void get_emblem(const std::uint64_t player_id, game::emblem_t& emblem)
 		{
-			return database::access<nlohmann::json>([&](database::database_t& db)
-				-> nlohmann::json
+			return database::access([&](database::database_t& db)
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.emblem)
@@ -452,24 +451,23 @@ namespace database::player_data
 
 				if (results.empty())
 				{
-					return {};
+					return;
 				}
 
-				const auto json = nlohmann::json::parse(results.front().emblem.value(), nullptr, false);
-				if (json.is_discarded())
+				const auto emblem_str = results.front().emblem.value();
+				if (emblem_str.size() != sizeof(game::emblem_t))
 				{
-					return {};
+					return;
 				}
 
-				return json;
+				std::memcpy(&emblem, emblem_str.data(), sizeof(game::emblem_t));
 			});
 		}
 
 		template <database_type_t Type>
-		nlohmann::json get_motherbase(const std::uint64_t player_id)
+		void get_motherbase(const std::uint64_t player_id, game::motherbase_t& motherbase)
 		{
-			return database::access<nlohmann::json>([&](database::database_t& db)
-				-> nlohmann::json
+			return database::access([&](database::database_t& db)
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.motherbase)
@@ -478,16 +476,16 @@ namespace database::player_data
 
 				if (results.empty())
 				{
-					return {};
+					return;
 				}
 
-				const auto json = nlohmann::json::parse(results.front().motherbase.value(), nullptr, false);
-				if (json.is_discarded())
+				const auto motherbase_str = results.front().motherbase.value();
+				if (motherbase_str.size() != sizeof(game::motherbase_t))
 				{
-					return {};
+					return;
 				}
 
-				return json;
+				std::memcpy(&motherbase, motherbase_str.data(), sizeof(game::motherbase_t));
 			});
 		}
 
@@ -568,14 +566,14 @@ namespace database::player_data
 		}
 	}
 
-	nlohmann::json player_data::get_emblem() const
+	void player_data::get_emblem(game::emblem_t& emblem) const
 	{
-		RUN_IMPL(impl::get_emblem, this->player_id_);
+		RUN_IMPL(impl::get_emblem, this->player_id_, emblem);
 	}
 
-	nlohmann::json player_data::get_motherbase() const
+	void player_data::get_motherbase(game::motherbase_t& motherbase) const
 	{
-		RUN_IMPL(impl::get_motherbase, this->player_id_);
+		RUN_IMPL(impl::get_motherbase, this->player_id_, motherbase);
 	}
 
 	nlohmann::json player_data::get_loadout() const
@@ -641,17 +639,17 @@ namespace database::player_data
 		RUN_IMPL(impl::set_resources_as_sync, player_id, arrays, local_gmp, server_gmp);
 	}
 
-	void sync_motherbase(const std::uint64_t player_id, const nlohmann::json& motherbase)
+	void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase)
 	{
 		RUN_IMPL(impl::sync_motherbase, player_id, motherbase);
 	}
 
-	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& motherbase)
+	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout)
 	{
-		RUN_IMPL(impl::sync_loadout, player_id, motherbase);
+		RUN_IMPL(impl::sync_loadout, player_id, loadout);
 	}
 
-	void sync_emblem(const std::uint64_t player_id, const nlohmann::json& emblem)
+	void sync_emblem(const std::uint64_t player_id, const game::emblem_t& emblem)
 	{
 		RUN_IMPL(impl::sync_emblem, player_id, emblem);
 	}

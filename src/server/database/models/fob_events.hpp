@@ -29,9 +29,8 @@ namespace database::fob_events
 		std::string mes_subject;
 	};
 
-	struct fob_event_motherbase_t
+	struct fob_even_staff_resources_t
 	{
-		nlohmann::json motherbase;
 		database::player_data::resource_arrays_t resource_arrays{};
 		database::player_data::unit_levels_t unit_levels{};
 		database::player_data::unit_counts_t unit_counts{};
@@ -49,11 +48,12 @@ namespace database::fob_events
 	{
 		std::uint64_t player_id;
 		std::string player_name;
-		nlohmann::json emblem;
+		game::emblem_t emblem;
+		game::motherbase_t motherbase;
 		nlohmann::json reward;
 		std::vector<std::uint64_t> fob_ids;
-		std::vector<game::fob_param> fob_params;
-		fob_event_motherbase_t motherbase;
+		std::vector<game::fob_param_t> fob_params;
+		fob_even_staff_resources_t staff_resources;
 	};
 
 	struct fob_event_t

@@ -51,7 +51,10 @@ namespace emulator::tpp
 				}
 			}
 
-			target.extra_data["attacker_emblem"] = attacker_data->get_emblem();
+			game::emblem_t emblem{};
+			attacker_data->get_emblem(emblem);
+
+			target.extra_data["attacker_emblem"] = emblem.to_json();
 			target.extra_data["attacker_espionage"]["win"] = attacker_record->get_sneak_win();
 			target.extra_data["attacker_espionage"]["lose"] = attacker_record->get_sneak_lose();
 			target.extra_data["attacker_espionage"]["score"] = attacker_record->get_fob_point();

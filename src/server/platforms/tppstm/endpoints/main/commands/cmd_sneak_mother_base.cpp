@@ -86,7 +86,8 @@ namespace emulator::tpp
 			return error(ERR_DATABASE);
 		}
 
-		auto mother_base = owner_data->get_motherbase();
+		game::motherbase_t motherbase{};
+		owner_data->get_motherbase(motherbase);
 
 		const auto active_sneak = database::players::get_active_sneak(mother_base_id);
 		auto platform = platform_j.get<std::uint32_t>();
@@ -210,7 +211,7 @@ namespace emulator::tpp
 			result["security_soldier_rank"] = 0;
 		}
 
-		database::fobs::add_cluster_param_to_json(stage_param["cluster_param"], mapped_cluster_param);
+		stage_param["cluster_param"] = mapped_cluster_param.to_json();
 		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
 
 		for (auto i = 0ull; i < game::fob_sections_count; i++)
@@ -236,8 +237,8 @@ namespace emulator::tpp
 		stage_param["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::mortar_normal];
 
 		stage_param["platform"] = platform_j;
-		stage_param["equip_grade"] = mother_base["equip_grade"];
-		stage_param["security_level"] = mother_base["security_level"];
+		stage_param["equip_grade"] = motherbase.equip_grade;
+		stage_param["security_level"] = motherbase.security_level;
 
 		static std::vector<std::string> material_resource_names =
 		{

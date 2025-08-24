@@ -9,9 +9,7 @@ namespace database::fobs
 	nlohmann::json& get_area_list();
 	std::optional<nlohmann::json> get_area(const std::uint32_t area_id);
 
-	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param& param);
-	void add_cluster_param_to_json(nlohmann::json& param_j, const game::fob_cluster_param_single& param);
-	void apply_deploy_damage_params(const std::uint64_t fob_id, game::fob_cluster_param& cluster_param, std::optional<nlohmann::json>& deploy_damage);
+	void apply_deploy_damage_params(const std::uint64_t fob_id, game::fob_cluster_param_t& cluster_param, std::optional<nlohmann::json>& deploy_damage);
 
 	constexpr auto fob_id_reserve_count = 1000ull;
 
@@ -37,9 +35,9 @@ namespace database::fobs
 		fob(const sqlpp::result_row_t<Args...>& row)
 		{
 			const auto cluster_param_str = row.cluster_param.value();
-			if (cluster_param_str.size() == sizeof(game::fob_cluster_param))
+			if (cluster_param_str.size() == sizeof(game::fob_cluster_param_t))
 			{
-				std::memcpy(&this->param_.cluster_param, cluster_param_str.data(), sizeof(game::fob_cluster_param));
+				std::memcpy(&this->param_.cluster_param, cluster_param_str.data(), sizeof(game::fob_cluster_param_t));
 			}
 
 			this->id_ = row.id;
@@ -84,17 +82,17 @@ namespace database::fobs
 			return this->param_.security_rank;
 		}
 
-		game::fob_construct_param get_construct_param() const
+		game::fob_construct_param_t get_construct_param() const
 		{
 			return this->param_.construct_param;
 		}
 
-		const game::fob_cluster_param& get_cluster_param() const
+		const game::fob_cluster_param_t& get_cluster_param() const
 		{
 			return this->param_.cluster_param;
 		}
 
-		game::fob_cluster_param& get_cluster_param()
+		game::fob_cluster_param_t& get_cluster_param()
 		{
 			return this->param_.cluster_param;
 		}
@@ -108,7 +106,7 @@ namespace database::fobs
 		std::uint64_t id_{};
 		std::uint64_t player_id_{};
 		std::uint64_t index_{};
-		game::fob_param param_{};
+		game::fob_param_t param_{};
 		std::chrono::microseconds create_date_;
 
 	};
@@ -118,8 +116,8 @@ namespace database::fobs
 
 	void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id = 0);
 
-	void sync_data(const std::uint64_t player_id, std::vector<game::fob_param>& fob_params);
-	void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param& param);
+	void sync_data(const std::uint64_t player_id, std::vector<game::fob_param_t>& fob_params);
+	void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param_t& param);
 
 	void delete_all(const std::uint64_t player_id);
 }

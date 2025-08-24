@@ -27,7 +27,7 @@ create table if not exists `players`
 	current_sneak_start 				datetime
 )
 -- query:mgstpp.players.set_auto_increment
-update SQLITE_SEQUENCE set seq = {} WHERE name = 'players'
+ /*{}*/ update SQLITE_SEQUENCE set seq = {} WHERE name = 'players'
 -- query:mgstpp.player_records.create
 create table if not exists `player_records`
 (
@@ -84,8 +84,8 @@ create table if not exists `player_data`
 	staff_counts			blob default null,
 	staff_bin				mediumblob default null,
 	loadout					json not null,
-	motherbase				json not null,
-	emblem					json not null,
+	motherbase				blob default null,
+	emblem					blob default null,
 	local_gmp				int default 0,
 	server_gmp				int default 0,
 	loadout_gmp				int default 0,
@@ -131,13 +131,13 @@ create table if not exists `fobs`
 	platform_count		int	unsigned	not null default 0,
 	security_rank		int unsigned	not null default 0,
 	area_id	            int unsigned	not null default 0,
-	cluster_param		json,
+	cluster_param		blob					 default null,
 	construct_param		int unsigned	not null default 0,
 	create_date			datetime        default current_timestamp not null,
 	foreign key (`player_id`) references players(`id`)
 )
 -- query:mgstpp.fobs.set_auto_increment
-update SQLITE_SEQUENCE set seq = {} WHERE name = 'fobs'
+ /*{}*/ update SQLITE_SEQUENCE set seq = {} WHERE name = 'fobs'
 -- query:mgstpp.sneak_results.create
 create table if not exists `sneak_results`
 (

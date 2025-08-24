@@ -22,7 +22,10 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		database::player_data::sync_emblem(player->get_id(), data["emblem"]);
+		game::emblem_t emblem{};
+		game::parse_emblem(data["emblem"], emblem);
+
+		database::player_data::sync_emblem(player->get_id(), emblem);
 
 		return result;
 	}
