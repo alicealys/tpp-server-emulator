@@ -56,10 +56,10 @@ namespace database::fob_events
 
 				game::fob_param param{};
 
-				param.area_id = fob_list[i]["area_id"].get<std::uint32_t>();
+				param.area_id = fob_list[i]["area_id"].get<std::uint16_t>();
 				param.construct_param.packed = fob_list[i]["construct_param"].get<std::uint32_t>();
-				param.platform_count = fob_list[i]["platform_count"].get<std::uint32_t>();
-				param.security_rank = fob_list[i]["security_rank"].get<std::uint32_t>();
+				param.platform_count = fob_list[i]["platform_count"].get<std::uint8_t>();
+				param.security_rank = fob_list[i]["security_rank"].get<std::uint8_t>();
 
 				database::fobs::parse_cluster_param(fob_list[i]["cluster_param"], param.cluster_param);
 

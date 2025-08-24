@@ -35,7 +35,8 @@ namespace database::fobs
 			return;
 		}
 
-		const auto get = [&](const std::string& name, const std::uint32_t cap)
+		const auto get = [&](const std::string& name, const std::uint8_t cap)
+			-> std::uint8_t
 		{
 			const auto& value_j = security_j[name];
 			if (!value_j.is_number_unsigned())
@@ -43,7 +44,7 @@ namespace database::fobs
 				return 0u;
 			}
 
-			const auto value = value_j.get<std::uint32_t>();
+			const auto value = value_j.get<std::uint8_t>();
 			if (cap == 0u)
 			{
 				return value;
@@ -93,14 +94,15 @@ namespace database::fobs
 			return true;
 		};
 
-		const auto parse_coords = [&](nlohmann::json& coords_j, game::fob_voluntary_coord* coords, const std::uint32_t cap)
+		const auto parse_coords = [&](nlohmann::json& coords_j, game::fob_voluntary_coord* coords, const std::uint8_t cap)
+			-> std::uint8_t
 		{
 			if (!coords_j.is_array())
 			{
 				return 0u;
 			}
 
-			const auto count = std::min(cap, static_cast<std::uint32_t>(coords_j.size()));
+			const auto count = std::min(cap, static_cast<std::uint8_t>(coords_j.size()));
 
 			for (auto i = 0u; i < count; i++)
 			{
@@ -142,13 +144,12 @@ namespace database::fobs
 
 			if (!build_j.is_number_unsigned() || !cluster_security_j.is_number_unsigned() || !soldier_rank_j.is_number_unsigned())
 			{
-				printf("invalid cluster param args\n");
 				return false;
 			}
 
 			section_param.build.packed = section_param_j["build"].get<std::uint32_t>();
 			section_param.cluster_security.packed = section_param_j["cluster_security"].get<std::uint32_t>();
-			section_param.soldier_rank = section_param_j["soldier_rank"].get<std::uint32_t>();
+			section_param.soldier_rank = section_param_j["soldier_rank"].get<std::uint8_t>();
 
 			parse_cluster_param_security(section_param_j["unique_security"], section_param.unique_security, true);
 			parse_cluster_param_security(section_param_j["common1_security"], section_param.common_security[0], false);
@@ -443,6 +444,18 @@ namespace database::fobs
 						.where(fob::table.player_id == player_id));
 			});
 		}
+
+		template <database_type_t Type>
+		void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param& param)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(fob::table)
+						.set(fob::table.construct_param = param.packed)
+							.where(fob::table.player_id == player_id && fob::table.id == fob_index));
+			});
+		}
 	}
 	
 	std::vector<fob> get_fob_list(const std::uint64_t player_id)
@@ -468,6 +481,11 @@ namespace database::fobs
 	void delete_all(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::delete_all, player_id);
+	}
+
+	void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param& param)
+	{
+		RUN_IMPL(impl::set_construct_param, player_id, fob_index, param);
 	}
 
 	class table final : public table_interface

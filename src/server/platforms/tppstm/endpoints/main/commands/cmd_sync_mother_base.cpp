@@ -35,8 +35,8 @@ namespace emulator::tpp
 
 				game::fob_param param{};
 
-				param.platform_count = param_j["platform_count"].get<std::uint32_t>();
-				param.security_rank = param_j["security_rank"].get<std::uint32_t>();
+				param.platform_count = param_j["platform_count"].get<std::uint8_t>();
+				param.security_rank = param_j["security_rank"].get<std::uint8_t>();
 				param.construct_param.packed = param_j["construct_param"].get<std::uint32_t>();
 
 				if (!database::fobs::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
