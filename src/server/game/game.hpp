@@ -456,24 +456,24 @@ namespace game
 
 	struct fob_security
 	{
-		std::uint32_t uav;
-		std::uint32_t mine;
-		std::uint32_t decoy;
-		std::uint32_t camera;
-		std::uint32_t soldier;
-		std::uint32_t antitheft;
-		std::uint32_t ir_sensor;
-		std::uint32_t caution_area;
-		std::uint32_t voluntary_coord_mine_count;
+		std::uint8_t uav;
+		std::uint8_t mine;
+		std::uint8_t decoy;
+		std::uint8_t camera;
+		std::uint8_t soldier;
+		std::uint8_t antitheft;
+		std::uint8_t ir_sensor;
+		std::uint8_t caution_area;
+		std::uint8_t voluntary_coord_mine_count;
 		fob_voluntary_coord voluntary_coord_mine_params[max_fob_voluntary_mine_count]{};
-		std::uint32_t voluntary_coord_camera_count;
+		std::uint8_t voluntary_coord_camera_count;
 		fob_voluntary_coord voluntary_coord_camera_params[max_fob_voluntary_camera_count]{};
 	};
 
 	struct fob_cluster_param_single
 	{
 		fob_build build;
-		std::uint32_t soldier_rank;
+		std::uint8_t soldier_rank;
 		fob_cluster_security cluster_security;
 		fob_security unique_security;
 		fob_security common_security[3];
@@ -488,9 +488,9 @@ namespace game
 
 	struct fob_param
 	{
-		std::uint32_t area_id;
-		std::uint32_t platform_count;
-		std::uint32_t security_rank;
+		std::uint16_t area_id;
+		std::uint8_t platform_count;
+		std::uint8_t security_rank;
 		fob_construct_param construct_param;
 		fob_cluster_param cluster_param;
 	};

@@ -46,10 +46,10 @@ namespace database::fobs
 			this->player_id_ = row.player_id;
 			this->index_ = row.fob_index;
 
-			this->param_.area_id = static_cast<std::uint32_t>(row.area_id);
+			this->param_.area_id = static_cast<std::uint16_t>(row.area_id);
 			this->param_.construct_param.packed = static_cast<std::uint32_t>(row.construct_param);
-			this->param_.platform_count = static_cast<std::uint32_t>(row.platform_count);
-			this->param_.security_rank = static_cast<std::uint32_t>(row.security_rank);
+			this->param_.platform_count = static_cast<std::uint8_t>(row.platform_count);
+			this->param_.security_rank = static_cast<std::uint8_t>(row.security_rank);
 
 			this->create_date_ = row.create_date.value().time_since_epoch();
 		}
@@ -119,6 +119,7 @@ namespace database::fobs
 	void create(const std::uint64_t player_id, const std::uint32_t area_id, const std::uint64_t fob_id = 0);
 
 	void sync_data(const std::uint64_t player_id, std::vector<game::fob_param>& fob_params);
+	void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param& param);
 
 	void delete_all(const std::uint64_t player_id);
 }
