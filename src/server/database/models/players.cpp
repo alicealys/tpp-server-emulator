@@ -836,7 +836,7 @@ namespace database::players
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.players.create");
-			database.run_query("mgstpp.players.set_auto_increment", database::get_database_name(), player_id_reserve_count);
+			database.run_query("mgstpp.players.set_auto_increment", player_id_reserve_count);
 		}
 	};
 }
