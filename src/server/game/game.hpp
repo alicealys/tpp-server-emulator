@@ -452,7 +452,7 @@ namespace game
 	};
 
 	constexpr auto max_fob_voluntary_mine_count = 12u;
-	constexpr auto max_fob_voluntary_camera_count = 4u;
+	constexpr auto max_fob_voluntary_camera_count = 3u;
 
 	struct fob_security
 	{
@@ -465,9 +465,9 @@ namespace game
 		std::uint32_t ir_sensor;
 		std::uint32_t caution_area;
 		std::uint32_t voluntary_coord_mine_count;
-		fob_voluntary_coord voluntary_coord_mine_params[max_fob_voluntary_mine_count];
+		fob_voluntary_coord voluntary_coord_mine_params[max_fob_voluntary_mine_count]{};
 		std::uint32_t voluntary_coord_camera_count;
-		fob_voluntary_coord voluntary_coord_camera_params[max_fob_voluntary_camera_count];
+		fob_voluntary_coord voluntary_coord_camera_params[max_fob_voluntary_camera_count]{};
 	};
 
 	struct fob_cluster_param_single

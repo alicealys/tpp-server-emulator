@@ -471,18 +471,6 @@ namespace game
 
 	// fobs
 
-	fob_security unique_security_caps =
-	{
-		.uav = 4,
-		.mine = 12,
-		.decoy = 12,
-		.camera = 8,
-		.soldier = 12,
-		.antitheft = 6,
-		.ir_sensor = 5,
-		.caution_area = 0,
-	};
-
 	std::array<fob_security, 2> fob_security_caps =
 	{{
 		// common
@@ -495,6 +483,8 @@ namespace game
 			.antitheft = 10,
 			.ir_sensor = 5,
 			.caution_area = 0,
+			.voluntary_coord_mine_count = max_fob_voluntary_mine_count,
+			.voluntary_coord_camera_count = max_fob_voluntary_camera_count,
 		},
 		// unique
 		{
@@ -506,6 +496,8 @@ namespace game
 			.antitheft = 6,
 			.ir_sensor = 5,
 			.caution_area = 0,
+			.voluntary_coord_mine_count = max_fob_voluntary_mine_count,
+			.voluntary_coord_camera_count = max_fob_voluntary_camera_count,
 		},
 	}};
 
