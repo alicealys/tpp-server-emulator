@@ -165,10 +165,10 @@ namespace emulator::tpp
 
 		detail["security_section_rank"] = owner_data->get_unit_level(game::unit_security);
 
-		const auto is_sham = mode == database::players::mode_sham;
+		const auto is_actual = mode == database::players::mode_actual;
 
 		result["event_clear_bit"] = 0;
-		result["is_restrict"] = is_sham ? 0 : stats->is_shield_active();
+		result["is_restrict"] = !is_actual ? 0 : stats->is_shield_active();
 
 		result["session"]["ip"] = "0.0.0.0";
 		result["session"]["is_invalid"] = 1;
@@ -187,7 +187,7 @@ namespace emulator::tpp
 
 		if (owner->is_real_player())
 		{
-			if (!is_sham)
+			if (is_actual)
 			{
 				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
 				if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
