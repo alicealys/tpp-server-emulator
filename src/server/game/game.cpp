@@ -782,7 +782,7 @@ namespace game
 		copy_array(&motherbase.equip_grade[0], motherbase_j["equip_grade"], 28);
 		copy_array(&motherbase.pf_skill_staff[0], motherbase_j["pf_skill_staff"], 19);
 		copy_array(&motherbase.local_base_param->packed, motherbase_j["local_base_param"], 7);
-		copy_array(&motherbase.security_level[0], motherbase_j["security_level"], 8);
+		copy_array(&motherbase.security_level[0], motherbase_j["security_level"], 18);
 		copy_array(&motherbase.tape_flag[0], motherbase_j["tape_flag"], 8);
 
 		copy_value(motherbase.pickup_open, motherbase_j["pickup_open"]);
