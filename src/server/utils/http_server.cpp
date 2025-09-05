@@ -26,14 +26,7 @@ namespace utils
 				}
 
 				const auto address = std::string{header_value->ptr, header_value->len};
-
-				sockaddr_in addr{};
-				inet_pton(AF_INET, address.data(), &addr);
-
-				ip[0] = addr.sin_addr.S_un.S_un_b.s_b1;
-				ip[1] = addr.sin_addr.S_un.S_un_b.s_b2;
-				ip[2] = addr.sin_addr.S_un.S_un_b.s_b3;
-				ip[3] = addr.sin_addr.S_un.S_un_b.s_b4;
+				return inet_pton(AF_INET, address.data(), ip);
 			}
 			else
 			{
