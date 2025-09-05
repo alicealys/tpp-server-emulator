@@ -3,6 +3,7 @@
 #include "http_server.hpp"
 
 #include "component/console.hpp"
+#include "utils/config.hpp"
 
 #include <utils/io.hpp>
 
@@ -11,6 +12,39 @@ namespace utils
 	namespace
 	{
 		std::size_t thread_index{};
+
+		bool parse_client_ip(mg_connection* c, mg_http_message* http_message, std::uint8_t* ip)
+		{
+			static const auto client_ip_header = config::get<std::string>("http_client_ip_header");
+
+			if (!client_ip_header.empty())
+			{
+				const auto header_value = mg_http_get_header(http_message, client_ip_header.data());
+				if (header_value == nullptr)
+				{
+					return false;
+				}
+
+				const auto address = std::string{header_value->ptr, header_value->len};
+
+				sockaddr_in addr{};
+				inet_pton(AF_INET, address.data(), &addr);
+
+				ip[0] = addr.sin_addr.S_un.S_un_b.s_b1;
+				ip[1] = addr.sin_addr.S_un.S_un_b.s_b2;
+				ip[2] = addr.sin_addr.S_un.S_un_b.s_b3;
+				ip[3] = addr.sin_addr.S_un.S_un_b.s_b4;
+			}
+			else
+			{
+				ip[0] = c->rem.ip[0];
+				ip[1] = c->rem.ip[1];
+				ip[2] = c->rem.ip[2];
+				ip[3] = c->rem.ip[3];
+			}
+
+			return true;
+		}
 	}
 
 	http_connection::http_connection(mg_connection* c)
@@ -114,6 +148,7 @@ namespace utils
 			request_params params{};
 			params.body = body;
 			params.uri = uri;
+			params.address.is_valid = parse_client_ip(c, http_message, params.address.ip);
 
 			inst->request_handler->operator()(conn, params);
 			break;

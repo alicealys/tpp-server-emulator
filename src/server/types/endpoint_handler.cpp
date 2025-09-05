@@ -57,6 +57,18 @@ namespace emulator
 		{
 			const auto execute_command = [&]
 			{
+				if (handler->second->needs_ip_address())
+				{
+					if (!params.address.is_valid)
+					{
+						console::warning("[Endpoint] Client doesn't have a valid ip address\n");
+						return error(ERR_INVALIDARG);
+					}
+
+					json_req["data"]["ip"] = std::format("{}.{}.{}.{}",
+						params.address.ip[0], params.address.ip[1], params.address.ip[2], params.address.ip[3]);
+				}
+
 				if (handler->second->needs_player() && !player.has_value())
 				{
 					return error(ERR_INVALID_SESSION);

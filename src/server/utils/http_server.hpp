@@ -9,11 +9,18 @@
 
 namespace utils
 {
+	struct request_address
+	{
+		std::uint8_t ip[4];
+		bool is_valid;
+	};
+
 	struct request_params
 	{
 		std::string uri;
 		std::string headers;
 		std::string body;
+		request_address address;
 	};
 
 	struct response_params

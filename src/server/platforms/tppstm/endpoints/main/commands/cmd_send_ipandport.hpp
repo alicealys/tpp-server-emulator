@@ -7,5 +7,7 @@ namespace emulator::tpp
 	class cmd_send_ipandport final : public command_handler
 	{
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
+		bool needs_player() override;
+		bool needs_ip_address() override;
 	};
 }
