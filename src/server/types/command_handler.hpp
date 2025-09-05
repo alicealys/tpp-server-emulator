@@ -21,6 +21,11 @@ namespace emulator
 		{
 			return false;
 		}
+
+		virtual bool needs_ip_address()
+		{
+			return false;
+		}
 	};
 
 	nlohmann::json error(const std::string& id);

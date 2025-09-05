@@ -11,11 +11,6 @@ namespace emulator::tpp
 		nlohmann::json result;
 		result["result"] = "NOERR";
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		const auto& ex_ip_j = data["ex_ip"];
 		const auto& in_ip_j = data["in_ip"];
 		const auto& ex_port_j = data["ex_port"];
@@ -28,7 +23,10 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto ex_ip = ex_ip_j.get<std::string>();
+		const auto ex_ip = database::vars.use_real_client_ip 
+			? data["ip"].get<std::string>()
+			: ex_ip_j.get<std::string>();
+
 		const auto ex_port = ex_port_j.get<std::uint16_t>();
 		const auto in_ip = in_ip_j.get<std::string>();
 		const auto in_port = in_port_j.get<std::uint16_t>();
@@ -39,5 +37,15 @@ namespace emulator::tpp
 		);
 
 		return result;
+	}
+
+	bool cmd_send_ipandport::needs_player()
+	{
+		return true;
+	}
+
+	bool cmd_send_ipandport::needs_ip_address()
+	{
+		return database::vars.use_real_client_ip;
 	}
 }
