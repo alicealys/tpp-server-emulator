@@ -394,6 +394,19 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
+		bool set_nuke_count(const std::uint64_t player_id, const std::uint32_t count)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.nuke_count = count)
+							.where(player_data::table.player_id == player_id));
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
 		void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
 		{
 			database::access([&](database::database_t& db)
@@ -672,6 +685,11 @@ namespace database::player_data
 	std::uint32_t get_nuke_count()
 	{
 		RUN_IMPL(impl::get_nuke_count);
+	}
+
+	bool set_nuke_count(const std::uint64_t player_id, const std::uint32_t count)
+	{
+		RUN_IMPL(impl::set_nuke_count, player_id, count);
 	}
 
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id)

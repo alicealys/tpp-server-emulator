@@ -293,6 +293,7 @@ namespace database::player_data
 
 	std::uint32_t get_nuke_count();
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id);
+	bool set_nuke_count(const std::uint64_t player_id, const std::uint32_t count);
 
 	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param);
 
