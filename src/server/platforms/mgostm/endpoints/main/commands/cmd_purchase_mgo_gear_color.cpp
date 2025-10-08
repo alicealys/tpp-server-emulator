@@ -22,28 +22,30 @@ namespace emulator::mgo
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto color = color_j.get<std::uint32_t>();
+		static const auto color_list = utils::resources::load_json(RESOURCE_MGO_GEAR_COLORS);
+
+		const auto target_color = color_j.get<std::uint32_t>();
 		const auto gear_id = gear_id_j.get<std::uint32_t>();
 		[[ maybe_unused ]] const auto price = price_j.get<std::uint32_t>();
 		const auto purchase_type = purchase_type_j.get<std::uint32_t>();
 		const auto gear_info = database::mgo_color_purchase::get_gear_info(gear_id);
 
-		const auto do_purchase = [&]
+		const auto buy_color = [&](const std::uint32_t type, const std::uint32_t point)
 		{
-			if (gear_info.purchase_type == 3) // mb_coin
+			if (type == 3) // mb_coin
 			{
-				if (database::player_data::spend_mb_coins(player->get_id(), gear_info.point))
+				if (database::player_data::spend_mb_coins(player->get_id(), point))
 				{
-					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, color);
+					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, target_color);
 					return true;
 				}
 			}
 
-			if (gear_info.purchase_type == 2) // gp_coin
+			if (type == 2) // gp_coin
 			{
-				if (database::mgo_data::spend_gp_coins(player->get_id(), gear_info.point))
+				if (database::mgo_data::spend_gp_coins(player->get_id(), point))
 				{
-					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, color);
+					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, target_color);
 					return true;
 				}
 			}
@@ -51,9 +53,33 @@ namespace emulator::mgo
 			return false;
 		};
 
+		const auto do_purchase = [&]
+		{
+			if (database::mgo_color_purchase::has_gear(player->get_id(), gear_id) || gear_info.purchase_type == 0)
+			{
+				const auto color_opt = database::mgo_color_purchase::get_gear_color(target_color);
+				if (!color_opt.has_value())
+				{
+					return false;
+				}
+
+				const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), gear_id);
+				if (purchased_colors.contains(target_color))
+				{
+					return false;
+				}
+
+				return buy_color(color_opt->purchase_type, color_opt->point);
+			}
+			else
+			{
+				return buy_color(gear_info.purchase_type, gear_info.point);
+			}
+		};
+
 		if (do_purchase())
 		{
-			result["color"] = color;
+			result["color"] = target_color;
 			result["gear_id"] = gear_id;
 			result["price"] = gear_info.point;
 			result["purchase_type"] = purchase_type;
