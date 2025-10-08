@@ -220,6 +220,13 @@ namespace emulator::tpp
 
 			const auto get_processing_resource_value = [&](const std::uint32_t id)
 			{
+				const auto process_local = target_resources[game::unprocessed_local][id];
+				const auto process_server = target_resources[game::unprocessed_server][id];
+				return process_local + process_server;
+			};
+
+			const auto get_processed_resource_value = [&](const std::uint32_t id)
+			{
 				const auto process_local = target_resources[game::processed_local][id];
 				const auto process_server = target_resources[game::processed_server][id];
 				return process_local + process_server;
@@ -244,11 +251,11 @@ namespace emulator::tpp
 
 			target["owner_fob_record"]["support_count"] = 0;
 			target["owner_fob_record"]["supported_count"] = 0;
-			target["owner_fob_record"]["usable_resource"]["biotic_resource"] = 0;
-			target["owner_fob_record"]["usable_resource"]["common_metal"] = 0;
-			target["owner_fob_record"]["usable_resource"]["fuel_resource"] = 0;
-			target["owner_fob_record"]["usable_resource"]["minor_metal"] = 0;
-			target["owner_fob_record"]["usable_resource"]["precious_metal"] = 0;
+			target["owner_fob_record"]["usable_resource"]["biotic_resource"] = get_processed_resource_value(game::fuel_resource);
+			target["owner_fob_record"]["usable_resource"]["common_metal"] = get_processed_resource_value(game::biotic_resource);
+			target["owner_fob_record"]["usable_resource"]["fuel_resource"] = get_processed_resource_value(game::common_metal);
+			target["owner_fob_record"]["usable_resource"]["minor_metal"] = get_processed_resource_value(game::minor_metal);
+			target["owner_fob_record"]["usable_resource"]["precious_metal"] = get_processed_resource_value(game::precious_metal);
 
 			target["owner_info"] = player_info(target_player);
 
