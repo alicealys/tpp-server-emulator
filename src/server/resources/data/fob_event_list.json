@@ -1335,6 +1335,1344 @@
                     1
                 ]
             }
+        },
+        {
+            "player_id": 5,
+            "player_name": "NO ALERT",
+            "emblem": {
+                "parts": [
+                    {
+                        "base_color": 15790320,
+                        "frame_color": 15790320,
+                        "position_x": 20,
+                        "position_y": 20,
+                        "rotate": 0,
+                        "scale": 10,
+                        "texture_tag": 3660514930
+                    },
+                    {
+                        "base_color": 1842204,
+                        "frame_color": 11842740,
+                        "position_x": 20,
+                        "position_y": 20,
+                        "rotate": 0,
+                        "scale": 10,
+                        "texture_tag": 4107974299
+                    },
+                    {
+                        "base_color": 15790320,
+                        "frame_color": 15790320,
+                        "position_x": -92,
+                        "position_y": -80,
+                        "rotate": 0,
+                        "scale": 30,
+                        "texture_tag": 473894566
+                    },
+                    {
+                        "base_color": 15790320,
+                        "frame_color": 15790320,
+                        "position_x": -64,
+                        "position_y": -80,
+                        "rotate": 0,
+                        "scale": 30,
+                        "texture_tag": 473894566
+                    }
+                ]
+            },
+            "reward": {
+                "primary_reward": [
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 4,
+                                "value": 8
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 16,
+                                "value": 1741
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 23,
+                                "value": 139
+                            }
+                        ]
+                    },
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 1,
+                                "type": 4,
+                                "value": 8
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 12,
+                                "value": 4440
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 24,
+                                "value": 104
+                            }
+                        ]
+                    },
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 2,
+                                "type": 4,
+                                "value": 4
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 14,
+                                "value": 1872
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 21,
+                                "value": 871
+                            }
+                        ]
+                    },
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 3,
+                                "type": 4,
+                                "value": 2
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 13,
+                                "value": 5572
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 15,
+                                "value": 2647
+                            }
+                        ]
+                    },
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 4,
+                                "type": 4,
+                                "value": 4
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 15,
+                                "value": 6269
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 22,
+                                "value": 209
+                            }
+                        ]
+                    },
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 5,
+                                "type": 4,
+                                "value": 8
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 17,
+                                "value": 975
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 18,
+                                "value": 453
+                            }
+                        ]
+                    },
+                    {
+                        "reward_info": [
+                            {
+                                "bottom_type": 0,
+                                "rate": 0,
+                                "section": 100,
+                                "type": 1,
+                                "value": 1075000
+                            },
+                            {
+                                "bottom_type": 8,
+                                "rate": 1000000,
+                                "section": 6,
+                                "type": 4,
+                                "value": 4
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 19,
+                                "value": 749
+                            },
+                            {
+                                "bottom_type": 0,
+                                "rate": 1000000,
+                                "section": 0,
+                                "type": 20,
+                                "value": 348
+                            }
+                        ]
+                    }
+                ],
+                "reward_rate": 200
+            },
+            "fob_list": [
+                {
+                    "area_id": 0,
+                    "cluster_param": [
+                        {
+                            "build": 4096,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 12,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 4096,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 12,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 4096,
+                            "cluster_security": 104789,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 12,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        }
+                    ],
+                    "construct_param": 41101,
+                    "fob_index": 0,
+                    "mother_base_id": 5,
+                    "platform_count": 3,
+                    "price": 0,
+                    "security_rank": 25
+                },
+                {
+                    "area_id": 0,
+                    "cluster_param": [
+                        {
+                            "build": 4096,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 12,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 4096,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 12,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 0,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        },
+                        {
+                            "build": 4096,
+                            "cluster_security": 166237,
+                            "common1_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common2_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "common3_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 0,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            },
+                            "soldier_rank": 5,
+                            "unique_security": {
+                                "antitheft": 0,
+                                "camera": 0,
+                                "caution_area": 0,
+                                "decoy": 0,
+                                "ir_sensor": 0,
+                                "mine": 0,
+                                "soldier": 12,
+                                "uav": 0,
+                                "voluntary_coord_camera_count": 0,
+                                "voluntary_coord_camera_params": [],
+                                "voluntary_coord_mine_count": 0,
+                                "voluntary_coord_mine_params": []
+                            }
+                        }
+                    ],
+                    "construct_param": 41613,
+                    "fob_index": 0,
+                    "mother_base_id": 25,
+                    "platform_count": 3,
+                    "price": 0,
+                    "security_rank": 40
+                }
+            ],
+            "staff_resources": {
+                "placement": {
+                    "emplacement_gun_east": 2,
+                    "emplacement_gun_west": 2,
+                    "gatling_gun": 0,
+                    "gatling_gun_east": 1,
+                    "gatling_gun_west": 1,
+                    "mortar_normal": 1
+                },
+                "processing_resource": {
+                    "biotic_resource": 10500,
+                    "common_metal": 10500,
+                    "fuel_resource": 12000,
+                    "minor_metal": 10000,
+                    "precious_metal": 2250
+                },
+                "usable_resource": {
+                    "biotic_resource": 0,
+                    "common_metal": 0,
+                    "fuel_resource": 0,
+                    "minor_metal": 0,
+                    "precious_metal": 0
+                },
+                "section_level": {
+                    "base": 20,
+                    "combat": 20,
+                    "develop": 10,
+                    "medical": 10,
+                    "security": 5,
+                    "spy": 10,
+                    "suport": 10
+                },
+                "section_staff": [
+                    {
+                        "base": 18,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 11,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 6,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 3,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 1,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 1,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    },
+                    {
+                        "base": 0,
+                        "combat": 0,
+                        "develop": 0,
+                        "medical": 0,
+                        "security": 0,
+                        "spy": 0,
+                        "suport": 0
+                    }
+                ]
+            },
+            "motherbase": {
+                "local_base_param": [
+                    8192,
+                    8192,
+                    8192,
+                    8192,
+                    8192,
+                    8192,
+                    8192
+                ],
+                "name_plate_id": 0,
+                "equip_grade": [
+                    5,
+                    5,
+                    0,
+                    5,
+                    5,
+                    0,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    5,
+                    0,
+                    0,
+                    3,
+                    0,
+                    5,
+                    3,
+                    0,
+                    3,
+                    3,
+                    7,
+                    5,
+                    8,
+                    0,
+                    0
+                ],
+                "security_level": [
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    2,
+                    1,
+                    0,
+                    2,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    2,
+                    1
+                ]
+            }
         }
     ],
     "event_list": [
@@ -2134,6 +3472,715 @@
                 }
             ],
             "players": [1]
+        },
+        {
+            "server_text": "mb_fob_event_name_05",
+            "information_list": [
+                {
+                    "date": 1759762800,
+                    "important": "FALSE",
+                    "info_id": 12002,
+                    "mes_body": "<I=C=cmn-col-special|** [Event] \"Skulls Attack\" Event FOB missions **>\n\nInfiltrate this Event FOB with no fear of retaliation (the enemy force will not counter-attack your base), and exchange the Event Points you earn for amazing rewards! \n\n[Event Point rewards]\n<I=C=cmn-col-special|- Placed weapon [E-RB WH GEN. (Wormhole Generator)] Blueprint.>\n<I=C=cmn-col-special|- Weapon [RENOV-ICKX TP BIS (Penetrate Sniper Rifle / Non-Lethal)] Blueprint>\n<I=C=cmn-col-special|- Limited edition event-only FOB color schemes. / weapon colors. / FOB staff swimwears.>\nIn addition, you can trade for various exclusive rewards such as S, S+, S++ staff, etc.\n\n\n[Event period]\nOct. 07, 2025, end of maintenance time to Oct. 21, 2025, 5AM (GMT)\n\n<I=C=cmn-col-ng|* Event rankings are not available.>",
+                    "mes_subject": ""
+                },
+                {
+                    "date": 1759762800,
+                    "important": "FALSE",
+                    "info_id": 12012,
+                    "mes_body": "<I=C=cmn-col-special|** [Event] \"Skulls Attack\" Event FOB missions **>\n\n* Access the Event Points exchange via [FOB MISSIONS] > [Events] > [Event Points Exchange].\n* Event Points are only valid <I=C=cmn-col-special|during the event in which they were earned.>\n\n<I=C=cmn-col-ng|* Event Points are not carried over to the next event.>\n<I=C=cmn-col-ng|  Be aware that any Event Points earned during this event will be lost when the event period ends.>\n\n* Event FOB missions can only be played <I=C=cmn-col-special|after completing Episode 22> in the main game.",
+                    "mes_subject": ""
+                }
+            ],
+            "point_exchange_params": [
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 8500,
+                    "type": 3,
+                    "unique_id": 11080
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 8500,
+                    "type": 3,
+                    "unique_id": 6063
+                },
+                {
+                    "common_value": 9,
+                    "count": 5,
+                    "exchange_limit": 1,
+                    "info_lang_id": 0,
+                    "limited_count": 1,
+                    "name_lang_id": 0,
+                    "point": 88560,
+                    "type": 1,
+                    "unique_id": 1
+                },
+                {
+                    "common_value": 9,
+                    "count": 3,
+                    "exchange_limit": 1,
+                    "info_lang_id": 0,
+                    "limited_count": 1,
+                    "name_lang_id": 0,
+                    "point": 49200,
+                    "type": 1,
+                    "unique_id": 2
+                },
+                {
+                    "common_value": 9,
+                    "count": 3,
+                    "exchange_limit": 1,
+                    "info_lang_id": 0,
+                    "limited_count": 1,
+                    "name_lang_id": 0,
+                    "point": 49200,
+                    "type": 1,
+                    "unique_id": 3
+                },
+                {
+                    "common_value": 9,
+                    "count": 3,
+                    "exchange_limit": 1,
+                    "info_lang_id": 0,
+                    "limited_count": 1,
+                    "name_lang_id": 0,
+                    "point": 49200,
+                    "type": 1,
+                    "unique_id": 4
+                },
+                {
+                    "common_value": 9,
+                    "count": 3,
+                    "exchange_limit": 1,
+                    "info_lang_id": 0,
+                    "limited_count": 1,
+                    "name_lang_id": 0,
+                    "point": 49200,
+                    "type": 1,
+                    "unique_id": 5
+                },
+                {
+                    "common_value": 9,
+                    "count": 3,
+                    "exchange_limit": 1,
+                    "info_lang_id": 0,
+                    "limited_count": 1,
+                    "name_lang_id": 0,
+                    "point": 49200,
+                    "type": 1,
+                    "unique_id": 6
+                },
+                {
+                    "common_value": 8,
+                    "count": 10,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 23760,
+                    "type": 1,
+                    "unique_id": 1
+                },
+                {
+                    "common_value": 8,
+                    "count": 5,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 13200,
+                    "type": 1,
+                    "unique_id": 2
+                },
+                {
+                    "common_value": 8,
+                    "count": 5,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 13200,
+                    "type": 1,
+                    "unique_id": 3
+                },
+                {
+                    "common_value": 8,
+                    "count": 5,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 13200,
+                    "type": 1,
+                    "unique_id": 4
+                },
+                {
+                    "common_value": 8,
+                    "count": 5,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 13200,
+                    "type": 1,
+                    "unique_id": 5
+                },
+                {
+                    "common_value": 8,
+                    "count": 5,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 13200,
+                    "type": 1,
+                    "unique_id": 6
+                },
+                {
+                    "common_value": 7,
+                    "count": 20,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 6840,
+                    "type": 1,
+                    "unique_id": 1
+                },
+                {
+                    "common_value": 7,
+                    "count": 10,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 3800,
+                    "type": 1,
+                    "unique_id": 2
+                },
+                {
+                    "common_value": 7,
+                    "count": 10,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 3800,
+                    "type": 1,
+                    "unique_id": 3
+                },
+                {
+                    "common_value": 7,
+                    "count": 10,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 3800,
+                    "type": 1,
+                    "unique_id": 4
+                },
+                {
+                    "common_value": 7,
+                    "count": 10,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 3800,
+                    "type": 1,
+                    "unique_id": 5
+                },
+                {
+                    "common_value": 7,
+                    "count": 10,
+                    "exchange_limit": 10,
+                    "info_lang_id": 0,
+                    "limited_count": 10,
+                    "name_lang_id": 0,
+                    "point": 3800,
+                    "type": 1,
+                    "unique_id": 6
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19095
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19098
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19124
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19125
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19134
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19135
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19136
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19145
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19150
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19151
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19157
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19162
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19163
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19164
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19167
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19171
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19175
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19177
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 7200,
+                    "type": 4,
+                    "unique_id": 19178
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 71
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 75
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 78
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 88
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 91
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 101
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 106
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 4500,
+                    "type": 5,
+                    "unique_id": 111
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 8000,
+                    "type": 6,
+                    "unique_id": 19
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 8000,
+                    "type": 6,
+                    "unique_id": 10
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 9200,
+                    "type": 7,
+                    "unique_id": 3978609485
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 9200,
+                    "type": 7,
+                    "unique_id": 1107330869
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 9200,
+                    "type": 7,
+                    "unique_id": 1338575046
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 9200,
+                    "type": 7,
+                    "unique_id": 2215276718
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 9200,
+                    "type": 7,
+                    "unique_id": 3764143740
+                },
+                {
+                    "common_value": 0,
+                    "count": 1,
+                    "exchange_limit": 65535,
+                    "info_lang_id": 0,
+                    "limited_count": 0,
+                    "name_lang_id": 0,
+                    "point": 9200,
+                    "type": 7,
+                    "unique_id": 2108148650
+                }
+            ],
+            "one_event_task": [
+                {
+                    "event_id": 5,
+                    "event_sneak": [
+                        {
+                            "reward": 540,
+                            "task_type_id": 8,
+                            "threshold": 3
+                        },
+                        {
+                            "reward": 380,
+                            "task_type_id": 16,
+                            "threshold": 1
+                        },
+                        {
+                            "reward": 1140,
+                            "task_type_id": 22,
+                            "threshold": 3
+                        },
+                        {
+                            "reward": 2000,
+                            "task_type_id": 67,
+                            "threshold": 1
+                        },
+                        {
+                            "reward": 1200,
+                            "task_type_id": 73,
+                            "threshold": 300
+                        },
+                        {
+                            "reward": 2100,
+                            "task_type_id": 70,
+                            "threshold": 5
+                        },
+                        {
+                            "reward": 3200,
+                            "task_type_id": 69,
+                            "threshold": 1
+                        }
+                    ]
+                },
+                {
+                    "event_id": 25,
+                    "event_sneak": [
+                        {
+                            "reward": 1080,
+                            "task_type_id": 8,
+                            "threshold": 5
+                        },
+                        {
+                            "reward": 840,
+                            "task_type_id": 16,
+                            "threshold": 2
+                        },
+                        {
+                            "reward": 2280,
+                            "task_type_id": 22,
+                            "threshold": 5
+                        },
+                        {
+                            "reward": 2400,
+                            "task_type_id": 67,
+                            "threshold": 1
+                        },
+                        {
+                            "reward": 1560,
+                            "task_type_id": 73,
+                            "threshold": 300
+                        },
+                        {
+                            "reward": 2730,
+                            "task_type_id": 70,
+                            "threshold": 7
+                        },
+                        {
+                            "reward": 4160,
+                            "task_type_id": 69,
+                            "threshold": 1
+                        }
+                    ]
+                }
+            ],
+            "players": [5]
         }
     ]
 }
