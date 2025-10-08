@@ -14,7 +14,18 @@ namespace database::mgo_color_purchase
 		bool is_default;
 	};
 
+	struct gear_color_t
+	{
+		std::uint32_t color;
+		std::uint32_t point;
+		std::uint32_t level;
+		std::uint32_t prestige;
+		std::uint32_t purchase_type;
+	};
+
 	gear_info_t get_gear_info(const std::uint32_t gear_id);
+
+	std::optional<gear_color_t> get_gear_color(const std::uint32_t color_id);
 
 	class mgo_color_purchase
 	{
@@ -46,4 +57,5 @@ namespace database::mgo_color_purchase
 	bool has_gear(const std::uint64_t player_id, const std::uint32_t gear_id);
 	bool buy_color(const std::uint64_t player_id, const std::uint32_t gear_id, const std::uint32_t color_id);
 	std::unordered_set<std::uint32_t> get_purchased_colors(const std::uint64_t player_id, const std::uint32_t gear_id);
+	std::vector<mgo_color_purchase> get_all_purchased_colors(const std::uint64_t player_id);
 }

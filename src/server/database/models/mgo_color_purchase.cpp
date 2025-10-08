@@ -25,10 +25,35 @@ namespace database::mgo_color_purchase
 		return map;
 	}
 
+	std::vector<gear_color_t> load_gear_color_list()
+	{
+		std::vector<gear_color_t> list;
+
+		const auto colors = utils::resources::load_json(RESOURCE_MGO_GEAR_COLORS);
+		for (auto i = 0ull; i < colors.size(); i++)
+		{
+			gear_color_t color{};
+			color.color = colors[i]["color"].get<std::uint32_t>();
+			color.point = colors[i]["point"].get<std::uint32_t>();
+			color.purchase_type = colors[i]["purchase_type"].get<std::uint32_t>();
+			color.level = colors[i]["level"].get<std::uint32_t>();
+			color.prestige = colors[i]["prestige"].get<std::uint32_t>();
+			list.emplace_back(color);
+		}
+
+		return list;
+	}
+
 	std::unordered_map<std::uint32_t, gear_info_t>& get_gear_info_map()
 	{
 		static auto map = load_gear_info_map();
 		return map;
+	}
+
+	std::vector<gear_color_t>& get_gear_color_list()
+	{
+		static auto list = load_gear_color_list();
+		return list;
 	}
 
 	gear_info_t get_gear_info(const std::uint32_t gear_id)
@@ -50,6 +75,23 @@ namespace database::mgo_color_purchase
 		info.is_default = true;
 
 		return info;
+	}
+
+	std::optional<gear_color_t> get_gear_color(const std::uint32_t color_id)
+	{
+		const auto& list = get_gear_color_list();
+
+		const auto iter = std::ranges::find_if(list.begin(), list.end(), [&](const gear_color_t& color)
+		{
+			return color.color == color_id;
+		});
+
+		if (iter != list.end())
+		{
+			return {*iter};
+		}
+
+		return {};
 	}
 
 	GET_FIELD_C(mgo_color_purchase, std::uint64_t, id);
@@ -107,6 +149,28 @@ namespace database::mgo_color_purchase
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		std::vector<mgo_color_purchase> get_all_purchased_colors(const std::uint64_t player_id)
+		{
+			return database::access<std::vector<mgo_color_purchase>>([&](database_t& db)
+				-> std::vector<mgo_color_purchase>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(mgo_color_purchase::table))
+							.from(mgo_color_purchase::table)
+								.where(mgo_color_purchase::table.player_id == player_id));
+
+				std::vector<mgo_color_purchase> list;
+
+				for (const auto& row : results)
+				{
+					list.emplace_back(row);
+				}
+
+				return list;
+			});
+		}
 	}
 
 	bool has_gear(const std::uint64_t player_id, const std::uint32_t gear_id)
@@ -122,6 +186,11 @@ namespace database::mgo_color_purchase
 	std::unordered_set<std::uint32_t> get_purchased_colors(const std::uint64_t player_id, const std::uint32_t gear_id)
 	{
 		RUN_IMPL(impl::get_purchased_colors, player_id, gear_id);
+	}
+
+	std::vector<mgo_color_purchase> get_all_purchased_colors(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::get_all_purchased_colors, player_id);
 	}
 
 	class table final : public table_interface
