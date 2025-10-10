@@ -36,8 +36,8 @@ List of implemeted/unimplemented server commands
 | CMD_DELETE_TROOPS_LIST | ❌ |  |
 | CMD_DEPLOY_FOB_ASSIST | ✔️ |  |
 | CMD_DEPLOY_MISSION | ❌ |  |
-| CMD_DESTRUCT_NUCLEAR | ❌ |  |
-| CMD_DESTRUCT_ONLINE_NUCLEAR | ❌ |  |
+| CMD_DESTRUCT_NUCLEAR | ✔️ |  |
+| CMD_DESTRUCT_ONLINE_NUCLEAR | ✔️ |  |
 | CMD_DEVELOP_SERVER_ITEM | ✔️ |  |
 | CMD_DEVELOP_WEPON | ❌ |  |
 | CMD_ELAPSE_COMBAT_DEPLOY | ❌ |  |
@@ -161,7 +161,7 @@ List of implemeted/unimplemented server commands
 | name | status | note |
 | --- | --- | --- |
 | CMD_AUTH_STEAMTICKET | ✔️ |  |
-| CMD_DO_MGO_ASCENSION | ❌ |  |
+| CMD_DO_MGO_ASCENSION | ✔️ |  |
 | CMD_GDPR_CHECK | ✔️ |  |
 | CMD_GET_ABOLITION_COUNT | ✔️ |  |
 | CMD_GET_INFORMATIONLIST2 | ✔️ |  |
@@ -179,7 +179,7 @@ List of implemeted/unimplemented server commands
 | CMD_GET_MGO_PURCHASABLE_GEAR | ✔️ |  |
 | CMD_GET_MGO_PURCHASABLE_GEAR_COLOR | ✔️ |  |
 | CMD_GET_MGO_PURCHASABLE_ITEM_LIST | ✔️ |  |
-| CMD_GET_MGO_PURCHASABLE_WEAPON_COLOR | ➖ | unused |
+| CMD_GET_MGO_PURCHASABLE_WEAPON_COLOR | ✔️ |  |
 | CMD_GET_MGO_PURCHASED_ITEM | ✔️ |  |
 | CMD_GET_MGO_RANK_XP_LIST | ✔️ |  |
 | CMD_GET_MGO_STAT | ✔️ |  |
@@ -200,7 +200,7 @@ List of implemeted/unimplemented server commands
 | CMD_PURCHASE_MGO_BOOST | ❌ |  |
 | CMD_PURCHASE_MGO_GEAR_COLOR | ✔️ |  |
 | CMD_PURCHASE_MGO_ITEM | ❌ |  |
-| CMD_PURCHASE_MGO_WEAPON_COLOR | ➖ | unused |
+| CMD_PURCHASE_MGO_WEAPON_COLOR | ✔️ |  |
 | CMD_REQAUTH_HTTPS | ✔️ |  |
 | CMD_SEND_IPANDPORT | ✔️ |  |
 | CMD_SEND_MGO_SESSION_ERROR | ✔️ |  |
