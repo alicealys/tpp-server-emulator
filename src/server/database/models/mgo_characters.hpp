@@ -12,12 +12,22 @@ namespace database::mgo_characters
 		std::uint32_t last_loadout;
 		std::uint32_t player_type;
 		std::uint32_t player_class;
-		std::uint32_t legendary;
 		std::uint32_t permanent_unlock;
+	};
+
+	struct character_progression_params
+	{
+		std::uint32_t xp;
+		std::uint32_t legendary;
+		std::uint32_t prestige;
 	};
 
 	constexpr auto total_character_count = 8ull;
 	constexpr auto initial_character_count = 3ull;
+	constexpr auto max_prestige = 3ull;
+
+	std::uint32_t get_prestige_required_xp(const std::uint32_t prestige);
+	std::uint32_t get_prestige_gp_bonus(const std::uint32_t prestige);
 
 	class mgo_character
 	{
@@ -94,6 +104,7 @@ namespace database::mgo_characters
 	std::size_t get_character_count(const std::uint64_t player_id);
 	bool create_character(const std::uint64_t player_id, const std::uint32_t character_index);
 	bool update_character(const std::uint64_t player_id, const std::uint32_t character_index, const character_params& params);
+	bool update_character_progression(const std::uint64_t player_id, const std::uint32_t character_index, const character_progression_params& params);
 	bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index);
 	std::uint32_t increase_xp(const std::uint64_t player_id, const std::uint32_t character_index, const std::uint32_t value);
 }

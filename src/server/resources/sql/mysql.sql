@@ -265,11 +265,12 @@ create table if not exists `mgo_color_purchase`
 (
 	id						bigint unsigned	not null	auto_increment,
 	player_id				bigint unsigned	not null,
-	gear_id					int unsigned	not null,
+	category				int unsigned	not null,
+	item_id					int unsigned	not null,
 	color_id				int unsigned	not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
-	unique key `unique_mgo_color_purchase_player_id_gear_id_color_id` (`player_id`, `gear_id`, `color_id`)
+	unique key `unique_mgo_color_purchase_player_id_gear_id_color_id` (`player_id`, `item_id`, `color_id`)
 )
 -- query:mgstpp.variables.create
 create table if not exists `variables`

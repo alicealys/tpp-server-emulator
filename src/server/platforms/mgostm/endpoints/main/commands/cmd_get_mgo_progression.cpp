@@ -20,7 +20,7 @@ namespace emulator::mgo
 		for (auto i = 0ull; i < characters.size(); i++)
 		{
 			progression["character_list"][i]["legendary"] = characters[i].get_legendary();
-			progression["character_list"][i]["prestige"] = characters[i].get_legendary();
+			progression["character_list"][i]["prestige"] = characters[i].get_prestige();
 			progression["character_list"][i]["xp"] = characters[i].get_xp();
 
 			const auto list = characters[i].get_permanent_unlock_list();
