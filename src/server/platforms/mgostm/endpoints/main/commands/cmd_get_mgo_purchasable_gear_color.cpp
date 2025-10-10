@@ -6,11 +6,6 @@
 
 namespace emulator::mgo
 {
-	cmd_get_mgo_purchasable_gear_color::cmd_get_mgo_purchasable_gear_color()
-	{
-		this->list_ = utils::resources::load_json(RESOURCE_MGO_GEAR_COLORS);
-	}
-
 	nlohmann::json cmd_get_mgo_purchasable_gear_color::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
@@ -24,16 +19,29 @@ namespace emulator::mgo
 		const auto gear_id = gear_id_j.get<std::uint32_t>();
 
 		result["purchasable_gear_color"]["already_released"] = 1;
+		result["purchasable_gear_color"]["release_date"] = 0;
 		result["purchasable_gear_color"]["gear_id"] = gear_id;
-		result["purchasable_gear_color"]["purchasable_color_list"] = this->list_;
+		result["purchasable_gear_color"]["purchasable_color_list"] = nlohmann::json::array();
 
-		const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), gear_id);
+		auto& color_list = result["purchasable_gear_color"]["purchasable_color_list"];
 
-		auto& list = result["purchasable_gear_color"]["purchasable_color_list"];
-		for (auto i = 0ull; i < this->list_.size(); i++)
+		const auto& colors = database::mgo_color_purchase::get_gear_colors();
+		const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), database::mgo_color_purchase::gear, gear_id);
+
+		for (auto i = 0ull; i < colors.size(); i++)
 		{
-			const auto color_id = list[i]["color"].get<std::uint32_t>();
-			list[i]["already_purchased"] = purchased_colors.contains(color_id);
+			color_list[i]["already_purchased"] = 0;
+			color_list[i]["color"] = colors[i].color;
+			color_list[i]["level"] = colors[i].level;
+			color_list[i]["point"] = colors[i].point;
+			color_list[i]["prestige"] = colors[i].prestige;
+			color_list[i]["purchase_type"] = colors[i].purchase_type;
+		}
+
+		for (auto i = 0ull; i < colors.size(); i++)
+		{
+			const auto color_id = color_list[i]["color"].get<std::uint32_t>();
+			color_list[i]["already_purchased"] = purchased_colors.contains(color_id) ? 1 : 0;
 		}
 
 		return result;

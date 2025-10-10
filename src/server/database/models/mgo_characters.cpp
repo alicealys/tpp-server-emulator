@@ -24,6 +24,36 @@ namespace database::mgo_characters
 		}
 	}
 
+	std::uint32_t get_prestige_required_xp(const std::uint32_t prestige)
+	{
+		switch (prestige)
+		{
+		case 1:
+			return 926000u;
+		case 2:
+			return 1011000u;
+		case 3:
+			return 1105000u;
+		}
+
+		return 0u;
+	}
+
+	std::uint32_t get_prestige_gp_bonus(const std::uint32_t prestige)
+	{
+		switch (prestige)
+		{
+		case 1:
+			return 10000u;
+		case 2:
+			return 30000u;
+		case 3:
+			return 50000u;
+		}
+
+		return 0u;
+	}
+
 	GET_FIELD_C(mgo_character, std::uint64_t, id);
 	GET_FIELD_C(mgo_character, std::uint64_t, player_id);
 	GET_FIELD_C(mgo_character, std::uint32_t, character_index);
@@ -110,6 +140,21 @@ namespace database::mgo_characters
 				return result != 0ull;
 			});
 		}
+		
+		template <database_type_t Type>
+		bool update_character_progression(const std::uint64_t player_id, const std::uint32_t character_index, const character_progression_params& params)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_character::table)
+						.set(mgo_character::table.xp = params.xp, mgo_character::table.prestige = params.prestige, 
+							 mgo_character::table.legendary = params.legendary)
+								.where(mgo_character::table.player_id == player_id && mgo_character::table.character_index == character_index));
+
+				return result != 0ull;
+			});
+		}
 
 		template <database_type_t Type>
 		bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index)
@@ -171,6 +216,11 @@ namespace database::mgo_characters
 	bool update_character(const std::uint64_t player_id, const std::uint32_t character_index, const character_params& params)
 	{
 		RUN_IMPL(impl::update_character, player_id, character_index, params);
+	}
+
+	bool update_character_progression(const std::uint64_t player_id, const std::uint32_t character_index, const character_progression_params& params)
+	{
+		RUN_IMPL(impl::update_character_progression, player_id, character_index, params);
 	}
 
 	bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index)

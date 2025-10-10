@@ -1,0 +1,754 @@
+[
+    {
+        "already_purchased": 0,
+        "color": 2256514228,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 899472314,
+        "level": 4,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 144194567,
+        "level": 8,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 2715260476,
+        "level": 12,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 1239413227,
+        "level": 16,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 2727398566,
+        "level": 20,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 3480584313,
+        "level": 24,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 1918243418,
+        "level": 28,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 3969456100,
+        "level": 32,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 1715554328,
+        "level": 36,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 0
+    },
+    {
+        "already_purchased": 0,
+        "color": 593884744,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 255878003,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1406043414,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 4056491133,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3931447461,
+        "level": 0,
+        "point": 3000,
+        "prestige": 3,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3694397221,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2214881393,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2479596555,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2766761679,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3770884251,
+        "level": 0,
+        "point": 3000,
+        "prestige": 3,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3003022551,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1791537266,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2542877698,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 849237093,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3312109921,
+        "level": 0,
+        "point": 3000,
+        "prestige": 3,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1744411242,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 799374112,
+        "level": 0,
+        "point": 300,
+        "prestige": 1,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3134266807,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 554883529,
+        "level": 0,
+        "point": 1000,
+        "prestige": 2,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1677907062,
+        "level": 0,
+        "point": 3000,
+        "prestige": 3,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2728585102,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2525769084,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2313332439,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3062087167,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1415697796,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1466343249,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3946158833,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1708178415,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 903507899,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2662212364,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3019361675,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1190052616,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1148551004,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3414362956,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3824204164,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3191695622,
+        "level": 0,
+        "point": 10000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 907055393,
+        "level": 0,
+        "point": 2000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 4224686495,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2176713901,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2928993829,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1811238617,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2978906052,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 592797441,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 683280502,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2988399529,
+        "level": 0,
+        "point": 500,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 384867490,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 4253086746,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3230624264,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3151572568,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1848135364,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1501478995,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2465590794,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 4270413923,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3934771567,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3256609863,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 3978420825,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 663531477,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 970679455,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 110309555,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 1823855623,
+        "level": 0,
+        "point": 1000,
+        "prestige": 0,
+        "purchase_type": 2
+    },
+    {
+        "already_purchased": 0,
+        "color": 2458510571,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 3698382022,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 2941984636,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 258590284,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 3416642560,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 3628633721,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 1104523036,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 1609172183,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 2451385763,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 2762514868,
+        "level": 0,
+        "point": 100,
+        "prestige": 0,
+        "purchase_type": 3
+    },
+    {
+        "already_purchased": 0,
+        "color": 2349223133,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 1
+    },
+    {
+        "already_purchased": 0,
+        "color": 3534932600,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 4056653872,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 819053298,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 3957873089,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 907591280,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 795656783,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 911714693,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 2693407561,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 1820872570,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 1669255690,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 1989783400,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 4156693392,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    },
+    {
+        "already_purchased": 0,
+        "color": 3221919395,
+        "level": 0,
+        "point": 0,
+        "prestige": 0,
+        "purchase_type": 4
+    }
+]

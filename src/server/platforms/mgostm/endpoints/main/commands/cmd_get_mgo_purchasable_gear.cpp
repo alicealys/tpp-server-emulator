@@ -25,13 +25,13 @@ namespace emulator::mgo
 		result["purchasable_gear_list"]["purchasable_gear_list"] = nlohmann::json::array();
 		auto& result_list = result["purchasable_gear_list"]["purchasable_gear_list"];
 
-		const auto purchased_colors = database::mgo_color_purchase::get_all_purchased_colors(player->get_id());
+		const auto purchased_colors = database::mgo_color_purchase::get_all_purchased_colors(player->get_id(), database::mgo_color_purchase::gear);
 		const auto has_gear = [&](const std::uint32_t gear_id)
 		{
 			const auto iter = std::ranges::find_if(purchased_colors.begin(), purchased_colors.end(), 
 				[&](const database::mgo_color_purchase::mgo_color_purchase& purchase)
 				{
-					return purchase.get_gear_id() == gear_id;
+					return purchase.get_item_id() == gear_id;
 				}
 			);
 

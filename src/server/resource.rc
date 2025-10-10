@@ -117,6 +117,7 @@ RESOURCE_MGO_BASE_LOADOUTS        RCDATA "resources/data/mgo_base_loadouts.json"
 RESOURCE_MGO_BASE_AVATAR          RCDATA "resources/data/mgo_base_avatar.json"
 RESOURCE_MGO_GEAR_COLORS          RCDATA "resources/data/mgo_gear_colors.json"
 RESOURCE_MGO_GEAR_LIST            RCDATA "resources/data/mgo_gear_list.json"
+RESOURCE_MGO_WEAPON_COLORS        RCDATA "resources/data/mgo_weapon_colors.json"
 RESOURCE_FOB_EVENT_LIST           RCDATA "resources/data/fob_event_list.json"
 
 RESOURCE_SQL_MYSQL                RCDATA "resources/sql/mysql.sql"

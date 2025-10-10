@@ -22,8 +22,6 @@ namespace emulator::mgo
 			return error(ERR_INVALIDARG);
 		}
 
-		static const auto color_list = utils::resources::load_json(RESOURCE_MGO_GEAR_COLORS);
-
 		const auto target_color = color_j.get<std::uint32_t>();
 		const auto gear_id = gear_id_j.get<std::uint32_t>();
 		[[ maybe_unused ]] const auto price = price_j.get<std::uint32_t>();
@@ -36,7 +34,7 @@ namespace emulator::mgo
 			{
 				if (database::player_data::spend_mb_coins(player->get_id(), point))
 				{
-					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, target_color);
+					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::gear, gear_id, target_color);
 					return true;
 				}
 			}
@@ -45,7 +43,7 @@ namespace emulator::mgo
 			{
 				if (database::mgo_data::spend_gp_coins(player->get_id(), point))
 				{
-					database::mgo_color_purchase::buy_color(player->get_id(), gear_id, target_color);
+					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::gear, gear_id, target_color);
 					return true;
 				}
 			}
@@ -63,7 +61,7 @@ namespace emulator::mgo
 					return false;
 				}
 
-				const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), gear_id);
+				const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), database::mgo_color_purchase::gear, gear_id);
 				if (purchased_colors.contains(target_color))
 				{
 					return false;
