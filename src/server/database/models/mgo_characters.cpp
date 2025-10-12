@@ -132,9 +132,23 @@ namespace database::mgo_characters
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_character::table)
 						.set(mgo_character::table.name = params.name, mgo_character::table.avatar = params.avatar, 
-							 mgo_character::table.loadouts = params.loadouts, mgo_character::table.player_class = params.player_class,
+							 mgo_character::table.player_class = params.player_class,
 							 mgo_character::table.player_type = params.player_type, mgo_character::table.permanent_unlock_list = params.permanent_unlock,
 							 mgo_character::table.last_loadout = params.last_loadout)
+								.where(mgo_character::table.player_id == player_id && mgo_character::table.character_index == character_index));
+
+				return result != 0ull;
+			});
+		}
+		
+		template <database_type_t Type>
+		bool update_character_loadouts(const std::uint64_t player_id, const std::uint32_t character_index, const nlohmann::json& loadouts)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_character::table)
+						.set(mgo_character::table.loadouts = loadouts.dump())
 								.where(mgo_character::table.player_id == player_id && mgo_character::table.character_index == character_index));
 
 				return result != 0ull;
@@ -216,6 +230,11 @@ namespace database::mgo_characters
 	bool update_character(const std::uint64_t player_id, const std::uint32_t character_index, const character_params& params)
 	{
 		RUN_IMPL(impl::update_character, player_id, character_index, params);
+	}
+
+	bool update_character_loadouts(const std::uint64_t player_id, const std::uint32_t character_index, const nlohmann::json& loadouts)
+	{
+		RUN_IMPL(impl::update_character_loadouts, player_id, character_index, loadouts);
 	}
 
 	bool update_character_progression(const std::uint64_t player_id, const std::uint32_t character_index, const character_progression_params& params)
