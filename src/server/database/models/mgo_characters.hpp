@@ -7,7 +7,6 @@ namespace database::mgo_characters
 	struct character_params
 	{
 		std::string avatar;
-		std::string loadouts;
 		std::string name;
 		std::uint32_t last_loadout;
 		std::uint32_t player_type;
@@ -104,6 +103,7 @@ namespace database::mgo_characters
 	std::size_t get_character_count(const std::uint64_t player_id);
 	bool create_character(const std::uint64_t player_id, const std::uint32_t character_index);
 	bool update_character(const std::uint64_t player_id, const std::uint32_t character_index, const character_params& params);
+	bool update_character_loadouts(const std::uint64_t player_id, const std::uint32_t character_index, const nlohmann::json& loadouts);
 	bool update_character_progression(const std::uint64_t player_id, const std::uint32_t character_index, const character_progression_params& params);
 	bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index);
 	std::uint32_t increase_xp(const std::uint64_t player_id, const std::uint32_t character_index, const std::uint32_t value);

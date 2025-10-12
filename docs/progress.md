@@ -205,7 +205,7 @@ List of implemeted/unimplemented server commands
 | CMD_SEND_IPANDPORT | ✔️ |  |
 | CMD_SEND_MGO_SESSION_ERROR | ✔️ |  |
 | CMD_SET_CURRENTPLAYER | ✔️ |  |
-| CMD_SET_MGO_CHARACTER2 | ➖ | unused |
+| CMD_SET_MGO_CHARACTER2 | ✔️ |  |
 | CMD_SET_MGO_CHARACTER_AND_LOADOUT2 | ✔️ |  |
 | CMD_SET_MGO_LOADOUT | ➖ | unused |
 | CMD_SET_MGO_LOG | ❌ |  |

@@ -2,6 +2,8 @@
 
 #include "mgo_data.hpp"
 
+#include "utils/encoding.hpp"
+
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
@@ -11,11 +13,6 @@ namespace database::mgo_data
 	GET_FIELD_C(mgo_data, std::uint64_t, player_id);
 	GET_FIELD_C(mgo_data, std::uint32_t, last_character_used);
 	GET_FIELD_C(mgo_data, std::uint32_t, bgm_selected);
-	GET_FIELD_C(mgo_data, std::uint32_t, match_auto_leave);
-	GET_FIELD_C(mgo_data, std::uint32_t, match_briefing_time);
-	GET_FIELD_C(mgo_data, std::uint32_t, match_host_comment);
-	GET_FIELD_C(mgo_data, std::uint32_t, match_max_capacity);
-	GET_FIELD_C(mgo_data, std::uint32_t, match_mission_slot_count);
 	GET_FIELD_C(mgo_data, std::uint32_t, gp_coin);
 	GET_FIELD_C(mgo_data, std::uint32_t, gp_boost_mag);
 	GET_FIELD_C(mgo_data, std::uint32_t, gp_expire_unix_timestamp);
@@ -27,11 +24,19 @@ namespace database::mgo_data
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_b);
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_c);
 	GET_FIELD_C(mgo_data, std::uint32_t, survival_ticket_remain);
-	GET_FIELD_C(mgo_data, std::uint32_t, mission_slot_list);
-	GET_FIELD_C(mgo_data, std::uint32_t, mission_player_num);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_played);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_abandoned);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_started);
+
+	const match_settings_t& mgo_data::get_match_settings() const
+	{
+		return this->match_settings_;
+	}
+
+	const preset_radio_t& mgo_data::get_preset_radio() const
+	{
+		return this->preset_radio_;
+	}
 
 	namespace impl
 	{
@@ -138,14 +143,16 @@ namespace database::mgo_data
 		}
 
 		template <database_type_t Type>
-		bool set_values_from_character(const std::uint64_t player_id, const character_params& params)
+		bool set_values_from_character(const std::uint64_t player_id, const data_params& params)
 		{
 			return database::access<bool>([&](database_t& db)
 			{
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
-							.set(mgo_data::table.last_character_used = params.last_character_used, mgo_data::table.bgm_selected = params.bgm_selected)
-								.where(mgo_data::table.player_id == player_id));
+							.set(mgo_data::table.last_character_used = params.last_character_used, mgo_data::table.bgm_selected = params.bgm_selected,
+								 mgo_data::table.match_settings = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(params.match_settings)),
+								 mgo_data::table.preset_radio = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(params.preset_radio)))
+									.where(mgo_data::table.player_id == player_id));
 
 				return result != 0;
 			});
@@ -221,7 +228,7 @@ namespace database::mgo_data
 		RUN_IMPL(impl::add_gp_coins, player_id, value);
 	}
 
-	bool set_values_from_character(const std::uint64_t player_id, const character_params& params)
+	bool set_values_from_character(const std::uint64_t player_id, const data_params& params)
 	{
 		RUN_IMPL(impl::set_values_from_character, player_id, params);
 	}
