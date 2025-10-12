@@ -33,10 +33,23 @@ namespace emulator::mgo
 		character["match"]["auto_leave"] = mgo_data->get_match_auto_leave();
 		character["match"]["briefing_time"] = mgo_data->get_match_briefing_time();
 		character["match"]["host_comment"] = mgo_data->get_match_host_comment();
-		character["match"]["max_capacity"] = mgo_data->get_match_max_capacity();
-		character["match"]["mission_slot_count"] = 0;
-		character["match"]["mission_slot_list"] = nlohmann::json::array();
-		character["match"]["player_num"] = mgo_data->get_mission_player_num();
+		character["match"]["max_capacity"] = std::clamp(mgo_data->get_match_max_capacity(), 2u, 16u);
+		character["match"]["mission_slot_count"] = std::min(mgo_data->get_match_mission_slot_count(), 5u);
+		character["match"]["player_num"] = std::clamp(mgo_data->get_mission_player_num(), 2u, 16u);
+
+		for (auto i = 0; i < 5; i++)
+		{
+			character["match"]["mission_slot_list"][i]["flags"] = 0;
+			character["match"]["mission_slot_list"][i]["map"] = 0;
+			character["match"]["mission_slot_list"][i]["night"] = 0;
+			character["match"]["mission_slot_list"][i]["rule"] = 0;
+			character["match"]["mission_slot_list"][i]["rush"] = 0;
+			character["match"]["mission_slot_list"][i]["ticket"] = 0;
+			character["match"]["mission_slot_list"][i]["time"] = 0;
+			character["match"]["mission_slot_list"][i]["unique_character"] = 0;
+			character["match"]["mission_slot_list"][i]["weather"] = 0;
+		}
+
 
 		character["preset_radio_rule_list"] = nlohmann::json::array();
 		for (auto i = 0; i < 5; i++)
