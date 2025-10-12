@@ -203,8 +203,9 @@ create table if not exists `mgo_characters`
 	id						integer	primary key autoincrement,
 	player_id				bigint unsigned	not null,
 	character_index			int unsigned	not null,
-	avatar					json not null,
-	loadouts				json not null,
+	avatar					blob not null,
+	loadouts				blob not null,
+	loadout_count			int unsigned not null default 0,
 	last_loadout			int unsigned not null default 0,
 	name					char(32),
 	player_class			int unsigned not null default 0,
@@ -238,7 +239,7 @@ create table if not exists `mgo_data`
 	matches_abandoned			int unsigned default 0 not null,
 	matches_started				int unsigned default 0 not null,
 	match_settings				tinyblob default null,
-	radio_presets				tinyblob default null,
+	preset_radio				tinyblob default null,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)
 )

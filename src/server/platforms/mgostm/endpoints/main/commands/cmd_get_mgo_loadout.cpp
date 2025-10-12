@@ -15,7 +15,13 @@ namespace emulator::mgo
 		result["loadout"]["character_list"] = nlohmann::json::array();
 		for (auto i = 0ull; i < characters.size(); i++)
 		{
-			result["loadout"]["character_list"][i]["loadout_list"] = characters[i].get_loadouts();
+			const auto loadout_count = characters[i].get_loadout_count();
+			const auto loadouts = characters[i].get_loadouts();
+
+			for (auto o = 0u; o < loadout_count; o++)
+			{
+				result["loadout"]["character_list"][i]["loadout_list"][o] = loadouts->loadouts[o].to_json();
+			}
 		}
 
 		result["loadout"]["version"] = 192687032374006;
