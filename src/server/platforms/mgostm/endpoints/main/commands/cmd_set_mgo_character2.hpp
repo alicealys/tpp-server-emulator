@@ -9,5 +9,6 @@ namespace emulator::mgo
 	public:
 		static bool set_character(nlohmann::json& data, const std::optional<database::players::player>& player);
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
+		bool needs_player() override;
 	};
 }

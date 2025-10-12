@@ -132,4 +132,9 @@ namespace emulator::mgo
 
 		return {};
 	}
+
+	bool cmd_set_mgo_character2::needs_player()
+	{
+		return true;
+	}
 }
