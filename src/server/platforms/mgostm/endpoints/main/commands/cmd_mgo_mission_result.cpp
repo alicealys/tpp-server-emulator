@@ -28,48 +28,6 @@ namespace emulator::mgo
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto& stats_map = database::mgo_stats::get_stats_map();
-		const auto rule_type = rule_type_j.get<std::uint32_t>();
-
-		const auto rule_id = database::mgo_stats::get_rule_id(rule_type);
-
-		/*for (auto i = 0ull; i < actions_list.size(); i++)
-		{
-			if (!actions_list[i].is_object())
-			{
-				continue;
-			}
-
-			const auto& id_j = actions_list[i]["key"];
-			const auto& value_j = actions_list[i]["value"];
-
-			if (!id_j.is_number_unsigned() || !value_j.is_number_unsigned())
-			{
-				continue;
-			}
-
-			const auto id = id_j.get<std::uint32_t>();
-			const auto value = value_j.get<std::uint32_t>();
-			const auto iter = stats_map.find(id);
-
-			if (iter == stats_map.end())
-			{
-				continue;
-			}
-
-			if (iter->second.is_rule_specific)
-			{
-				database::mgo_stats::add_stat(player->get_id(), database::mgo_stats::rule_none, id, value);
-			}
-			else
-			{
-				if (rule_id != database::mgo_stats::rule_none)
-				{
-					database::mgo_stats::add_stat(player->get_id(), rule_id, id, value);
-				}
-			}
-		}*/
-
 		const auto char_index = char_index_j.get<std::uint32_t>();
 		const auto earned_xp = earned_xp_j.get<std::uint32_t>();
 
