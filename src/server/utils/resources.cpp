@@ -26,7 +26,6 @@ namespace utils::resources
 			{RESOURCE_MGO_PARAMETERS, "resources/data/mgo_parameters.json"},
 			{RESOURCE_MGO_TITLE_LIST, "resources/data/mgo_title_list.json"},
 			{RESOURCE_MGO_INFORMATIONLIST2, "resources/data/mgo_informationlist2.json"},
-			{RESOURCE_MGO_RULE_STAT_LIST, "resources/data/mgo_rule_stat_list.json"},
 			{RESOURCE_MGO_PURCHASABLE_LIST, "resources/data/mgo_purchasable_list.json"},
 			{RESOURCE_MGO_BASE_LOADOUTS, "resources/data/mgo_base_loadouts.json"},
 			{RESOURCE_MGO_BASE_AVATAR, "resources/data/mgo_base_avatar.json"},
