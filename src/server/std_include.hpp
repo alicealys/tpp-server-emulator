@@ -88,4 +88,6 @@
 
 #include "resource.hpp"
 
+static_assert(sizeof(size_t) == 8);
+
 using namespace std::literals;
