@@ -181,7 +181,7 @@ namespace database::mgo_stats
 			}
 		};
 
-		for (auto i = 0; i < rule_stat_list_j.size(); i++)
+		for (auto i = 0ull; i < rule_stat_list_j.size(); i++)
 		{
 			auto& stat = rule_stat_list_j[i];
 			const auto id = get_value(stat["id"]);
@@ -191,7 +191,7 @@ namespace database::mgo_stats
 			insert_stat(rule_code, id, value);
 		}
 
-		for (auto i = 0; i < stat_list_j.size(); i++)
+		for (auto i = 0ull; i < stat_list_j.size(); i++)
 		{
 			auto& stat = stat_list_j[i];
 			const auto id = get_value(stat["id"]);
