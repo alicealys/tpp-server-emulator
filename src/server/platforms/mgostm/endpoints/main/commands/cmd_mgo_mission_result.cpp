@@ -2,6 +2,7 @@
 
 #include "database/models/mgo_data.hpp"
 #include "database/models/mgo_characters.hpp"
+#include "database/models/mgo_stats.hpp"
 
 #include "cmd_mgo_mission_result.hpp"
 
@@ -16,12 +17,58 @@ namespace emulator::mgo
 		const auto& earned_xp_j = data["earned_xp"];
 		const auto& gp_boost_mag_j = data["gp_boost_mag"];
 		const auto& xp_boost_mag_j = data["xp_boost_mag"];
+		const auto& rule_type_j = data["rule_type"];
+
+		auto& actions_list = data["actions_list"];
 
 		if (!char_index_j.is_number_unsigned() || !earned_gp_j.is_number_unsigned() || !earned_xp_j.is_number_unsigned() ||
-			!gp_boost_mag_j.is_number_unsigned() || !xp_boost_mag_j.is_number_unsigned())
+			!gp_boost_mag_j.is_number_unsigned() || !xp_boost_mag_j.is_number_unsigned() || !actions_list.is_array() ||
+			!rule_type_j.is_number_unsigned())
 		{
 			return error(ERR_INVALIDARG);
 		}
+
+		const auto& stats_map = database::mgo_stats::get_stats_map();
+		const auto rule_type = rule_type_j.get<std::uint32_t>();
+
+		const auto rule_id = database::mgo_stats::get_rule_id(rule_type);
+
+		/*for (auto i = 0ull; i < actions_list.size(); i++)
+		{
+			if (!actions_list[i].is_object())
+			{
+				continue;
+			}
+
+			const auto& id_j = actions_list[i]["key"];
+			const auto& value_j = actions_list[i]["value"];
+
+			if (!id_j.is_number_unsigned() || !value_j.is_number_unsigned())
+			{
+				continue;
+			}
+
+			const auto id = id_j.get<std::uint32_t>();
+			const auto value = value_j.get<std::uint32_t>();
+			const auto iter = stats_map.find(id);
+
+			if (iter == stats_map.end())
+			{
+				continue;
+			}
+
+			if (iter->second.is_rule_specific)
+			{
+				database::mgo_stats::add_stat(player->get_id(), database::mgo_stats::rule_none, id, value);
+			}
+			else
+			{
+				if (rule_id != database::mgo_stats::rule_none)
+				{
+					database::mgo_stats::add_stat(player->get_id(), rule_id, id, value);
+				}
+			}
+		}*/
 
 		const auto char_index = char_index_j.get<std::uint32_t>();
 		const auto earned_xp = earned_xp_j.get<std::uint32_t>();

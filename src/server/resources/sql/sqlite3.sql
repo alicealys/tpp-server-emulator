@@ -252,10 +252,11 @@ create table if not exists `mgo_stats`
 (
 	id						integer	primary key autoincrement,
 	player_id				bigint unsigned	not null,
+	rule_id					int unsigned	not null,
 	stat_id					int unsigned	not null,
 	stat_value				int unsigned	not null,
 	foreign key (`player_id`) references players(`id`),
-	unique (`player_id`, `stat_id`)
+	unique (`player_id`, `rule_id`, `stat_id`)
 )
 -- query:mgstpp.mgo_color_purchase.create
 create table if not exists `mgo_color_purchase`
