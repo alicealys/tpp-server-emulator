@@ -207,7 +207,7 @@ List of implemeted/unimplemented server commands
 | CMD_SET_CURRENTPLAYER | ✔️ |  |
 | CMD_SET_MGO_CHARACTER2 | ✔️ |  |
 | CMD_SET_MGO_CHARACTER_AND_LOADOUT2 | ✔️ |  |
-| CMD_SET_MGO_LOADOUT | ➖ | unused |
+| CMD_SET_MGO_LOADOUT | ✔️ |  |
 | CMD_SET_MGO_LOG | ❌ |  |
 | CMD_SET_MGO_MATCH_STAT | ✔️ |  |
 | CMD_SET_MGO_PROGRESSION | ➖ | unused |
