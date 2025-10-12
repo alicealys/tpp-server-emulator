@@ -102,18 +102,8 @@ namespace database::mgo_data
 			this->matches_abandoned_ = row.matches_abandoned;
 			this->matches_started_ = row.matches_started;
 
-			const auto match_settings_str = row.match_settings.value();
-			const auto preset_radio_str = row.preset_radio.value();
-
-			if (match_settings_str.size() == sizeof(match_settings_t))
-			{
-				std::memcpy(&this->match_settings_, match_settings_str.data(), sizeof(match_settings_t));
-			}
-
-			if (preset_radio_str.size() == sizeof(preset_radio_t))
-			{
-				std::memcpy(&this->preset_radio_, preset_radio_str.data(), sizeof(preset_radio_t));
-			}
+			load_binary_field(&this->match_settings_, row.match_settings.value());
+			load_binary_field(&this->preset_radio_, row.preset_radio.value());
 		}
 
 		GET_FIELD_H(std::uint64_t, id);

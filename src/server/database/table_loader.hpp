@@ -44,6 +44,18 @@ namespace database
 	tables& get_tables();
 
 	std::string get_sql_query(const database::database_type_t type, const std::string& name);
+
+	template <typename T>
+	bool load_binary_field(T* dest, const std::string& data)
+	{
+		if (data.size() != sizeof(T))
+		{
+			return false;
+		}
+
+		std::memcpy(dest, data.data(), sizeof(T));
+		return true;
+	}
 }
 
 #define REGISTER_TABLE(name, ...)												\

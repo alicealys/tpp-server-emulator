@@ -40,7 +40,12 @@ namespace emulator::mgo
 		for (auto i = 0ull; i < update_count; i++)
 		{
 			database::mgo_characters::character_params params{};
-			params.avatar = character_list[i]["avatar"].dump();
+
+			if (!database::mgo_characters::character_avatar_t::parse(character_list[i]["avatar"], params.avatar))
+			{
+				continue;
+			}
+
 			params.last_loadout = character_list[i]["last_loadout"].get<std::uint32_t>();
 			params.player_type = character_list[i]["player_type"].get<std::uint32_t>();
 			params.player_class = character_list[i]["player_class"].get<std::uint32_t>();

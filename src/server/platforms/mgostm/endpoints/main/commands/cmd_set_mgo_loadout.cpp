@@ -34,7 +34,27 @@ namespace emulator::mgo
 
 		for (auto i = 0ull; i < update_count; i++)
 		{
-			database::mgo_characters::update_character_loadouts(player->get_id(), static_cast<std::uint32_t>(i), loadout_character_list[i]["loadout_list"]);
+			auto& loadout_list = loadout_character_list[i]["loadout_list"];
+
+			const auto loadout_count = static_cast<std::uint32_t>(std::min(loadout_list.size(), database::mgo_characters::max_loadout_count));
+			auto loadouts = std::make_shared<database::mgo_characters::character_loadouts_t>();
+
+			auto bad_loadout = false;
+			for (auto o = 0u; o < loadout_count; o++)
+			{
+				if (!database::mgo_characters::character_loadout_t::parse(loadout_list[o], loadouts->loadouts[o]))
+				{
+					bad_loadout = true;
+					break;
+				}
+			}
+
+			if (bad_loadout)
+			{
+				continue;
+			}
+
+			database::mgo_characters::update_character_loadouts(player->get_id(), static_cast<std::uint32_t>(i), loadouts, loadout_count);
 		}
 
 		return true;
