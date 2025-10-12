@@ -212,7 +212,7 @@ namespace database::mgo_characters
 			return false;
 		}
 
-		strncpy_s(loadout.name, name.data(), name.size());
+		std::memcpy(loadout.name, name.data(), name.size());
 
 		for (auto i = 0; i < 5; i++)
 		{
