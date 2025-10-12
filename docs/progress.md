@@ -199,7 +199,7 @@ List of implemeted/unimplemented server commands
 | CMD_MGO_MISSION_RESULT | ✔️ |  |
 | CMD_PURCHASE_MGO_BOOST | ❌ |  |
 | CMD_PURCHASE_MGO_GEAR_COLOR | ✔️ |  |
-| CMD_PURCHASE_MGO_ITEM | ❌ |  |
+| CMD_PURCHASE_MGO_ITEM | ✔️ |  |
 | CMD_PURCHASE_MGO_WEAPON_COLOR | ✔️ |  |
 | CMD_REQAUTH_HTTPS | ✔️ |  |
 | CMD_SEND_IPANDPORT | ✔️ |  |
