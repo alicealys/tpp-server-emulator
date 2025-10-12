@@ -207,7 +207,12 @@ namespace database::mgo_characters
 		}
 
 		const auto name = name_j.get<std::string>();
-		strncpy_s(loadout.name, name.data(), _TRUNCATE);
+		if (name.size() > 24)
+		{
+			return false;
+		}
+
+		strncpy_s(loadout.name, name.data(), name.size());
 
 		for (auto i = 0; i < 5; i++)
 		{
