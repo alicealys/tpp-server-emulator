@@ -6,11 +6,11 @@
 
 namespace database::mgo_characters
 {
-	constexpr auto total_character_count = 8ull;
-	constexpr auto initial_character_count = 3ull;
-	constexpr auto max_prestige = 3ull;
-	constexpr auto base_loadout_count = 4ull;
-	constexpr auto max_loadout_count = 7ull;
+	constexpr auto total_character_count = 8u;
+	constexpr auto initial_character_count = 3u;
+	constexpr auto max_prestige = 3u;
+	constexpr auto base_loadout_count = 4u;
+	constexpr auto max_loadout_count = 7u;
 
 	struct character_avatar_t
 	{

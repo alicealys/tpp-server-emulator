@@ -32,7 +32,8 @@ namespace database::mgo_characters
 		if (!initialized)
 		{
 			static auto base_loadouts_j = utils::resources::load_json(RESOURCE_MGO_BASE_LOADOUTS);
-			for (auto i = 0ull; i < std::min(base_loadouts_j.size(), max_loadout_count); i++)
+			const auto count = std::min(static_cast<std::uint32_t>(base_loadouts_j.size()), max_loadout_count);
+			for (auto i = 0ull; i < count; i++)
 			{
 				character_loadout_t::parse(base_loadouts_j[i], base_loadouts->loadouts[i]);
 			}
