@@ -36,7 +36,7 @@ namespace emulator::mgo
 		{
 			auto& loadout_list = loadout_character_list[i]["loadout_list"];
 
-			const auto loadout_count = static_cast<std::uint32_t>(std::min(static_cast<std::size_t>(loadout_list.size()), 
+			const auto loadout_count = static_cast<std::uint32_t>(std::min(static_cast<std::uint64_t>(loadout_list.size()), 
 				database::mgo_characters::max_loadout_count));
 
 			auto loadouts = std::make_shared<database::mgo_characters::character_loadouts_t>();
