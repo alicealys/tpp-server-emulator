@@ -4,6 +4,7 @@
 
 #include "database/models/fobs.hpp"
 #include "database/models/players.hpp"
+#include "database/models/shop_purchases.hpp"
 
 namespace emulator::tpp
 {
@@ -40,6 +41,7 @@ namespace emulator::tpp
 
 		if (database::player_data::spend_mb_coins(player->get_id(), price))
 		{
+			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::get_waters_item_type(area_id), price, area_id);
 			database::fobs::create(player->get_id(), area_id);
 		}
 		else

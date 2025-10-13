@@ -276,6 +276,22 @@ create table if not exists `mgo_item_purchase`
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
 )
+-- query:mgstpp.shop_purchases.create
+create table if not exists `shop_purchases`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	date					datetime default current_timestamp not null,
+	expire_date				datetime default current_timestamp not null,
+	event_type				int unsigned not null default 0,
+	item_quantity			int unsigned not null default 0,
+	item_type				int unsigned not null default 0,
+	param1					int unsigned not null default 0,
+	coin_quantity			int unsigned not null default 0,
+	remaining_coin			int unsigned not null default 0,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`)
+)
 -- query:mgstpp.variables.create
 create table if not exists `variables`
 (
