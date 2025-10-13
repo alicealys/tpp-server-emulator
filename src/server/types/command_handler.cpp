@@ -52,7 +52,7 @@ namespace emulator
 		return player_info(*player);
 	}
 
-	std::optional<database::players::player> get_target_player(const nlohmann::json& target)
+	std::optional<database::players::player> get_target_player(const nlohmann::json& target, bool* has_id)
 	{
 		if (!target.is_object())
 		{
@@ -67,7 +67,13 @@ namespace emulator
 				return {};
 			}
 
-			return {target[key].get<std::uint64_t>()};
+			const auto id = target[key].get<std::uint64_t>();
+			if (id == 0u)
+			{
+				return {};
+			}
+
+			return {id};
 		};
 
 		const auto player_id_opt = get_id("player_id");
@@ -78,10 +84,18 @@ namespace emulator
 		if (player_id_opt.has_value())
 		{
 			target_player = database::players::find(player_id_opt.value());
+			if (has_id != nullptr)
+			{
+				*has_id = true;
+			}
 		}
 		else if (steam_id_opt.has_value())
 		{
 			target_player = database::players::find_from_account(steam_id_opt.value());
+			if (has_id != nullptr)
+			{
+				*has_id = true;
+			}
 		}
 
 		return target_player;
