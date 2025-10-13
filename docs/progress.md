@@ -84,8 +84,8 @@ List of implemeted/unimplemented server commands
 | CMD_GET_PLAYER_PLATFORM_LIST | ✔️ |  |
 | CMD_GET_PREVIOUS_SHORT_PFLEAGUE_RESULT | ❌ |  |
 | CMD_GET_PURCHASABLE_AREA_LIST | ✔️ |  |
-| CMD_GET_PURCHASE_HISTORY | ❌ |  |
-| CMD_GET_PURCHASE_HISTORY_NUM | ❌ |  |
+| CMD_GET_PURCHASE_HISTORY | ✔️ |  |
+| CMD_GET_PURCHASE_HISTORY_NUM | ✔️ |  |
 | CMD_GET_RANKING | ✔️ |  |
 | CMD_GET_RENTAL_LOADOUT_LIST | ❌ |  |
 | CMD_GET_RESOURCE_PARAM | ✔️ |  |
@@ -94,7 +94,7 @@ List of implemeted/unimplemented server commands
 | CMD_GET_SECURITY_SETTING_PARAM | ✔️ |  |
 | CMD_GET_SERVER_ITEM | ✔️ |  |
 | CMD_GET_SERVER_ITEM_LIST | ✔️ |  |
-| CMD_GET_SHOP_ITEM_NAME_LIST | ❌ |  |
+| CMD_GET_SHOP_ITEM_NAME_LIST | ✔️ |  |
 | CMD_GET_SHORT_PFLEAGUE_RESULT | ❌ |  |
 | CMD_GET_SNEAK_TARGET_LIST | ❌ |  |
 | CMD_GET_STEAM_SHOP_ITEM_LIST | ✔️ |  |
@@ -192,9 +192,9 @@ List of implemeted/unimplemented server commands
 | CMD_GET_MGO_USER_DATA | ✔️ |  |
 | CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
 | CMD_GET_PLAYERLIST | ✔️ |  |
-| CMD_GET_PURCHASE_HISTORY | ❌ |  |
-| CMD_GET_PURCHASE_HISTORY_NUM | ❌ |  |
-| CMD_GET_SHOP_ITEM_NAME_LIST | ❌ |  |
+| CMD_GET_PURCHASE_HISTORY | ✔️ |  |
+| CMD_GET_PURCHASE_HISTORY_NUM | ✔️ |  |
+| CMD_GET_SHOP_ITEM_NAME_LIST | ✔️ |  |
 | CMD_MGO_DLC_UPDATE | ✔️ |  |
 | CMD_MGO_MISSION_RESULT | ✔️ |  |
 | CMD_PURCHASE_MGO_BOOST | ❌ |  |

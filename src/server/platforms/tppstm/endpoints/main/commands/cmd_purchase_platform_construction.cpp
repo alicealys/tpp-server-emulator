@@ -4,6 +4,7 @@
 
 #include "database/models/player_data.hpp"
 #include "database/models/players.hpp"
+#include "database/models/shop_purchases.hpp"
 
 namespace emulator::tpp
 {
@@ -21,6 +22,10 @@ namespace emulator::tpp
 		if (!database::player_data::spend_mb_coins(player->get_id(), cost))
 		{
 			return error(ERR_MBCOIN_SHORTAGE);
+		}
+		else
+		{
+			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::time_reduction_construction, cost, 0);
 		}
 		
 		return error(NOERR);

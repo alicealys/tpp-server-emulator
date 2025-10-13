@@ -5,6 +5,7 @@
 #include "database/models/mgo_color_purchase.hpp"
 #include "database/models/mgo_data.hpp"
 #include "database/models/player_data.hpp"
+#include "database/models/shop_purchases.hpp"
 
 namespace emulator::mgo
 {
@@ -41,6 +42,7 @@ namespace emulator::mgo
 			{
 				if (database::player_data::spend_mb_coins(player->get_id(), color_info->point))
 				{
+					database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::weapons_color_variation, color_info->point, weapon_id);
 					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::weapon, weapon_id, color_info->color);
 					return true;
 				}
@@ -79,7 +81,7 @@ namespace emulator::mgo
 		}
 		else
 		{
-			return error(ERR_DATABASE);
+			return error(ERR_MBCOIN_SHORTAGE);
 		}
 	}
 

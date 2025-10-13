@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "database/models/fobs.hpp"
+#include "database/models/shop_purchases.hpp"
 
 #include "cmd_relocate_fob.hpp"
 
@@ -45,6 +46,7 @@ namespace emulator::tpp
 			param.fields.area_id = area_id;
 			param.fields.area_code = area_id;
 
+			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::waters_transfer_fee, price, area_id);
 			database::fobs::set_construct_param(player->get_id(), fob_index, param);
 		}
 		else

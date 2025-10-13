@@ -1,0 +1,182 @@
+[
+    {
+        "id": 10001,
+        "name": "Time Reduction (Dispatch Mission)",
+        "price": 1
+    },
+    {
+        "id": 10002,
+        "name": "Time Reduction (Development)",
+        "price": 1
+    },
+    {
+        "id": 10003,
+        "name": "Time Reduction (Construction)",
+        "price": 1
+    },
+    {
+        "id": 10009,
+        "name": "Time Reduction (Development)",
+        "price": 1
+    },
+    {
+        "id": 10010,
+        "name": "Insurance: 7 days",
+        "price": 1
+    },
+    {
+        "id": 10011,
+        "name": "Insurance: 30 days",
+        "price": 1
+    },
+    {
+        "id": 10012,
+        "name": "Insurance: 60 days",
+        "price": 1
+    },
+    {
+        "id": 10013,
+        "name": "EN 10013",
+        "price": 1
+    },
+    {
+        "id": 10014,
+        "name": "EN 10014",
+        "price": 1
+    },
+    {
+        "id": 10015,
+        "name": "EN 10015",
+        "price": 1
+    },
+    {
+        "id": 10016,
+        "name": "Insurance: 7 days (first time free)",
+        "price": 1
+    },
+    {
+        "id": 10020,
+        "name": "Waters: Mid-Atlantic Ridge",
+        "price": 1
+    },
+    {
+        "id": 10021,
+        "name": "Waters: East of the Hawaiian Islands",
+        "price": 1
+    },
+    {
+        "id": 10022,
+        "name": "Waters: South Atlantic Ocean",
+        "price": 1
+    },
+    {
+        "id": 10023,
+        "name": "Waters: Indian Ocean",
+        "price": 1
+    },
+    {
+        "id": 10024,
+        "name": "Waters: North Pacific Ocean",
+        "price": 1
+    },
+    {
+        "id": 10025,
+        "name": "Waters: South Pacific Ocean",
+        "price": 1
+    },
+    {
+        "id": 10026,
+        "name": "Waters: North Atlantic Ocean",
+        "price": 1
+    },
+    {
+        "id": 10027,
+        "name": "Waters: North Pacific Ocean (first time free)",
+        "price": 1
+    },
+    {
+        "id": 10028,
+        "name": "Waters: South Pacific Ocean (first time free)",
+        "price": 1
+    },
+    {
+        "id": 10029,
+        "name": "Waters: North Atlantic Ocean (first time free)",
+        "price": 1
+    },
+    {
+        "id": 10030,
+        "name": "Waters Transfer Fee",
+        "price": 1
+    },
+    {
+        "id": 20001,
+        "name": "Waters: North Pacific Ocean (first time free)",
+        "price": 1
+    },
+    {
+        "id": 20002,
+        "name": "Waters: South Pacific Ocean (first time free)",
+        "price": 1
+    },
+    {
+        "id": 20003,
+        "name": "Waters: North Atlantic Ocean (first time free)",
+        "price": 1
+    },
+    {
+        "id": 12010,
+        "name": "FOB Defense Insurance: 1 day (usage interval 0.5 days)",
+        "price": 1
+    },
+    {
+        "id": 12011,
+        "name": "FOB Defense Insurance: 3 days (usage interval 1.5 days)",
+        "price": 1
+    },
+    {
+        "id": 12012,
+        "name": "FOB Defense Insurance: 7 days (usage interval 3.5 days)",
+        "price": 1
+    },
+    {
+        "id": 12013,
+        "name": "FOB Defense Insurance: 14 days (usage interval 7 days)",
+        "price": 1
+    },
+    {
+        "id": 12022,
+        "name": "FOB Defense Insurance: 3 days (usage interval 1.5 days) first time free",
+        "price": 1
+    },
+    {
+        "id": 21001,
+        "name": "Fighting Ability Compensation (FOB Unit Deployment)",
+        "price": 1
+    },
+    {
+        "id": 1000000,
+        "name": "Weapons (Color variation)",
+        "price": 1
+    },
+    {
+        "id": 2000000,
+        "name": "Gears (Color variation)",
+        "price": 1
+    },
+    {
+        "id": 3000000,
+        "name": "Character slot",
+        "price": 1
+    },
+    {
+        "id": 4000000,
+        "name": "GP boost",
+        "price": 1
+    },
+    {
+        "id": 9000000,
+        "name": "Adjustment due to free MB Coin bug",
+        "price": 1
+    }
+]

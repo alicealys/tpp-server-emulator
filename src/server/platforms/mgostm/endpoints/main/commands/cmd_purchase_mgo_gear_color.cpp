@@ -3,6 +3,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/mgo_data.hpp"
 #include "database/models/mgo_color_purchase.hpp"
+#include "database/models/shop_purchases.hpp"
 
 #include "cmd_purchase_mgo_gear_color.hpp"
 
@@ -34,6 +35,7 @@ namespace emulator::mgo
 			{
 				if (database::player_data::spend_mb_coins(player->get_id(), point))
 				{
+					database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::gears_color_variation, point, gear_id);
 					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::gear, gear_id, target_color);
 					return true;
 				}
@@ -93,7 +95,7 @@ namespace emulator::mgo
 		}
 		else
 		{
-			return error(ERR_DATABASE);
+			return error(ERR_MBCOIN_SHORTAGE);
 		}
 
 		return result;

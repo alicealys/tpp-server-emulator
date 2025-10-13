@@ -19,6 +19,7 @@ namespace emulator::mgo
 			result["purchasable_item_list"]["purchasable_item_list"][index]["price"] = info.price;
 			result["purchasable_item_list"]["purchasable_item_list"][index]["purchase_id"] = info.purchase_id;
 			result["purchasable_item_list"]["purchasable_item_list"][index]["purchase_type"] = info.purchase_type;
+			index++;
 		}
 
 		return result;
