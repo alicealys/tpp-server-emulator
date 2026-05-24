@@ -205,7 +205,7 @@ namespace database::fobs
 							new_security.voluntary_coord_camera_count = old_security.voluntary_coord_camera_count;
 
 							std::memcpy(new_security.voluntary_coord_mine_params, old_security.voluntary_coord_mine_params, sizeof(game::fob_security_t::voluntary_coord_mine_params));
-							std::memcpy(new_security.voluntary_coord_camera_params, old_security.voluntary_coord_camera_params, sizeof(game::fob_security_t::voluntary_coord_mine_params));
+							std::memcpy(new_security.voluntary_coord_camera_params, old_security.voluntary_coord_camera_params, sizeof(game::fob_security_t::voluntary_coord_camera_params));
 						}
 					};
 

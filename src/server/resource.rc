@@ -74,9 +74,9 @@ BEGIN
             VALUE "FileDescription", "tpp-server-emulator"
             VALUE "FileVersion", VERSION_FILE
             VALUE "InternalName", "tpp-server-emulator"
-            VALUE "LegalCopyright", "Copyright (C) 2024 alice. All rights reserved."
+            VALUE "LegalCopyright", "Copyright (C) 2026 alice. All rights reserved."
             VALUE "Licence", "GPLv3"
-            VALUE "Info", "https://github.com/fedddddd/tpp-server-emulator"
+            VALUE "Info", "https://github.com/alicealys/tpp-server-emulator"
             VALUE "OriginalFilename", "tpp-server-emulator.exe"
             VALUE "ProductName", "tpp-server-emulator"
             VALUE "ProductVersion", VERSION_PRODUCT
