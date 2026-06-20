@@ -47,9 +47,6 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		std::string soldier_bin_resp;
-		soldier_bin_resp.reserve(game::max_staff_count * 16ull);
-
 		const auto local_version = version_j.get<std::uint32_t>();
 		const auto client_version = player_data->get_client_staff_version();
 		auto server_version = player_data->get_server_staff_version();
