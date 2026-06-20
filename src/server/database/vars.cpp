@@ -18,6 +18,8 @@ namespace database
 		vars.max_local_gmp = config::get_or<std::int32_t>("vars.max_local_gmp", vars.max_local_gmp);
 		vars.gmp_ratio = static_cast<float>(vars.max_local_gmp) /
 			static_cast<float>(vars.max_server_gmp + vars.max_local_gmp);
+		vars.server_version_tpp = config::get_or<std::int32_t>("vars.server_version_tpp", vars.server_version_tpp);
+		vars.server_version_mgo = config::get_or<std::int32_t>("vars.server_version_mgo", vars.server_version_mgo);
 
 		vars.item_dev_limit = config::get_or<std::uint32_t>("vars.item_dev_limit", vars.item_dev_limit);
 

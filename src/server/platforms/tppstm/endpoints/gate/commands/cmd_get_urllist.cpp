@@ -142,6 +142,11 @@ namespace emulator::tpp
 			result["url_list"][i]["type"] = url_list[i].type;
 			result["url_list"][i]["url"] = url_list[i].url;
 			result["url_list"][i]["version"] = url_list[i].version;
+
+			if (url_list[i].type == "GATE" || url_list[i].type == "WEB")
+			{
+				result["url_list"][i]["version"] = database::vars.server_version_tpp;
+			}
 		}
 
 		result["url_num"] = url_list.size();
