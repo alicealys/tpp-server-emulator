@@ -10,6 +10,7 @@
 #include "database/models/event_rankings.hpp"
 #include "database/models/mgo_data.hpp"
 #include "database/models/mgo_characters.hpp"
+#include "database/models/mgo_item_purchase.hpp"
 #include "database/models/fobs.hpp"
 
 namespace emulator::tpp
@@ -75,22 +76,31 @@ namespace emulator::tpp
 		{
 			database::mgo_data::create(player->get_id());
 
-			database::mgo_characters::character_progression_params params{};
-			params.legendary = 1;
-			params.prestige = database::mgo_characters::max_prestige;
-			params.xp = 10000000u;
-			for (auto i = 0u; i < database::mgo_characters::total_character_count; i++)
-			{
-				if (database::vars.signup_bonus && database::mgo_characters::create_character(player->get_id(), static_cast<std::uint32_t>(i)))
-				{
-					database::mgo_characters::update_character_progression(player->get_id(), i, params);
-				}
-			}
-
 			if (database::vars.signup_bonus)
 			{
+				database::mgo_characters::character_progression_params params{};
+				params.legendary = 1;
+				params.prestige = database::mgo_characters::max_prestige;
+				params.xp = 10000000u;
+
+				for (auto i = 0u; i < database::mgo_characters::total_character_count; i++)
+				{
+					if (database::mgo_characters::create_character(player->get_id(), i))
+					{
+						database::mgo_characters::update_character_progression(player->get_id(), i, params);
+						database::mgo_item_purchase::purchase_item(player->get_id(), database::mgo_item_purchase::character_slot);
+					}
+				}
+
 				database::player_data::add_mb_coins(player->get_id(), 100000000);
 				database::mgo_data::add_gp_coins(player->get_id(), 100000000);
+			}
+			else
+			{
+				for (auto i = 0u; i < database::mgo_characters::initial_character_count; i++)
+				{
+					database::mgo_characters::create_character(player->get_id(), i);
+				}
 			}
 		}
 
