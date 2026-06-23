@@ -20,8 +20,8 @@ namespace database
 		float cost_factor_item_dev = 1.f;
 		float cost_factor_platform_construction = 1.f;
 		bool unlock_all_items = false;
-		bool create_fobs = false;
 		bool use_real_client_ip = false;
+		bool signup_bonus = false;
 	};
 	
 	extern vars_t vars;
