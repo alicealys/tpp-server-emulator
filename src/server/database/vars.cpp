@@ -24,12 +24,12 @@ namespace database
 		vars.item_dev_limit = config::get_or<std::uint32_t>("vars.item_dev_limit", vars.item_dev_limit);
 
 		vars.unlock_all_items = config::get_or<bool>("vars.unlock_all_items", vars.unlock_all_items);
-		vars.create_fobs = config::get_or<bool>("vars.create_fobs", vars.create_fobs);
 
 		vars.cost_factor_generic = config::get_or<float>("vars.cost_factor_generic", vars.cost_factor_generic);
 		vars.cost_factor_item_dev = config::get_or<float>("vars.cost_factor_item_dev", vars.cost_factor_generic);
 		vars.cost_factor_platform_construction = config::get_or<float>("vars.cost_factor_platform_construction", vars.cost_factor_generic);
 
 		vars.use_real_client_ip = config::get_or<bool>("vars.use_real_client_ip", vars.use_real_client_ip);
+		vars.signup_bonus = config::get_or<bool>("vars.signup_bonus", vars.signup_bonus);
 	}
 }

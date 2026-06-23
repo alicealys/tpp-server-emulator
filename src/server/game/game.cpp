@@ -396,6 +396,14 @@ namespace game
 		0
 	};
 
+	std::array<std::array<std::uint32_t, resource_type_count>, 4> resource_caps =
+	{
+		local_processed_resource_caps,
+		local_unprocessed_resource_caps,
+		server_processed_resource_caps,
+		server_unprocessed_resource_caps
+	};
+
 	std::uint32_t get_max_resource_value(const resource_array_types_t type, const std::uint32_t index)
 	{
 		switch (type)

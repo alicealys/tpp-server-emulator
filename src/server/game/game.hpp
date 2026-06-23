@@ -146,6 +146,7 @@ namespace game
 	extern std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps;
 	extern std::array<std::uint32_t, resource_type_count> server_processed_resource_caps;
 	extern std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps;
+	extern std::array<std::array<std::uint32_t, resource_type_count>, 4> resource_caps;
 
 	std::uint32_t get_max_resource_value(const game::resource_array_types_t type, const std::uint32_t index);
 	std::uint32_t cap_resource_value(const game::resource_array_types_t type, const std::uint32_t index, const std::uint32_t value);
