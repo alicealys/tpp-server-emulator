@@ -46,6 +46,10 @@ namespace emulator::mgo
 				result["price"] = price_j;
 				result["result_point"] = database::player_data::get_mb_coins(player->get_id());
 			}
+			else
+			{
+				return error(ERR_DATABASE);
+			}
 		}
 		}
 
