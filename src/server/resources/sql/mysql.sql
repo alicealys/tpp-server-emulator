@@ -69,6 +69,10 @@ with ranked_players as (
 update player_records record
 join ranked_players ranked_player on record.player_id = ranked_player.player_id
 set record.fob_rank = ranked_player.new_rank where record.fob_point > 0;
+-- query:mgstpp.player_records.fob_grade.check_index
+select count(1) has_index from `information_schema`.`statistics` where table_schema='$database_name' and table_name='player_records' and index_name='fob_grade_index';
+-- query:mgstpp.player_records.fob_grade.create_index
+alter table `player_records` add index `fob_grade_index` (`fob_grade`)
 -- query:mgstpp.player_data.create
 create table if not exists `player_data`
 (
@@ -255,8 +259,8 @@ create table if not exists `mgo_stats`
 	foreign key (`player_id`) references players(`id`),
 	unique key `unique_mgo_stat_player_id_stat_id` (`player_id`)
 )
--- query:mgstpp.mgo_color_purchase.create
-create table if not exists `mgo_color_purchase`
+-- query:mgstpp.mgo_color_purchases.create
+create table if not exists `mgo_color_purchases`
 (
 	id						bigint unsigned	not null	auto_increment,
 	player_id				bigint unsigned	not null,
@@ -267,8 +271,8 @@ create table if not exists `mgo_color_purchase`
 	foreign key (`player_id`) references players(`id`),
 	unique key `unique_mgo_color_purchase_player_id_gear_id_color_id` (`player_id`, `item_id`, `color_id`)
 )
--- query:mgstpp.mgo_item_purchase.create
-create table if not exists `mgo_item_purchase`
+-- query:mgstpp.mgo_item_purchases.create
+create table if not exists `mgo_item_purchases`
 (
 	id						bigint unsigned	not null	auto_increment,
 	player_id				bigint unsigned	not null,

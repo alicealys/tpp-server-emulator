@@ -2,7 +2,7 @@
 
 #include "cmd_purchase_mgo_weapon_color.hpp"
 
-#include "database/models/mgo_color_purchase.hpp"
+#include "database/models/mgo_color_purchases.hpp"
 #include "database/models/mgo_data.hpp"
 #include "database/models/player_data.hpp"
 #include "database/models/shop_purchases.hpp"
@@ -28,8 +28,8 @@ namespace emulator::mgo
 		[[ maybe_unused ]] const auto price = price_j.get<std::uint32_t>();
 		const auto purchase_type = purchase_type_j.get<std::uint32_t>();
 
-		const auto color_info = database::mgo_color_purchase::get_weapon_color(target_color);
-		const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), database::mgo_color_purchase::weapon, weapon_id);
+		const auto color_info = database::mgo_color_purchases::get_weapon_color(target_color);
+		const auto purchased_colors = database::mgo_color_purchases::get_purchased_colors(player->get_id(), database::mgo_color_purchases::weapon, weapon_id);
 
 		if (!color_info.has_value() || purchased_colors.contains(target_color))
 		{
@@ -43,7 +43,7 @@ namespace emulator::mgo
 				if (database::player_data::spend_mb_coins(player->get_id(), color_info->point))
 				{
 					database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::weapons_color_variation, color_info->point, weapon_id);
-					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::weapon, weapon_id, color_info->color);
+					database::mgo_color_purchases::buy_color(player->get_id(), database::mgo_color_purchases::weapon, weapon_id, color_info->color);
 					return true;
 				}
 			}
@@ -52,7 +52,7 @@ namespace emulator::mgo
 			{
 				if (database::mgo_data::spend_gp_coins(player->get_id(), color_info->point))
 				{
-					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::weapon, weapon_id, color_info->color);
+					database::mgo_color_purchases::buy_color(player->get_id(), database::mgo_color_purchases::weapon, weapon_id, color_info->color);
 					return true;
 				}
 			}

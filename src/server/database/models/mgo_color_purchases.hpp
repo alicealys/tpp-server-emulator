@@ -2,7 +2,7 @@
 
 #include "../database.hpp"
 
-namespace database::mgo_color_purchase
+namespace database::mgo_color_purchases
 {
 	enum item_category
 	{
@@ -46,7 +46,7 @@ namespace database::mgo_color_purchase
 		DEFINE_FIELD(category, sqlpp::integer_unsigned);
 		DEFINE_FIELD(item_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(color_id, sqlpp::integer_unsigned);
-		DEFINE_TABLE(mgo_color_purchase, id_field_t, category_field_t, player_id_field_t, item_id_field_t, color_id_field_t);
+		DEFINE_TABLE(mgo_color_purchases, id_field_t, category_field_t, player_id_field_t, item_id_field_t, color_id_field_t);
 
 		inline static table_t table;
 

@@ -1,10 +1,10 @@
 #include <std_include.hpp>
 
-#include "mgo_color_purchase.hpp"
+#include "mgo_color_purchases.hpp"
 
 #include <utils/string.hpp>
 
-namespace database::mgo_color_purchase
+namespace database::mgo_color_purchases
 {
 	std::unordered_map<std::uint32_t, item_info_t> load_gear_info_map()
 	{
@@ -245,9 +245,9 @@ namespace database::mgo_color_purchase
 	public:
 		void create(database_t& database) override
 		{
-			database.run_query("mgstpp.mgo_color_purchase.create");
+			database.run_query("mgstpp.mgo_color_purchases.create");
 		}
 	};
 }
 
-REGISTER_TABLE(database::mgo_color_purchase::table, -1)
+REGISTER_TABLE(database::mgo_color_purchases::table, -1)

@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/mgo_item_purchase.hpp"
+#include "database/models/mgo_item_purchases.hpp"
 
 #include "cmd_get_mgo_purchased_item.hpp"
 
@@ -10,11 +10,11 @@ namespace emulator::mgo
 	{
 		nlohmann::json result;
 
-		const auto purchased_items = database::mgo_item_purchase::get_purchase_list(player->get_id());
+		const auto purchased_items = database::mgo_item_purchases::get_purchase_list(player->get_id());
 
 		for (auto i = 0ull; i < purchased_items.size(); i++)
 		{
-			const auto info = database::mgo_item_purchase::get_purchase_info(purchased_items[i]);
+			const auto info = database::mgo_item_purchases::get_purchase_info(purchased_items[i]);
 			if (!info.has_value())
 			{
 				continue;

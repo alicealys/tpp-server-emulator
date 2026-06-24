@@ -71,6 +71,10 @@ set fob_rank = (
     where ranked_player.player_id = player_records.player_id
 )
 where fob_point > 0;
+-- query:mgstpp.player_records.fob_grade.check_index
+select 0 has_index
+-- query:mgstpp.player_records.fob_grade.create_index
+create index if not exists `fob_grade_index` on `player_records`(`fob_grade`)
 -- query:mgstpp.player_data.create
 create table if not exists `player_data`
 (
@@ -252,8 +256,8 @@ create table if not exists `mgo_stats`
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)
 )
--- query:mgstpp.mgo_color_purchase.create
-create table if not exists `mgo_color_purchase`
+-- query:mgstpp.mgo_color_purchases.create
+create table if not exists `mgo_color_purchases`
 (
 	id						integer	primary key autoincrement,
 	player_id				bigint unsigned	not null,
@@ -263,8 +267,8 @@ create table if not exists `mgo_color_purchase`
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`, `item_id`, `color_id`)
 )
--- query:mgstpp.mgo_item_purchase.create
-create table if not exists `mgo_item_purchase`
+-- query:mgstpp.mgo_item_purchases.create
+create table if not exists `mgo_item_purchases`
 (
 	id						integer	primary key autoincrement,
 	player_id				bigint unsigned	not null,

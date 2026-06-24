@@ -2,7 +2,7 @@
 
 #include "../database.hpp"
 
-namespace database::mgo_item_purchase
+namespace database::mgo_item_purchases
 {
 	enum purchase_id_t : std::uint32_t
 	{
@@ -27,7 +27,7 @@ namespace database::mgo_item_purchase
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(purchase_id, sqlpp::integer_unsigned);
-		DEFINE_TABLE(mgo_item_purchase, id_field_t, player_id_field_t, purchase_id_field_t);
+		DEFINE_TABLE(mgo_item_purchases, id_field_t, player_id_field_t, purchase_id_field_t);
 
 		inline static table_t table;
 

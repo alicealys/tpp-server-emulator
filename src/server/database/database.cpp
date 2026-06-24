@@ -187,7 +187,12 @@ namespace database
 
 	std::string database_container::get_sql_query(const std::string& name)
 	{
-		return database::get_sql_query(get_database_type(), name);
+		const auto& cfg = get_config();
+
+		auto query = database::get_sql_query(get_database_type(), name);
+		query = utils::string::replace(query, "$database_name", cfg.database_name);
+
+		return query;
 	}
 
 	void database_container::reset()
