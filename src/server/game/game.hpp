@@ -167,6 +167,7 @@ namespace game
 		std::uint32_t stat_distribution : 6;
 		std::uint32_t skill : 7;
 		std::uint32_t face_gender : 10;
+		std::uint32_t unk : 2;
 	};
 
 	struct staff_status_sync_t

@@ -419,7 +419,7 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit)
+		std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit)
 		{
 			return database::access<std::vector<std::uint64_t>>([&](database::database_t& db)
 				-> std::vector<std::uint64_t>
@@ -427,7 +427,7 @@ namespace database::player_data
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.player_id)
 							.from(player_data::table)
-								.where((player_data::table.nuke_count > 0))
+								.where(player_data::table.nuke_count > 0 && player_data::table.player_id != player_id)
 					);
 
 				std::vector<std::uint64_t> list;
@@ -702,9 +702,9 @@ namespace database::player_data
 		RUN_IMPL(impl::set_fob_deploy_damage_param, player_id, param);
 	}
 
-	std::vector<std::uint64_t> find_with_nukes(const std::uint32_t limit)
+	std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit)
 	{
-		RUN_IMPL(impl::find_with_nukes, limit);
+		RUN_IMPL(impl::find_with_nukes, player_id, limit);
 	}
 
 	void sync_client_resource_version(const std::uint64_t player_id)
