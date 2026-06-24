@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/mgo_item_purchase.hpp"
+#include "database/models/mgo_item_purchases.hpp"
 
 #include "cmd_get_mgo_purchasable_item_list.hpp"
 
@@ -10,7 +10,7 @@ namespace emulator::mgo
 	{
 		nlohmann::json result;
 
-		const auto& map = database::mgo_item_purchase::get_purchasable_item_map();
+		const auto& map = database::mgo_item_purchases::get_purchasable_item_map();
 
 		auto index = 0;
 		for (const auto& [id, info] : map)

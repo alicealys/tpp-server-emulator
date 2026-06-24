@@ -2,7 +2,7 @@
 
 #include "database/models/player_data.hpp"
 #include "database/models/mgo_data.hpp"
-#include "database/models/mgo_color_purchase.hpp"
+#include "database/models/mgo_color_purchases.hpp"
 #include "database/models/shop_purchases.hpp"
 
 #include "cmd_purchase_mgo_gear_color.hpp"
@@ -27,7 +27,7 @@ namespace emulator::mgo
 		const auto gear_id = gear_id_j.get<std::uint32_t>();
 		[[ maybe_unused ]] const auto price = price_j.get<std::uint32_t>();
 		const auto purchase_type = purchase_type_j.get<std::uint32_t>();
-		const auto gear_info = database::mgo_color_purchase::get_gear_info(gear_id);
+		const auto gear_info = database::mgo_color_purchases::get_gear_info(gear_id);
 
 		const auto buy_color = [&](const std::uint32_t type, const std::uint32_t point)
 		{
@@ -36,7 +36,7 @@ namespace emulator::mgo
 				if (database::player_data::spend_mb_coins(player->get_id(), point))
 				{
 					database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::gears_color_variation, point, gear_id);
-					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::gear, gear_id, target_color);
+					database::mgo_color_purchases::buy_color(player->get_id(), database::mgo_color_purchases::gear, gear_id, target_color);
 					return true;
 				}
 			}
@@ -45,7 +45,7 @@ namespace emulator::mgo
 			{
 				if (database::mgo_data::spend_gp_coins(player->get_id(), point))
 				{
-					database::mgo_color_purchase::buy_color(player->get_id(), database::mgo_color_purchase::gear, gear_id, target_color);
+					database::mgo_color_purchases::buy_color(player->get_id(), database::mgo_color_purchases::gear, gear_id, target_color);
 					return true;
 				}
 			}
@@ -55,15 +55,15 @@ namespace emulator::mgo
 
 		const auto do_purchase = [&]
 		{
-			if (database::mgo_color_purchase::has_gear(player->get_id(), gear_id) || gear_info.purchase_type == 0)
+			if (database::mgo_color_purchases::has_gear(player->get_id(), gear_id) || gear_info.purchase_type == 0)
 			{
-				const auto color_opt = database::mgo_color_purchase::get_gear_color(target_color);
+				const auto color_opt = database::mgo_color_purchases::get_gear_color(target_color);
 				if (!color_opt.has_value())
 				{
 					return false;
 				}
 
-				const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), database::mgo_color_purchase::gear, gear_id);
+				const auto purchased_colors = database::mgo_color_purchases::get_purchased_colors(player->get_id(), database::mgo_color_purchases::gear, gear_id);
 				if (purchased_colors.contains(target_color))
 				{
 					return false;

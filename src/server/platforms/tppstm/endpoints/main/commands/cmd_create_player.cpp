@@ -10,7 +10,7 @@
 #include "database/models/event_rankings.hpp"
 #include "database/models/mgo_data.hpp"
 #include "database/models/mgo_characters.hpp"
-#include "database/models/mgo_item_purchase.hpp"
+#include "database/models/mgo_item_purchases.hpp"
 #include "database/models/fobs.hpp"
 
 namespace emulator::tpp
@@ -88,7 +88,7 @@ namespace emulator::tpp
 					if (database::mgo_characters::create_character(player->get_id(), i))
 					{
 						database::mgo_characters::update_character_progression(player->get_id(), i, params);
-						database::mgo_item_purchase::purchase_item(player->get_id(), database::mgo_item_purchase::character_slot);
+						database::mgo_item_purchases::purchase_item(player->get_id(), database::mgo_item_purchases::character_slot);
 					}
 				}
 

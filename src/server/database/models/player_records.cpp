@@ -350,6 +350,24 @@ namespace database::player_records
 					);
 			});
 		}
+
+		void create_fob_grade_index(database::database_t& db)
+		{
+			if (database::get_database_type() == database_sqlite3)
+			{
+				db.run_query("mgstpp.player_records.fob_grade.create_index");
+			}
+			else
+			{
+				try
+				{
+					db.run_query("mgstpp.player_records.fob_grade.create_index");
+				}
+				catch (...)
+				{
+				}
+			}
+		}
 	}
 
 	std::optional<player_record> find(const std::uint64_t player_id)
@@ -429,6 +447,7 @@ namespace database::player_records
 		void create(database_t& database) override
 		{
 			database.run_query("mgstpp.player_records.create");
+			impl::create_fob_grade_index(database);
 		}
 
 		void run_tasks(database_t& database) override

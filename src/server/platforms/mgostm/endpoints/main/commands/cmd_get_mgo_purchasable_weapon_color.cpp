@@ -2,7 +2,7 @@
 
 #include "cmd_get_mgo_purchasable_weapon_color.hpp"
 
-#include "database/models/mgo_color_purchase.hpp"
+#include "database/models/mgo_color_purchases.hpp"
 
 namespace emulator::mgo
 {
@@ -25,8 +25,8 @@ namespace emulator::mgo
 
 		auto& color_list = result["purchasable_weapon_color"]["purchasable_color_list"];
 
-		const auto& colors = database::mgo_color_purchase::get_weapon_colors();
-		const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), database::mgo_color_purchase::weapon, weapon_id);
+		const auto& colors = database::mgo_color_purchases::get_weapon_colors();
+		const auto purchased_colors = database::mgo_color_purchases::get_purchased_colors(player->get_id(), database::mgo_color_purchases::weapon, weapon_id);
 
 		for (auto i = 0ull; i < colors.size(); i++)
 		{

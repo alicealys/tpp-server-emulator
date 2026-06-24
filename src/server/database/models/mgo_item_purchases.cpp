@@ -1,10 +1,10 @@
 #include <std_include.hpp>
 
-#include "mgo_item_purchase.hpp"
+#include "mgo_item_purchases.hpp"
 
 #include <utils/string.hpp>
 
-namespace database::mgo_item_purchase
+namespace database::mgo_item_purchases
 {
 	std::unordered_map<std::uint32_t, purchase_info_t> load_purchasable_item_map()
 	{
@@ -96,9 +96,9 @@ namespace database::mgo_item_purchase
 	public:
 		void create(database_t& database) override
 		{
-			database.run_query("mgstpp.mgo_item_purchase.create");
+			database.run_query("mgstpp.mgo_item_purchases.create");
 		}
 	};
 }
 
-REGISTER_TABLE(database::mgo_item_purchase::table, -1)
+REGISTER_TABLE(database::mgo_item_purchases::table, -1)

@@ -1,6 +1,6 @@
 #include <std_include.hpp>
 
-#include "database/models/mgo_color_purchase.hpp"
+#include "database/models/mgo_color_purchases.hpp"
 
 #include "cmd_get_mgo_purchasable_gear_color.hpp"
 
@@ -25,8 +25,8 @@ namespace emulator::mgo
 
 		auto& color_list = result["purchasable_gear_color"]["purchasable_color_list"];
 
-		const auto& colors = database::mgo_color_purchase::get_gear_colors();
-		const auto purchased_colors = database::mgo_color_purchase::get_purchased_colors(player->get_id(), database::mgo_color_purchase::gear, gear_id);
+		const auto& colors = database::mgo_color_purchases::get_gear_colors();
+		const auto purchased_colors = database::mgo_color_purchases::get_purchased_colors(player->get_id(), database::mgo_color_purchases::gear, gear_id);
 
 		for (auto i = 0ull; i < colors.size(); i++)
 		{
