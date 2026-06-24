@@ -7,6 +7,7 @@
 #include "fobs.hpp"
 #include "variables.hpp"
 #include "event_rankings.hpp"
+#include "../../component/command.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -320,8 +321,35 @@ namespace database::fob_events
 	public:
 		void create(database_t& database) override
 		{
-			get_current_event_index();
 			create_database_entries();
+
+			command::add("get_current_event", []()
+			{
+				const auto event = get_current_event();
+				if (event.has_value())
+				{
+					console::print("[FOB Events] current event: \n");
+					console::print("\tname: %s\n", event->server_text.data());
+					console::print("\tplayer list:\n");
+
+					for (const auto id : event->player_ids)
+					{
+						const auto player = get_player(id);
+						if (player.has_value())
+						{
+							console::print("\t\tid: %i, name: \"%s\"\n", id, player->player_name.data());
+						}
+					}
+
+					console::print("--------------------------------------------\n");
+				}
+				else
+				{
+					console::print("[FOB Events] no events running\n");
+				}
+			});
+
+			command::execute("get_current_event");
 		}
 
 		void run_tasks(database_t& database) override

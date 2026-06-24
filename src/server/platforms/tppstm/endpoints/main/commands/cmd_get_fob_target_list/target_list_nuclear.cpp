@@ -8,15 +8,10 @@ namespace emulator::tpp
 	{
 		target_list_t targets;
 
-		const auto players = database::player_data::find_with_nukes(std::min(limit, 10u));
+		const auto players = database::player_data::find_with_nukes(player.get_id(), std::min(limit, 10u));
 
 		for (const auto& id : players)
 		{
-			if (id == player.get_id())
-			{
-				continue;
-			}
-
 			target_data_t data{};
 			data.player_id = id;
 			targets.emplace_back(data);
