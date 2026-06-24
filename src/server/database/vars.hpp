@@ -22,6 +22,8 @@ namespace database
 		bool unlock_all_items = false;
 		bool use_real_client_ip = false;
 		bool signup_bonus = false;
+		bool no_fob_damage = false;
+		bool pvp_mode = false;
 	};
 	
 	extern vars_t vars;

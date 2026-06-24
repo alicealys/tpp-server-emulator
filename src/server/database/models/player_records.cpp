@@ -242,8 +242,8 @@ namespace database::player_records
 							.from(player_record::table)
 								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && player_record::table.fob_grade == grade &&
 										player_record::table.player_id != player_id)
-									.order_by(rand.asc())
-										.limit(limit));
+											.order_by(rand.asc())
+												.limit(limit));
 
 				std::vector<player_record> list;
 				for (auto& row : results)

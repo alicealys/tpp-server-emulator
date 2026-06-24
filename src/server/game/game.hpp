@@ -201,7 +201,8 @@ namespace game
 
 	struct staff_status_no_sync_t
 	{
-		std::uint32_t data;
+		std::uint16_t locked : 1;
+		std::uint16_t unk : 15;
 	};
 
 	struct staff_unknown1_t
@@ -236,7 +237,7 @@ namespace game
 		union
 		{
 			staff_status_no_sync_t status_no_sync;
-			std::uint32_t packed_status_no_sync;
+			std::uint16_t packed_status_no_sync;
 		};
 	};
 
@@ -508,6 +509,17 @@ namespace game
 
 	extern std::vector<std::string> unit_names;
 	extern std::vector<std::string> platform_keys;
+
+	enum platform_type_t
+	{
+		platform_command = 0,
+		platform_combat = 1,
+		platform_rnd = 2,
+		platform_support = 3,
+		platform_medical = 4,
+		platform_intel = 5,
+		platform_base_dev = 6,
+	};
 
 	enum pf_skill_staff_type_t
 	{
