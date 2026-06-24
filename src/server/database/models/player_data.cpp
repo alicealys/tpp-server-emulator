@@ -2,8 +2,6 @@
 
 #include "player_data.hpp"
 
-#include "utils/encoding.hpp"
-
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
@@ -41,14 +39,6 @@ namespace database::player_data
 		return utils::cryptography::base64::encode(buffer);
 	}
 
-	std::string staff_array_container::encode_database() const
-	{
-		const auto ptr = reinterpret_cast<const std::uint8_t*>(this->data());
-		const auto data = std::string{ptr, ptr + this->data_size()};
-		const auto encoded = utils::encoding::encode_as_hex(data);
-		return encoded;
-	}
-
 	std::optional<staff_array_container> staff_array_container::decode_client_staff_array(const std::string& data)
 	{
 		const auto staff_bin = utils::cryptography::base64::decode(utils::encoding::decode_url_string(data));
@@ -65,6 +55,25 @@ namespace database::player_data
 		return {staff_array};
 	}
 
+	std::int64_t prisoner_array_container::get_first_free() const
+	{
+		for (auto i = 0u; i < this->size(); i++)
+		{
+			if (this->operator[](i).owner_id == 0)
+			{
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	bool can_recover_prisoner(const prisoner_t& prisoner)
+	{
+		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		return now - prisoner.time_captured < database::player_data::prisoner_hold_time.count();
+	}
+
 	namespace impl
 	{
 		template <database_type_t Type>
@@ -76,12 +85,10 @@ namespace database::player_data
 					sqlpp::insert_into(player_data::table)
 						.set(player_data::table.player_id = player_id,
 							 player_data::table.staff_count = 0,
-							 player_data::table.loadout = "{}",
-							 player_data::table.motherbase = "{}",
-							 player_data::table.emblem = "{}",
 							 player_data::table.local_gmp = 0,
 							 player_data::table.server_gmp = 0,
 							 player_data::table.loadout_gmp = 0,
+							 player_data::table.loadout = "{}",
 							 player_data::table.insurance_gmp = 0,
 							 player_data::table.injury_gmp = 0
 					));
@@ -135,6 +142,19 @@ namespace database::player_data
 						.set(player_data::table.staff_count = staff_count,
 							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+		
+		template <database_type_t Type>
+		void set_prison_bin(const std::uint64_t player_id, const prisoner_array_container& prison)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.prison_bin = sqlpp::verbatim<sqlpp::binary>(prison.encode_database()))
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -569,12 +589,37 @@ namespace database::player_data
 				}
 
 				const auto staff_bin = results.front().staff_bin.value();
-				if (staff_bin.size() != sizeof(staff_array_t))
+				if (staff_bin.size() != out_staff.get_raw_size())
 				{
 					return;
 				}
 
-				std::memcpy(out_staff.data(), staff_bin.data(), sizeof(staff_array_t));
+				std::memcpy(out_staff.data(), staff_bin.data(), out_staff.get_raw_size());
+			});
+		}
+						
+		template <database_type_t Type>
+		void get_prisoner_array(const std::uint64_t player_id, prisoner_array_container& out_prison)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(player_data::table.prison_bin)
+							.from(player_data::table)
+								.where(player_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return;
+				}
+
+				const auto prison_bin = results.front().prison_bin.value();
+				if (prison_bin.size() != out_prison.get_raw_size())
+				{
+					return;
+				}
+
+				std::memcpy(out_prison.data(), prison_bin.data(), out_prison.get_raw_size());
 			});
 		}
 	}
@@ -604,6 +649,11 @@ namespace database::player_data
 		RUN_IMPL(impl::get_staff_array, this->player_id_, staff_array);
 	}
 
+	void player_data::get_prisoner_array(prisoner_array_container& prison) const
+	{
+		RUN_IMPL(impl::get_prisoner_array, this->player_id_, prison);
+	}
+
 	void create(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::create, player_id);
@@ -629,6 +679,11 @@ namespace database::player_data
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array)
 	{
 		RUN_IMPL(impl::set_soldier_bin, player_id, staff_count, staff_array);
+	}
+
+	void set_prison_bin(const std::uint64_t player_id, const prisoner_array_container& prison)
+	{
+		RUN_IMPL(impl::set_prison_bin, player_id, prison);
 	}
 
 	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,

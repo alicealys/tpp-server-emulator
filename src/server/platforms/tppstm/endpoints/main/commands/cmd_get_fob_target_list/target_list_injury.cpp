@@ -37,20 +37,33 @@ namespace emulator::tpp
 			}
 
 			target.extra_data["owner_fob_record"]["injury_staff_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			target.extra_data["owner_fob_record"]["capture_staff_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 			target.extra_data["is_win"] = static_cast<int>(row.is_win());
 			target.extra_data["cluster"] = row.get_platform();
 
-			for (auto i = 0ull; i < sneak_data["injure_soldier_id"].size(); i++)
+			const auto do_staff_count = [&](const std::string& list, const std::string& count)
 			{
-				const auto header_val = sneak_data["injure_soldier_id"][i]["param"][0].get<std::uint32_t>();
-				game::staff_header_t header{};
+				for (auto i = 0ull; i < sneak_data[list].size(); i++)
+				{
+					const auto header_val = sneak_data[list][i]["param"][0].get<std::uint32_t>();
+					game::staff_header_t header{};
 
-				std::memcpy(&header, &header_val, sizeof(game::staff_header_t));
-				auto& value = target.extra_data["owner_fob_record"]["injury_staff_count"][header.peak_rank];
+					std::memcpy(&header, &header_val, sizeof(game::staff_header_t));
+					auto& value = target.extra_data["owner_fob_record"][count][header.peak_rank];
 
-				const auto current = value.get<std::uint32_t>();
-				value = current + 1;
-			}
+					const auto current = value.get<std::uint32_t>();
+					value = current + 1;
+				}
+
+			};
+
+			do_staff_count("injure_soldier_id", "injury_staff_count");
+			do_staff_count("kill_soldier_id", "injury_staff_count");
+			do_staff_count("capture_soldier_id", "capture_staff_count");
+
+			target.extra_data["owner_fob_record"]["capture_resource"] = sneak_data["capture_resource"];
+			target.extra_data["owner_fob_record"]["capture_nuclear"] = sneak_data["capture_nuclear"];
 
 			target.extra_data["owner_fob_record"]["date_time"] = row.get_date();
 			target.player_id = row.get_player_id();

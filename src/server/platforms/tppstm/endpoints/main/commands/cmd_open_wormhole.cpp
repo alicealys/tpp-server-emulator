@@ -32,6 +32,12 @@ namespace emulator::tpp
 		const auto from_player_id = player_id_j.get<std::uint64_t>();  // fob owner
 		const auto to_player_id = to_player_id_j.get<std::uint64_t>(); // attacker
 
+		const auto owner = database::players::find(from_player_id);
+		if (!owner.has_value())
+		{
+			return error(ERR_PLAYER_NOTFOUND);
+		}
+
 		if (to_player_id != player->get_id())
 		{
 			return error(ERR_INVALIDARG);
@@ -47,10 +53,18 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		database::wormholes::add_wormhole(from_player_id, to_player_id, flag_id, is_open, retaliate_score);
-		const auto status = database::wormholes::get_wormhole_status(from_player_id, to_player_id);
+		if (!owner->is_security_challenge_enabled())
+		{
+			database::wormholes::add_wormhole(from_player_id, to_player_id, flag_id, is_open, retaliate_score);
+			const auto status = database::wormholes::get_wormhole_status(from_player_id, to_player_id);
 
-		result["is_new_open"] = status.open && status.first;
+			result["is_new_open"] = status.open && status.first;
+		}
+		else
+		{
+			result["is_new_open"] = false;
+		}
+
 		result["player_id"] = from_player_id;
 		result["to_player_id"] = to_player_id;
 

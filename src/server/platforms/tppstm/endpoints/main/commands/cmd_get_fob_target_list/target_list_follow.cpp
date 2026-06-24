@@ -6,7 +6,7 @@
 
 namespace emulator::tpp
 {
-	target_list_t target_list_follow::generate(const database::players::player& player, const std::optional<database::player_data::player_data>& player_data, const std::uint32_t limit)
+	target_list_t target_list_follow::generate_impl(const database::players::player& player, const std::optional<database::player_data::player_data>& player_data, const std::uint32_t limit)
 	{
 		target_list_t targets;
 
@@ -23,5 +23,10 @@ namespace emulator::tpp
 		}
 
 		return targets;
+	}
+
+	target_list_t target_list_follow::generate(const database::players::player& player, const std::optional<database::player_data::player_data>& player_data, const std::uint32_t limit)
+	{
+		return generate_impl(player, player_data, limit);
 	}
 }

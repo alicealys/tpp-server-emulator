@@ -6,6 +6,8 @@
 
 #include "utils/static_vector.hpp"
 
+#include "utils/encoding.hpp"
+
 #include <utils/memory.hpp>
 #include <utils/cryptography.hpp>
 #include <utils/compression.hpp>
@@ -19,18 +21,49 @@ namespace database::player_data
 	using unit_counts_t = std::uint32_t[game::unit_count];
 	using staff_counts_t = std::uint32_t[game::rank_count];
 
-	class staff_array_container : public utils::static_vector<game::staff_t, game::max_staff_count>
+	constexpr const std::chrono::seconds prisoner_hold_time = 24h * 3;
+
+	struct prisoner_t
+	{
+		std::uint64_t owner_id;
+		std::int64_t time_captured;
+		game::staff_t data;
+	};
+
+	template <typename T, size_t MaxCount>
+	class db_array_container_base : public utils::static_vector<T, MaxCount>
+	{
+	public:
+		std::string encode_database() const
+		{
+			const auto ptr = reinterpret_cast<const std::uint8_t*>(this->data());
+			const auto data = std::string{ptr, ptr + this->data_size()};
+			const auto encoded = utils::encoding::encode_as_hex(data);
+			return encoded;
+		}
+
+		size_t get_raw_size() const
+		{
+			return sizeof(T) * MaxCount;
+		}
+	};
+
+	class staff_array_container : public db_array_container_base<game::staff_t, game::max_staff_count>
 	{
 	public:
 		std::string encode_client() const;
-		std::string encode_database() const;
-
 		static std::optional<staff_array_container> decode_client_staff_array(const std::string& data);
-
 	private:
 		void swap_bytes();
-
 	};
+
+	class prisoner_array_container : public db_array_container_base<prisoner_t, 300>
+	{
+	public:
+		std::int64_t get_first_free() const;
+	};
+
+	bool can_recover_prisoner(const prisoner_t& prisoner);
 
 	class player_data
 	{
@@ -44,6 +77,7 @@ namespace database::player_data
 		DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(staff_counts, sqlpp::binary);
 		DEFINE_FIELD(staff_bin, sqlpp::binary);
+		DEFINE_FIELD(prison_bin, sqlpp::binary);
 		DEFINE_FIELD(loadout, sqlpp::text);
 		DEFINE_FIELD(motherbase, sqlpp::binary);
 		DEFINE_FIELD(emblem, sqlpp::binary);
@@ -60,7 +94,9 @@ namespace database::player_data
 		DEFINE_FIELD(server_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
 		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_counts_field_t, staff_bin_field_t, loadout_field_t,
+			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_counts_field_t, 
+			staff_bin_field_t, prison_bin_field_t,
+			loadout_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
 			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, 
 			client_resource_version_field_t, client_staff_version_field_t,
@@ -239,6 +275,7 @@ namespace database::player_data
 
 		void get_resource_arrays(resource_arrays_t& arrays) const;
 		void get_staff_array(staff_array_container& staff_array) const;
+		void get_prisoner_array(prisoner_array_container& staff_array) const;
 
 	private:
 		std::uint64_t player_id_;
@@ -274,6 +311,7 @@ namespace database::player_data
 	std::optional<player_data> find_or_create(const std::uint64_t player_id);
 
 	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array);
+	void set_prison_bin(const std::uint64_t player_id, const prisoner_array_container& prison);
 
 	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
 		unit_levels_t& levels, unit_counts_t& counts);

@@ -91,7 +91,7 @@ namespace database::wormholes
 	{
 		std::uint64_t player_id;
 		std::uint64_t to_player_id;
-		std::uint32_t score;
+		std::int32_t score;
 		bool open;
 		bool first;
 		std::chrono::microseconds expire;

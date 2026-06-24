@@ -704,7 +704,8 @@ namespace database::players
 					sqlpp::select(
 						sqlpp::count(1))
 							.from(player::table)
-								.where(player::table.last_update >= std::chrono::system_clock::now() - within));
+								.where(!IS_SYSTEM_PLAYER_ID(player::table.id) && 
+										player::table.last_update >= std::chrono::system_clock::now() - within));
 
 				return results.front().count.value();
 			});

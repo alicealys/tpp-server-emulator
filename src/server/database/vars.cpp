@@ -31,5 +31,7 @@ namespace database
 
 		vars.use_real_client_ip = config::get_or<bool>("vars.use_real_client_ip", vars.use_real_client_ip);
 		vars.signup_bonus = config::get_or<bool>("vars.signup_bonus", vars.signup_bonus);
+		vars.no_fob_damage = config::get_or<bool>("vars.no_fob_damage", vars.no_fob_damage);
+		vars.pvp_mode = config::get_or<bool>("vars.pvp_mode", vars.pvp_mode);
 	}
 }
