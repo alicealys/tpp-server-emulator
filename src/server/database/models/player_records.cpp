@@ -241,7 +241,7 @@ namespace database::player_records
 						sqlpp::all_of(player_record::table))
 							.from(player_record::table)
 								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && player_record::table.fob_grade == grade &&
-										player_record::table.player_id != player_id)
+										player_record::table.player_id != player_id && player_record::table.has_fob)
 											.order_by(rand.asc())
 												.limit(limit));
 
@@ -350,6 +350,19 @@ namespace database::player_records
 					);
 			});
 		}
+		
+		template <database_type_t Type>
+		void set_has_fob(const std::uint64_t player_id, const bool has_fob)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.has_fob = has_fob)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
 
 		void create_fob_grade_index(database::database_t& db)
 		{
@@ -439,6 +452,11 @@ namespace database::player_records
 	void set_fob_point(const std::uint64_t player_id, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::set_fob_point, player_id, value);
+	}
+
+	void set_has_fob(const std::uint64_t player_id, const bool has_fob)
+	{
+		RUN_IMPL(impl::set_has_fob, player_id, has_fob);
 	}
 
 	class table final : public table_interface

@@ -33,11 +33,12 @@ namespace database::player_records
 		DEFINE_FIELD(fob_sneak_win, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
 		DEFINE_FIELD(shield_date, sqlpp::time_point);
+		DEFINE_FIELD(has_fob, sqlpp::boolean);
 		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
 			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t,
 			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
-			fob_sneak_lose_field_t, shield_date_field_t);
+			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t);
 
 		inline static table_t table;
 
@@ -64,6 +65,7 @@ namespace database::player_records
 			this->fob_defense_lose_ = static_cast<std::uint32_t>(row.fob_defense_lose);
 			this->fob_sneak_win_ = static_cast<std::uint32_t>(row.fob_sneak_win);
 			this->fob_sneak_lose_ = static_cast<std::uint32_t>(row.fob_sneak_lose);
+			this->has_fob_ = static_cast<bool>(row.has_fob);
 			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
 		}
 
@@ -178,6 +180,11 @@ namespace database::player_records
 			return this->get_shield_date() != 0;
 		}
 
+		bool has_an_fob() const
+		{
+			return this->has_fob_;
+		}
+
 	private:
 		std::uint64_t id_;
 		std::uint64_t player_id_;
@@ -199,6 +206,7 @@ namespace database::player_records
 		std::uint32_t fob_defense_lose_;
 		std::uint32_t fob_sneak_win_;
 		std::uint32_t fob_sneak_lose_;
+		bool has_fob_;
 
 		std::chrono::seconds shield_date_;
 
@@ -221,4 +229,5 @@ namespace database::player_records
 	void clear_shield_date(const std::uint64_t player_id);
 
 	void set_fob_point(const std::uint64_t player_id, const std::uint32_t value);
+	void set_has_fob(const std::uint64_t player_id, const bool has_fob);
 }

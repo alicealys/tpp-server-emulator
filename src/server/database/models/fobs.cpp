@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "fobs.hpp"
+#include "player_records.hpp"
 
 #include "utils/encoding.hpp"
 
@@ -181,6 +182,7 @@ namespace database::fobs
 			std::vector<fob> list = get_fob_list<Type>(player_id);
 
 			auto index = 0ull;
+			auto has_an_fob = false;
 			for (auto& server_fob : list)
 			{
 				if (index >= fob_params.size())
@@ -190,6 +192,11 @@ namespace database::fobs
 
 				auto& fob_param = fob_params[index];
 				auto& server_cluster_param = server_fob.get_cluster_param();
+
+				if (fob_param.platform_count > 0 && fob_param.construct_param.packed != 0)
+				{
+					has_an_fob = true;
+				}
 
 				for (auto i = 0ull; i < game::fob_sections_count; i++)
 				{
@@ -228,6 +235,8 @@ namespace database::fobs
 
 				++index;
 			}
+
+			database::player_records::set_has_fob(player_id, has_an_fob);
 		}
 
 		template <database_type_t Type>
