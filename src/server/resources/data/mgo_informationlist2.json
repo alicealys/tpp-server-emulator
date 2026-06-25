@@ -1,4 +1,12 @@
-{
-    "info_list": [],
-    "info_num": 0
-}
+[
+    {
+        "important": false,
+        "info_id": 100000,
+        "body": [
+            {
+                "lang": "EN",
+                "text": "tpp-server-emulator"
+            }
+        ]
+    }
+]

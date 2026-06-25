@@ -129,7 +129,7 @@ namespace database::fob_events
 			return player;
 		}
 
-		fob_event_t parse_event(const nlohmann::json& event_j)
+		fob_event_t parse_event(nlohmann::json& event_j)
 		{
 			fob_event_t event{};
 
@@ -139,12 +139,9 @@ namespace database::fob_events
 			auto& information_list = event_j["information_list"];
 			for (auto i = 0ull; i < information_list.size(); i++)
 			{
-				fob_event_information_t info{};
-				info.important = information_list[i]["important"].get<std::string>();
-				info.info_id = information_list[i]["info_id"].get<std::uint32_t>();
-				info.mes_body = information_list[i]["mes_body"].get<std::string>();
-				info.mes_subject = information_list[i]["mes_subject"].get<std::string>();
-				event.information.emplace_back(info);
+				auto& info = information_list[i];
+				const auto entry = emulator::tpp::cmd_get_informationlist2_base::parse_message(info);
+				event.information.emplace_back(entry);
 			}
 
 			auto& point_exchange_params = event_j["point_exchange_params"];
