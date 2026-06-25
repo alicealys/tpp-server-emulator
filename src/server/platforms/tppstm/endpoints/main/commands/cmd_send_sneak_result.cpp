@@ -36,7 +36,7 @@ namespace emulator::tpp
 			}
 
 			soldier_map_t soldier_ids;
-			const auto count = std::min(256ull, list.size());
+			const auto count = std::min(256u, static_cast<std::uint32_t>(list.size()));
 			for (auto i = 0ull; i < count; i++)
 			{
 				auto& soldier_param = list[i]["param"];
