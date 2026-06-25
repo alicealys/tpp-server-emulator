@@ -56,7 +56,7 @@ namespace emulator::tpp
 
 		void modify_staff_array(const std::uint64_t owner_id, database::player_data::staff_array_container& staff_array, 
 			database::player_data::prisoner_array_container& attacker_prison,
-			soldier_map_t& soldier_ids, const soldier_array_action action)
+			soldier_map_t& soldier_ids, const soldier_array_action action, std::uint32_t* counts)
 		{
 			auto prison_first_free = attacker_prison.get_first_free();
 			const auto attack_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
@@ -80,11 +80,13 @@ namespace emulator::tpp
 				switch (action)
 				{
 				case soldier_injure:
+					counts[staff->fields.header.peak_rank]++;
 					staff->fields.status_sync.health_state = 1;
 					staff->fields.status_sync.designation = game::des_sickbay;
 					break;
 				case soldier_capture:
 				{
+					counts[staff->fields.header.peak_rank]++;
 					if (prison_first_free != -1 && prison_first_free < static_cast<std::int64_t>(attacker_prison.size()))
 					{
 						auto& prisoner = attacker_prison[prison_first_free++];
@@ -96,6 +98,7 @@ namespace emulator::tpp
 					break;
 				}
 				case soldier_kill:
+					counts[staff->fields.header.peak_rank]++;
 					std::memset(staff, 0, sizeof(game::staff_t));
 					break;
 				}
@@ -175,7 +178,9 @@ namespace emulator::tpp
 		void update_staff(
 			const database::player_data::player_data& owner_data,
 			const database::player_data::player_data& attacker_data,
-			nlohmann::json& data, const bool has_insurance)
+			nlohmann::json& data, 
+			database::sneak_results::sneak_result_data_t& event_data,
+			const bool has_insurance)
 		{
 			database::player_data::staff_array_container owner_staff;
 			owner_data.get_staff_array(owner_staff);
@@ -199,7 +204,21 @@ namespace emulator::tpp
 			for (const auto& [name, action] : soldier_list_map)
 			{
 				auto list = parse_soldier_id_list(data[name]);
-				modify_staff_array(owner_data.get_player_id(), owner_staff, attacker_prison, list, action);
+				auto counts = event_data.injury_staff_count;
+				switch (action)
+				{
+				case soldier_capture:
+					counts = event_data.capture_staff_count;
+					break;
+				case soldier_injure:
+					counts = event_data.injury_staff_count;
+					break;
+				case soldier_kill:
+					counts = event_data.kill_staff_count;
+					break;
+				}
+
+				modify_staff_array(owner_data.get_player_id(), owner_staff, attacker_prison, list, action, counts);
 			}
 
 			const auto is_win = data["sneak_result"] == "WIN";
@@ -223,6 +242,7 @@ namespace emulator::tpp
 			const database::player_data::player_data& attacker_data,
 			const database::player_data::player_data& owner_data,
 			nlohmann::json& data,
+			database::sneak_results::sneak_result_data_t& sneak_data,
 			const bool has_insurance)
 		{
 			database::player_data::resource_arrays_t owner_resources{};
@@ -247,30 +267,70 @@ namespace emulator::tpp
 					attacker_resources[resource_type][resource_id] += value;
 				}
 
-				from[key] = value;
+				return value;
 			};
 
-			constexpr const auto placement_cap = 4 * 4;
-			constexpr const auto resources_cap = 200000;
+			constexpr const auto placement_cap = 4u * 4u;
+			constexpr const auto resources_cap = 500000u;
 
-			do_resource(data, "capture_nuclear", game::processed_server, game::nuclear, 4);
-			do_resource(data["capture_resource"], "biotic_resource", game::unprocessed_server, game::minor_metal, resources_cap);
-			do_resource(data["capture_resource"], "common_metal", game::unprocessed_server, game::common_metal, resources_cap);
-			do_resource(data["capture_resource"], "fuel_resource", game::unprocessed_server, game::fuel_resource, resources_cap);
-			do_resource(data["capture_resource"], "minor_metal", game::unprocessed_server, game::precious_metal, resources_cap);
-			do_resource(data["capture_resource"], "precious_metal", game::unprocessed_server, game::biotic_resource, resources_cap);
+			sneak_data.capture_nuclear = static_cast<std::uint8_t>(do_resource(data, "capture_nuclear", game::processed_server, game::nuclear, 4));
+			sneak_data.capture_resource.biotic_resource = do_resource(data["capture_resource"], "biotic_resource", game::unprocessed_server, game::minor_metal, resources_cap);
+			sneak_data.capture_resource.common_metal = do_resource(data["capture_resource"], "common_metal", game::unprocessed_server, game::common_metal, resources_cap);
+			sneak_data.capture_resource.fuel_resource = do_resource(data["capture_resource"], "fuel_resource", game::unprocessed_server, game::fuel_resource, resources_cap);
+			sneak_data.capture_resource.minor_metal = do_resource(data["capture_resource"], "minor_metal", game::unprocessed_server, game::precious_metal, resources_cap);
+			sneak_data.capture_resource.precious_metal = do_resource(data["capture_resource"], "precious_metal", game::unprocessed_server, game::biotic_resource, resources_cap);
 
-			do_resource(data["capture_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap);
-			do_resource(data["capture_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap);
-			do_resource(data["capture_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap);
-			do_resource(data["capture_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap);
-			do_resource(data["capture_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap);
+			sneak_data.capture_placement.mortar_normal = do_resource(data["capture_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap);
+			sneak_data.capture_placement.gatling_gun_east = do_resource(data["capture_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap);
+			sneak_data.capture_placement.gatling_gun_west = do_resource(data["capture_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap);
+			sneak_data.capture_placement.emplacement_gun_east = do_resource(data["capture_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap);
+			sneak_data.capture_placement.emplacement_gun_west = do_resource(data["capture_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap);
 
-			do_resource(data["destroy_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap, true);
-			do_resource(data["destroy_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap, true);
-			do_resource(data["destroy_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap, true);
-			do_resource(data["destroy_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap, true);
-			do_resource(data["destroy_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap, true);
+			sneak_data.destroy_placement.mortar_normal = do_resource(data["destroy_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap, true);
+			sneak_data.destroy_placement.gatling_gun_east = do_resource(data["destroy_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap, true);
+			sneak_data.destroy_placement.gatling_gun_west = do_resource(data["destroy_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap, true);
+			sneak_data.destroy_placement.emplacement_gun_east = do_resource(data["destroy_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap, true);
+			sneak_data.destroy_placement.emplacement_gun_west = do_resource(data["destroy_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap, true);
+		}
+
+		bool parse_event_log(nlohmann::json& event, std::string& parsed)
+		{
+			if (!event.is_object() || !event["data"].is_string() || !event["size"].is_number_unsigned())
+			{
+				return false;
+			}
+
+			const auto event_log = event["data"].get<std::string>();
+			auto event_log_size = event["size"].get<std::size_t>();
+
+			if (event_log_size > 0x4000 || event_log_size > event_log.size())
+			{
+				return false;
+			}
+
+			parsed = utils::cryptography::base64::decode(event_log);
+			parsed.resize(event_log_size);
+			return true;
+		}
+
+		bool parse_event_data(nlohmann::json& event, database::sneak_results::sneak_result_data_t& event_data)
+		{
+			const auto set_value = []<typename T>(nlohmann::json& v, T* ptr, const bool is_signed)
+			{
+				if ((is_signed && v.is_number_integer()) || (!is_signed && v.is_number_unsigned()))
+				{
+					*ptr = v.get<T>();
+				}
+			};
+
+			set_value(event["gmp"], &event_data.gmp, true);
+			set_value(event["layout_code"], &event_data.layout_code, false);
+			set_value(event["position_x"], &event_data.position_x, true);
+			set_value(event["position_z"], &event_data.position_z, true);
+			set_value(event["rotate_y"], &event_data.rotate_y, true);
+			set_value(event["cluster"], &event_data.cluster, false);
+
+			return true;
 		}
 	}
 
@@ -305,11 +365,25 @@ namespace emulator::tpp
 		const auto& sneak_point_j = data["sneak_point"];
 		const auto& event_point_j = data["event_point"];
 		const auto& is_event_j = data["is_event"];
+		auto& event_j = data["event"];
 		const auto& mode_str_j = data["mode"];
 		const auto& mother_base_id_j = data["mother_base_id"];
 
 		if (!sneak_result_j.is_string() || !sneak_point_j.is_number() || !event_point_j.is_number_unsigned() ||
-			!is_event_j.is_number_unsigned() || !mode_str_j.is_string() || !mother_base_id_j.is_number_unsigned())
+			!is_event_j.is_number_unsigned() || !mode_str_j.is_string() || !mother_base_id_j.is_number_unsigned() ||
+			!event_j.is_object())
+		{
+			return error(ERR_INVALIDARG);
+		}
+
+		std::string event_log;
+		if (!parse_event_log(event_j, event_log))
+		{
+			return error(ERR_INVALIDARG);
+		}
+
+		database::sneak_results::sneak_result_data_t event_data{};
+		if (!parse_event_data(event_j, event_data))
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -395,18 +469,12 @@ namespace emulator::tpp
 
 					if (!database::vars.pvp_mode && !database::vars.no_fob_damage && owner_data.has_value() && attacker_data.has_value())
 					{
-						update_staff(owner_data.value(), attacker_data.value(), data, owner_has_insurance);
-						update_resources(owner_data.value(), attacker_data.value(), data, owner_has_insurance);
+						update_staff(owner_data.value(), attacker_data.value(), data, event_data, owner_has_insurance);
+						update_resources(owner_data.value(), attacker_data.value(), data, event_data, owner_has_insurance);
 					}
 
-					nlohmann::json sneak_data = data;
-					sneak_data.erase("msgid");
-					sneak_data.erase("rqid");
-
-					sneak_data["event"]["attacker_info"] = player_info(player);
-
 					auto& active_sneak_val = active_sneak.value();
-					if (!database::sneak_results::add_sneak_result(player.value(), fob.value(), active_sneak_val, is_win, sneak_data))
+					if (!database::sneak_results::add_sneak_result(player.value(), fob.value(), active_sneak_val, is_win, event_data, event_log))
 					{
 						result["result"] = game::get_error(ERR_DATABASE);
 					}

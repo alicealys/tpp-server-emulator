@@ -142,6 +142,24 @@ namespace game
 		resource_type_count = 59,
 	};
 
+	struct fob_resources_t
+	{
+		std::uint32_t fuel_resource;
+		std::uint32_t biotic_resource;
+		std::uint32_t common_metal;
+		std::uint32_t minor_metal;
+		std::uint32_t precious_metal;
+	};
+
+	struct fob_placements_t
+	{
+		std::uint32_t emplacement_gun_east;
+		std::uint32_t emplacement_gun_west;
+		std::uint32_t gatling_gun_east;
+		std::uint32_t gatling_gun_west;
+		std::uint32_t mortar_normal;
+	};
+
 	extern std::array<std::uint32_t, resource_type_count> local_processed_resource_caps;
 	extern std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps;
 	extern std::array<std::uint32_t, resource_type_count> server_processed_resource_caps;

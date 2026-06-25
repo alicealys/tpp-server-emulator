@@ -19,9 +19,9 @@ namespace emulator::tpp
 		{
 			target_data_t target{};
 
-			auto& sneak_data = row.get_data();
+			const auto& event_data = row.get_event_data();
 
-			const auto wormhole = database::wormholes::get_wormhole_status(player.get_id(), row.get_player_id());
+			const auto wormhole = database::wormholes::get_wormhole_status(player.get_id(), row.get_attacker_id());
 
 			if (wormhole.open)
 			{
@@ -36,37 +36,25 @@ namespace emulator::tpp
 				target.extra_data["owner_fob_record"]["left_hour"] = left_hour;
 			}
 
-			target.extra_data["owner_fob_record"]["injury_staff_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			target.extra_data["owner_fob_record"]["capture_staff_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			for (auto i = 0; i < 10; i++)
+			{
+				target.extra_data["owner_fob_record"]["injury_staff_count"][i] = event_data.injury_staff_count[i] + event_data.kill_staff_count[i];
+				target.extra_data["owner_fob_record"]["capture_staff_count"][i] = event_data.capture_staff_count[i];
+			}
 
 			target.extra_data["is_win"] = static_cast<int>(row.is_win());
 			target.extra_data["cluster"] = row.get_platform();
 
-			const auto do_staff_count = [&](const std::string& list, const std::string& count)
-			{
-				for (auto i = 0ull; i < sneak_data[list].size(); i++)
-				{
-					const auto header_val = sneak_data[list][i]["param"][0].get<std::uint32_t>();
-					game::staff_header_t header{};
-
-					std::memcpy(&header, &header_val, sizeof(game::staff_header_t));
-					auto& value = target.extra_data["owner_fob_record"][count][header.peak_rank];
-
-					const auto current = value.get<std::uint32_t>();
-					value = current + 1;
-				}
-
-			};
-
-			do_staff_count("injure_soldier_id", "injury_staff_count");
-			do_staff_count("kill_soldier_id", "injury_staff_count");
-			do_staff_count("capture_soldier_id", "capture_staff_count");
-
-			target.extra_data["owner_fob_record"]["capture_resource"] = sneak_data["capture_resource"];
-			target.extra_data["owner_fob_record"]["capture_nuclear"] = sneak_data["capture_nuclear"];
+			target.extra_data["owner_fob_record"]["capture_resource"]["biotic_resource"] = event_data.capture_resource.biotic_resource;
+			target.extra_data["owner_fob_record"]["capture_resource"]["common_metal"] = event_data.capture_resource.common_metal;
+			target.extra_data["owner_fob_record"]["capture_resource"]["fuel_resource"] = event_data.capture_resource.fuel_resource;
+			target.extra_data["owner_fob_record"]["capture_resource"]["minor_metal"] = event_data.capture_resource.minor_metal;
+			target.extra_data["owner_fob_record"]["capture_resource"]["precious_metal"] = event_data.capture_resource.precious_metal;
+			target.extra_data["owner_fob_record"]["capture_nuclear"] = event_data.capture_nuclear;
+			target.extra_data["owner_fob_record"]["attack_gmp"] = event_data.gmp;
 
 			target.extra_data["owner_fob_record"]["date_time"] = row.get_date();
-			target.player_id = row.get_player_id();
+			target.player_id = row.get_attacker_id();
 
 			targets.emplace_back(target);
 		}

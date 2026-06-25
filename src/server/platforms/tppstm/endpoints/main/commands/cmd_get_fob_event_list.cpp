@@ -20,16 +20,14 @@ namespace emulator::tpp
 		for (auto i = 0u; i < sneak_results.size(); i++)
 		{
 			auto& sneak = sneak_results[i];
-			auto& sneak_data = sneak.get_data();
+			const auto& event_data = sneak.get_event_data();
 
-			const auto layout_code = sneak_data["event"]["layout_code"].get<std::uint32_t>();
-
-			result["event_list"][i]["attacker_id"] = sneak.get_player_id();
+			result["event_list"][i]["attacker_id"] = sneak.get_attacker_id();
 			result["event_list"][i]["event_index"] = sneak.get_id();
 			result["event_list"][i]["fob_index"] = sneak.get_fob_index();
 			result["event_list"][i]["is_win"] = sneak.is_win();
 			result["event_list"][i]["cluster"] = sneak.get_platform();
-			result["event_list"][i]["layout_code"] = layout_code;
+			result["event_list"][i]["layout_code"] = event_data.layout_code;
 		}
 
 		result["event_num"] = sneak_results.size();
