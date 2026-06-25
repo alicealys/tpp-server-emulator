@@ -144,7 +144,7 @@ namespace emulator::tpp
 		}
 
 		auto start_index = result["info_list"].size();
-		for (auto i = 0; i < base_list.size(); i++)
+		for (auto i = 0u; i < base_list.size(); i++)
 		{
 			result["info_list"][start_index++] = base_list[i];
 		}
