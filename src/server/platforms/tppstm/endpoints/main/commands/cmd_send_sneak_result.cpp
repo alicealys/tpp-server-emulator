@@ -13,9 +13,9 @@ namespace emulator::tpp
 {
 	namespace
 	{
-		struct soldier_param
+		struct soldier_param_t
 		{
-			std::uint32_t param_1;
+			std::uint32_t header;
 			std::uint32_t seed;
 		};
 
@@ -26,14 +26,16 @@ namespace emulator::tpp
 			soldier_capture = 2
 		};
 
-		std::unordered_set<std::uint32_t> parse_soldier_id_list(nlohmann::json& list)
+		using soldier_map_t = std::unordered_map<std::uint32_t, soldier_param_t>;
+
+		soldier_map_t parse_soldier_id_list(nlohmann::json& list)
 		{
 			if (!list.is_array())
 			{
 				return {};
 			}
 
-			std::unordered_set<std::uint32_t> soldier_ids;
+			soldier_map_t soldier_ids;
 
 			for (auto i = 0ull; i < list.size(); i++)
 			{
@@ -43,21 +45,31 @@ namespace emulator::tpp
 					continue;
 				}
 
-				//const auto param_1 = soldier_param[0].get<std::uint32_t>();
-				const auto seed = soldier_param[1].get<std::uint32_t>();
-				soldier_ids.insert(seed);
+				soldier_param_t param{};
+				param.header = soldier_param[0].get<std::uint32_t>();
+				param.seed = soldier_param[1].get<std::uint32_t>();
+				soldier_ids.insert(std::make_pair(param.seed >> 11, param));
 			}
 
 			return soldier_ids;
 		}
 
-		void modify_staff_array(database::player_data::staff_array_container& staff_array, 
-			std::unordered_set<std::uint32_t>& soldier_ids, const soldier_array_action action)
+		void modify_staff_array(const std::uint64_t owner_id, database::player_data::staff_array_container& staff_array, 
+			database::player_data::prisoner_array_container& attacker_prison,
+			soldier_map_t& soldier_ids, const soldier_array_action action)
 		{
+			auto prison_first_free = attacker_prison.get_first_free();
+			const auto attack_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+
 			for (auto i = 0u; i < game::max_staff_count; i++)
 			{
+				if (soldier_ids.empty())
+				{
+					break;
+				}
+
 				auto staff = &staff_array[i];
-				const auto iter = soldier_ids.find(staff->fields.seed.data);
+				auto iter = soldier_ids.find(staff->fields.seed.data >> 11);
 				if (iter == soldier_ids.end())
 				{
 					continue;
@@ -71,7 +83,18 @@ namespace emulator::tpp
 					staff->fields.status_sync.health_state = 1;
 					staff->fields.status_sync.designation = game::des_sickbay;
 					break;
-				case soldier_capture: // todo: implement fob prison list
+				case soldier_capture:
+				{
+					if (prison_first_free != -1 && prison_first_free < static_cast<std::int64_t>(attacker_prison.size()))
+					{
+						auto& prisoner = attacker_prison[prison_first_free++];
+						prisoner.owner_id = owner_id;
+						prisoner.time_captured = attack_time;
+						std::memcpy(&prisoner.data, staff, sizeof(game::staff_t));
+					}
+					std::memset(staff, 0, sizeof(game::staff_t));
+					break;
+				}
 				case soldier_kill:
 					std::memset(staff, 0, sizeof(game::staff_t));
 					break;
@@ -79,16 +102,92 @@ namespace emulator::tpp
 			}
 		}
 
-		void update_staff(
-			const std::optional<database::players::player>& attacker, 
-			const std::optional<database::player_data::player_data>& attacker_data,
-			const std::optional<database::players::player>& owner,
-			nlohmann::json& data)
+		void recover_captured_soldiers(
+			std::uint64_t attacker_id,
+			database::player_data::staff_array_container& attacker_staff, 
+			database::player_data::prisoner_array_container& owner_prison)
 		{
-			auto owner_data = database::player_data::find(owner->get_id());
+			database::player_data::prisoner_array_container new_prison;
+			std::queue<game::staff_t> staff_recovered;
 
-			database::player_data::staff_array_container new_staff_array;
-			owner_data->get_staff_array(new_staff_array);
+			auto new_prison_size = 0;
+
+			for (auto i = 0u; i < owner_prison.size(); i++)
+			{
+				if (database::player_data::can_recover_prisoner(owner_prison[i]) && 
+					owner_prison[i].owner_id == attacker_id)
+				{
+					staff_recovered.push(owner_prison[i].data);
+				}
+				else
+				{
+					new_prison[new_prison_size++] = owner_prison[i];
+				}
+			}
+
+			for (auto i = 0u; i < game::max_staff_count; i++)
+			{
+				if (staff_recovered.empty())
+				{
+					break;
+				}
+
+				if (attacker_staff[i].packed == 0)
+				{
+					auto& staff = staff_recovered.back();
+					staff_recovered.pop();
+					std::memcpy(&attacker_staff[i], &staff, sizeof(game::staff_t));
+				}
+			}
+
+			owner_prison = new_prison;
+		}
+
+		void write_staff(const database::player_data::player_data& player_data, const database::player_data::staff_array_container& staff_array)
+		{
+			database::player_data::unit_counts_t counts{};
+			database::player_data::unit_levels_t levels{};
+
+			auto new_staff_count = 0;
+			for (auto i = 0u; i < game::max_staff_count; i++)
+			{
+				const auto staff = &staff_array[i];
+				if (staff->fields.status_sync.designation != 0)
+				{
+					new_staff_count++;
+
+					if (staff->fields.status_sync.designation >= game::des_units_start &&
+						staff->fields.status_sync.designation < game::des_units_end)
+					{
+						counts[staff->fields.status_sync.designation - game::des_units_start]++;
+					}
+				}
+			}
+
+			for (auto i = 0; i < game::unit_count; i++)
+			{
+				levels[i] = player_data.get_unit_level(i);
+			}
+
+			database::player_data::set_soldier_data(player_data.get_player_id(), new_staff_count, staff_array, levels, counts);
+		}
+
+		void update_staff(
+			const database::player_data::player_data& owner_data,
+			const database::player_data::player_data& attacker_data,
+			nlohmann::json& data, const bool has_insurance)
+		{
+			database::player_data::staff_array_container owner_staff;
+			owner_data.get_staff_array(owner_staff);
+
+			database::player_data::prisoner_array_container owner_prison;
+			owner_data.get_prisoner_array(owner_prison);
+
+			database::player_data::staff_array_container attacker_staff;
+			attacker_data.get_staff_array(attacker_staff);
+
+			database::player_data::prisoner_array_container attacker_prison;
+			attacker_data.get_prisoner_array(attacker_prison);
 
 			static std::vector<std::pair<std::string, soldier_array_action>> soldier_list_map =
 			{
@@ -100,34 +199,78 @@ namespace emulator::tpp
 			for (const auto& [name, action] : soldier_list_map)
 			{
 				auto list = parse_soldier_id_list(data[name]);
-				modify_staff_array(new_staff_array, list, action);
+				modify_staff_array(owner_data.get_player_id(), owner_staff, attacker_prison, list, action);
 			}
 
-			database::player_data::unit_counts_t counts{};
-			database::player_data::unit_levels_t levels{};
-
-			auto new_staff_count = 0;
-			for (auto i = 0u; i < game::max_staff_count; i++)
+			const auto is_win = data["sneak_result"] == "WIN";
+			if (is_win)
 			{
-				const auto staff = &new_staff_array[i];
-				if (staff->fields.status_sync.designation != 0)
+				recover_captured_soldiers(attacker_data.get_player_id(), attacker_staff, owner_prison);
+			}
+
+			if (!has_insurance)
+			{
+				write_staff(owner_data, owner_staff);
+			}
+
+			write_staff(attacker_data, attacker_staff);
+
+			database::player_data::set_prison_bin(owner_data.get_player_id(), owner_prison);
+			database::player_data::set_prison_bin(attacker_data.get_player_id(), attacker_prison);
+		}
+
+		void update_resources(
+			const database::player_data::player_data& attacker_data,
+			const database::player_data::player_data& owner_data,
+			nlohmann::json& data,
+			const bool has_insurance)
+		{
+			database::player_data::resource_arrays_t owner_resources{};
+			database::player_data::resource_arrays_t attacker_resources{};
+
+			owner_data.get_resource_arrays(owner_resources);
+			attacker_data.get_resource_arrays(attacker_resources);
+
+			const auto do_resource = [&](nlohmann::json& from, const std::string& key, 
+				const std::uint32_t resource_type, 
+				const std::uint32_t resource_id, const std::uint32_t cap, bool destroy = false)
+			{
+				auto value = std::min(cap, from[key].get<std::uint32_t>());
+				value = std::min(attacker_resources[resource_type][resource_id], value);
+				if (!has_insurance)
 				{
-					new_staff_count++;
-					
-					if (staff->fields.status_sync.designation >= game::des_units_start &&
-						staff->fields.status_sync.designation < game::des_units_end)
-					{
-						counts[staff->fields.status_sync.designation - game::des_units_start]++;
-					}
+					owner_resources[resource_type][resource_id] -= value;
 				}
-			}
 
-			for (auto i = 0; i < game::unit_count; i++)
-			{
-				levels[i] = owner_data->get_unit_level(i);
-			}
+				if (!destroy)
+				{
+					attacker_resources[resource_type][resource_id] += value;
+				}
 
-			database::player_data::set_soldier_data(owner->get_id(), new_staff_count, new_staff_array, levels, counts);
+				from[key] = value;
+			};
+
+			constexpr const auto placement_cap = 4 * 4;
+			constexpr const auto resources_cap = 200000;
+
+			do_resource(data, "capture_nuclear", game::processed_server, game::nuclear, 4);
+			do_resource(data["capture_resource"], "biotic_resource", game::unprocessed_server, game::minor_metal, resources_cap);
+			do_resource(data["capture_resource"], "common_metal", game::unprocessed_server, game::common_metal, resources_cap);
+			do_resource(data["capture_resource"], "fuel_resource", game::unprocessed_server, game::fuel_resource, resources_cap);
+			do_resource(data["capture_resource"], "minor_metal", game::unprocessed_server, game::precious_metal, resources_cap);
+			do_resource(data["capture_resource"], "precious_metal", game::unprocessed_server, game::biotic_resource, resources_cap);
+
+			do_resource(data["capture_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap);
+			do_resource(data["capture_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap);
+			do_resource(data["capture_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap);
+			do_resource(data["capture_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap);
+			do_resource(data["capture_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap);
+
+			do_resource(data["destroy_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap, true);
+			do_resource(data["destroy_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap, true);
+			do_resource(data["destroy_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap, true);
+			do_resource(data["destroy_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap, true);
+			do_resource(data["destroy_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap, true);
 		}
 	}
 
@@ -147,8 +290,8 @@ namespace emulator::tpp
 			return error(ERR_DATABASE);
 		}
 
-		const auto player_data = database::player_data::find(player->get_id());
-		if (!player_data.has_value())
+		const auto attacker_data = database::player_data::find(player->get_id());
+		if (!attacker_data.has_value())
 		{
 			return error(ERR_DATABASE);
 		}
@@ -212,12 +355,6 @@ namespace emulator::tpp
 
 			if (active_sneak->get_mode() == database::players::mode_actual)
 			{
-				nlohmann::json sneak_data = data;
-				sneak_data.erase("msgid");
-				sneak_data.erase("rqid");
-
-				sneak_data["event"]["attacker_info"] = player_info(player);
-
 				const auto is_sneak = active_sneak->is_sneak();
 				database::player_records::add_sneak_result(player->get_id(), fob->get_player_id(), sneak_point, is_win, is_sneak);
 
@@ -230,7 +367,7 @@ namespace emulator::tpp
 						database::player_records::set_shield_date(active_sneak->get_owner_id(), is_win);
 					}
 
-					auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
+					auto deploy_damage_opt = attacker_data->get_fob_deploy_damage_param();
 					if (deploy_damage_opt.has_value())
 					{
 						auto& deploy_damage = deploy_damage_opt.value();
@@ -249,7 +386,21 @@ namespace emulator::tpp
 						database::event_rankings::increment_event_value(player->get_id(), event_id, 1);
 					}
 
-					update_staff(player, player_data, owner, data);
+					auto owner_data = database::player_data::find(owner->get_id());
+					const auto owner_record = database::player_records::find(owner->get_id());
+					const auto owner_has_insurance = owner_record.has_value() && owner_record->get_is_insurance();
+
+					if (!database::vars.no_fob_damage && owner_data.has_value() && attacker_data.has_value())
+					{
+						update_staff(owner_data.value(), attacker_data.value(), data, owner_has_insurance);
+						update_resources(owner_data.value(), attacker_data.value(), data, owner_has_insurance);
+					}
+
+					nlohmann::json sneak_data = data;
+					sneak_data.erase("msgid");
+					sneak_data.erase("rqid");
+
+					sneak_data["event"]["attacker_info"] = player_info(player);
 
 					auto& active_sneak_val = active_sneak.value();
 					if (!database::sneak_results::add_sneak_result(player.value(), fob.value(), active_sneak_val, is_win, sneak_data))
