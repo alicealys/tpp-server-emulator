@@ -97,10 +97,10 @@ namespace database::fobs
 				amount_left -= per_platform;
 			};
 
-			per_security(param.unique_security);
-			per_security(param.common_security[0]);
-			per_security(param.common_security[1]);
 			per_security(param.common_security[2]);
+			per_security(param.common_security[1]);
+			per_security(param.common_security[0]);
+			per_security(param.unique_security);
 		};
 
 		decrement_value(offsetof(game::fob_security_t, antitheft), damage_values[game::damage_param_num_anti_theft_device], 2);
