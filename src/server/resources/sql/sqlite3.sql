@@ -180,7 +180,7 @@ create table if not exists `event_rankings`
 	player_id	        bigint unsigned	not null,
 	event_id	        int unsigned	not null,
 	player_rank		    bigint unsigned	not null default 0,
-	value		        int unsigned	not null default 0,
+	value		        int				not null default 0,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`, `event_id`)
 )

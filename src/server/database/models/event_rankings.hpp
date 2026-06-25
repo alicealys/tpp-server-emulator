@@ -73,7 +73,7 @@ namespace database::event_rankings
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(event_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_rank, sqlpp::integer_unsigned);
-		DEFINE_FIELD(value, sqlpp::integer_unsigned);
+		DEFINE_FIELD(value, sqlpp::integer);
 		DEFINE_TABLE(event_rankings, id_field_t, player_id_field_t, event_id_field_t, player_rank_field_t, value_field_t);
 
 		inline static table_t table;
@@ -107,7 +107,7 @@ namespace database::event_rankings
 		GET_FIELD_H(std::uint64_t, player_id);
 		GET_FIELD_H(std::uint32_t, event_id);
 		GET_FIELD_H(std::uint64_t, rank);
-		GET_FIELD_H(std::uint32_t, value);
+		GET_FIELD_H(std::int32_t, value);
 		GET_FIELD_H(std::uint32_t, fob_grade);
 		GET_FIELD_H(std::uint32_t, league_grade);
 		GET_FIELD_H(std::uint64_t, account_id);
@@ -118,9 +118,9 @@ namespace database::event_rankings
 
 	void create_entries(const std::uint64_t player_id);
 
-	bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value);
-	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::uint32_t count);
-	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value);
+	bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t value);
+	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count);
+	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value);
 
 	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const event_type event_id);
 

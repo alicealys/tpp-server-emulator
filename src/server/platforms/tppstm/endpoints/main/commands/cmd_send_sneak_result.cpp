@@ -358,7 +358,10 @@ namespace emulator::tpp
 				const auto is_sneak = active_sneak->is_sneak();
 				database::player_records::add_sneak_result(player->get_id(), fob->get_player_id(), sneak_point, is_win, is_sneak);
 
-				database::event_rankings::set_value_if_bigger(player->get_id(), database::event_rankings::most_ep_in_mission, sneak_point);
+				if (sneak_point > 0)
+				{
+					database::event_rankings::set_value_if_bigger(player->get_id(), database::event_rankings::most_ep_in_mission, sneak_point);
+				}
 
 				if (is_sneak) // attack
 				{
@@ -390,7 +393,7 @@ namespace emulator::tpp
 					const auto owner_record = database::player_records::find(owner->get_id());
 					const auto owner_has_insurance = owner_record.has_value() && owner_record->get_is_insurance();
 
-					if (!database::vars.no_fob_damage && owner_data.has_value() && attacker_data.has_value())
+					if (!database::vars.pvp_mode && !database::vars.no_fob_damage && owner_data.has_value() && attacker_data.has_value())
 					{
 						update_staff(owner_data.value(), attacker_data.value(), data, owner_has_insurance);
 						update_resources(owner_data.value(), attacker_data.value(), data, owner_has_insurance);
