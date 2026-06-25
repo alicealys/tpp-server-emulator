@@ -132,7 +132,7 @@ namespace emulator::tpp
 					break;
 				}
 
-				if (attacker_staff[i].packed == 0)
+				if (attacker_staff[i].fields.packed_header == 0)
 				{
 					auto& staff = staff_recovered.back();
 					staff_recovered.pop();

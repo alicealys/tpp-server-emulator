@@ -169,7 +169,11 @@ namespace emulator::tpp
 				result["recover_soldier"][recover_soldier_index]["seed"] = prison[i].data.fields.packed_seed;
 				result["recover_soldier"][recover_soldier_index]["status_no_sync"] = prison[i].data.fields.packed_status_no_sync;
 				result["recover_soldier"][recover_soldier_index]["status_sync"] = prison[i].data.fields.packed_status_sync;
-				result["recover_soldier_count"][prison[i].data.fields.header.peak_rank] = result["recover_soldier_count"][prison[i].data.fields.header.peak_rank] + 1;
+
+				const auto peak_rank = prison[i].data.fields.header.peak_rank;
+				auto& count_j = result["recover_soldier_count"][peak_rank];
+				const auto count = count_j.get<std::uint32_t>();
+				count_j = count + 1;
 				++recover_soldier_index;
 			}
 		}
