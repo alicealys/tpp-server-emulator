@@ -51,6 +51,11 @@ namespace emulator::tpp
 
 	void cmd_get_informationlist2_base::parse_list(nlohmann::json& list)
 	{
+		if (!list.is_array())
+		{
+			return;
+		}
+
 		for (auto i = 0u; i < list.size(); i++)
 		{
 			auto& info = list[i];
@@ -108,8 +113,15 @@ namespace emulator::tpp
 
 	cmd_get_informationlist2::cmd_get_informationlist2()
 	{
-		auto list = resource(RESOURCE_TPP_INFORMATIONLIST2);
-		this->parse_list(list);
+		try
+		{
+			auto list = resource(RESOURCE_TPP_INFORMATIONLIST2);
+			this->parse_list(list);
+		}
+		catch (const std::exception& e)
+		{
+			console::error("failed to parse informationlist: %s\n", e.what());
+		}
 	}
 
 	nlohmann::json cmd_get_informationlist2::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
