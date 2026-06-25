@@ -36,8 +36,8 @@ namespace emulator::tpp
 			}
 
 			soldier_map_t soldier_ids;
-
-			for (auto i = 0ull; i < list.size(); i++)
+			const auto count = std::min(256ull, list.size());
+			for (auto i = 0ull; i < count; i++)
 			{
 				auto& soldier_param = list[i]["param"];
 				if (soldier_param.size() != 2 || !soldier_param[0].is_number_unsigned() || !soldier_param[1].is_number_unsigned())
