@@ -21,7 +21,6 @@ namespace emulator
 	nlohmann::json resource(const std::uint32_t id)
 	{
 		auto resource = utils::resources::load_json(id);
-		resource["result"] = game::get_error(NOERR);
 		return resource;
 	}
 

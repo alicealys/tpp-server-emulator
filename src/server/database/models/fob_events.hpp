@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../platforms/tppstm/endpoints/main/commands/cmd_get_informationlist2.hpp"
 #include "../database.hpp"
 
 #include "fobs.hpp"
@@ -61,7 +62,7 @@ namespace database::fob_events
 		std::string server_text;
 		nlohmann::json one_event_task;
 		fob_event_date_range_t date_range;
-		std::vector<fob_event_information_t> information;
+		std::vector<emulator::tpp::information_list_entry_t> information;
 		std::vector<fob_event_point_exchange_param_t> point_exchange_params;
 		std::vector<std::uint64_t> player_ids;
 	};
