@@ -63,7 +63,7 @@ namespace database::event_rankings
 	GET_FIELD_C(event_ranking, std::uint64_t, player_id);
 	GET_FIELD_C(event_ranking, std::uint32_t, event_id);
 	GET_FIELD_C(event_ranking, std::uint64_t, rank);
-	GET_FIELD_C(event_ranking, std::uint32_t, value);
+	GET_FIELD_C(event_ranking, std::int32_t, value);
 	GET_FIELD_C(event_ranking, std::uint32_t, fob_grade);
 	GET_FIELD_C(event_ranking, std::uint32_t, league_grade);
 	GET_FIELD_C(event_ranking, std::uint64_t, account_id);
@@ -87,7 +87,7 @@ namespace database::event_rankings
 		}
 	
 		template <database_type_t Type>
-		bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value)
+		bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
 		{
 			return database::access<bool>([&](database_t& db)
 			{
@@ -102,7 +102,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::uint32_t count)
+		bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count)
 		{
 			return database::access<bool>([&](database_t& db)
 			{
@@ -117,7 +117,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value)
+		bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
 		{
 			return database::access<bool>([&](database_t& db)
 			{
@@ -223,17 +223,17 @@ namespace database::event_rankings
 		RUN_IMPL(impl::create_entries, player_id);
 	}
 
-	bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value)
+	bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
 	{
 		RUN_IMPL(impl::set_event_value, player_id, event_id, value);
 	}
 
-	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::uint32_t count)
+	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count)
 	{
 		RUN_IMPL(impl::set_event_value, player_id, event_id, count);
 	}
 
-	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::uint32_t value)
+	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
 	{
 		RUN_IMPL(impl::set_value_if_bigger, player_id, event_id, value);
 	}

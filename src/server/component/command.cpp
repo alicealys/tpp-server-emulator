@@ -315,6 +315,27 @@ namespace command
 			add("reload_lists", auth::reload_lists);
 
 			add("reload_scripts", emulator::scripting::reload);
+
+			add("update_has_fob", []()
+			{
+				const auto count = static_cast<std::uint32_t>(database::players::get_player_count());
+				const auto players = database::players::get_player_list(count);
+				for (auto& player : players)
+				{
+					auto has_an_fob = false;
+					const auto fobs = database::fobs::get_fob_list(player.get_id());
+					for (auto& fob : fobs)
+					{
+						if (fob.get_platform_count() != 0 && fob.get_construct_param().packed != 0)
+						{
+							has_an_fob = true;
+							break;
+						}
+					}
+
+					database::player_records::set_has_fob(player.get_id(), has_an_fob);
+				}
+			});
 		}
 	};
 }
