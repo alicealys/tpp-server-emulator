@@ -148,15 +148,16 @@ update SQLITE_SEQUENCE set seq = {} WHERE name = 'fobs'
 create table if not exists `sneak_results`
 (
 	id                  integer	primary key autoincrement,
-	player_id	        bigint unsigned		not null,
+	attacker_id	        bigint unsigned		not null,
 	target_id	        bigint unsigned		not null,
 	fob_id				bigint unsigned		not null,
 	fob_index			bigint unsigned		not null,
 	is_win				tinyint unsigned	not null,
 	platform			int unsigned 		not null,
-	data				json,
+	event_data			blob default null,
+	event_log			blob default null,
 	create_date			datetime not null,
-	foreign key (`player_id`) references players(`id`),
+	foreign key (`attacker_id`) references players(`id`),
 	foreign key (`target_id`) references players(`id`),
 	foreign key (`fob_id`) references fobs(`id`)
 )

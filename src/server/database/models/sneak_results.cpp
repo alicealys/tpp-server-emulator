@@ -9,67 +9,33 @@ namespace database::sneak_results
 {
 	namespace
 	{
-		bool verify_event_data(nlohmann::json& data)
+		std::string encode_event_data(const sneak_result_data_t& event_data)
 		{
-			if (!data["event"].is_object())
-			{
-				return false;
-			}
+			return utils::encoding::encode_binary(event_data);
+		}
 
-			if (!data["event"]["data"].is_string())
-			{
-				return false;
-			}
-
-			static std::vector<std::string> int_fields =
-			{
-				{"size"},
-				{"gmp"},
-				{"is_win"},
-				{"cluster"},
-				{"rotate_y"},
-				{"position_x"},
-				{"position_z"},
-				{"layout_code"},
-				{"regist_date"},
-				{"capture_nuclear"},
-				{"attacker_sneak_grade"},
-				{"attacker_league_grade"},
-			};
-
-			for (auto& field : int_fields)
-			{
-				if (!data["event"][field].is_number_integer())
-				{
-					printf("data.event.%s is not integer\n", field.data());
-					return false;
-				}
-			}
-
-			return true;
+		std::string encode_event_log(const std::string& data)
+		{
+			return utils::encoding::encode_as_hex(data);
 		}
 	}
 
 	namespace impl
 	{
 		template <database_type_t Type>
-		bool add_sneak_result(const players::player& player, const fobs::fob& fob, const players::sneak_info& sneak,
-			const bool is_win, nlohmann::json& data)
+		bool add_sneak_result(const players::player& attacker, const fobs::fob& fob, const players::sneak_info& sneak,
+			const bool is_win, const sneak_result_data_t& event_data, const std::string& event_log)
 		{
-			if (!verify_event_data(data))
-			{
-				return false;
-			}
-
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::insert_into(sneak_result::table)
-						.set(sneak_result::table.player_id = player.get_id(),
+						.set(sneak_result::table.attacker_id = attacker.get_id(),
 							 sneak_result::table.target_id = fob.get_player_id(),
 							 sneak_result::table.fob_id = fob.get_id(),
 							 sneak_result::table.fob_index = fob.get_index(),
-							 sneak_result::table.data = data.dump(),
+							 sneak_result::table.event_data = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(event_data)),
+							 sneak_result::table.event_log = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_as_hex(event_log)),
 							 sneak_result::table.is_win = is_win,
 							 sneak_result::table.platform = sneak.get_platform(),
 							 sneak_result::table.create_date = std::chrono::system_clock::now()
@@ -106,7 +72,7 @@ namespace database::sneak_results
 		}
 
 		template <database_type_t Type>
-		std::optional<sneak_result> get_sneak_result(const std::uint64_t player_id, const std::uint64_t event_id)
+		std::optional<sneak_result> get_sneak_result(const std::uint64_t target_id, const std::uint64_t event_id)
 		{
 			return database::access<std::optional<sneak_result>>([&](database::database_t& db)
 				-> std::optional<sneak_result>
@@ -115,7 +81,7 @@ namespace database::sneak_results
 					sqlpp::select(
 						sqlpp::all_of(sneak_result::table))
 							.from(sneak_result::table)
-								.where(sneak_result::table.player_id == player_id && 
+								.where(sneak_result::table.target_id == target_id &&
 									   sneak_result::table.id == event_id));
 
 				if (results.empty())
@@ -127,12 +93,50 @@ namespace database::sneak_results
 				return {res};
 			});
 		}
+
+				
+		template <database_type_t Type>
+		std::string get_event_log(const std::uint64_t event_id)
+		{
+			return database::access<std::string>([&](database::database_t& db)
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sneak_result::table.event_log)
+							.from(sneak_result::table)
+								.where(sneak_result::table.id == event_id));
+
+				if (results.empty())
+				{
+					return std::string{};
+				}
+
+				return results.front().event_log.value();
+			});
+		}
+	}
+
+	std::string sneak_result::get_event_log() const
+	{
+		RUN_IMPL(impl::get_event_log, this->id_);
+	}
+
+	std::string sneak_result::encode_client_event_log(const std::string& event_log)
+	{
+		std::string encoded;
+		encoded.resize(0x4000);
+
+		if (event_log.size() <= 0x4000)
+		{
+			std::memcpy(encoded.data(), event_log.data(), event_log.size());
+		}
+
+		return utils::cryptography::base64::encode(encoded);
 	}
 
 	bool add_sneak_result(const players::player& player, const fobs::fob& fob, const players::sneak_info& sneak,
-		const bool is_win, nlohmann::json& data)
+		const bool is_win, const sneak_result_data_t& event_data, const std::string& event_log)
 	{
-		RUN_IMPL(impl::add_sneak_result, player, fob, sneak, is_win, data);
+		RUN_IMPL(impl::add_sneak_result, player, fob, sneak, is_win, event_data, event_log);
 	}
 
 	std::vector<sneak_result> get_sneak_results(const std::uint64_t target_id, const std::uint32_t limit)
@@ -140,9 +144,9 @@ namespace database::sneak_results
 		RUN_IMPL(impl::get_sneak_results, target_id, limit);
 	}
 
-	std::optional<sneak_result> get_sneak_result(const std::uint64_t player_id, const std::uint64_t event_id)
+	std::optional<sneak_result> get_sneak_result(const std::uint64_t target_id, const std::uint64_t event_id)
 	{
-		RUN_IMPL(impl::get_sneak_result, player_id, event_id);
+		RUN_IMPL(impl::get_sneak_result, target_id, event_id);
 	}
 
 	class table final : public table_interface

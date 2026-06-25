@@ -41,8 +41,31 @@ namespace utils::encoding
 		return result;
 	}
 
+	std::string encode_as_hex(const char* buffer, const size_t size)
+	{
+		std::string encoded;
+		encoded.resize(size * 2 + 3);
+
+		auto out_buffer = encoded.data();
+		out_buffer[0] = 'x';
+		out_buffer[1] = '\'';
+		out_buffer += 2;
+
+		for (auto i = 0u; i < size; i++)
+		{
+			char hex[3]{};
+			snprintf(hex, 3, "%02X", static_cast<std::uint8_t>(buffer[i]));
+			out_buffer[0] = hex[0];
+			out_buffer[1] = hex[1];
+			out_buffer += 2;
+		}
+		out_buffer[0] = '\'';
+
+		return encoded;
+	}
+
 	std::string encode_as_hex(const std::string& data)
 	{
-		return std::format("x'{}'", utils::string::dump_hex(data, ""));
+		return encode_as_hex(data.data(), data.size());
 	}
 }
