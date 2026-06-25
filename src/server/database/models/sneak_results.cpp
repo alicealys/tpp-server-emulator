@@ -7,19 +7,6 @@
 
 namespace database::sneak_results
 {
-	namespace
-	{
-		std::string encode_event_data(const sneak_result_data_t& event_data)
-		{
-			return utils::encoding::encode_binary(event_data);
-		}
-
-		std::string encode_event_log(const std::string& data)
-		{
-			return utils::encoding::encode_as_hex(data);
-		}
-	}
-
 	namespace impl
 	{
 		template <database_type_t Type>
