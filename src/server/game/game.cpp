@@ -649,7 +649,7 @@ namespace game
 			parse_coords(voluntary_coord_mine_params_j, &security.voluntary_coord_mine_params[0], game::max_fob_voluntary_mine_count);
 
 		security.voluntary_coord_camera_count =
-			parse_coords(voluntary_coord_camera_params_j, &security.voluntary_coord_camera_params[0], game::max_fob_voluntary_mine_count);
+			parse_coords(voluntary_coord_camera_params_j, &security.voluntary_coord_camera_params[0], game::max_fob_voluntary_camera_count);
 	}
 
 	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param)
@@ -700,8 +700,12 @@ namespace game
 			security_j["antitheft"] = security.antitheft;
 			security_j["ir_sensor"] = security.ir_sensor;
 			security_j["caution_area"] = security.caution_area;
-			security_j["voluntary_coord_mine_count"] = security.voluntary_coord_mine_count;
-			security_j["voluntary_coord_camera_count"] = security.voluntary_coord_camera_count;
+
+			const auto mine_count = std::min(static_cast<std::uint8_t>(max_fob_voluntary_mine_count), security.voluntary_coord_mine_count);
+			const auto camera_count = std::min(static_cast<std::uint8_t>(max_fob_voluntary_camera_count), security.voluntary_coord_camera_count);
+
+			security_j["voluntary_coord_mine_count"] = mine_count;
+			security_j["voluntary_coord_camera_count"] = camera_count;
 
 			security_j["voluntary_coord_mine_params"] = nlohmann::json::array();
 			security_j["voluntary_coord_camera_params"] = nlohmann::json::array();
@@ -718,12 +722,12 @@ namespace game
 				coord_j["placed_index"] = coord.placed_index;
 			};
 
-			for (auto o = 0u; o < security.voluntary_coord_mine_count; o++)
+			for (auto o = 0u; o < mine_count; o++)
 			{
 				add_coord(security_j["voluntary_coord_mine_params"][o], security.voluntary_coord_mine_params[o]);
 			}
 
-			for (auto o = 0u; o < security.voluntary_coord_camera_count; o++)
+			for (auto o = 0u; o < camera_count; o++)
 			{
 				add_coord(security_j["voluntary_coord_camera_params"][o], security.voluntary_coord_camera_params[o]);
 			}
