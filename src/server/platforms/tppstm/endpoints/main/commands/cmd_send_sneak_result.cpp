@@ -365,13 +365,15 @@ namespace emulator::tpp
 		const auto& sneak_point_j = data["sneak_point"];
 		const auto& event_point_j = data["event_point"];
 		const auto& is_event_j = data["is_event"];
+		const auto& is_perfect_stealth_j = data["is_perfect_stealth"];
+		const auto& is_goal_j = data["is_goal"];
 		auto& event_j = data["event"];
 		const auto& mode_str_j = data["mode"];
 		const auto& mother_base_id_j = data["mother_base_id"];
 
 		if (!sneak_result_j.is_string() || !sneak_point_j.is_number() || !event_point_j.is_number_unsigned() ||
 			!is_event_j.is_number_unsigned() || !mode_str_j.is_string() || !mother_base_id_j.is_number_unsigned() ||
-			!event_j.is_object())
+			!event_j.is_object() || !is_perfect_stealth_j.is_number_unsigned() || !is_goal_j.is_number_unsigned())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -390,11 +392,13 @@ namespace emulator::tpp
 
 		const auto sneak_result = sneak_result_j.get<std::string>();
 		const auto is_win = sneak_result == "WIN";
-		const auto sneak_point = data["sneak_point"].get<std::int32_t>();
-		const auto event_point = data["event_point"].get<std::uint32_t>();
-		const auto is_event = data["is_event"].get<std::uint32_t>() == 1;
-		const auto mode_str = data["mode"].get<std::string>();
-		const auto mother_base_id = data["mother_base_id"].get<std::uint64_t>();
+		const auto sneak_point = sneak_point_j.get<std::int32_t>();
+		const auto event_point = event_point_j.get<std::uint32_t>();
+		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
+		const auto is_goal = is_goal_j.get<std::uint32_t>() == 1;
+		const auto is_perfect_stealth = is_perfect_stealth_j.get<std::uint32_t>() == 1;
+		const auto mode_str = mode_str_j.get<std::string>();
+		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 
 		const auto fob = database::fobs::get_fob(mother_base_id);
 		if (!fob.has_value())
@@ -456,6 +460,11 @@ namespace emulator::tpp
 
 					if (is_win)
 					{
+						if (is_goal && is_perfect_stealth)
+						{
+							database::event_rankings::increment_event_value(player->get_id(), database::event_rankings::total_stealth, 1);
+						}
+
 						const auto defense_sneak = database::players::find_active_sneak(active_sneak->get_owner_id(), false, true);
 						const auto event_id = defense_sneak.has_value()
 							? database::event_rankings::cores_reached_defender
