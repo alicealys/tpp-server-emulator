@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "database/models/player_follows.hpp"
+#include "database/models/player_records.hpp"
 #include "database/models/wormholes.hpp"
 
 #include "target_list_fr_enemy.hpp"
@@ -18,6 +19,12 @@ namespace emulator::tpp
 		{
 			const auto follow = database::players::find(follow_id);
 			if (!follow.has_value())
+			{
+				continue;
+			}
+
+			const auto follow_record = database::player_records::find(follow_id);
+			if (!follow_record.has_value())
 			{
 				continue;
 			}
@@ -41,6 +48,7 @@ namespace emulator::tpp
 				target.extra_data["owner_detail_record"]["enemy"] = 1;
 				target.extra_data["owner_fob_record"]["left_hour"] = left_hour;
 				target.extra_data["attacker_info"] = player_info(follow.value());
+				target.extra_data["attacker_sneak_rank_grade"]["win"] = follow_record->get_fob_grade();
 
 				target.player_id = wormhole.to_player_id;
 
