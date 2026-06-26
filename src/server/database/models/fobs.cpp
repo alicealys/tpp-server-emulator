@@ -76,14 +76,14 @@ namespace database::fobs
 			}
 		}
 
-		const auto decrement_value = [&](const std::size_t offset, const nlohmann::json& total_j, const std::int32_t per_platform)
+		const auto decrement_value = [&](const std::size_t offset, const nlohmann::json& total_j, const std::uint8_t per_platform)
 		{
 			if (!total_j.is_number_unsigned())
 			{
 				return;
 			}
 
-			auto amount_left = total_j.get<std::int32_t>();
+			auto amount_left = total_j.get<std::uint8_t>();
 
 			const auto per_security = [&](game::fob_security_t& security)
 			{
@@ -92,7 +92,7 @@ namespace database::fobs
 					return;
 				}
 
-				auto value_ptr = reinterpret_cast<std::uint32_t*>(reinterpret_cast<size_t>(&security) + offset);
+				auto value_ptr = reinterpret_cast<std::uint8_t*>(reinterpret_cast<size_t>(&security) + offset);
 				*value_ptr -= std::min(amount_left, per_platform);
 				amount_left -= per_platform;
 			};
@@ -103,13 +103,13 @@ namespace database::fobs
 			per_security(param.unique_security);
 		};
 
-		decrement_value(offsetof(game::fob_security_t, antitheft), damage_values[game::damage_param_num_anti_theft_device], 2);
-		decrement_value(offsetof(game::fob_security_t, camera), damage_values[game::damage_param_num_cameras], 2);
-		decrement_value(offsetof(game::fob_security_t, decoy), damage_values[game::damage_param_num_decoy], 2);
-		decrement_value(offsetof(game::fob_security_t, ir_sensor), damage_values[game::damage_param_num_sensors], 1);
-		decrement_value(offsetof(game::fob_security_t, mine), damage_values[game::damage_param_num_claymores], 2);
-		decrement_value(offsetof(game::fob_security_t, soldier), damage_values[game::damage_param_num_guards], 6);
-		decrement_value(offsetof(game::fob_security_t, uav), damage_values[game::damage_param_num_drones], 1);
+		decrement_value(offsetof(game::fob_security_t, antitheft), damage_values[game::damage_param_num_anti_theft_device], 2u);
+		decrement_value(offsetof(game::fob_security_t, camera), damage_values[game::damage_param_num_cameras], 2u);
+		decrement_value(offsetof(game::fob_security_t, decoy), damage_values[game::damage_param_num_decoy], 2u);
+		decrement_value(offsetof(game::fob_security_t, ir_sensor), damage_values[game::damage_param_num_sensors], 1u);
+		decrement_value(offsetof(game::fob_security_t, mine), damage_values[game::damage_param_num_claymores], 2u);
+		decrement_value(offsetof(game::fob_security_t, soldier), damage_values[game::damage_param_num_guards], 6u);
+		decrement_value(offsetof(game::fob_security_t, uav), damage_values[game::damage_param_num_drones], 1u);
 	}
 
 	namespace impl
