@@ -21,6 +21,7 @@ namespace emulator::tpp
 		{
 			target_data_t target{};
 			target.player_id = row.get_player_id();
+			target.player_record.emplace(row);
 			targets.emplace_back(target);
 		}
 

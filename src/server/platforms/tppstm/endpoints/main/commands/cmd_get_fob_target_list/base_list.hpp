@@ -2,6 +2,7 @@
 
 #include "database/models/players.hpp"
 #include "database/models/player_data.hpp"
+#include "database/models/player_records.hpp"
 #include "database/models/fobs.hpp"
 
 namespace emulator::tpp
@@ -9,6 +10,9 @@ namespace emulator::tpp
 	struct target_data_t
 	{
 		std::uint64_t player_id;
+		std::optional<database::players::player> player;
+		std::optional<database::player_data::player_data> player_data;
+		std::optional<database::player_records::player_record> player_record;
 		nlohmann::json extra_data;
 		std::optional<std::function<bool(const database::fobs::fob& fob)>> fob_filter;
 	};

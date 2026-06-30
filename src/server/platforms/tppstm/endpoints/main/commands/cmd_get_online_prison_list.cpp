@@ -39,8 +39,15 @@ namespace emulator::tpp
 		database::player_data::prisoner_array_container prison;
 		player_data->get_prisoner_array(prison);
 
-		auto total_count = 0u;
+		std::optional<database::player_data::prisoner_array_container> new_prison;
+		if (is_persuade)
+		{
+			new_prison.emplace(database::player_data::prisoner_array_container{});
+		}
+
 		auto idx = 0u;
+		auto total_count = 0u;
+		auto new_prison_idx = 0u;
 
 		for (auto i = 0u; i < prison.size(); i++)
 		{
@@ -49,18 +56,17 @@ namespace emulator::tpp
 				continue;
 			}
 
-			++total_count;
-			if (i >= offset && idx < num)
+			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+			const auto percent = static_cast<float>(now - prison[i].time_captured) / static_cast<float>(database::player_data::prisoner_hold_time.count());
+			const auto is_persuaded = percent >= 1.f;
+
+			if (!is_persuaded)
 			{
-				const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
-				const auto percent = static_cast<float>(now - prison[i].time_captured) / static_cast<float>(database::player_data::prisoner_hold_time.count());
-				const auto is_persuaded = percent >= 1;
+				++total_count;
+			}
 
-				if (is_persuaded != is_persuade)
-				{
-					continue;
-				}
-
+			if (i >= offset && idx < num && is_persuaded == is_persuade)
+			{
 				auto& prisoner_j = result["prison_soldier_param"][idx++];
 				prisoner_j["param"][0] = prison[i].data.fields.packed_header;
 				prisoner_j["param"][1] = prison[i].data.fields.packed_seed;
@@ -68,6 +74,16 @@ namespace emulator::tpp
 				prisoner_j["param"][3] = prison[i].data.fields.packed_status_sync;
 				prisoner_j["param"][4] = 15 - static_cast<int>(percent * 15);
 			}
+
+			if (new_prison.has_value() && !is_persuaded)
+			{
+				new_prison->operator[](new_prison_idx++) = prison[i];
+			}
+		}
+
+		if (new_prison.has_value())
+		{
+			database::player_data::set_prison_bin(player->get_id(), new_prison.value());
 		}
 
 		result["soldier_num"] = idx;

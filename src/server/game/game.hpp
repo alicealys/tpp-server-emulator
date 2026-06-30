@@ -472,8 +472,8 @@ namespace game
 		std::int32_t placed_index;
 	};
 
-	constexpr auto max_fob_voluntary_mine_count = 12u;
-	constexpr auto max_fob_voluntary_camera_count = 3u;
+	constexpr auto max_fob_voluntary_mine_count = 4u;
+	constexpr auto max_fob_voluntary_camera_count = 1u;
 
 	struct fob_security_t
 	{
