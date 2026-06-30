@@ -113,23 +113,37 @@ namespace emulator::tpp
 		result["shield_date"] = stats->get_shield_date();
 		result["target_list"] = nlohmann::json::array();
 
-		const auto target_list = get_target_list(type, player.value(), player_data, num);
+		auto target_list = get_target_list(type, player.value(), player_data, num);
 
 		auto index = 0;
-		for (const auto& target_entry : target_list)
+		for (auto& target_entry : target_list)
 		{
-			const auto target_player = database::players::find(target_entry.player_id);
-			const auto target_stats = database::player_records::find(target_entry.player_id);
-			const auto target_fobs = database::fobs::get_fob_list(target_entry.player_id);
-			const auto target_data = database::player_data::find(target_entry.player_id);
+			if (!target_entry.player.has_value())
+			{
+				target_entry.player = database::players::find(target_entry.player_id);
+			}
 
-			if (!target_stats.has_value() || target_fobs.size() == 0 || !target_data.has_value())
+			if (!target_entry.player_record.has_value())
+			{
+				target_entry.player_record = database::player_records::find(target_entry.player_id);
+			}
+
+			if (!target_entry.player_data.has_value())
+			{
+				target_entry.player_data = database::player_data::find(target_entry.player_id);
+			}
+
+			const auto target_fobs = database::fobs::get_fob_list(target_entry.player_id);
+
+			if (!target_entry.player_record.has_value() || 
+				target_fobs.size() == 0 || 
+				!target_entry.player_data.has_value())
 			{
 				continue;
 			}
 
 			game::motherbase_t target_motherbase{};
-			target_data->get_motherbase(target_motherbase);
+			target_entry.player_data->get_motherbase(target_motherbase);
 
 			auto& target = result["target_list"][index];
 
@@ -149,7 +163,8 @@ namespace emulator::tpp
 			auto mother_base_index = 0;
 			for (auto i = 0ull; i < target_fobs.size(); i++)
 			{
-				if (target_entry.fob_filter.has_value() && !target_entry.fob_filter->operator()(target_fobs[i]))
+				if (target_entry.fob_filter.has_value() && 
+					!target_entry.fob_filter->operator()(target_fobs[i]))
 				{
 					continue;
 				}
@@ -166,13 +181,13 @@ namespace emulator::tpp
 			}
 			
 			game::emblem_t target_emblem{};
-			target_data->get_emblem(target_emblem);
+			target_entry.player_data->get_emblem(target_emblem);
 
 			target["owner_detail_record"]["emblem"] = target_emblem.to_json();
 			target["owner_detail_record"]["enemy"] = 0;
-			target["owner_detail_record"]["espionage"]["win"] = target_stats->get_sneak_win();
-			target["owner_detail_record"]["espionage"]["lose"] = target_stats->get_sneak_lose();
-			target["owner_detail_record"]["espionage"]["score"] = target_stats->get_fob_point();
+			target["owner_detail_record"]["espionage"]["win"] = target_entry.player_record->get_sneak_win();
+			target["owner_detail_record"]["espionage"]["lose"] = target_entry.player_record->get_sneak_lose();
+			target["owner_detail_record"]["espionage"]["score"] = target_entry.player_record->get_fob_point();
 			target["owner_detail_record"]["espionage"]["section"] = 0;
 
 			target["owner_detail_record"]["follow"] = 0;
@@ -180,21 +195,21 @@ namespace emulator::tpp
 			target["owner_detail_record"]["help"] = 0;
 			target["owner_detail_record"]["hero"] = 0;
 			target["owner_detail_record"]["insurance"] = 0;
-			target["owner_detail_record"]["is_security_challenge"] = target_player->is_security_challenge_enabled();
+			target["owner_detail_record"]["is_security_challenge"] = target_entry.player->is_security_challenge_enabled();
 
-			target["owner_detail_record"]["league_rank"]["grade"] = target_stats->get_league_grade();
-			target["owner_detail_record"]["league_rank"]["rank"] = target_stats->get_league_rank();
-			target["owner_detail_record"]["league_rank"]["score"] = target_stats->get_league_point();
+			target["owner_detail_record"]["league_rank"]["grade"] = target_entry.player_record->get_league_grade();
+			target["owner_detail_record"]["league_rank"]["rank"] = target_entry.player_record->get_league_rank();
+			target["owner_detail_record"]["league_rank"]["score"] = target_entry.player_record->get_league_point();
 
 			target["owner_detail_record"]["name_plate_id"] = target_motherbase.name_plate_id;
-			target["owner_detail_record"]["nuclear"] = target_data->get_nuke_count();
+			target["owner_detail_record"]["nuclear"] = target_entry.player_data->get_nuke_count();
 			target["owner_detail_record"]["online"] = 0;
 
-			target["owner_detail_record"]["sneak_rank"]["grade"] = target_stats->get_fob_grade();
-			target["owner_detail_record"]["sneak_rank"]["rank"] = target_stats->get_fob_rank();
-			target["owner_detail_record"]["sneak_rank"]["score"] = target_stats->get_fob_point();
+			target["owner_detail_record"]["sneak_rank"]["grade"] = target_entry.player_record->get_fob_grade();
+			target["owner_detail_record"]["sneak_rank"]["rank"] = target_entry.player_record->get_fob_rank();
+			target["owner_detail_record"]["sneak_rank"]["score"] = target_entry.player_record->get_fob_point();
 			
-			target["owner_detail_record"]["staff_count"] = target_data->get_usable_staff_count();
+			target["owner_detail_record"]["staff_count"] = target_entry.player_data->get_usable_staff_count();
 
 			target["owner_fob_record"]["attack_count"] = 0;
 			target["owner_fob_record"]["attack_gmp"] = 0;
@@ -213,10 +228,10 @@ namespace emulator::tpp
 
 			target["owner_fob_record"]["left_hour"] = 0;
 			target["owner_fob_record"]["name_plate_id"] = target_motherbase.name_plate_id;
-			target["owner_fob_record"]["nuclear"] = target_data->get_nuke_count();
+			target["owner_fob_record"]["nuclear"] = target_entry.player_data->get_nuke_count();
 
 			database::player_data::resource_arrays_t target_resources{};
-			target_data->get_resource_arrays(target_resources);
+			target_entry.player_data->get_resource_arrays(target_resources);
 
 			const auto get_processing_resource_value = [&](const std::uint32_t id)
 			{
@@ -246,7 +261,7 @@ namespace emulator::tpp
 
 			for (auto i = 0u; i < game::rank_count; i++)
 			{
-				staff_counts[i] = target_data->get_staff_count_of_rank(i);
+				staff_counts[i] = target_entry.player_data->get_staff_count_of_rank(i);
 			}
 
 			target["owner_fob_record"]["support_count"] = 0;
@@ -257,7 +272,7 @@ namespace emulator::tpp
 			target["owner_fob_record"]["usable_resource"]["minor_metal"] = get_processed_resource_value(game::minor_metal);
 			target["owner_fob_record"]["usable_resource"]["precious_metal"] = get_processed_resource_value(game::precious_metal);
 
-			target["owner_info"] = player_info(target_player);
+			target["owner_info"] = player_info(target_entry.player);
 
 			target["sneak_mode"] = 0;
 

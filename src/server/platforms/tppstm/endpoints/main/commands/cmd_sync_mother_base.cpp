@@ -8,12 +8,6 @@
 
 namespace emulator::tpp
 {
-	template<typename T, size_t N>
-	void a(T(& a)[N])
-	{
-
-	}
-
 	nlohmann::json cmd_sync_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
