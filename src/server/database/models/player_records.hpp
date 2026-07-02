@@ -6,8 +6,14 @@
 
 namespace database::player_records
 {
-	constexpr auto lowest_grade = 0;
-	constexpr auto highest_grade = 11;
+	constexpr const auto lowest_grade = 0;
+	constexpr const auto highest_grade = 11;
+	constexpr const auto challenge_tasks_count = 32;
+
+	struct challenge_tasks_t
+	{
+		std::uint32_t status[challenge_tasks_count];
+	};
 
 	class player_record
 	{
@@ -34,11 +40,12 @@ namespace database::player_records
 		DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
 		DEFINE_FIELD(shield_date, sqlpp::time_point);
 		DEFINE_FIELD(has_fob, sqlpp::boolean);
+		DEFINE_FIELD(challenge_tasks, sqlpp::binary);
 		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
 			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t,
 			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
-			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t);
+			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, challenge_tasks_field_t);
 
 		inline static table_t table;
 
@@ -66,6 +73,13 @@ namespace database::player_records
 			this->fob_sneak_win_ = static_cast<std::uint32_t>(row.fob_sneak_win);
 			this->fob_sneak_lose_ = static_cast<std::uint32_t>(row.fob_sneak_lose);
 			this->has_fob_ = static_cast<bool>(row.has_fob);
+
+			const auto challenge_tasks_str = row.challenge_tasks.value();
+			if (challenge_tasks_str.size() == sizeof(challenge_tasks_t))
+			{
+				std::memcpy(&this->challenge_tasks_, challenge_tasks_str.data(), sizeof(challenge_tasks_t));
+			}
+
 			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
 		}
 
@@ -185,30 +199,41 @@ namespace database::player_records
 			return this->has_fob_;
 		}
 
-	private:
-		std::uint64_t id_;
-		std::uint64_t player_id_;
-		std::uint32_t fob_grade_;
-		std::uint32_t prev_fob_grade_;
-		std::int32_t fob_point_;
-		std::uint32_t fob_rank_;
-		std::uint32_t prev_fob_rank_;
-		std::uint32_t is_insurance_;
-		std::uint32_t league_grade_;
-		std::uint32_t prev_league_grade_;
-		std::uint32_t league_rank_;
-		std::uint32_t prev_league_rank_;
-		std::uint32_t league_point_;
-		std::uint32_t event_point_;
-		std::uint32_t playtime_;
-		std::uint32_t point_;
-		std::uint32_t fob_defense_win_;
-		std::uint32_t fob_defense_lose_;
-		std::uint32_t fob_sneak_win_;
-		std::uint32_t fob_sneak_lose_;
-		bool has_fob_;
+		challenge_tasks_t& get_challenge_tasks()
+		{
+			return this->challenge_tasks_;
+		}
 
-		std::chrono::seconds shield_date_;
+		const challenge_tasks_t& get_challenge_tasks() const
+		{
+			return this->challenge_tasks_;
+		}
+
+	private:
+		std::uint64_t id_{};
+		std::uint64_t player_id_{};
+		std::uint32_t fob_grade_{};
+		std::uint32_t prev_fob_grade_{};
+		std::int32_t fob_point_{};
+		std::uint32_t fob_rank_{};
+		std::uint32_t prev_fob_rank_{};
+		std::uint32_t is_insurance_{};
+		std::uint32_t league_grade_{};
+		std::uint32_t prev_league_grade_{};
+		std::uint32_t league_rank_{};
+		std::uint32_t prev_league_rank_{};
+		std::uint32_t league_point_{};
+		std::uint32_t event_point_{};
+		std::uint32_t playtime_{};
+		std::uint32_t point_{};
+		std::uint32_t fob_defense_win_{};
+		std::uint32_t fob_defense_lose_{};
+		std::uint32_t fob_sneak_win_{};
+		std::uint32_t fob_sneak_lose_{};
+		challenge_tasks_t challenge_tasks_{};
+		bool has_fob_{};
+
+		std::chrono::seconds shield_date_{};
 
 	};
 
@@ -230,4 +255,6 @@ namespace database::player_records
 
 	void set_fob_point(const std::uint64_t player_id, const std::uint32_t value);
 	void set_has_fob(const std::uint64_t player_id, const bool has_fob);
+
+	bool set_challenge_tasks(const std::uint64_t player_id, const challenge_tasks_t& tasks);
 }
