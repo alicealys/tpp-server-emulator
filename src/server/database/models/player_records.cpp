@@ -363,6 +363,21 @@ namespace database::player_records
 					);
 			});
 		}
+				
+		template <database_type_t Type>
+		bool set_challenge_tasks(const std::uint64_t player_id, const challenge_tasks_t& tasks)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.challenge_tasks = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(tasks)))
+								.where(player_record::table.player_id == player_id)
+					);
+
+				return result != 0;
+			});
+		}
 
 		void create_fob_grade_index(database::database_t& db)
 		{
@@ -457,6 +472,11 @@ namespace database::player_records
 	void set_has_fob(const std::uint64_t player_id, const bool has_fob)
 	{
 		RUN_IMPL(impl::set_has_fob, player_id, has_fob);
+	}
+
+	bool set_challenge_tasks(const std::uint64_t player_id, const challenge_tasks_t& tasks)
+	{
+		RUN_IMPL(impl::set_challenge_tasks, player_id, tasks);
 	}
 
 	class table final : public table_interface
