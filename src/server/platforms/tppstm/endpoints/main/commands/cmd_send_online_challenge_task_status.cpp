@@ -44,7 +44,7 @@ namespace emulator::tpp
 		}
 
 		result["result_status_list"] = nlohmann::json::array();
-		for (auto i = 0; i < database::player_records::challenge_tasks_count; i++)
+		for (auto i = 0u; i < database::player_records::challenge_tasks_count; i++)
 		{
 			result["result_status_list"][i] = challenge_tasks.status[i];
 		}
