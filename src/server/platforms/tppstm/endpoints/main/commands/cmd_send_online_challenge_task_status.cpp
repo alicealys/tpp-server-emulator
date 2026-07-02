@@ -24,7 +24,8 @@ namespace emulator::tpp
 
 		auto& challenge_tasks = record->get_challenge_tasks();
 
-		for (auto i = 0; i < database::player_records::challenge_tasks_count; i++)
+		const auto count = std::min(static_cast<std::uint32_t>(status_list_j.size()), database::player_records::challenge_tasks_count);
+		for (auto i = 0u; i < count; i++)
 		{
 			if (status_list_j[i].is_number_unsigned())
 			{

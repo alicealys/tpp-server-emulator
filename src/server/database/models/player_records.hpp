@@ -8,7 +8,7 @@ namespace database::player_records
 {
 	constexpr const auto lowest_grade = 0;
 	constexpr const auto highest_grade = 11;
-	constexpr const auto challenge_tasks_count = 32;
+	constexpr const auto challenge_tasks_count = 32u;
 
 	struct challenge_tasks_t
 	{
