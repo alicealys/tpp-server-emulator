@@ -70,7 +70,7 @@ namespace database::player_data
 
 	bool can_recover_prisoner(const prisoner_t& prisoner)
 	{
-		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 		return now - prisoner.time_captured < database::player_data::prisoner_hold_time.count();
 	}
 

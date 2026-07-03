@@ -119,6 +119,7 @@ RESOURCE_MGO_GEAR_LIST            RCDATA "resources/data/mgo_gear_list.json"
 RESOURCE_MGO_WEAPON_COLORS        RCDATA "resources/data/mgo_weapon_colors.json"
 RESOURCE_FOB_EVENT_LIST           RCDATA "resources/data/fob_event_list.json"
 RESOURCE_SHOP_ITEM_LIST           RCDATA "resources/data/shop_item_list.json"
+RESOURCE_COMBAT_DEPLOY_LIST       RCDATA "resources/data/combat_deploy_list.json"
 
 RESOURCE_SQL_MYSQL                RCDATA "resources/sql/mysql.sql"
 RESOURCE_SQL_SQLITE3              RCDATA "resources/sql/sqlite3.sql"

@@ -59,7 +59,7 @@ namespace emulator::tpp
 			soldier_map_t& soldier_ids, const soldier_array_action action, std::uint32_t* counts)
 		{
 			auto prison_first_free = attacker_prison.get_first_free();
-			const auto attack_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+			const auto attack_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
 			for (auto i = 0u; i < game::max_staff_count; i++)
 			{

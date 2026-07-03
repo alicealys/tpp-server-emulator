@@ -34,6 +34,7 @@ namespace utils::resources
 			{RESOURCE_MGO_WEAPON_COLORS, "resources/data/mgo_weapon_colors.json"},
 			{RESOURCE_FOB_EVENT_LIST, "resources/data/fob_event_list.json"},
 			{RESOURCE_SHOP_ITEM_LIST, "resources/data/shop_item_list.json"},
+			{RESOURCE_COMBAT_DEPLOY_LIST, "resources/data/combat_deploy_list.json"},
 
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},

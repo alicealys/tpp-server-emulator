@@ -112,6 +112,8 @@ namespace database::shop_purchases
 
 	bool add_entry(const std::uint64_t player_id, const entry_params_t& params);
 	bool add_spent_single(const std::uint64_t player_id, const std::uint32_t item_type, const std::uint32_t price, const std::uint32_t param1 = 0u);
+	bool add_spent(const std::uint64_t player_id, const std::uint32_t item_type, const std::uint32_t quantity, const std::uint32_t price,
+		const std::uint32_t param1);
 
 	std::size_t get_history_size(const std::uint64_t player_id);
 	std::vector<shop_purchase> get_history(const std::uint64_t player_id, const std::uint32_t limit);
