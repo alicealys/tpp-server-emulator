@@ -151,6 +151,19 @@ namespace database::shop_purchases
 		return add_entry(player_id, params);
 	}
 
+	bool add_spent(const std::uint64_t player_id, const std::uint32_t item_type, const std::uint32_t quantity, const std::uint32_t price,
+		const std::uint32_t param1)
+	{
+		entry_params_t params{};
+		params.item_quantity = quantity;
+		params.item_type = item_type;
+		params.coin_quantity = price;
+		params.event_type = 1u;
+		params.param1 = param1;
+
+		return add_entry(player_id, params);
+	}
+
 	std::size_t get_history_size(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::get_history_size, player_id);

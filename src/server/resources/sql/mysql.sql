@@ -300,6 +300,20 @@ create table if not exists `shop_purchases`
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
 )
+-- query:mgstpp.combat_deployments.create
+create table if not exists `combat_deployments`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	mission_id				int unsigned not null,
+	deployment_info			blob default null,
+	is_win					boolean not null,
+	start_date				datetime not null,
+	end_date				datetime not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`),
+	unique key `unique_mission_id` (`player_id`, `mission_id`)
+)
 -- query:mgstpp.variables.create
 create table if not exists `variables`
 (

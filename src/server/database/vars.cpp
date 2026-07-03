@@ -28,6 +28,7 @@ namespace database
 		vars.cost_factor_generic = config::get_or<float>("vars.cost_factor_generic", vars.cost_factor_generic);
 		vars.cost_factor_item_dev = config::get_or<float>("vars.cost_factor_item_dev", vars.cost_factor_generic);
 		vars.cost_factor_platform_construction = config::get_or<float>("vars.cost_factor_platform_construction", vars.cost_factor_generic);
+		vars.cost_factor_troops_completion = config::get_or<float>("vars.cost_factor_troops_completion", vars.cost_factor_generic);
 
 		vars.use_real_client_ip = config::get_or<bool>("vars.use_real_client_ip", vars.use_real_client_ip);
 		vars.signup_bonus = config::get_or<bool>("vars.signup_bonus", vars.signup_bonus);

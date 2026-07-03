@@ -1,0 +1,1356 @@
+[
+    {
+        "category": 11,
+        "combat_count": 30,
+        "combat_rank": 6,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -16100,
+        "longitude": -70500,
+        "max_dead_rate": 30,
+        "max_win_rate": 95,
+        "min_dead_rate": 11,
+        "min_win_rate": 5,
+        "mission_id": 101,
+        "name_key": 11,
+        "reward": 4,
+        "section": 5,
+        "section_count": 20,
+        "section_rank": 6,
+        "time": 2370,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 4,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 11,
+        "combat_count": 20,
+        "combat_rank": 7,
+        "dead_rate": 30,
+        "is_campaign": 1,
+        "latitude": 13300,
+        "longitude": 13200,
+        "max_dead_rate": 35,
+        "max_win_rate": 95,
+        "min_dead_rate": 21,
+        "min_win_rate": 5,
+        "mission_id": 103,
+        "name_key": 11,
+        "reward": 3,
+        "section": 5,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 3,
+                "value": 4
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 15,
+        "combat_rank": 6,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": 14400,
+        "longitude": -84000,
+        "max_dead_rate": 30,
+        "max_win_rate": 95,
+        "min_dead_rate": 13,
+        "min_win_rate": 5,
+        "mission_id": 110,
+        "name_key": 10,
+        "reward": 4,
+        "section": 2,
+        "section_count": 15,
+        "section_rank": 6,
+        "time": 2850,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 2,
+                "type": 4,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 20,
+        "combat_rank": 7,
+        "dead_rate": 30,
+        "is_campaign": 1,
+        "latitude": -18300,
+        "longitude": 15500,
+        "max_dead_rate": 35,
+        "max_win_rate": 95,
+        "min_dead_rate": 21,
+        "min_win_rate": 5,
+        "mission_id": 113,
+        "name_key": 10,
+        "reward": 3,
+        "section": 2,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 2,
+                "type": 3,
+                "value": 4
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 15,
+        "combat_rank": 6,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -11500,
+        "longitude": -75500,
+        "max_dead_rate": 30,
+        "max_win_rate": 95,
+        "min_dead_rate": 13,
+        "min_win_rate": 5,
+        "mission_id": 134,
+        "name_key": 10,
+        "reward": 4,
+        "section": 3,
+        "section_count": 15,
+        "section_rank": 6,
+        "time": 2850,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 3,
+                "type": 4,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 20,
+        "combat_rank": 7,
+        "dead_rate": 30,
+        "is_campaign": 1,
+        "latitude": 7400,
+        "longitude": -77200,
+        "max_dead_rate": 35,
+        "max_win_rate": 95,
+        "min_dead_rate": 21,
+        "min_win_rate": 5,
+        "mission_id": 135,
+        "name_key": 10,
+        "reward": 3,
+        "section": 3,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 3,
+                "type": 3,
+                "value": 4
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 15,
+        "combat_rank": 6,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -11500,
+        "longitude": -75500,
+        "max_dead_rate": 30,
+        "max_win_rate": 95,
+        "min_dead_rate": 13,
+        "min_win_rate": 5,
+        "mission_id": 140,
+        "name_key": 10,
+        "reward": 4,
+        "section": 4,
+        "section_count": 15,
+        "section_rank": 6,
+        "time": 2850,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 4,
+                "type": 4,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 15,
+        "combat_rank": 6,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -11500,
+        "longitude": -75500,
+        "max_dead_rate": 30,
+        "max_win_rate": 95,
+        "min_dead_rate": 13,
+        "min_win_rate": 5,
+        "mission_id": 150,
+        "name_key": 10,
+        "reward": 4,
+        "section": 5,
+        "section_count": 15,
+        "section_rank": 6,
+        "time": 2850,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 5,
+                "type": 4,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 15,
+        "combat_rank": 6,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": 7400,
+        "longitude": -77200,
+        "max_dead_rate": 30,
+        "max_win_rate": 95,
+        "min_dead_rate": 13,
+        "min_win_rate": 5,
+        "mission_id": 160,
+        "name_key": 10,
+        "reward": 4,
+        "section": 6,
+        "section_count": 15,
+        "section_rank": 6,
+        "time": 2850,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 6,
+                "type": 4,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 20,
+        "combat_rank": 7,
+        "dead_rate": 30,
+        "is_campaign": 1,
+        "latitude": 7400,
+        "longitude": -77200,
+        "max_dead_rate": 35,
+        "max_win_rate": 95,
+        "min_dead_rate": 21,
+        "min_win_rate": 5,
+        "mission_id": 143,
+        "name_key": 10,
+        "reward": 3,
+        "section": 4,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 4,
+                "type": 3,
+                "value": 4
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 20,
+        "combat_rank": 7,
+        "dead_rate": 30,
+        "is_campaign": 1,
+        "latitude": -18300,
+        "longitude": 15500,
+        "max_dead_rate": 35,
+        "max_win_rate": 95,
+        "min_dead_rate": 21,
+        "min_win_rate": 5,
+        "mission_id": 153,
+        "name_key": 10,
+        "reward": 3,
+        "section": 5,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 5,
+                "type": 3,
+                "value": 4
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 20,
+        "combat_rank": 7,
+        "dead_rate": 30,
+        "is_campaign": 1,
+        "latitude": -5380,
+        "longitude": -80000,
+        "max_dead_rate": 35,
+        "max_win_rate": 95,
+        "min_dead_rate": 21,
+        "min_win_rate": 5,
+        "mission_id": 163,
+        "name_key": 10,
+        "reward": 3,
+        "section": 6,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 6,
+                "type": 3,
+                "value": 4
+            }
+        ]
+    },
+    {
+        "category": 7,
+        "combat_count": 30,
+        "combat_rank": 6,
+        "dead_rate": 33,
+        "is_campaign": 1,
+        "latitude": -29229,
+        "longitude": 3025,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 24,
+        "min_win_rate": 5,
+        "mission_id": 235,
+        "name_key": 7,
+        "reward": 15,
+        "section": 3,
+        "section_count": 20,
+        "section_rank": 6,
+        "time": 10530,
+        "primary_reward": [
+            {
+                "bottom_type": 15,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 15,
+                "value": 30400
+            }
+        ]
+    },
+    {
+        "category": 7,
+        "combat_count": 30,
+        "combat_rank": 6,
+        "dead_rate": 33,
+        "is_campaign": 1,
+        "latitude": -10466,
+        "longitude": 61410,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 24,
+        "min_win_rate": 5,
+        "mission_id": 239,
+        "name_key": 7,
+        "reward": 16,
+        "section": 3,
+        "section_count": 20,
+        "section_rank": 6,
+        "time": 9330,
+        "primary_reward": [
+            {
+                "bottom_type": 16,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 16,
+                "value": 32600
+            }
+        ]
+    },
+    {
+        "category": 7,
+        "combat_count": 30,
+        "combat_rank": 6,
+        "dead_rate": 33,
+        "is_campaign": 1,
+        "latitude": -67306,
+        "longitude": 9829,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 24,
+        "min_win_rate": 5,
+        "mission_id": 240,
+        "name_key": 7,
+        "reward": 12,
+        "section": 3,
+        "section_count": 20,
+        "section_rank": 6,
+        "time": 9330,
+        "primary_reward": [
+            {
+                "bottom_type": 12,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 12,
+                "value": 47880
+            }
+        ]
+    },
+    {
+        "category": 7,
+        "combat_count": 30,
+        "combat_rank": 6,
+        "dead_rate": 33,
+        "is_campaign": 1,
+        "latitude": 59311,
+        "longitude": -173335,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 24,
+        "min_win_rate": 5,
+        "mission_id": 241,
+        "name_key": 7,
+        "reward": 13,
+        "section": 3,
+        "section_count": 20,
+        "section_rank": 6,
+        "time": 9330,
+        "primary_reward": [
+            {
+                "bottom_type": 13,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 13,
+                "value": 31880
+            }
+        ]
+    },
+    {
+        "category": 8,
+        "combat_count": 20,
+        "combat_rank": 4,
+        "dead_rate": 15,
+        "is_campaign": 1,
+        "latitude": 13300,
+        "longitude": 13200,
+        "max_dead_rate": 25,
+        "max_win_rate": 95,
+        "min_dead_rate": 9,
+        "min_win_rate": 5,
+        "mission_id": 244,
+        "name_key": 8,
+        "reward": 1,
+        "section": 3,
+        "section_count": 10,
+        "section_rank": 4,
+        "time": 1890,
+        "primary_reward": [
+            {
+                "bottom_type": 1,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 1,
+                "value": 950000
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": 29500,
+        "longitude": 48200,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 210,
+        "name_key": 13,
+        "reward": 19,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1920,
+        "primary_reward": [
+            {
+                "bottom_type": 19,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 19,
+                "value": 550
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -12100,
+        "longitude": -85600,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 211,
+        "name_key": 13,
+        "reward": 22,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1920,
+        "primary_reward": [
+            {
+                "bottom_type": 22,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 22,
+                "value": 664
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -18300,
+        "longitude": 15500,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 212,
+        "name_key": 13,
+        "reward": 21,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1920,
+        "primary_reward": [
+            {
+                "bottom_type": 21,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 21,
+                "value": 664
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -18300,
+        "longitude": 15500,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 213,
+        "name_key": 13,
+        "reward": 17,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1920,
+        "primary_reward": [
+            {
+                "bottom_type": 17,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 17,
+                "value": 550
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -40300,
+        "longitude": -57500,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 214,
+        "name_key": 13,
+        "reward": 23,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1920,
+        "primary_reward": [
+            {
+                "bottom_type": 23,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 23,
+                "value": 550
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": 29500,
+        "longitude": 48200,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 215,
+        "name_key": 13,
+        "reward": 18,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1920,
+        "primary_reward": [
+            {
+                "bottom_type": 18,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 18,
+                "value": 550
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 7,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -40300,
+        "longitude": -57500,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 216,
+        "name_key": 13,
+        "reward": 20,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 7,
+        "time": 4800,
+        "primary_reward": [
+            {
+                "bottom_type": 20,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 20,
+                "value": 493
+            }
+        ]
+    },
+    {
+        "category": 13,
+        "combat_count": 30,
+        "combat_rank": 7,
+        "dead_rate": 25,
+        "is_campaign": 1,
+        "latitude": -12100,
+        "longitude": -85600,
+        "max_dead_rate": 45,
+        "max_win_rate": 95,
+        "min_dead_rate": 17,
+        "min_win_rate": 5,
+        "mission_id": 217,
+        "name_key": 13,
+        "reward": 24,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 7,
+        "time": 4800,
+        "primary_reward": [
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 493
+            }
+        ]
+    },
+    {
+        "category": 5,
+        "combat_count": 15,
+        "combat_rank": 2,
+        "dead_rate": 30,
+        "is_campaign": 0,
+        "latitude": -5200,
+        "longitude": 129400,
+        "max_dead_rate": 40,
+        "max_win_rate": 95,
+        "min_dead_rate": 15,
+        "min_win_rate": 5,
+        "mission_id": 258,
+        "name_key": 14,
+        "reward": 31,
+        "section": 1,
+        "section_count": 0,
+        "section_rank": 0,
+        "time": 1872,
+        "primary_reward": [
+            {
+                "bottom_type": 31,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 31,
+                "value": 1
+            }
+        ]
+    },
+    {
+        "category": 5,
+        "combat_count": 15,
+        "combat_rank": 2,
+        "dead_rate": 30,
+        "is_campaign": 0,
+        "latitude": 14200,
+        "longitude": 36300,
+        "max_dead_rate": 40,
+        "max_win_rate": 95,
+        "min_dead_rate": 15,
+        "min_win_rate": 5,
+        "mission_id": 259,
+        "name_key": 15,
+        "reward": 31,
+        "section": 1,
+        "section_count": 0,
+        "section_rank": 0,
+        "time": 1872,
+        "primary_reward": [
+            {
+                "bottom_type": 31,
+                "mecha_type": 1,
+                "rate": 1000000,
+                "section": 0,
+                "type": 31,
+                "value": 1
+            }
+        ]
+    },
+    {
+        "category": 11,
+        "combat_count": 30,
+        "combat_rank": 5,
+        "dead_rate": 15,
+        "is_campaign": 0,
+        "latitude": -16100,
+        "longitude": -70500,
+        "max_dead_rate": 25,
+        "max_win_rate": 95,
+        "min_dead_rate": 8,
+        "min_win_rate": 5,
+        "mission_id": 278,
+        "name_key": 11,
+        "reward": 4,
+        "section": 5,
+        "section_count": 20,
+        "section_rank": 5,
+        "time": 1410,
+        "primary_reward": [
+            {
+                "bottom_type": 4,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 4,
+                "value": 3
+            }
+        ]
+    },
+    {
+        "category": 11,
+        "combat_count": 40,
+        "combat_rank": 7,
+        "dead_rate": 21,
+        "is_campaign": 0,
+        "latitude": 13300,
+        "longitude": 13200,
+        "max_dead_rate": 25,
+        "max_win_rate": 95,
+        "min_dead_rate": 11,
+        "min_win_rate": 5,
+        "mission_id": 279,
+        "name_key": 11,
+        "reward": 3,
+        "section": 5,
+        "section_count": 20,
+        "section_rank": 7,
+        "time": 2130,
+        "primary_reward": [
+            {
+                "bottom_type": 3,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 3,
+                "value": 2
+            }
+        ]
+    },
+    {
+        "category": 7,
+        "combat_count": 10,
+        "combat_rank": 6,
+        "dead_rate": 32,
+        "is_campaign": 0,
+        "latitude": 56133,
+        "longitude": -20988,
+        "max_dead_rate": 37,
+        "max_win_rate": 95,
+        "min_dead_rate": 27,
+        "min_win_rate": 5,
+        "mission_id": 282,
+        "name_key": 7,
+        "reward": 15,
+        "section": 3,
+        "section_count": 10,
+        "section_rank": 6,
+        "time": 7170,
+        "primary_reward": [
+            {
+                "bottom_type": 15,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 15,
+                "value": 12500
+            }
+        ]
+    },
+    {
+        "category": 7,
+        "combat_count": 10,
+        "combat_rank": 7,
+        "dead_rate": 32,
+        "is_campaign": 0,
+        "latitude": -67306,
+        "longitude": 9829,
+        "max_dead_rate": 37,
+        "max_win_rate": 95,
+        "min_dead_rate": 27,
+        "min_win_rate": 5,
+        "mission_id": 283,
+        "name_key": 7,
+        "reward": 15,
+        "section": 3,
+        "section_count": 10,
+        "section_rank": 7,
+        "time": 8610,
+        "primary_reward": [
+            {
+                "bottom_type": 15,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 15,
+                "value": 25000
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 10,
+        "combat_rank": 2,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": 13300,
+        "longitude": 13200,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 400,
+        "name_key": 10,
+        "reward": 7,
+        "section": 6,
+        "section_count": 10,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 7,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 6,
+                "type": 7,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 10,
+        "combat_rank": 2,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": -1000,
+        "longitude": -70000,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 401,
+        "name_key": 10,
+        "reward": 7,
+        "section": 5,
+        "section_count": 10,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 7,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 5,
+                "type": 7,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 10,
+        "combat_rank": 2,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": 7400,
+        "longitude": -77200,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 402,
+        "name_key": 10,
+        "reward": 7,
+        "section": 4,
+        "section_count": 10,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 7,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 4,
+                "type": 7,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 10,
+        "combat_rank": 2,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": 36300,
+        "longitude": 66000,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 403,
+        "name_key": 10,
+        "reward": 7,
+        "section": 3,
+        "section_count": 10,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 7,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 3,
+                "type": 7,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 10,
+        "combat_count": 10,
+        "combat_rank": 2,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": -18300,
+        "longitude": 15500,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 404,
+        "name_key": 10,
+        "reward": 7,
+        "section": 2,
+        "section_count": 10,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 7,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 2,
+                "type": 7,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 11,
+        "combat_count": 10,
+        "combat_rank": 2,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": -16100,
+        "longitude": -70500,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 405,
+        "name_key": 11,
+        "reward": 7,
+        "section": 5,
+        "section_count": 10,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 7,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 7,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 10
+            }
+        ]
+    },
+    {
+        "category": 11,
+        "combat_count": 10,
+        "combat_rank": 3,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": 7400,
+        "longitude": -77200,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 406,
+        "name_key": 11,
+        "reward": 6,
+        "section": 5,
+        "section_count": 10,
+        "section_rank": 3,
+        "time": 7170,
+        "primary_reward": [
+            {
+                "bottom_type": 6,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 6,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 20
+            }
+        ]
+    },
+    {
+        "category": 8,
+        "combat_count": 20,
+        "combat_rank": 2,
+        "dead_rate": 60,
+        "is_campaign": 0,
+        "latitude": -18300,
+        "longitude": 15500,
+        "max_dead_rate": 65,
+        "max_win_rate": 95,
+        "min_dead_rate": 55,
+        "min_win_rate": 5,
+        "mission_id": 407,
+        "name_key": 8,
+        "reward": 1,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 2,
+        "time": 1410,
+        "primary_reward": [
+            {
+                "bottom_type": 1,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 1,
+                "value": 300000
+            }
+        ]
+    },
+    {
+        "category": 8,
+        "combat_count": 20,
+        "combat_rank": 2,
+        "dead_rate": 60,
+        "is_campaign": 0,
+        "latitude": 26200,
+        "longitude": 35200,
+        "max_dead_rate": 65,
+        "max_win_rate": 95,
+        "min_dead_rate": 55,
+        "min_win_rate": 5,
+        "mission_id": 408,
+        "name_key": 8,
+        "reward": 1,
+        "section": 4,
+        "section_count": 20,
+        "section_rank": 2,
+        "time": 4290,
+        "primary_reward": [
+            {
+                "bottom_type": 1,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 1,
+                "value": 1200000
+            }
+        ]
+    },
+    {
+        "category": 8,
+        "combat_count": 30,
+        "combat_rank": 4,
+        "dead_rate": 60,
+        "is_campaign": 0,
+        "latitude": 26200,
+        "longitude": 35200,
+        "max_dead_rate": 65,
+        "max_win_rate": 95,
+        "min_dead_rate": 55,
+        "min_win_rate": 5,
+        "mission_id": 409,
+        "name_key": 8,
+        "reward": 1,
+        "section": 4,
+        "section_count": 30,
+        "section_rank": 4,
+        "time": 5730,
+        "primary_reward": [
+            {
+                "bottom_type": 1,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 1,
+                "value": 2100000
+            }
+        ]
+    },
+    {
+        "category": 8,
+        "combat_count": 10,
+        "combat_rank": 4,
+        "dead_rate": 45,
+        "is_campaign": 0,
+        "latitude": -32000,
+        "longitude": 24000,
+        "max_dead_rate": 50,
+        "max_win_rate": 95,
+        "min_dead_rate": 40,
+        "min_win_rate": 5,
+        "mission_id": 410,
+        "name_key": 8,
+        "reward": 5,
+        "section": 5,
+        "section_count": 10,
+        "section_rank": 4,
+        "time": 6240,
+        "primary_reward": [
+            {
+                "bottom_type": 5,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 1,
+                "type": 5,
+                "value": 30
+            },
+            {
+                "bottom_type": 24,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 24,
+                "value": 50
+            }
+        ]
+    },
+    {
+        "category": 0,
+        "combat_count": 20,
+        "combat_rank": 8,
+        "dead_rate": 70,
+        "is_campaign": 0,
+        "latitude": 14400,
+        "longitude": -84000,
+        "max_dead_rate": 80,
+        "max_win_rate": 95,
+        "min_dead_rate": 55,
+        "min_win_rate": 5,
+        "mission_id": 30036,
+        "name_key": 30,
+        "reward": 1,
+        "section": 6,
+        "section_count": 10,
+        "section_rank": 8,
+        "time": 9120,
+        "primary_reward": [
+            {
+                "bottom_type": 1,
+                "mecha_type": 0,
+                "rate": 1000000,
+                "section": 0,
+                "type": 1,
+                "value": 10
+            }
+        ]
+    }
+]

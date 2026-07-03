@@ -56,7 +56,7 @@ namespace emulator::tpp
 				continue;
 			}
 
-			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 			const auto percent = static_cast<float>(now - prison[i].time_captured) / static_cast<float>(database::player_data::prisoner_hold_time.count());
 			const auto is_persuaded = percent >= 1.f;
 

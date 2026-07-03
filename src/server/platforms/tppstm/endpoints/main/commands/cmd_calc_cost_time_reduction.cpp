@@ -34,6 +34,11 @@ namespace emulator::tpp
 				return game::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
 			}
 
+			if (kind == "TROOPS_COMPLETION")
+			{
+				return game::calculate_mb_coins(remaining_time, database::vars.cost_factor_platform_construction);
+			}
+
 			return game::calculate_mb_coins(remaining_time, database::vars.cost_factor_generic);
 		};
 
