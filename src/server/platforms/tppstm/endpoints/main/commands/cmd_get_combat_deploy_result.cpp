@@ -6,38 +6,6 @@
 
 namespace emulator::tpp
 {
-	namespace
-	{
-		void give_rewards(const std::uint64_t player_id, const database::combat_deployments::mission_t& mission)
-		{
-			for (const auto& reward : mission.rewards)
-			{
-				switch (reward.type)
-				{
-					case 1: break;
-					case 3: break;
-					case 4: break;
-					case 5: break;
-					case 6: break;
-					case 7: break;
-					case 12: break;
-					case 13: break;
-					case 15: break;
-					case 16: break;
-					case 17: break;
-					case 18: break;
-					case 19: break;
-					case 20: break;
-					case 21: break;
-					case 22: break;
-					case 23: break;
-					case 24: break;
-					case 31: break;
-				}
-			}
-		}
-	}
-
 	nlohmann::json cmd_get_combat_deploy_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
@@ -106,11 +74,6 @@ namespace emulator::tpp
 			deployment_j["walker_gear_proto"] = 0;
 			deployment_j["walker_gear_soviet"] = 0;
 			deployment_j["walker_gear_soviet_support"] = 0;
-
-			if (deployment.get_is_win())
-			{
-				give_rewards(player->get_id(), *iter);
-			}
 
 			database::combat_deployments::delete_deployment(player->get_id(), deployment.get_mission_id());
 		}
