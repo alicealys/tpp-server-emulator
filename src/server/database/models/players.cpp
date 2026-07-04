@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "players.hpp"
+#include "player_records.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -666,8 +667,10 @@ namespace database::players
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::all_of(player::table))
-							.from(player::table)
-								.where((player::table.security_challenge == true)).order_by(rand.asc()).limit(limit)
+							.from(player::table.join(player_records::player_record::table)
+										.on(player_records::player_record::table.player_id == player::table.id))
+								.where(player::table.security_challenge == true && player_records::player_record::table.has_fob == true)
+									.order_by(rand.asc()).limit(limit)
 					);
 
 				std::vector<player> list;

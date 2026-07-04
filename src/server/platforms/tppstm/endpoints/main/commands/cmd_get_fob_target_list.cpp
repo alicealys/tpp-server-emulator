@@ -137,7 +137,8 @@ namespace emulator::tpp
 
 			if (!target_entry.player_record.has_value() || 
 				target_fobs.size() == 0 || 
-				!target_entry.player_data.has_value())
+				!target_entry.player_data.has_value() ||
+				!target_entry.player_record->has_an_fob())
 			{
 				continue;
 			}

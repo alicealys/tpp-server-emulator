@@ -326,10 +326,14 @@ namespace command
 					const auto fobs = database::fobs::get_fob_list(player.get_id());
 					for (auto& fob : fobs)
 					{
-						if (fob.get_platform_count() != 0 && fob.get_construct_param().packed != 0)
+						const auto& clusters = fob.get_cluster_param();
+						for (auto i = 0; i < game::fob_sections_count; i++)
 						{
-							has_an_fob = true;
-							break;
+							if (clusters.param->build.fields.platform_count != 0)
+							{
+								has_an_fob = true;
+								break;
+							}
 						}
 					}
 
