@@ -54,6 +54,9 @@ create table if not exists `player_records`
 	fob_deploy_emergency_count	int not null	default 0,
 	has_fob						boolean not null	default 0,
 	challenge_tasks				blob default null,
+	daily_last					datetime default null,
+	daily_last_ack				datetime default null,
+	daily_total					int unsigned not null default 0,
 	shield_date					datetime not null,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)

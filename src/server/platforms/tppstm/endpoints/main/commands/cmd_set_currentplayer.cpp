@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "cmd_set_currentplayer.hpp"
+#include "cmd_get_daily_reward.hpp"
 
 #include "database/auth.hpp"
 
@@ -18,6 +19,8 @@ namespace emulator::tpp
 		{
 			return error(ERR_INVALID_SESSION);
 		}
+
+		cmd_get_daily_reward::give_daily_reward(player.value());
 
 		result["player_id"] = player->get_id();
 		result["result"] = "NOERR";
