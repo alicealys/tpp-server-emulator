@@ -10,11 +10,28 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
+		auto& lang_j = data["lang"];
+		if (!lang_j.is_number_unsigned())
+		{
+			return error(ERR_INVALIDARG);
+		}
+
+		const auto lang = lang_j.get<std::uint32_t>();
 		const auto& list = database::shop_purchases::get_shop_item_list();
+
 		for (auto i = 0ull; i < list.size(); i++)
 		{
 			result["item"][i]["id"] = list[i].item_type;
-			result["item"][i]["name"] = list[i].name;
+
+			if (lang < list[i].name.size())
+			{
+				result["item"][i]["name"] = list[i].name[lang];
+			}
+			else
+			{
+				result["item"][i]["name"] = "";
+			}
+
 			result["item"][i]["price"] = list[i].price;
 		}
 
