@@ -38,7 +38,7 @@ create table if not exists `player_records`
 	fob_point					int not null	default 0,
 	fob_rank					int not null	default 0,
 	prev_fob_rank				int not null	default 0,
-	is_insurance				boolean			default false,
+	insurance_end				datetime		default null,
 	league_grade				int not null	default 0,
 	prev_league_grade			int not null	default 0,
 	league_rank					int not null	default 0,

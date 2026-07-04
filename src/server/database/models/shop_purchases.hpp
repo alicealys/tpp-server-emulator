@@ -31,11 +31,15 @@ namespace database::shop_purchases
 		waters_north_pacific_ocean_free2 = 20001,
 		waters_south_pacific_ocean_free2 = 20002,
 		waters_north_atlantic_ocean_free2 = 20003,
+
+		fob_defense_insurance_beg = 12000,
 		fob_defense_insurance_1_day = 12010,
 		fob_defense_insurance_3_day = 12011,
 		fob_defense_insurance_7_day = 12012,
 		fob_defense_insurance_14_day = 12013,
 		fob_defense_insurance_3_day_free = 12022,
+		fob_defense_insurance_end = 13000,
+
 		fob_unit_deployment = 21001,
 		weapons_color_variation = 1000000,
 		gears_color_variation = 2000000,
@@ -117,4 +121,6 @@ namespace database::shop_purchases
 
 	std::size_t get_history_size(const std::uint64_t player_id);
 	std::vector<shop_purchase> get_history(const std::uint64_t player_id, const std::uint32_t limit);
+	std::optional<shop_purchase> get_last_item_purchase(const std::uint64_t player_id, const std::uint32_t item_type);
+	std::optional<shop_purchase> get_last_item_purchase_range(const std::uint64_t player_id, const std::uint32_t item_type_beg, const std::uint32_t item_type_end);
 }
