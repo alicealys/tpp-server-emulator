@@ -140,6 +140,49 @@ namespace database::shop_purchases
 				return static_cast<std::size_t>(results.front().count);
 			});
 		}
+
+		template <database_type_t Type>
+		std::optional<shop_purchase> get_last_item_purchase(const std::uint64_t player_id, const std::uint32_t item_type)
+		{
+			return database::access<std::optional<shop_purchase>>([&](database_t& db)
+				-> std::optional<shop_purchase>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(shop_purchase::table))
+							.from(shop_purchase::table)
+								.where(shop_purchase::table.player_id == player_id && shop_purchase::table.item_type == item_type)
+									.order_by(shop_purchase::table.date.desc()).limit(1u));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				return shop_purchase(results.front());
+			});
+		}
+
+		template <database_type_t Type>
+		std::optional<shop_purchase> get_last_item_purchase_range(const std::uint64_t player_id, const std::uint32_t item_type_beg, const std::uint32_t item_type_end)
+		{
+			return database::access<std::optional<shop_purchase>>([&](database_t& db)
+				-> std::optional<shop_purchase>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(shop_purchase::table))
+							.from(shop_purchase::table)
+								.where(shop_purchase::table.player_id == player_id && 
+									   shop_purchase::table.item_type >= item_type_beg && shop_purchase::table.item_type < item_type_end)
+									.order_by(shop_purchase::table.date.desc()).limit(1u));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				return shop_purchase(results.front());
+			});
+		}
 	}
 
 	bool add_entry(const std::uint64_t player_id, const entry_params_t& params)
@@ -181,6 +224,16 @@ namespace database::shop_purchases
 	std::vector<shop_purchase> get_history(const std::uint64_t player_id, const std::uint32_t limit)
 	{
 		RUN_IMPL(impl::get_history, player_id, limit);
+	}
+
+	std::optional<shop_purchase> get_last_item_purchase(const std::uint64_t player_id, const std::uint32_t item_type)
+	{
+		RUN_IMPL(impl::get_last_item_purchase, player_id, item_type);
+	}
+
+	std::optional<shop_purchase> get_last_item_purchase_range(const std::uint64_t player_id, const std::uint32_t item_type_beg, const std::uint32_t item_type_end)
+	{
+		RUN_IMPL(impl::get_last_item_purchase_range, player_id, item_type_beg, item_type_end);
 	}
 
 	class table final : public table_interface

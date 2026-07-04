@@ -1,0 +1,37 @@
+[
+    {
+        "interval_hour": 36,
+        "is_free": 1,
+        "period_hour": 72,
+        "price": 0,
+        "product_id": 12022
+    },
+    {
+        "interval_hour": 12,
+        "is_free": 0,
+        "period_hour": 24,
+        "price": 50,
+        "product_id": 12010
+    },
+    {
+        "interval_hour": 36,
+        "is_free": 0,
+        "period_hour": 72,
+        "price": 100,
+        "product_id": 12011
+    },
+    {
+        "interval_hour": 84,
+        "is_free": 0,
+        "period_hour": 168,
+        "price": 200,
+        "product_id": 12012
+    },
+    {
+        "interval_hour": 168,
+        "is_free": 0,
+        "period_hour": 336,
+        "price": 300,
+        "product_id": 12013
+    }
+]

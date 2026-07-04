@@ -25,7 +25,7 @@ namespace database::player_records
 		DEFINE_FIELD(fob_point, sqlpp::integer);
 		DEFINE_FIELD(fob_rank, sqlpp::integer_unsigned);
 		DEFINE_FIELD(prev_fob_rank, sqlpp::integer_unsigned);
-		DEFINE_FIELD(is_insurance, sqlpp::boolean);
+		DEFINE_FIELD(insurance_end, sqlpp::time_point);
 		DEFINE_FIELD(league_grade, sqlpp::integer_unsigned);
 		DEFINE_FIELD(prev_league_grade, sqlpp::integer_unsigned);
 		DEFINE_FIELD(league_rank, sqlpp::integer_unsigned);
@@ -45,7 +45,7 @@ namespace database::player_records
 		DEFINE_FIELD(daily_last_ack, sqlpp::time_point);
 		DEFINE_FIELD(daily_total, sqlpp::integer_unsigned);
 		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
-			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, is_insurance_field_t,
+			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, insurance_end_field_t,
 			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
 			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, challenge_tasks_field_t, 
@@ -63,7 +63,6 @@ namespace database::player_records
 			this->fob_point_ = static_cast<std::int32_t>(row.fob_point);
 			this->fob_rank_ = static_cast<std::uint32_t>(row.fob_rank);
 			this->prev_fob_rank_ = static_cast<std::uint32_t>(row.prev_fob_rank);
-			this->is_insurance_ = static_cast<std::uint32_t>(row.is_insurance);
 			this->league_grade_ = static_cast<std::uint32_t>(row.league_grade);
 			this->prev_league_grade_ = static_cast<std::uint32_t>(row.prev_league_grade);
 			this->league_rank_ = static_cast<std::uint32_t>(row.league_rank);
@@ -89,6 +88,7 @@ namespace database::player_records
 			this->daily_total_ = static_cast<std::uint32_t>(row.daily_total);
 
 			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
+			this->insurance_end_ = std::chrono::duration_cast<std::chrono::seconds>(row.insurance_end.value().time_since_epoch());
 		}
 
 		std::uint64_t get_player_id() const
@@ -123,7 +123,8 @@ namespace database::player_records
 
 		std::uint32_t get_is_insurance() const
 		{
-			return this->is_insurance_;
+			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
+			return now < this->insurance_end_;
 		}
 
 		std::uint32_t get_league_grade() const
@@ -240,7 +241,7 @@ namespace database::player_records
 		std::int32_t fob_point_{};
 		std::uint32_t fob_rank_{};
 		std::uint32_t prev_fob_rank_{};
-		std::uint32_t is_insurance_{};
+		std::chrono::seconds insurance_end_{};
 		std::uint32_t league_grade_{};
 		std::uint32_t prev_league_grade_{};
 		std::uint32_t league_rank_{};
@@ -286,4 +287,6 @@ namespace database::player_records
 
 	void set_daily_login(const std::uint64_t player_id);
 	void set_daily_reward(const std::uint64_t player_id);
+
+	void set_insurance(const std::uint64_t player_id, const std::chrono::seconds duration);
 }

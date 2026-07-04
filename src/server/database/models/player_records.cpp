@@ -406,6 +406,19 @@ namespace database::player_records
 			});
 		}
 
+		template <database_type_t Type>
+		void set_insurance(const std::uint64_t player_id, const std::chrono::seconds duration)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.insurance_end = std::chrono::system_clock::now() + duration)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
+
 		void create_fob_grade_index(database::database_t& db)
 		{
 			if (database::get_database_type() == database_sqlite3)
@@ -514,6 +527,11 @@ namespace database::player_records
 	void set_daily_reward(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::set_daily_reward, player_id);
+	}
+
+	void set_insurance(const std::uint64_t player_id, const std::chrono::seconds duration)
+	{
+		RUN_IMPL(impl::set_insurance, player_id, duration);
 	}
 
 	class table final : public table_interface
