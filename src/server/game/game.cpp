@@ -2,6 +2,8 @@
 
 #include "game.hpp"
 
+#include "utils/resources.hpp"
+
 namespace game
 {
 	// server
@@ -110,6 +112,70 @@ namespace game
 			{ERR_UNSELECTED_USE_FLOW, "ERR_UNSELECTED_USE_FLOW"},
 			{ERR_WORMHOLE_NOTFOUND, "ERR_WORMHOLE_NOTFOUND"},
 		};
+		
+		struct emblem_list_part_t
+		{
+			std::uint32_t default_tag;
+			std::unordered_set<std::uint32_t> tags;
+		};
+
+		struct emblem_list_t
+		{
+			emblem_list_part_t frame_params;
+			emblem_list_part_t front_params;
+			emblem_list_part_t word_params;
+			emblem_list_part_t color_params;
+		};
+
+		emblem_list_t parse_emblem_list()
+		{
+			auto list = utils::resources::load_json(RESOURCE_EMBLEM_LIST);
+			if (!list.is_object())
+			{
+				return {};
+			}
+
+			emblem_list_t result_list{};
+
+			const auto parse_tags = [](nlohmann::json& tags, emblem_list_part_t& out_part)
+			{
+				if (!tags.is_array())
+				{
+					return;
+				}
+
+				auto is_first = false;
+				for (auto i = 0u; i < tags.size(); i++)
+				{
+					if (!tags[i].is_number_unsigned())
+					{
+						continue;
+					}
+
+					const auto tag = tags[i].get<std::uint32_t>();
+					out_part.tags.insert(tag);
+
+					if (is_first)
+					{
+						out_part.default_tag = tag;
+						is_first = false;
+					}
+				}
+			};
+
+			parse_tags(list["frame_tags"], result_list.frame_params);
+			parse_tags(list["front_tags"], result_list.front_params);
+			parse_tags(list["word_tags"], result_list.word_params);
+			parse_tags(list["color_tags"], result_list.color_params);
+
+			return result_list;
+		}
+
+		const emblem_list_t& get_emblem_list()
+		{
+			static const auto list = parse_emblem_list();
+			return list;
+		}
 	}
 
 	std::string get_error(const std::uint32_t error)
@@ -803,6 +869,30 @@ namespace game
 		copy_value(motherbase.name_plate_id, motherbase_j["name_plate_id"]);
 	}
 
+	std::uint32_t validate_emblem_tag(const std::uint32_t tag, const emblem_list_part_t& part_params)
+	{
+		if (!part_params.tags.contains(tag))
+		{
+			return part_params.default_tag;
+		}
+
+		return tag;
+	}
+
+	std::uint32_t validate_emblem_texture(const std::uint32_t texture_tag, const std::uint32_t part_index, const emblem_list_t& emblem_list)
+	{
+		switch (part_index)
+		{
+		case 0:
+			return validate_emblem_tag(texture_tag, emblem_list.frame_params);
+		case 1:
+			return validate_emblem_tag(texture_tag, emblem_list.front_params);
+		case 2:
+		case 3:
+			return validate_emblem_tag(texture_tag, emblem_list.word_params);
+		}
+	}
+
 	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem)
 	{
 		if (!emblem_j.is_object())
@@ -815,6 +905,8 @@ namespace game
 		{
 			return;
 		}
+
+		const auto& emblem_list = get_emblem_list();
 
 		const auto parse_part = [&](const std::int32_t index)
 		{
@@ -832,6 +924,7 @@ namespace game
 			};
 
 			const auto get = [&](const std::string& name)
+				-> std::int8_t
 			{
 				auto& value_j = part_j[name];
 				if (!value_j.is_number())
@@ -839,12 +932,12 @@ namespace game
 					return 0;
 				}
 
-				return value_j.get<std::int32_t>();
+				return value_j.get<std::int8_t>();
 			};
 
-			emblem.parts[index].base_color = get_u("base_color");
-			emblem.parts[index].frame_color = get_u("frame_color");
-			emblem.parts[index].texture_tag = get_u("texture_tag");
+			emblem.parts[index].base_color = validate_emblem_tag(get_u("base_color"), emblem_list.color_params);
+			emblem.parts[index].frame_color = validate_emblem_tag(get_u("frame_color"), emblem_list.color_params);
+			emblem.parts[index].texture_tag = validate_emblem_texture(get_u("texture_tag"), index, emblem_list);
 			emblem.parts[index].position_x = get("position_x");
 			emblem.parts[index].position_y = get("position_y");
 			emblem.parts[index].rotate = get("rotate");
