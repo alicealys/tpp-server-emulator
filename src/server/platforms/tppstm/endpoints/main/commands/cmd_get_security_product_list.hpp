@@ -21,7 +21,7 @@ namespace emulator::tpp
 	public:
 		cmd_get_security_product_list();
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
-		bool needs_player();
+		bool needs_player() override;
 
 		static std::optional<security_product_t> get_security_product(const std::uint32_t product_id);
 		static bool can_purchase_security_product(const std::uint64_t player_id, const security_product_t& product);

@@ -20,11 +20,13 @@ namespace emulator::tpp
 		const auto item_id = develop_id_j.get<std::uint32_t>();
 
 		nlohmann::json result;
+		result["paid_coin"] = 0;
 
 		const auto item = database::items::get_item(player->get_id(), item_id);
 		if (item.get_develop() != database::items::indev)
 		{
-			return error(ERR_INVALIDARG);
+			result["error"] = game::get_error(ERR_ALREADY_COMPLETED);
+			return result;
 		}
 
 		if (database::player_data::spend_mb_coins(player->get_id(), item.get_mb_coin()))
@@ -44,7 +46,9 @@ namespace emulator::tpp
 			return error(ERR_MBCOIN_SHORTAGE);
 		}
 
-		return error(NOERR);
+		result["paid_coin"] = item.get_mb_coin();
+
+		return result;
 	}
 
 	bool cmd_purchase_online_development_completion::needs_player()

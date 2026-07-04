@@ -10,6 +10,8 @@ namespace emulator::tpp
 {
 	nlohmann::json cmd_purchase_platform_construction::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
+		nlohmann::json result;
+
 		const auto& remaining_time_j = data["remaining_time"];
 
 		if (!remaining_time_j.is_number_unsigned())
@@ -27,8 +29,10 @@ namespace emulator::tpp
 		{
 			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::time_reduction_construction, cost, 0);
 		}
+
+		result["paid_coin"] = cost;
 		
-		return error(NOERR);
+		return result;
 	}
 
 	bool cmd_purchase_platform_construction::needs_player()

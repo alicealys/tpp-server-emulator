@@ -2,14 +2,16 @@
 
 #include "cmd_get_contribute_player_list.hpp"
 
-// unimplemented
-
 namespace emulator::tpp
 {
 	nlohmann::json cmd_get_contribute_player_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+
+		// contributors to nuclear abolition?
+		result["info_list"] = nlohmann::json::array();
+		result["info_num"] = 0;
+
 		return result;
 	}
 }
