@@ -210,7 +210,7 @@ namespace game
 
 	// resources
 
-	std::array<std::uint32_t, resource_type_count> local_processed_resource_caps =
+	std::array<std::uint32_t, RESOURCE_TYPE_COUNT> local_processed_resource_caps =
 	{
 		500000,
 		500000,
@@ -273,7 +273,7 @@ namespace game
 		0
 	};
 
-	std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps =
+	std::array<std::uint32_t, RESOURCE_TYPE_COUNT> local_unprocessed_resource_caps =
 	{
 		500000,
 		500000,
@@ -336,70 +336,7 @@ namespace game
 		0
 	};
 
-	std::array<std::uint32_t, resource_type_count> server_processed_resource_caps =
-	{
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		1000000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		30000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		16,
-		0,
-		0,
-		0,
-		0,
-		0,
-		500000,
-		500000,
-		500000,
-		500000,
-		500000,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
-	};
-
-	std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps =
+	std::array<std::uint32_t, RESOURCE_TYPE_COUNT> server_processed_resource_caps =
 	{
 		1000000,
 		1000000,
@@ -462,7 +399,70 @@ namespace game
 		0
 	};
 
-	std::array<std::array<std::uint32_t, resource_type_count>, 4> resource_caps =
+	std::array<std::uint32_t, RESOURCE_TYPE_COUNT> server_unprocessed_resource_caps =
+	{
+		1000000,
+		1000000,
+		1000000,
+		1000000,
+		1000000,
+		30000,
+		30000,
+		30000,
+		30000,
+		30000,
+		30000,
+		30000,
+		30000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		16,
+		0,
+		0,
+		0,
+		0,
+		0,
+		500000,
+		500000,
+		500000,
+		500000,
+		500000,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	};
+
+	std::array<std::array<std::uint32_t, RESOURCE_TYPE_COUNT>, 4> resource_caps =
 	{
 		local_processed_resource_caps,
 		local_unprocessed_resource_caps,

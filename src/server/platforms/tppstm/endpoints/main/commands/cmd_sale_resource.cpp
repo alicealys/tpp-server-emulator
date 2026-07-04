@@ -27,7 +27,7 @@ namespace emulator::tpp
 		}
 
 		const auto resource_id = resource_id_j.get<std::uint32_t>();
-		if (resource_id > game::resource_type_count)
+		if (resource_id > game::RESOURCE_TYPE_COUNT)
 		{
 			return error(ERR_INVALIDARG);
 		}

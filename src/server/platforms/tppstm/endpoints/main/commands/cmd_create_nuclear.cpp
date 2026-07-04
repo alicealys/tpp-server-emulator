@@ -29,9 +29,9 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resources{};
 		player_data->get_resource_arrays(resources);
 
-		const auto inc = resources[game::processed_server][game::nuclear] + 1;
-		const auto capped = game::cap_resource_value(game::processed_server, game::nuclear, inc);
-		resources[game::processed_server][game::nuclear] = capped;
+		const auto inc = resources[game::processed_server][game::NUCLEAR_WEAPON] + 1;
+		const auto capped = game::cap_resource_value(game::processed_server, game::NUCLEAR_WEAPON, inc);
+		resources[game::processed_server][game::NUCLEAR_WEAPON] = capped;
 
 		database::player_data::set_resources(player->get_id(), resources, player_data->get_local_gmp(), player_data->get_server_gmp());
 

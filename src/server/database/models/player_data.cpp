@@ -229,7 +229,7 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
-			const auto nuke_count = arrays[game::processed_local][game::nuclear] + arrays[game::processed_server][game::nuclear];
+			const auto nuke_count = arrays[game::processed_local][game::NUCLEAR_WEAPON] + arrays[game::processed_server][game::NUCLEAR_WEAPON];
 
 			database::access([&](database::database_t& db)
 			{
@@ -265,7 +265,7 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources2(const std::uint64_t player_id, resource_arrays_t& arrays)
 		{
-			const auto nuke_count = arrays[game::processed_local][game::nuclear] + arrays[game::processed_server][game::nuclear];
+			const auto nuke_count = arrays[game::processed_local][game::NUCLEAR_WEAPON] + arrays[game::processed_server][game::NUCLEAR_WEAPON];
 
 			database::access([&](database::database_t& db)
 			{

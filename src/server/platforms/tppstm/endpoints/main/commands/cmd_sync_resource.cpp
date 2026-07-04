@@ -27,8 +27,8 @@ namespace emulator::tpp
 
 		if (!gmp_j.is_number_integer() ||
 			!diff_resource_1.is_array() || !diff_resource_2.is_array() ||
-			diff_resource_1.size() < game::resource_type_count ||
-			diff_resource_2.size() < game::resource_type_count)
+			diff_resource_1.size() < game::RESOURCE_TYPE_COUNT ||
+			diff_resource_2.size() < game::RESOURCE_TYPE_COUNT)
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -61,7 +61,7 @@ namespace emulator::tpp
 					const auto ratio = game::get_local_resource_ratio(local_type, server_type, i);
 
 					const auto current_local_value = game::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
-					const auto current_server_value = i == game::nuclear ? 
+					const auto current_server_value = i == game::NUCLEAR_WEAPON ? 
 						player_data->get_nuke_count() : 
 						game::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
 
