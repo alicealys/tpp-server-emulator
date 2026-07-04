@@ -193,11 +193,6 @@ namespace database::fobs
 				auto& fob_param = fob_params[index];
 				auto& server_cluster_param = server_fob.get_cluster_param();
 
-				if (fob_param.platform_count > 0 && fob_param.construct_param.packed != 0)
-				{
-					has_an_fob = true;
-				}
-
 				for (auto i = 0ull; i < game::fob_sections_count; i++)
 				{
 					auto& old_param = server_cluster_param.param[i];
@@ -220,6 +215,11 @@ namespace database::fobs
 					merge_security(new_param.common_security[0], old_param.common_security[0]);
 					merge_security(new_param.common_security[1], old_param.common_security[1]);
 					merge_security(new_param.common_security[2], old_param.common_security[2]);
+
+					if (new_param.build.fields.platform_count != 0)
+					{
+						has_an_fob = true;
+					}
 				}
 
 				database::access([&](database::database_t& db)
