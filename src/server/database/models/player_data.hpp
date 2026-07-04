@@ -78,7 +78,6 @@ namespace database::player_data
 		DEFINE_FIELD(staff_counts, sqlpp::binary);
 		DEFINE_FIELD(staff_bin, sqlpp::binary);
 		DEFINE_FIELD(prison_bin, sqlpp::binary);
-		DEFINE_FIELD(loadout, sqlpp::text);
 		DEFINE_FIELD(motherbase, sqlpp::binary);
 		DEFINE_FIELD(emblem, sqlpp::binary);
 		DEFINE_FIELD(local_gmp, sqlpp::integer);
@@ -96,7 +95,6 @@ namespace database::player_data
 		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
 			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_counts_field_t, 
 			staff_bin_field_t, prison_bin_field_t,
-			loadout_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
 			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, 
 			client_resource_version_field_t, client_staff_version_field_t,
@@ -268,8 +266,6 @@ namespace database::player_data
 			return this->fob_deploy_damage_param_;
 		}
 
-		nlohmann::json get_loadout() const;
-
 		void get_motherbase(game::motherbase_t& mother_base) const;
 		void get_emblem(game::emblem_t& emblem) const;
 
@@ -324,7 +320,6 @@ namespace database::player_data
 	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 
 	void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase);
-	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout);
 	void sync_emblem(const std::uint64_t player_id, const game::emblem_t& emblem);
 
 	std::uint32_t get_mb_coins(const std::uint64_t player_id);

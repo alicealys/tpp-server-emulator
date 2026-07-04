@@ -93,7 +93,6 @@ create table if not exists `player_data`
 	staff_counts			blob default null,
 	staff_bin				mediumblob default null,
 	prison_bin				mediumblob default null,
-	loadout					json not null,
 	motherbase				blob default null,
 	emblem					blob default null,
 	local_gmp				int default 0,

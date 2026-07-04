@@ -26,7 +26,6 @@ namespace emulator::scripting
 		REGISTER_METHOD(get_staff_count);
 		REGISTER_METHOD(get_usable_staff_count);
 		//REGISTER_METHOD(get_motherbase);
-		REGISTER_METHOD(get_loadout);
 		//REGISTER_METHOD(get_emblem);
 		REGISTER_METHOD(get_server_gmp);
 		REGISTER_METHOD(get_local_gmp);
@@ -52,7 +51,6 @@ namespace emulator::scripting
 		//this->state_["database"]["playerdata"]["setresources"] = database::player_data::set_resources;
 		this->state_["database"]["playerdata"]["setresourcesassync"] = database::player_data::set_resources_as_sync;
 		this->state_["database"]["playerdata"]["syncmotherbase"] = database::player_data::sync_motherbase;
-		this->state_["database"]["playerdata"]["syncloadout"] = database::player_data::sync_loadout;
 		this->state_["database"]["playerdata"]["syncemblem"] = database::player_data::sync_emblem;
 		this->state_["database"]["playerdata"]["spendcoins"] = database::player_data::spend_mb_coins;
 		this->state_["database"]["playerdata"]["addcoins"] = database::player_data::add_mb_coins;
