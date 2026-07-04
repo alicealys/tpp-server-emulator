@@ -1,0 +1,34 @@
+[
+    {
+        "type": "POOL_REWARD_TYPE_BIOTIC_RESOURCE",
+        "count": 5000
+    },
+    {
+        "type": "POOL_REWARD_TYPE_MB_COIN",
+        "count": 15
+    },
+    {
+        "type": "POOL_REWARD_TYPE_DIGITALIS_L",
+        "count": 16
+    },
+    {
+        "type": "POOL_REWARD_TYPE_COMMON_METAL",
+        "count": 5000
+    },
+    {
+        "type": "POOL_REWARD_TYPE_MB_COIN",
+        "count": 35
+    },
+    {
+        "type": "POOL_REWARD_TYPE_MB_COIN",
+        "count": 30
+    },
+    {
+        "type": "POOL_REWARD_TYPE_GMP",
+        "count": 100000
+    },
+    {
+        "type": "POOL_REWARD_TYPE_BIOTIC_RESOURCE",
+        "count": 5000
+    }
+]

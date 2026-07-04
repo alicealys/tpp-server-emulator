@@ -273,7 +273,7 @@ namespace database::player_data
 		void get_motherbase(game::motherbase_t& mother_base) const;
 		void get_emblem(game::emblem_t& emblem) const;
 
-		void get_resource_arrays(resource_arrays_t& arrays) const;
+		bool get_resource_arrays(resource_arrays_t& arrays) const;
 		void get_staff_array(staff_array_container& staff_array) const;
 		void get_prisoner_array(prisoner_array_container& staff_array) const;
 
@@ -319,6 +319,8 @@ namespace database::player_data
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
 
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
+	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays);
+	void set_gmp(const std::uint64_t player_id, const std::int32_t local_gmp, const std::int32_t server_gmp);
 	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 
 	void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase);
@@ -339,4 +341,9 @@ namespace database::player_data
 
 	void sync_client_resource_version(const std::uint64_t player_id);
 	void sync_client_staff_version(const std::uint64_t player_id);
+
+	bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& resource_arrays);
+
+	void give_resource(const std::uint64_t player_id, const std::uint32_t type, const std::uint32_t count);
+	void give_gmp(const std::uint64_t player_id, const std::uint32_t count);
 }

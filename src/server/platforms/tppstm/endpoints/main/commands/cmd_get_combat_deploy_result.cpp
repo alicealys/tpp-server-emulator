@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "cmd_get_combat_deploy_result.hpp"
+#include "cmd_get_daily_reward.hpp"
 
 #include "database/models/combat_deployments.hpp"
 
@@ -74,6 +75,11 @@ namespace emulator::tpp
 			deployment_j["walker_gear_proto"] = 0;
 			deployment_j["walker_gear_soviet"] = 0;
 			deployment_j["walker_gear_soviet_support"] = 0;
+
+			for (auto& reward : iter->rewards)
+			{
+				cmd_get_daily_reward::give_reward(player->get_id(), reward.type, reward.value);
+			}
 
 			database::combat_deployments::delete_deployment(player->get_id(), deployment.get_mission_id());
 		}

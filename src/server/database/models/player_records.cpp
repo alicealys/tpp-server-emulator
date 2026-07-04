@@ -378,6 +378,33 @@ namespace database::player_records
 				return result != 0;
 			});
 		}
+						
+		template <database_type_t Type>
+		void set_daily_login(const std::uint64_t player_id)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.daily_last = std::chrono::system_clock::now(), 
+							 player_record::table.daily_total = player_record::table.daily_total + 1)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
+								
+		template <database_type_t Type>
+		void set_daily_reward(const std::uint64_t player_id)
+		{
+			return database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.daily_last_ack = std::chrono::system_clock::now())
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
 
 		void create_fob_grade_index(database::database_t& db)
 		{
@@ -477,6 +504,16 @@ namespace database::player_records
 	bool set_challenge_tasks(const std::uint64_t player_id, const challenge_tasks_t& tasks)
 	{
 		RUN_IMPL(impl::set_challenge_tasks, player_id, tasks);
+	}
+
+	void set_daily_login(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::set_daily_login, player_id);
+	}
+
+	void set_daily_reward(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::set_daily_reward, player_id);
 	}
 
 	class table final : public table_interface

@@ -246,6 +246,40 @@ namespace database::player_data
 					));
 			});
 		}
+		
+		template <database_type_t Type>
+		void set_gmp(const std::uint64_t player_id, const std::int32_t local_gmp, const std::int32_t server_gmp)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.local_gmp = local_gmp,
+							 player_data::table.server_gmp = server_gmp,
+							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
+		
+		template <database_type_t Type>
+		void set_resources2(const std::uint64_t player_id, resource_arrays_t& arrays)
+		{
+			const auto nuke_count = arrays[game::processed_local][game::nuclear] + arrays[game::processed_server][game::nuclear];
+
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays)),
+							 player_data::table.nuke_count = nuke_count,
+							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
 
 		template <database_type_t Type>
 		void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
@@ -549,9 +583,9 @@ namespace database::player_data
 		}
 		
 		template <database_type_t Type>
-		void get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& out_arrays)
+		bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& out_arrays)
 		{
-			return database::access([&](database::database_t& db)
+			return database::access<bool>([&](database::database_t& db)
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.resource_arrays)
@@ -560,16 +594,17 @@ namespace database::player_data
 
 				if (results.empty())
 				{
-					return;
+					return false;
 				}
 
 				const auto resource_arrays = results.front().resource_arrays.value();
 				if (resource_arrays.size() != sizeof(resource_arrays_t))
 				{
-					return;
+					return false;
 				}
 
 				std::memcpy(out_arrays, resource_arrays.data(), sizeof(resource_arrays_t));
+				return true;
 			});
 		}
 				
@@ -639,7 +674,7 @@ namespace database::player_data
 		RUN_IMPL(impl::get_loadout, this->player_id_);
 	}
 
-	void player_data::get_resource_arrays(resource_arrays_t& resource_arrays) const
+	bool player_data::get_resource_arrays(resource_arrays_t& resource_arrays) const
 	{
 		RUN_IMPL(impl::get_resource_arrays, this->player_id_, resource_arrays);
 	}
@@ -700,6 +735,16 @@ namespace database::player_data
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 	{
 		RUN_IMPL(impl::set_resources, player_id, arrays, local_gmp, server_gmp);
+	}
+
+	void set_gmp(const std::uint64_t player_id, const std::int32_t local_gmp, const std::int32_t server_gmp)
+	{
+		RUN_IMPL(impl::set_gmp, player_id, local_gmp, server_gmp);
+	}
+
+	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays)
+	{
+		RUN_IMPL(impl::set_resources2, player_id, arrays);
 	}
 
 	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
@@ -770,6 +815,90 @@ namespace database::player_data
 	void sync_client_staff_version(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::sync_client_staff_version, player_id);
+	}
+
+	bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& resource_arrays)
+	{
+		RUN_IMPL(impl::get_resource_arrays, player_id, resource_arrays);
+	}
+
+	void give_resource(const std::uint64_t player_id, const std::uint32_t type, const std::uint32_t count)
+	{
+		database::player_data::resource_arrays_t resource_arrays{};
+		if (!database::player_data::get_resource_arrays(player_id, resource_arrays))
+		{
+			return;
+		}
+
+		auto add_amount = count;
+
+		const auto server_cap = game::resource_caps[game::processed_server][type];
+		const auto local_cap = game::resource_caps[game::processed_local][type];
+
+		auto free_server = 0u;
+		auto free_local = 0u;
+
+		const auto current_server = resource_arrays[game::processed_server][type];
+		const auto current_local = resource_arrays[game::processed_local][type];
+
+		if (current_server < server_cap)
+		{
+			free_server = server_cap - current_server;
+		}
+
+		if (current_local < local_cap)
+		{
+			free_local = local_cap - current_local;
+		}
+
+		if (free_server > 0)
+		{
+			const auto add = std::min(add_amount, free_server);
+			resource_arrays[game::processed_server][type] += add;
+			add_amount -= add;
+		}
+
+		if (free_local > 0)
+		{
+			const auto add = std::min(add_amount, free_local);
+			resource_arrays[game::processed_local][type] += add;
+			add_amount -= add;
+		}
+
+		database::player_data::set_resources(player_id, resource_arrays);
+	}
+
+	void give_gmp(const std::uint64_t player_id, const std::uint32_t count)
+	{
+		const auto player_data = database::player_data::find(player_id);
+		if (!player_data.has_value())
+		{
+			return;
+		}
+
+		auto add_amount = static_cast<std::int32_t>(count);
+
+		const auto free_server_gmp = database::vars.max_server_gmp - player_data->get_server_gmp();
+		const auto free_local_gmp = database::vars.max_local_gmp - player_data->get_local_gmp();
+
+		auto new_server_gmp = player_data->get_server_gmp();
+		auto new_local_gmp = player_data->get_local_gmp();
+
+		if (free_server_gmp > 0)
+		{
+			const auto add = std::min(add_amount, free_server_gmp);
+			new_server_gmp += add;
+			add_amount -= add;
+		}
+
+		if (free_local_gmp > 0)
+		{
+			const auto add = std::min(add_amount, free_local_gmp);
+			new_local_gmp += add;
+			add_amount -= add;
+		}
+
+		database::player_data::set_gmp(player_id, new_local_gmp, new_server_gmp);
 	}
 
 	class table final : public table_interface
