@@ -2,14 +2,15 @@
 
 #include "cmd_get_campaign_dialog_list.hpp"
 
-// unimplemented
-
 namespace emulator::tpp
 {
 	nlohmann::json cmd_get_campaign_dialog_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+		
+		result["dialog_list"] = nlohmann::json::array();
+		result["dialog_num"] = 0;
+
 		return result;
 	}
 }

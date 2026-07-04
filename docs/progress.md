@@ -33,22 +33,22 @@ List of implemeted/unimplemented server commands
 | CMD_CREATE_NUCLEAR | ✔️ |  |
 | CMD_CREATE_PLAYER | ✔️ |  |
 | CMD_DELETE_FOLLOW | ✔️ |  |
-| CMD_DELETE_TROOPS_LIST | ❌ |  |
+| CMD_DELETE_TROOPS_LIST | ➖ | unused |
 | CMD_DEPLOY_FOB_ASSIST | ✔️ |  |
 | CMD_DEPLOY_MISSION | ✔️ |  |
 | CMD_DESTRUCT_NUCLEAR | ✔️ |  |
 | CMD_DESTRUCT_ONLINE_NUCLEAR | ✔️ |  |
 | CMD_DEVELOP_SERVER_ITEM | ✔️ |  |
-| CMD_DEVELOP_WEPON | ❌ | unused? |
-| CMD_ELAPSE_COMBAT_DEPLOY | ❌ |  |
+| CMD_DEVELOP_WEPON | ➖ | unused |
+| CMD_ELAPSE_COMBAT_DEPLOY | ➖ | unused |
 | CMD_ENTER_SHORT_PFLEAGUE | ❌ |  |
 | CMD_EXCHANGE_FOB_EVENT_POINT | ❌ |  |
 | CMD_EXCHANGE_LEAGUE_POINT | ❌ |  |
 | CMD_EXCHANGE_LEAGUE_POINT2 | ❌ |  |
-| CMD_EXTEND_PLATFORM | ❌ | unused? |
+| CMD_EXTEND_PLATFORM | ➖ | unused |
 | CMD_GDPR_CHECK | ✔️ |  |
 | CMD_GET_ABOLITION_COUNT | ✔️ |  |
-| CMD_GET_CAMPAIGN_DIALOG_LIST | ❌ |  |
+| CMD_GET_CAMPAIGN_DIALOG_LIST | ➖ | unused |
 | CMD_GET_CHALLENGE_TASK_REWARDS | ✔️ |  |
 | CMD_GET_CHALLENGE_TASK_TARGET_VALUES | ✔️ |  |
 | CMD_GET_COMBAT_DEPLOY_LIST | ✔️ |  |
@@ -56,7 +56,7 @@ List of implemeted/unimplemented server commands
 | CMD_GET_CONTRIBUTE_PLAYER_LIST | ❌ |  |
 | CMD_GET_DAILY_REWARD | ✔️ |  |
 | CMD_GET_DEVELOPMENT_PROGRESS | ❌ | unused? |
-| CMD_GET_ENTITLEMENT_ID_LIST | ❌ | unused? |
+| CMD_GET_ENTITLEMENT_ID_LIST | ➖ | unused |
 | CMD_GET_FOB_DAMAGE | ✔️ |  |
 | CMD_GET_FOB_DEPLOY_LIST | ✔️ |  |
 | CMD_GET_FOB_EVENT_DETAIL | ✔️ |  |
@@ -76,7 +76,7 @@ List of implemeted/unimplemented server commands
 | CMD_GET_ONLINE_DEVELOPMENT_PROGRESS | ❌ | unused? |
 | CMD_GET_ONLINE_PRISON_LIST | ✔️ |  |
 | CMD_GET_OWN_FOB_LIST | ✔️ |  |
-| CMD_GET_PAY_ITEM_LIST | ❌ | unused? |
+| CMD_GET_PAY_ITEM_LIST | ✔️ | unused |
 | CMD_GET_PF_DETAIL_PARAMS | ❌ |  |
 | CMD_GET_PF_POINT_EXCHANGE_PARAMS | ✔️ |  |
 | CMD_GET_PLATFORM_CONSTRUCTION_PROGRESS | ❌ | unused? |
@@ -87,7 +87,7 @@ List of implemeted/unimplemented server commands
 | CMD_GET_PURCHASE_HISTORY | ✔️ |  |
 | CMD_GET_PURCHASE_HISTORY_NUM | ✔️ |  |
 | CMD_GET_RANKING | ✔️ |  |
-| CMD_GET_RENTAL_LOADOUT_LIST | ❌ | unused? |
+| CMD_GET_RENTAL_LOADOUT_LIST | ➖ | unused |
 | CMD_GET_RESOURCE_PARAM | ✔️ |  |
 | CMD_GET_SECURITY_INFO | ✔️ |  |
 | CMD_GET_SECURITY_PRODUCT_LIST | ❌ |  |
@@ -96,45 +96,45 @@ List of implemeted/unimplemented server commands
 | CMD_GET_SERVER_ITEM_LIST | ✔️ |  |
 | CMD_GET_SHOP_ITEM_NAME_LIST | ✔️ |  |
 | CMD_GET_SHORT_PFLEAGUE_RESULT | ❌ |  |
-| CMD_GET_SNEAK_TARGET_LIST | ❌ | unused? |
+| CMD_GET_SNEAK_TARGET_LIST | ➖ | unused |
 | CMD_GET_STEAM_SHOP_ITEM_LIST | ✔️ |  |
-| CMD_GET_TROOPS_LIST | ❌ |  |
-| CMD_GET_WORMHOLE_LIST | ❌ | unused? |
+| CMD_GET_TROOPS_LIST | ➖ | unused |
+| CMD_GET_WORMHOLE_LIST | ✔️ | unused |
 | CMD_MINING_RESOURCE | ✔️ |  |
-| CMD_NOTICE_SNEAK_MOTHER_BASE | ❌ |  |
+| CMD_NOTICE_SNEAK_MOTHER_BASE | ➖ | unused |
 | CMD_OPEN_STEAM_SHOP | ✔️ |  |
 | CMD_OPEN_WORMHOLE | ✔️ |  |
 | CMD_PURCHASE_FIRST_FOB | ✔️ |  |
 | CMD_PURCHASE_FOB | ✔️ |  |
-| CMD_PURCHASE_NUCLEAR_COMPLETION | ❌ |  |
+| CMD_PURCHASE_NUCLEAR_COMPLETION | ➖ | unused |
 | CMD_PURCHASE_ONLINE_DEPLOYMENT_COMPLETION | ✔️ |  |
 | CMD_PURCHASE_ONLINE_DEVELOPMENT_COMPLETION | ✔️ |  |
 | CMD_PURCHASE_PLATFORM_CONSTRUCTION | ✔️ |  |
-| CMD_PURCHASE_RESOURCES_PROCESSING | ❌ |  |
+| CMD_PURCHASE_RESOURCES_PROCESSING | ➖ | unused |
 | CMD_PURCHASE_SECURITY_SERVICE | ❌ |  |
-| CMD_PURCHASE_SEND_TROOPS_COMPLETION | ❌ |  |
-| CMD_PURCHASE_WEPON_DEVELOPMENT_COMPLETION | ❌ |  |
+| CMD_PURCHASE_SEND_TROOPS_COMPLETION | ➖ | unused |
+| CMD_PURCHASE_WEPON_DEVELOPMENT_COMPLETION | ➖ | unused |
 | CMD_RELOCATE_FOB | ✔️ |  |
-| CMD_RENTAL_LOADOUT | ❌ | unused? |
+| CMD_RENTAL_LOADOUT | ➖ | unused |
 | CMD_REQAUTH_HTTPS | ✔️ |  |
-| CMD_REQAUTH_SESSIONSVR | ❌ | unused? |
-| CMD_REQUEST_RELIEF | ❌ | unused? |
+| CMD_REQAUTH_SESSIONSVR | ➖ | unused |
+| CMD_REQUEST_RELIEF | ➖ | unused |
 | CMD_RESET_MOTHER_BASE | ❌ |  |
 | CMD_SALE_RESOURCE | ✔️ |  |
 | CMD_SEND_BOOT | ✔️ |  |
 | CMD_SEND_DEPLOY_INJURE | ✔️ |  |
-| CMD_SEND_HEARTBEAT | ❌ |  |
+| CMD_SEND_HEARTBEAT | ➖ | unused |
 | CMD_SEND_IPANDPORT | ✔️ |  |
 | CMD_SEND_MISSION_RESULT | ✔️ |  |
-| CMD_SEND_NUCLEAR | ❌ |  |
-| CMD_SEND_ONLINE_CHALLENGE_TASK_STATUS | ❌ |  |
+| CMD_SEND_NUCLEAR | ✔️ | unused |
+| CMD_SEND_ONLINE_CHALLENGE_TASK_STATUS | ✔️ |  |
 | CMD_SEND_SNEAK_RESULT | ✔️ |  |
 | CMD_SEND_SUSPICION_PLAY_DATA | ✔️ |  |
-| CMD_SEND_TROOPS | ❌ |  |
+| CMD_SEND_TROOPS | ➖ | unused |
 | CMD_SET_CURRENTPLAYER | ✔️ |  |
 | CMD_SET_SECURITY_CHALLENGE | ✔️ |  |
 | CMD_SNEAK_MOTHER_BASE | ✔️ |  |
-| CMD_SPEND_SERVER_WALLET | ❌ |  |
+| CMD_SPEND_SERVER_WALLET | ➖ | unused |
 | CMD_START_CONSUME_TRANSACTION | ❌ |  |
 | CMD_SYNC_EMBLEM | ✔️ |  |
 | CMD_SYNC_LOADOUT | ✔️ |  |

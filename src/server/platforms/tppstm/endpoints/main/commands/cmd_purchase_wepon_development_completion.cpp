@@ -2,14 +2,14 @@
 
 #include "cmd_purchase_wepon_development_completion.hpp"
 
-// unimplemented
-
 namespace emulator::tpp
 {
 	nlohmann::json cmd_purchase_wepon_development_completion::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+
+		result["paid_coin"] = 0;
+
 		return result;
 	}
 }

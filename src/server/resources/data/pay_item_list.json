@@ -1,0 +1,52 @@
+[
+    {
+        "id": 11,
+        "kind": "RESOURCE_PROCESSING",
+        "price": 10
+    },
+    {
+        "id": 12,
+        "kind": "PLATFORM_CONSTRUCTION",
+        "price": 10
+    },
+    {
+        "id": 13,
+        "kind": "TROOPS_COMPLETION",
+        "price": 10
+    },
+    {
+        "id": 14,
+        "kind": "WEPON_DEVELOPMENT",
+        "price": 10
+    },
+    {
+        "id": 15,
+        "kind": "SECURITY_7",
+        "price": 10
+    },
+    {
+        "id": 16,
+        "kind": "SECURITY_30",
+        "price": 30
+    },
+    {
+        "id": 17,
+        "kind": "SECURITY_60",
+        "price": 70
+    },
+    {
+        "id": 18,
+        "kind": "SECURITY_60",
+        "price": 140
+    },
+    {
+        "id": 19,
+        "kind": "NUCLEAR_CONPLETION",
+        "price": 10
+    },
+    {
+        "id": 20,
+        "kind": "ONLINE_DEPLOYMENT_COMPLETION",
+        "price": 10
+    }
+]
