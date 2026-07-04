@@ -239,8 +239,8 @@ namespace emulator::tpp
 		}
 
 		void update_resources(
-			const database::player_data::player_data& attacker_data,
 			const database::player_data::player_data& owner_data,
+			const database::player_data::player_data& attacker_data,
 			nlohmann::json& data,
 			database::sneak_results::sneak_result_data_t& sneak_data,
 			const bool has_insurance)
@@ -255,30 +255,39 @@ namespace emulator::tpp
 				const std::uint32_t resource_type, 
 				const std::uint32_t resource_id, const std::uint32_t cap, bool destroy = false)
 			{
-				auto value = std::min(cap, from[key].get<std::uint32_t>());
-				value = std::min(attacker_resources[resource_type][resource_id], value);
+				const auto max_count = game::resource_caps[game::processed_server][resource_type];
+				const auto attacker_count = attacker_resources[game::processed_server][resource_type];
+
+				const auto base_value = std::min(cap, from[key].get<std::uint32_t>());
+				const auto sub_value = std::min(owner_resources[resource_type][resource_id], base_value);
+				auto add_value = 0u;
+				if (attacker_count < max_count)
+				{
+					add_value = std::min(sub_value, max_count - attacker_count);
+				}
+				
 				if (!has_insurance)
 				{
-					owner_resources[resource_type][resource_id] -= value;
+					owner_resources[resource_type][resource_id] -= sub_value;
 				}
 
 				if (!destroy)
 				{
-					attacker_resources[resource_type][resource_id] += value;
+					attacker_resources[resource_type][resource_id] += add_value;
 				}
 
-				return value;
+				return sub_value;
 			};
 
 			constexpr const auto placement_cap = 4u * 4u;
-			constexpr const auto resources_cap = 500000u;
 
 			sneak_data.capture_nuclear = static_cast<std::uint8_t>(do_resource(data, "capture_nuclear", game::processed_server, game::nuclear, 4));
-			sneak_data.capture_resource.biotic_resource = do_resource(data["capture_resource"], "biotic_resource", game::unprocessed_server, game::minor_metal, resources_cap);
-			sneak_data.capture_resource.common_metal = do_resource(data["capture_resource"], "common_metal", game::unprocessed_server, game::common_metal, resources_cap);
-			sneak_data.capture_resource.fuel_resource = do_resource(data["capture_resource"], "fuel_resource", game::unprocessed_server, game::fuel_resource, resources_cap);
-			sneak_data.capture_resource.minor_metal = do_resource(data["capture_resource"], "minor_metal", game::unprocessed_server, game::precious_metal, resources_cap);
-			sneak_data.capture_resource.precious_metal = do_resource(data["capture_resource"], "precious_metal", game::unprocessed_server, game::biotic_resource, resources_cap);
+			
+			sneak_data.capture_resource.biotic_resource = do_resource(data["capture_resource"], "biotic_resource", game::unprocessed_server, game::biotic_resource, 50000u);
+			sneak_data.capture_resource.common_metal = do_resource(data["capture_resource"], "common_metal", game::unprocessed_server, game::common_metal, 40000u);
+			sneak_data.capture_resource.fuel_resource = do_resource(data["capture_resource"], "fuel_resource", game::unprocessed_server, game::fuel_resource, 40000u);
+			sneak_data.capture_resource.minor_metal = do_resource(data["capture_resource"], "minor_metal", game::unprocessed_server, game::minor_metal, 25000u);
+			sneak_data.capture_resource.precious_metal = do_resource(data["capture_resource"], "precious_metal", game::unprocessed_server, game::precious_metal, 4000u);
 
 			sneak_data.capture_placement.mortar_normal = do_resource(data["capture_placement"], "mortar_normal", game::processed_server, game::mortar_normal, placement_cap);
 			sneak_data.capture_placement.gatling_gun_east = do_resource(data["capture_placement"], "gatling_gun_east", game::processed_server, game::gatling_gun_east, placement_cap);
@@ -291,6 +300,9 @@ namespace emulator::tpp
 			sneak_data.destroy_placement.gatling_gun_west = do_resource(data["destroy_placement"], "gatling_gun_west", game::processed_server, game::gatling_gun_west, placement_cap, true);
 			sneak_data.destroy_placement.emplacement_gun_east = do_resource(data["destroy_placement"], "emplacement_gun_east", game::processed_server, game::emplacement_gun_east, placement_cap, true);
 			sneak_data.destroy_placement.emplacement_gun_west = do_resource(data["destroy_placement"], "emplacement_gun_west", game::processed_server, game::emplacement_gun_west, placement_cap, true);
+		
+			database::player_data::set_resources(attacker_data.get_player_id(), attacker_resources);
+			database::player_data::set_resources(owner_data.get_player_id(), owner_resources);
 		}
 
 		bool parse_event_log(nlohmann::json& event, std::string& parsed)
