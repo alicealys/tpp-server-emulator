@@ -85,7 +85,7 @@ namespace database::player_records
 			}
 
 			this->daily_last_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last.value().time_since_epoch());
-			this->daily_last_ack_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last.value().time_since_epoch());
+			this->daily_last_ack_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last_ack.value().time_since_epoch());
 			this->daily_total_ = static_cast<std::uint32_t>(row.daily_total);
 
 			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
