@@ -8,6 +8,7 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
+		result["result"] = game::get_error(ERR_ALREADY_COMPLETED);
 		result["paid_coin"] = 0;
 
 		return result;

@@ -2,14 +2,15 @@
 
 #include "cmd_purchase_nuclear_completion.hpp"
 
-// unimplemented
-
 namespace emulator::tpp
 {
 	nlohmann::json cmd_purchase_nuclear_completion::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+
+		result["result"] = game::get_error(ERR_ALREADY_COMPLETED);
+		result["paid_coin"] = 0;
+
 		return result;
 	}
 }

@@ -6,7 +6,9 @@ List of implemeted/unimplemented server commands
 ➖: none or partial implementation, unnecessary  
 ❌: no implementation  
 
-## MGSV
+## TPP
+
+Most relevant commands are implemented, PF league is not.
 
 ### tppstm/gate
 | name | status | note |
@@ -28,11 +30,11 @@ List of implemeted/unimplemented server commands
 | CMD_CANCEL_COMBAT_DEPLOY | ✔️ |  |
 | CMD_CANCEL_COMBAT_DEPLOY_SINGLE | ✔️ |  |
 | CMD_CANCEL_SHORT_PFLEAGUE | ❌ |  |
-| CMD_CHECK_CONSUME_TRANSACTION | ❌ |  |
+| CMD_CHECK_CONSUME_TRANSACTION | ❌ | unused? |
 | CMD_CHECK_DEFENCE_MOTHERBASE | ✔️ |  |
 | CMD_CHECK_SERVER_ITEM_CORRECT | ✔️ |  |
 | CMD_CHECK_SHORT_PFLEAGUE_ENTERABLE | ❌ |  |
-| CMD_COMMIT_CONSUME_TRANSACTION | ❌ |  |
+| CMD_COMMIT_CONSUME_TRANSACTION | ❌ | unused? |
 | CMD_CONSUME_RESERVE | ✔️ |  |
 | CMD_CREATE_NUCLEAR | ✔️ |  |
 | CMD_CREATE_PLAYER | ✔️ |  |
@@ -57,9 +59,9 @@ List of implemeted/unimplemented server commands
 | CMD_GET_CHALLENGE_TASK_TARGET_VALUES | ✔️ |  |
 | CMD_GET_COMBAT_DEPLOY_LIST | ✔️ |  |
 | CMD_GET_COMBAT_DEPLOY_RESULT | ✔️ |  |
-| CMD_GET_CONTRIBUTE_PLAYER_LIST | ❌ |  |
+| CMD_GET_CONTRIBUTE_PLAYER_LIST | ➖ | unused |
 | CMD_GET_DAILY_REWARD | ✔️ |  |
-| CMD_GET_DEVELOPMENT_PROGRESS | ❌ | unused? |
+| CMD_GET_DEVELOPMENT_PROGRESS | ➖ | unused |
 | CMD_GET_ENTITLEMENT_ID_LIST | ➖ | unused |
 | CMD_GET_FOB_DAMAGE | ✔️ |  |
 | CMD_GET_FOB_DEPLOY_LIST | ✔️ |  |
@@ -77,13 +79,13 @@ List of implemeted/unimplemented server commands
 | CMD_GET_LOGIN_PARAM | ✔️ |  |
 | CMD_GET_MBCOIN_REMAINDER | ✔️ |  |
 | CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
-| CMD_GET_ONLINE_DEVELOPMENT_PROGRESS | ❌ | unused? |
+| CMD_GET_ONLINE_DEVELOPMENT_PROGRESS | ➖ | unused |
 | CMD_GET_ONLINE_PRISON_LIST | ✔️ |  |
 | CMD_GET_OWN_FOB_LIST | ✔️ |  |
 | CMD_GET_PAY_ITEM_LIST | ✔️ | unused |
 | CMD_GET_PF_DETAIL_PARAMS | ❌ |  |
 | CMD_GET_PF_POINT_EXCHANGE_PARAMS | ✔️ |  |
-| CMD_GET_PLATFORM_CONSTRUCTION_PROGRESS | ❌ | unused? |
+| CMD_GET_PLATFORM_CONSTRUCTION_PROGRESS | ➖ | unused |
 | CMD_GET_PLAYERLIST | ✔️ |  |
 | CMD_GET_PLAYER_PLATFORM_LIST | ✔️ |  |
 | CMD_GET_PREVIOUS_SHORT_PFLEAGUE_RESULT | ❌ |  |
@@ -123,7 +125,7 @@ List of implemeted/unimplemented server commands
 | CMD_REQAUTH_HTTPS | ✔️ |  |
 | CMD_REQAUTH_SESSIONSVR | ➖ | unused |
 | CMD_REQUEST_RELIEF | ➖ | unused |
-| CMD_RESET_MOTHER_BASE | ❌ |  |
+| CMD_RESET_MOTHER_BASE | ❌ | unused? |
 | CMD_SALE_RESOURCE | ✔️ |  |
 | CMD_SEND_BOOT | ✔️ |  |
 | CMD_SEND_DEPLOY_INJURE | ✔️ |  |
@@ -139,11 +141,11 @@ List of implemeted/unimplemented server commands
 | CMD_SET_SECURITY_CHALLENGE | ✔️ |  |
 | CMD_SNEAK_MOTHER_BASE | ✔️ |  |
 | CMD_SPEND_SERVER_WALLET | ➖ | unused |
-| CMD_START_CONSUME_TRANSACTION | ❌ |  |
+| CMD_START_CONSUME_TRANSACTION | ❌ | unused? |
 | CMD_SYNC_EMBLEM | ✔️ |  |
 | CMD_SYNC_LOADOUT | ✔️ |  |
 | CMD_SYNC_MOTHER_BASE | ✔️ |  |
-| CMD_SYNC_RESET | ❌ |  |
+| CMD_SYNC_RESET | ❌ | unused? |
 | CMD_SYNC_RESOURCE | ✔️ |  |
 | CMD_SYNC_SOLDIER_BIN | ✔️ |  |
 | CMD_SYNC_SOLDIER_DIFF | ✔️ |  |
@@ -152,6 +154,8 @@ List of implemeted/unimplemented server commands
 | CMD_USE_SHORT_PF_ITEM | ❌ |  |
 
 ## MGO
+
+Most commands are implemented, missing survival stuff & player titles.
 
 ### mgostm/gate
 | name | status | note |
