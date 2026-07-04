@@ -146,7 +146,7 @@ namespace command
 				const auto player_id = std::strtoull(arg.data(), nullptr, 10);
 				database::player_data::resource_arrays_t resource_arrays{};
 
-				for (auto i = 0; i < game::resource_type_count; i++)
+				for (auto i = 0; i < game::RESOURCE_TYPE_COUNT; i++)
 				{
 					resource_arrays[game::processed_server][i] = game::server_processed_resource_caps[i];
 					resource_arrays[game::unprocessed_server][i] = game::server_unprocessed_resource_caps[i];

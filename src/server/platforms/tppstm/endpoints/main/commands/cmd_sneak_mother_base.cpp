@@ -280,12 +280,12 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		owner_data->get_resource_arrays(resource_arrays);
 
-		stage_param["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::emplacement_gun_east];
-		stage_param["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::emplacement_gun_west];
+		stage_param["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
+		stage_param["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
 		stage_param["placement"]["gatling_gun"] = 0;
-		stage_param["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::gatling_gun_east];
-		stage_param["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::gatling_gun_west];
-		stage_param["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::mortar_normal];
+		stage_param["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
+		stage_param["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
+		stage_param["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
 
 		stage_param["platform"] = platform_j;
 		stage_param["equip_grade"] = motherbase.equip_grade;

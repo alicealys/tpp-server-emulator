@@ -22,9 +22,9 @@ namespace emulator::tpp
 			static database::player_data::resource_arrays_t resource_arrays{};
 			for (auto i = 0; i < game::resource_array_types_t::count; i++)
 			{
-				for (auto o = 0; o < game::resource_type_count; o++)
+				for (auto o = 0; o < game::RESOURCE_TYPE_COUNT; o++)
 				{
-					if (o == game::nuclear)
+					if (o == game::NUCLEAR_WEAPON)
 					{
 						continue;
 					}

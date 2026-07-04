@@ -126,21 +126,6 @@ namespace game
 
 	enum resource_type_t
 	{
-		fuel_resource = 0,
-		biotic_resource = 1,
-		common_metal = 2,
-		minor_metal = 3,
-		precious_metal = 4,
-
-		emplacement_gun_east = 34,
-		emplacement_gun_west = 35,
-		gatling_gun_east = 36,
-		gatling_gun_west = 37,
-		mortar_normal = 38,
-
-		nuclear = 28,
-		resource_type_count = 59,
-
 		FUEL_RESOURCE = 0,
 		BIOTIC_RESOURCE = 1,
 		COMMON_METAL = 2,
@@ -200,6 +185,7 @@ namespace game
 		RESERVE_K = 56,
 		RESERVE_L = 57,
 		RESERVE_M = 58,
+		RESOURCE_TYPE_COUNT = 59,
 	};
 	
 	enum mbm_consts_t
@@ -911,11 +897,11 @@ namespace game
 		std::uint32_t mortar_normal;
 	};
 
-	extern std::array<std::uint32_t, resource_type_count> local_processed_resource_caps;
-	extern std::array<std::uint32_t, resource_type_count> local_unprocessed_resource_caps;
-	extern std::array<std::uint32_t, resource_type_count> server_processed_resource_caps;
-	extern std::array<std::uint32_t, resource_type_count> server_unprocessed_resource_caps;
-	extern std::array<std::array<std::uint32_t, resource_type_count>, 4> resource_caps;
+	extern std::array<std::uint32_t, RESOURCE_TYPE_COUNT> local_processed_resource_caps;
+	extern std::array<std::uint32_t, RESOURCE_TYPE_COUNT> local_unprocessed_resource_caps;
+	extern std::array<std::uint32_t, RESOURCE_TYPE_COUNT> server_processed_resource_caps;
+	extern std::array<std::uint32_t, RESOURCE_TYPE_COUNT> server_unprocessed_resource_caps;
+	extern std::array<std::array<std::uint32_t, RESOURCE_TYPE_COUNT>, 4> resource_caps;
 
 	std::uint32_t get_max_resource_value(const game::resource_array_types_t type, const std::uint32_t index);
 	std::uint32_t cap_resource_value(const game::resource_array_types_t type, const std::uint32_t index, const std::uint32_t value);

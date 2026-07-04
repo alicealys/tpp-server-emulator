@@ -112,12 +112,12 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		owner_data->get_resource_arrays(resource_arrays);
 
-		detail["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::emplacement_gun_east];
-		detail["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::emplacement_gun_west];
+		detail["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
+		detail["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
 		detail["placement"]["gatling_gun"] = 0;
-		detail["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::gatling_gun_east];
-		detail["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::gatling_gun_west];
-		detail["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::mortar_normal];
+		detail["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
+		detail["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
+		detail["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
 
 		const auto event_player = database::fob_events::get_player(owner->get_id());
 		if (is_event && event_player.has_value())

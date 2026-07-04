@@ -14,7 +14,7 @@
 
 namespace database::player_data
 {
-	using resource_array_t = std::uint32_t[game::resource_type_count];
+	using resource_array_t = std::uint32_t[game::RESOURCE_TYPE_COUNT];
 	using resource_arrays_t = resource_array_t[game::resource_array_types_t::count];
 	using staff_array_t = game::staff_t[game::max_staff_count];
 	using unit_levels_t = std::uint32_t[game::unit_count];

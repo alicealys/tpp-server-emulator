@@ -248,11 +248,11 @@ namespace emulator::tpp
 				return process_local + process_server;
 			};
 
-			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_processing_resource_value(game::fuel_resource);
-			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_processing_resource_value(game::biotic_resource);
-			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_processing_resource_value(game::common_metal);
-			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_processing_resource_value(game::minor_metal);
-			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_processing_resource_value(game::precious_metal);
+			target["owner_fob_record"]["processing_resource"]["fuel_resource"] = get_processing_resource_value(game::FUEL_RESOURCE);
+			target["owner_fob_record"]["processing_resource"]["biotic_resource"] = get_processing_resource_value(game::BIOTIC_RESOURCE);
+			target["owner_fob_record"]["processing_resource"]["common_metal"] = get_processing_resource_value(game::COMMON_METAL);
+			target["owner_fob_record"]["processing_resource"]["minor_metal"] = get_processing_resource_value(game::MINOR_METAL);
+			target["owner_fob_record"]["processing_resource"]["precious_metal"] = get_processing_resource_value(game::PRECIOUS_METAL);
 
 			auto& staff_counts = target["owner_fob_record"]["staff_count"];
 			for (auto i = 0; i < 10; i++)
@@ -267,11 +267,11 @@ namespace emulator::tpp
 
 			target["owner_fob_record"]["support_count"] = 0;
 			target["owner_fob_record"]["supported_count"] = 0;
-			target["owner_fob_record"]["usable_resource"]["biotic_resource"] = get_processed_resource_value(game::fuel_resource);
-			target["owner_fob_record"]["usable_resource"]["common_metal"] = get_processed_resource_value(game::biotic_resource);
-			target["owner_fob_record"]["usable_resource"]["fuel_resource"] = get_processed_resource_value(game::common_metal);
-			target["owner_fob_record"]["usable_resource"]["minor_metal"] = get_processed_resource_value(game::minor_metal);
-			target["owner_fob_record"]["usable_resource"]["precious_metal"] = get_processed_resource_value(game::precious_metal);
+			target["owner_fob_record"]["usable_resource"]["biotic_resource"] = get_processed_resource_value(game::FUEL_RESOURCE);
+			target["owner_fob_record"]["usable_resource"]["common_metal"] = get_processed_resource_value(game::BIOTIC_RESOURCE);
+			target["owner_fob_record"]["usable_resource"]["fuel_resource"] = get_processed_resource_value(game::COMMON_METAL);
+			target["owner_fob_record"]["usable_resource"]["minor_metal"] = get_processed_resource_value(game::MINOR_METAL);
+			target["owner_fob_record"]["usable_resource"]["precious_metal"] = get_processed_resource_value(game::PRECIOUS_METAL);
 
 			target["owner_info"] = player_info(target_entry.player);
 

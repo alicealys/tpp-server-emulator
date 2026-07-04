@@ -82,23 +82,23 @@ namespace database::fob_events
 				auto& unit_levels = player.staff_resources.unit_levels;
 				auto& unit_counts = player.staff_resources.unit_counts;
 
-				processed[game::emplacement_gun_east] = placement["emplacement_gun_east"].get<std::uint32_t>();
-				processed[game::emplacement_gun_west] = placement["emplacement_gun_west"].get<std::uint32_t>();
-				processed[game::gatling_gun_east] = placement["gatling_gun_east"].get<std::uint32_t>();
-				processed[game::gatling_gun_west] = placement["gatling_gun_west"].get<std::uint32_t>();
-				processed[game::mortar_normal] = placement["mortar_normal"].get<std::uint32_t>();
+				processed[game::EMPLACEMENT_GUN_EAST] = placement["emplacement_gun_east"].get<std::uint32_t>();
+				processed[game::EMPLACEMENT_GUN_WEST] = placement["emplacement_gun_west"].get<std::uint32_t>();
+				processed[game::ANTI_AIR_GATLING_GUN_EAST] = placement["gatling_gun_east"].get<std::uint32_t>();
+				processed[game::ANTI_AIR_GATLING_GUN_WEST] = placement["gatling_gun_west"].get<std::uint32_t>();
+				processed[game::MORTAR_NORMAL] = placement["mortar_normal"].get<std::uint32_t>();
 
-				processed[game::biotic_resource] = usable_resource["biotic_resource"].get<std::uint32_t>();
-				processed[game::common_metal] = usable_resource["common_metal"].get<std::uint32_t>();
-				processed[game::fuel_resource] = usable_resource["fuel_resource"].get<std::uint32_t>();
-				processed[game::minor_metal] = usable_resource["minor_metal"].get<std::uint32_t>();
-				processed[game::precious_metal] = usable_resource["precious_metal"].get<std::uint32_t>();
+				processed[game::BIOTIC_RESOURCE] = usable_resource["biotic_resource"].get<std::uint32_t>();
+				processed[game::COMMON_METAL] = usable_resource["common_metal"].get<std::uint32_t>();
+				processed[game::FUEL_RESOURCE] = usable_resource["fuel_resource"].get<std::uint32_t>();
+				processed[game::MINOR_METAL] = usable_resource["minor_metal"].get<std::uint32_t>();
+				processed[game::PRECIOUS_METAL] = usable_resource["precious_metal"].get<std::uint32_t>();
 
-				unprocessed[game::biotic_resource] = processing_resource["biotic_resource"].get<std::uint32_t>();
-				unprocessed[game::common_metal] = processing_resource["common_metal"].get<std::uint32_t>();
-				unprocessed[game::fuel_resource] = processing_resource["fuel_resource"].get<std::uint32_t>();
-				unprocessed[game::minor_metal] = processing_resource["minor_metal"].get<std::uint32_t>();
-				unprocessed[game::precious_metal] = processing_resource["precious_metal"].get<std::uint32_t>();
+				unprocessed[game::BIOTIC_RESOURCE] = processing_resource["biotic_resource"].get<std::uint32_t>();
+				unprocessed[game::COMMON_METAL] = processing_resource["common_metal"].get<std::uint32_t>();
+				unprocessed[game::FUEL_RESOURCE] = processing_resource["fuel_resource"].get<std::uint32_t>();
+				unprocessed[game::MINOR_METAL] = processing_resource["minor_metal"].get<std::uint32_t>();
+				unprocessed[game::PRECIOUS_METAL] = processing_resource["precious_metal"].get<std::uint32_t>();
 
 				for (auto i = 0; i < game::unit_count; i++)
 				{
