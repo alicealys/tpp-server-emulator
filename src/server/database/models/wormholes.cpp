@@ -46,24 +46,43 @@ namespace database::wormholes
 		}
 
 		template <database_type_t Type>
-		std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t other_player_id)
+		std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t other_player_id, const std::uint32_t flag)
 		{
 			return database::access<std::vector<wormhole>>([&](database_t& db)
 			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(sqlpp::all_of(wormhole::table))
-						.from(wormhole::table)
-							.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
-								   ((wormhole::table.player_id == player_id && wormhole::table.to_player_id == other_player_id) ||
-									(wormhole::table.player_id == other_player_id && wormhole::table.to_player_id == player_id)) &&
-									wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
-					);
-
 				std::vector<wormhole> list;
 
-				for (auto& row : results)
+				if (flag == wormhole_flag_invalid)
 				{
-					list.emplace_back(row);
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(wormhole::table))
+							.from(wormhole::table)
+								.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
+									   ((wormhole::table.player_id == player_id && wormhole::table.to_player_id == other_player_id) ||
+										(wormhole::table.player_id == other_player_id && wormhole::table.to_player_id == player_id)) &&
+										wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
+						);
+
+					for (auto& row : results)
+					{
+						list.emplace_back(row);
+					}
+				}
+				else
+				{
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(wormhole::table))
+							.from(wormhole::table)
+								.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 && wormhole::table.flag == flag &&
+									   ((wormhole::table.player_id == player_id && wormhole::table.to_player_id == other_player_id) ||
+										(wormhole::table.player_id == other_player_id && wormhole::table.to_player_id == player_id)) &&
+										wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
+						);
+
+					for (auto& row : results)
+					{
+						list.emplace_back(row);
+					}
 				}
 
 				return list;
@@ -71,24 +90,44 @@ namespace database::wormholes
 		}
 
 		template <database_type_t Type>
-		std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id)
+		std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id, const std::uint32_t flag)
 		{
 			return database::access<std::vector<wormhole>>([&](database_t& db)
 			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(sqlpp::all_of(wormhole::table))
-						.from(wormhole::table)
-							.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
-								   (wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id) &&
-								   wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
-					);
-
 				std::vector<wormhole> list;
 
-				for (auto& row : results)
+				if (flag == wormhole_flag_invalid)
 				{
-					list.emplace_back(row);
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(wormhole::table))
+							.from(wormhole::table)
+								.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 &&
+									   (wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id) &&
+									   wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
+						);
+
+					for (auto& row : results)
+					{
+						list.emplace_back(row);
+					}
 				}
+				else
+				{
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(wormhole::table))
+							.from(wormhole::table)
+								.where(wormhole::table.is_open == true && wormhole::table.retaliate_score > 0 && wormhole::table.flag == flag &&
+									   (wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id) &&
+									   wormhole::table.create_date >= std::chrono::system_clock::now() - vars.wormhole_duration)
+						);
+
+					for (auto& row : results)
+					{
+						list.emplace_back(row);
+					}
+				}
+
+
 
 				return list;
 			});
@@ -101,19 +140,19 @@ namespace database::wormholes
 		RUN_IMPL(impl::add_wormhole, player_id, to_player_id, flag, is_open, retaliate_point);
 	}
 
-	std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t other_player_id)
+	std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t other_player_id, const std::uint32_t flag)
 	{
-		RUN_IMPL(impl::find_active_wormholes_to, player_id, other_player_id);
+		RUN_IMPL(impl::find_active_wormholes_to, player_id, other_player_id, flag);
 	}
 
-	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id)
+	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id, const std::uint32_t flag)
 	{
-		RUN_IMPL(impl::find_active_wormholes, player_id);
+		RUN_IMPL(impl::find_active_wormholes, player_id, flag);
 	}
 
-	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t player_id)
+	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t player_id, const std::uint32_t flag)
 	{
-		const auto wormholes = find_active_wormholes(player_id);
+		const auto wormholes = find_active_wormholes(player_id, flag);
 
 		std::vector<wormhole_status> list;
 		std::unordered_map<std::uint64_t, wormhole_status> map;
@@ -174,9 +213,9 @@ namespace database::wormholes
 		return list;
 	}
 
-	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id)
+	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id, const std::uint32_t flag)
 	{
-		const auto wormholes = find_active_wormholes_to(from_player_id, to_player_id);
+		const auto wormholes = find_active_wormholes_to(from_player_id, to_player_id, flag);
 
 		wormhole_status status{};
 		status.first = true;

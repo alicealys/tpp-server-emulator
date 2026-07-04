@@ -102,9 +102,9 @@ namespace database::wormholes
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id,
 		const wormhole_flag flag, const bool is_open, const std::uint32_t retaliate_point);
 
-	std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t to_player_id);
-	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id);
+	std::vector<wormhole> find_active_wormholes_to(const std::uint64_t player_id, const std::uint64_t to_player_id, const std::uint32_t flag = wormhole_flag_invalid);
+	std::vector<wormhole> find_active_wormholes(const std::uint64_t player_id, const std::uint32_t flag = wormhole_flag_invalid);
 
-	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t player_id);
-	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id);
+	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t player_id, const std::uint32_t flag = wormhole_flag_invalid);
+	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id, const std::uint32_t flag = wormhole_flag_invalid);
 }

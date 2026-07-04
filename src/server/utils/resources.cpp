@@ -36,6 +36,7 @@ namespace utils::resources
 			{RESOURCE_SHOP_ITEM_LIST, "resources/data/shop_item_list.json"},
 			{RESOURCE_COMBAT_DEPLOY_LIST, "resources/data/combat_deploy_list.json"},
 			{RESOURCE_DAILY_REWARDS, "resources/data/daily_rewards.json"},
+			{RESOURCE_PAY_ITEM_LIST, "resources/data/pay_item_list.json"},
 
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},

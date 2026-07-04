@@ -2,14 +2,15 @@
 
 #include "cmd_get_rental_loadout_list.hpp"
 
-// unimplemented
-
 namespace emulator::tpp
 {
 	nlohmann::json cmd_get_rental_loadout_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "ERR_NOTIMPLEMENTED";
+
+		result["rental_list"] = nlohmann::json::array();
+		result["list_num"] = 0;
+
 		return result;
 	}
 }
