@@ -122,6 +122,7 @@ RESOURCE_SHOP_ITEM_LIST           RCDATA "resources/data/shop_item_list.json"
 RESOURCE_COMBAT_DEPLOY_LIST       RCDATA "resources/data/combat_deploy_list.json"
 RESOURCE_DAILY_REWARDS            RCDATA "resources/data/daily_rewards.json"
 RESOURCE_PAY_ITEM_LIST            RCDATA "resources/data/pay_item_list.json"
+RESOURCE_EMBLEM_LIST              RCDATA "resources/data/emblem_list.json"
 
 RESOURCE_SQL_MYSQL                RCDATA "resources/sql/mysql.sql"
 RESOURCE_SQL_SQLITE3              RCDATA "resources/sql/sqlite3.sql"

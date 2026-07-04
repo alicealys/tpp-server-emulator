@@ -1318,10 +1318,10 @@ namespace game
 		std::uint32_t base_color;
 		std::uint32_t frame_color;
 		std::uint32_t texture_tag;
-		std::int32_t position_x;
-		std::int32_t position_y;
-		std::int32_t rotate;
-		std::int32_t scale;
+		std::int8_t position_x;
+		std::int8_t position_y;
+		std::int8_t rotate;
+		std::int8_t scale;
 	};
 
 	struct emblem_t
