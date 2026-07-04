@@ -2,9 +2,9 @@
 
 List of implemeted/unimplemented server commands
 
-✔️: partial or full implementation
-➖: none or partial implementation, unnecessary
-❌: no implementation
+✔️: partial or full implementation  
+➖: none or partial implementation, unnecessary  
+❌: no implementation  
 
 ## MGSV
 
