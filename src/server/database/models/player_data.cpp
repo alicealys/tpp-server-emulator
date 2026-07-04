@@ -88,7 +88,6 @@ namespace database::player_data
 							 player_data::table.local_gmp = 0,
 							 player_data::table.server_gmp = 0,
 							 player_data::table.loadout_gmp = 0,
-							 player_data::table.loadout = "{}",
 							 player_data::table.insurance_gmp = 0,
 							 player_data::table.injury_gmp = 0
 					));
@@ -308,20 +307,6 @@ namespace database::player_data
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
 							 player_data::table.motherbase = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(motherbase)))
-								.where(player_data::table.player_id == player_id)
-					);
-			});
-		}
-
-		template <database_type_t Type>
-		void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout)
-		{
-			database::access([&](database::database_t& db)
-			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.loadout = loadout.dump())
 								.where(player_data::table.player_id == player_id)
 					);
 			});
@@ -557,32 +542,6 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		nlohmann::json get_loadout(const std::uint64_t player_id)
-		{
-			return database::access<nlohmann::json>([&](database::database_t& db)
-				-> nlohmann::json
-			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(player_data::table.loadout)
-							.from(player_data::table)
-								.where(player_data::table.player_id == player_id));
-
-				if (results.empty())
-				{
-					return {};
-				}
-
-				const auto json = nlohmann::json::parse(results.front().loadout.value(), nullptr, false);
-				if (json.is_discarded())
-				{
-					return {};
-				}
-
-				return json;
-			});
-		}
-		
-		template <database_type_t Type>
 		bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& out_arrays)
 		{
 			return database::access<bool>([&](database::database_t& db)
@@ -669,11 +628,6 @@ namespace database::player_data
 		RUN_IMPL(impl::get_motherbase, this->player_id_, motherbase);
 	}
 
-	nlohmann::json player_data::get_loadout() const
-	{
-		RUN_IMPL(impl::get_loadout, this->player_id_);
-	}
-
 	bool player_data::get_resource_arrays(resource_arrays_t& resource_arrays) const
 	{
 		RUN_IMPL(impl::get_resource_arrays, this->player_id_, resource_arrays);
@@ -755,11 +709,6 @@ namespace database::player_data
 	void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase)
 	{
 		RUN_IMPL(impl::sync_motherbase, player_id, motherbase);
-	}
-
-	void sync_loadout(const std::uint64_t player_id, const nlohmann::json& loadout)
-	{
-		RUN_IMPL(impl::sync_loadout, player_id, loadout);
 	}
 
 	void sync_emblem(const std::uint64_t player_id, const game::emblem_t& emblem)
