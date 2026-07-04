@@ -38,10 +38,7 @@ namespace emulator::tpp
 			}
 		}
 
-		if (!database::player_records::set_challenge_tasks(player->get_id(), challenge_tasks))
-		{
-			return error(ERR_DATABASE);
-		}
+		database::player_records::set_challenge_tasks(player->get_id(), challenge_tasks);
 
 		result["result_status_list"] = nlohmann::json::array();
 		for (auto i = 0u; i < database::player_records::challenge_tasks_count; i++)
