@@ -2,6 +2,10 @@
 
 List of implemeted/unimplemented server commands
 
+✔️: partial or full implementation
+➖: none or partial implementation, unnecessary
+❌: no implementation
+
 ## MGSV
 
 ### tppstm/gate
@@ -187,8 +191,8 @@ List of implemeted/unimplemented server commands
 | CMD_GET_MGO_SURVIVAL_RULE_SET | ❌ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
-| CMD_GET_MGO_TITLE_USR | 🟡 | database not implemented |
-| CMD_GET_MGO_TITLE_USR2 | 🟡 | database not implemented |
+| CMD_GET_MGO_TITLE_USR | ✔️ | backend not implemented |
+| CMD_GET_MGO_TITLE_USR2 | ✔️ | backend not implemented |
 | CMD_GET_MGO_USER_DATA | ✔️ |  |
 | CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
 | CMD_GET_PLAYERLIST | ✔️ |  |
