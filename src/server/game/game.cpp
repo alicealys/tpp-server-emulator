@@ -891,6 +891,8 @@ namespace game
 		case 3:
 			return validate_emblem_tag(texture_tag, emblem_list.word_params);
 		}
+
+		return 0u;
 	}
 
 	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem)
