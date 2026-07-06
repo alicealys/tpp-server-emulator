@@ -104,8 +104,15 @@ namespace database::pf_league
 		std::vector<database::fobs::fob> fobs;
 	};
 
+	struct pf_point_info_t
+	{
+		float baseline;
+		float group;
+	};
+
 	void calculate_pf_params(player_pf_data_t& in_data, player_pf_params_t& out_params);
 	bool calculate_pf_params(const std::uint64_t player_id, player_pf_data_t& pf_data, player_pf_params_t& out_params);
+	const std::vector<pf_point_info_t>& get_pf_points_table();
 
 	enum pf_league_state_t
 	{
@@ -389,4 +396,5 @@ namespace database::pf_league
 	std::optional<pf_competitor> get_player_competitor_instance(const std::uint64_t league_id, const std::uint64_t player_id);
 	std::vector<pf_competitor> get_players_in_bracket(const std::uint64_t bracket_id);
 	std::vector<pf_battle> get_player_battles(const std::uint64_t bracket_id, const std::uint64_t player_id);
+	void inc_battle_buff(const std::uint64_t battle_id, const std::uint32_t attacker_buff, const std::uint32_t defender_buff, const bool inc);
 }
