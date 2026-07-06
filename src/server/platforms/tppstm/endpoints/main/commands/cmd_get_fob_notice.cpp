@@ -7,6 +7,7 @@
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/fob_events.hpp"
+#include "database/models/pf_league.hpp"
 
 namespace emulator::tpp
 {
@@ -26,6 +27,32 @@ namespace emulator::tpp
 			notice_league_bonus = 1 << 9,
 			notice_mb_coins = 1 << 10,
 		};
+
+		bool has_unacked_league_results(const database::players::player& player, const std::chrono::seconds last_ack)
+		{
+			const auto league = database::pf_league::get_current_pf_league();
+			if (!league.has_value())
+			{
+				return false;
+			}
+
+			const auto self = database::pf_league::get_player_competitor_instance(league->get_id(), player.get_id());
+			if (self.has_value())
+			{
+				return false;
+			}
+
+			const auto battles = database::pf_league::get_player_battles(self->get_bracket_id(), self->get_player_id());
+			for (const auto& battle : battles)
+			{
+				if (battle.get_winner_state() != database::pf_league::battle_winner_none && last_ack < battle.get_date())
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	nlohmann::json cmd_get_fob_notice::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
@@ -51,16 +78,16 @@ namespace emulator::tpp
 
 		const auto fob_event = database::fob_events::get_current_event();
 
-		auto flag = notice_unk7 | notice_unk8;
+		auto flag = notice_unk7 | notice_unk8 | notice_mb_coins;
 
 		if (player_record->get_event_point() > 1000)
 		{
 			flag |= notice_event_points;
 		}
 
-		if (player_record->get_pf_point() > 1000)
+		if (player_record->get_pf_point_add() > 0)
 		{
-			flag |= notice_pf_points;
+			flag |= notice_pf_points | notice_league;
 		}
 
 		if (player_record->get_league_grade() != player_record->get_prev_league_grade() ||
@@ -87,6 +114,11 @@ namespace emulator::tpp
 			flag |= notice_event;
 		}
 
+		if (has_unacked_league_results(player.value(), player_record->get_league_last_ack()))
+		{
+			flag |= notice_league_battles;
+		}
+
 		result["active_event_server_text"] = fob_event.has_value() ? fob_event->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 		result["common_server_text"] = "NotImplement";
@@ -97,7 +129,7 @@ namespace emulator::tpp
 		result["exists_event_point_combat_deploy"] = 0;
 		result["flag"] = flag;
 
-		result["league_update"]["get_point"] = 0;
+		result["league_update"]["get_point"] = player_record->get_pf_point_add();
 		result["league_update"]["grade"] = player_record->get_league_grade();
 		result["league_update"]["now_rank"] = player_record->get_league_rank();
 		result["league_update"]["prev_grade"] = player_record->get_prev_league_grade();
