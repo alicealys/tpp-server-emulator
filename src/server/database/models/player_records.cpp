@@ -517,7 +517,7 @@ namespace database::player_records
 					db.get_database<Type>()->operator()(
 						sqlpp::update(player_record::table)
 							.set(player_record::table.league_grade = player_record::table.league_grade + 1)
-									.where(player_record::table.player_id == player_id && player_record::table.league_grade < 28)
+									.where(player_record::table.player_id == player_id && player_record::table.league_grade < max_league_grade)
 						);
 				}
 				else

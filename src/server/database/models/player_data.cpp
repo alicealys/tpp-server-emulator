@@ -114,6 +114,8 @@ namespace database::player_data
 								  player_data::table.injury_gmp,
 								  player_data::table.mb_coin,
 								  player_data::table.cumulative_grade,
+								  player_data::table.league_attack_item,
+								  player_data::table.league_defense_item,
 								  player_data::table.last_sync,
 								  player_data::table.client_resource_version,
 								  player_data::table.client_staff_version,
@@ -627,8 +629,40 @@ namespace database::player_data
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
 							 player_data::table.cumulative_grade = grade)
-								.where(player_data::table.player_id == player_id
-					));
+								.where(player_data::table.player_id == player_id)
+					);
+			});
+		}
+		
+		template <database_type_t Type>
+		bool use_league_item(const std::uint64_t player_id, const std::uint32_t attack_item, const std::uint32_t defense_item, bool use)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				if (use)
+				{
+					const auto result = db.get_database<Type>()->operator()(
+						sqlpp::update(player_data::table)
+							.set(player_data::table.player_id = player_id,
+								 player_data::table.league_attack_item = player_data::table.league_attack_item - attack_item,
+								 player_data::table.league_defense_item = player_data::table.league_defense_item - defense_item)
+									.where(player_data::table.player_id == player_id && 
+										   player_data::table.league_attack_item >= attack_item && 
+										   player_data::table.league_defense_item >= defense_item)
+						);
+					return result != 0u;
+				}
+				else
+				{
+					const auto result = db.get_database<Type>()->operator()(
+						sqlpp::update(player_data::table)
+							.set(player_data::table.player_id = player_id,
+								 player_data::table.league_attack_item = player_data::table.league_attack_item + attack_item,
+								 player_data::table.league_defense_item = player_data::table.league_defense_item + defense_item)
+									.where(player_data::table.player_id == player_id)
+						);
+					return result != 0;
+				}
 			});
 		}
 	}
@@ -868,6 +902,11 @@ namespace database::player_data
 	void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade)
 	{
 		RUN_IMPL(impl::set_cumulative_grade, player_id, grade);
+	}
+
+	bool use_league_item(const std::uint64_t player_id, const std::uint32_t attack_item, const std::uint32_t defense_item, const bool use)
+	{
+		RUN_IMPL(impl::use_league_item, player_id, attack_item, defense_item, use);
 	}
 
 	class table final : public table_interface

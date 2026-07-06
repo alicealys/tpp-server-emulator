@@ -124,6 +124,7 @@ RESOURCE_DAILY_REWARDS            RCDATA "resources/data/daily_rewards.json"
 RESOURCE_PAY_ITEM_LIST            RCDATA "resources/data/pay_item_list.json"
 RESOURCE_EMBLEM_LIST              RCDATA "resources/data/emblem_list.json"
 RESOURCE_SECURITY_PRODUCT_LIST    RCDATA "resources/data/security_product_list.json"
+RESOURCE_PF_POINTS_TABLE          RCDATA "resources/data/pf_points_table.json"
 
 RESOURCE_SQL_MYSQL                RCDATA "resources/sql/mysql.sql"
 RESOURCE_SQL_SQLITE3              RCDATA "resources/sql/sqlite3.sql"

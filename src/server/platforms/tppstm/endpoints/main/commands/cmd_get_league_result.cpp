@@ -78,7 +78,7 @@ namespace emulator::tpp
 			fake_battle.update_params(competitor_params, competitor_params);
 
 			entry["attack_durability"] = fake_battle.get_attacker_durability();
-			entry["attack_item"] = 8;
+			entry["attack_item"] = competitor_data->get_league_attack_item();
 			entry["attack_level"] = competitor_params.unit_levels[game::unit_combat];
 			entry["attack_lose"] = pf_competitor.get_attack_lose();
 			entry["attack_nuclear"] = competitor_data->get_nuke_count();
@@ -88,7 +88,7 @@ namespace emulator::tpp
 			entry["conbat_point"] = 0;
 			entry["cumulative_grade"] = competitor_data->get_cumulative_grade();
 			entry["defence_durability"] = fake_battle.get_defender_durability();
-			entry["defence_item"] = 0;
+			entry["defence_item"] = competitor_data->get_league_defense_item();
 			entry["defence_level"] = competitor_params.unit_levels[game::unit_security];
 			entry["defence_nuclear"] = competitor_data->get_nuke_count();
 			entry["defence_point"] = fake_battle.get_defender_capability();

@@ -29,7 +29,7 @@ namespace emulator::tpp
 		result["pf_rating_defense_life"] = 0;
 		result["pf_rating_offence_force"] = 0;
 		result["pf_rating_offence_life"] = 0;
-		result["pf_rating_rank"] = 0;
+		result["pf_rating_rank"] = record->get_league_grade();
 		result["total_development_grade"] = 0;
 		result["total_fob_security_level"] = 0;
 

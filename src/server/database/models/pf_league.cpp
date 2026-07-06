@@ -150,7 +150,7 @@ namespace database::pf_league
 		staff_rank_scores[game::rank_sp] = 543;
 		staff_rank_scores[game::rank_spp] = 840;
 
-		for (auto i = 0; i < game::max_staff_count; i++)
+		for (auto i = 0u; i < game::max_staff_count; i++)
 		{
 			const auto top_rank = game::calc_staff_top_rank(in_data.staff[i]);
 			switch (in_data.staff[i].fields.status_sync.designation)
@@ -279,8 +279,8 @@ namespace database::pf_league
 	void pf_battle::update_params(const player_pf_data_t& attacker_data, const player_pf_data_t& defender_data,
 		const player_pf_params_t& attacker_params, const player_pf_params_t& defender_params)
 	{
-		this->attacker_capability_ = attacker_params.offensive_capability.elements[offensive_capability_sum];
-		this->defender_capability_ = defender_params.defensive_capability.elements[defensive_capability_sum];
+		this->attacker_capability_ = attacker_params.offensive_capability.elements[offensive_capability_sum] + this->get_attacker_buff() * 30000;
+		this->defender_capability_ = defender_params.defensive_capability.elements[defensive_capability_sum] + this->get_defender_capability() * 30000;
 
 		this->attacker_durability_ = attacker_params.offensive_durability.elements[offensive_durability_sum];
 		this->defender_durability_ = defender_params.defensive_durability.elements[defensive_durability_sum];
@@ -322,10 +322,66 @@ namespace database::pf_league
 		return true;
 	}
 
+	std::vector<pf_point_info_t> load_pf_points_table()
+	{
+		// https://docs.google.com/spreadsheets/d/1ktnYiA2EMzwHQW_suOmlhm4697GPXKZigmWKt-0l9io/edit?gid=1726493418#gid=1726493418
+		// https://gamefaqs.gamespot.com/boards/718564-metal-gear-solid-v-the-phantom-pain/77169312
+
+		std::vector<pf_point_info_t> table;
+
+		auto table_j = utils::resources::load_json(RESOURCE_PF_POINTS_TABLE);
+		if (!table_j.is_array())
+		{
+			return table;
+		}
+
+		for (auto i = 0u; i < table_j.size(); i++)
+		{
+			pf_point_info_t entry{};
+
+			auto& entry_j = table_j[i];
+			if (entry_j.size() >= 2)
+			{
+				entry.baseline = entry_j[0].get<float>();
+				entry.group = entry_j[1].get<float>();
+			}
+
+			table.emplace_back(entry);
+		}
+
+		return table;
+	}
+
+	const std::vector<pf_point_info_t>& get_pf_points_table()
+	{
+		static const auto table = load_pf_points_table();
+		return table;
+	}
+
+	std::uint32_t calculate_pf_points(const std::uint32_t grade, std::uint32_t bracket_rank)
+	{
+		const auto& table = get_pf_points_table();
+		if (table.size() == 0)
+		{
+			return 0u;
+		}
+
+		const auto& entry = grade < table.size()
+			? table[grade]
+			: table[0];
+
+		if (bracket_rank > 16u)
+		{
+			bracket_rank = 16u;
+		}
+
+		return static_cast<std::uint32_t>(entry.baseline + (static_cast<float>(16u - bracket_rank) * ((0.8f * entry.group) / 15.f)));
+	}
+
 	namespace impl
 	{
 		template <database_type_t Type>
-		std::optional<pf_league> get_current_pf_league(database_t& db)
+		std::optional<pf_league> get_current_pf_league1(database_t& db)
 		{
 			auto results = db.get_database<Type>()->operator()(
 				sqlpp::select(sqlpp::all_of(pf_league::table))
@@ -342,11 +398,11 @@ namespace database::pf_league
 		}
 
 		template <database_type_t Type>
-		std::optional<pf_league> get_current_pf_league()
+		std::optional<pf_league> get_current_pf_league2()
 		{
 			return database::access<std::optional<pf_league>>([](database_t& db)
 			{
-				return impl::get_current_pf_league<Type>(db);
+				return impl::get_current_pf_league1<Type>(db);
 			});
 		}
 
@@ -489,8 +545,8 @@ namespace database::pf_league
 						 pf_battle::table.attacker_staff = battle.get_attacker_staff(),
 						 pf_battle::table.defender_staff = battle.get_defender_staff(),
 						 pf_battle::table.attacker_nuclear = battle.get_attacker_nuclear(),
-						 pf_battle::table.defender_nuclear = battle.get_defender_nuclear()
-							).where(pf_battle::table.id == battle.get_id())
+						 pf_battle::table.defender_nuclear = battle.get_defender_nuclear())
+							.where(pf_battle::table.id == battle.get_id())
 				);
 		}
 
@@ -620,6 +676,35 @@ namespace database::pf_league
 		}
 
 		template <database_type_t Type>
+		void inc_battle_buff(const std::uint64_t battle_id, const std::uint32_t attacker_buff, const std::uint32_t defender_buff, const bool inc)
+		{
+			database::access([&](database_t& db)
+			{
+				if (inc)
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::update(pf_battle::table)
+							.set(pf_battle::table.attacker_buff = pf_battle::table.attacker_buff + attacker_buff,
+								 pf_battle::table.defender_buff = pf_battle::table.defender_buff + defender_buff)
+									.where(pf_battle::table.id == battle_id)
+						);
+				}
+				else
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::update(pf_battle::table)
+							.set(pf_battle::table.attacker_buff = pf_battle::table.attacker_buff - attacker_buff,
+								 pf_battle::table.defender_buff = pf_battle::table.defender_buff - defender_buff)
+									.where(pf_battle::table.id == battle_id && 
+										   pf_battle::table.attacker_buff >= attacker_buff && 
+										   pf_battle::table.defender_buff >= defender_buff)
+						);
+				}
+
+			});
+		}
+
+		template <database_type_t Type>
 		void clear_pf_league(database_t& db)
 		{
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_battle::table).unconditionally());
@@ -631,12 +716,12 @@ namespace database::pf_league
 
 	std::optional<pf_league> get_current_pf_league(database_t& db)
 	{
-		RUN_IMPL_OVERLOAD(impl::get_current_pf_league, std::optional<pf_league>(*)(database_t& db), db);
+		RUN_IMPL(impl::get_current_pf_league1, db);
 	}
 
 	std::optional<pf_league> get_current_pf_league()
 	{
-		RUN_IMPL_OVERLOAD(impl::get_current_pf_league, std::optional<pf_league>(*)());
+		RUN_IMPL(impl::get_current_pf_league2);
 	}
 
 	bool create_pf_league(database_t& db, const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
@@ -725,6 +810,11 @@ namespace database::pf_league
 		RUN_IMPL(impl::clear_pf_league, db);
 	}
 
+	void inc_battle_buff(const std::uint64_t battle_id, const std::uint32_t attacker_buff, const std::uint32_t defender_buff, const bool inc)
+	{
+		RUN_IMPL(impl::inc_battle_buff, battle_id, attacker_buff, defender_buff, inc);
+	}
+
 	std::vector<std::pair<std::uint64_t, std::uint64_t>> create_player_combinations(const std::vector<player_records::player_record>& players)
 	{
 		std::vector<std::pair<std::uint64_t, std::uint64_t>> combinations;
@@ -749,8 +839,6 @@ namespace database::pf_league
 			return false;
 		}
 
-		printf("found unmatched players: %llu\n", players.size());
-
 		const auto bracket_id = create_pf_bracket(db, league.get_id());
 
 		for (const auto& player : players)
@@ -759,7 +847,6 @@ namespace database::pf_league
 		}
 
 		const auto combinations = create_player_combinations(players);
-		printf("total combinations: %llu\n", combinations.size());
 
 		std::chrono::system_clock::time_point battle_start(league.get_start_date());
 		battle_start += 10h;
@@ -769,7 +856,6 @@ namespace database::pf_league
 
 		for (const auto& [p1, p2] : combinations)
 		{
-			printf("creating pf battle for %llu and %llu\n", p1, p2);
 			create_pf_battle(db, league.get_id(), bracket_id, section, p1, p2, battle_start);
 			create_pf_battle(db, league.get_id(), bracket_id, section, p2, p1, battle_start);
 			++section;
@@ -794,8 +880,12 @@ namespace database::pf_league
 		auto attacker_capability = static_cast<std::int32_t>(attacker.offensive_capability.elements[offensive_capability_sum]);
 		auto attacker_durability = static_cast<std::int32_t>(attacker.offensive_durability.elements[offensive_durability_sum]);
 
+		attacker_capability += static_cast<std::int32_t>(battle.get_attacker_buff()) * 30000;
+
 		auto defender_capability = static_cast<std::int32_t>(defender.defensive_capability.elements[defensive_capability_sum]);
 		auto defender_durability = static_cast<std::int32_t>(defender.defensive_durability.elements[defensive_durability_sum]);
+
+		defender_capability += static_cast<std::int32_t>(battle.get_defender_buff()) * 30000;
 
 		auto attacker_capability_p = attacker_capability;
 		auto attacker_durability_p = attacker_durability;
@@ -847,13 +937,6 @@ namespace database::pf_league
 			result.defender_points = 0;
 			result.state = battle_winner_draw;
 		}
-
-		printf("pf battle:\n\tattacker_durability: %i, defender_durability: %i\n\tresult: %i\n\tattacker points: %i, defender points: %i\n", 
-			attacker_durability_p, defender_durability_p,
-			result.state,
-			result.attacker_points,
-			result.defender_points
-		);
 	}
 
 	bool run_pf_battles(database_t& db, const pf_league& league)
@@ -958,10 +1041,18 @@ namespace database::pf_league
 			break;
 		default:
 			top_3_threshold = 3u;
+			break;
 		}
 
 		for (auto i = 0u; i < players.size(); i++)
 		{
+			const auto player_record = database::player_records::find(players[i].get_player_id());
+			if (player_record.has_value())
+			{
+				const auto pf_points = calculate_pf_points(player_record->get_league_grade(), i);
+				database::player_records::add_pf_points(player_record->get_player_id(), pf_points);
+			}
+
 			if (i < top_3_threshold)
 			{
 				database::player_records::inc_league_grade(players[i].get_player_id(), true);
@@ -1004,13 +1095,6 @@ namespace database::pf_league
 
 	void update_league(database_t& db)
 	{
-		const auto now = std::chrono::system_clock::now();
-		static auto last_update = now;
-		if (now - last_update < 1s)
-		{
-			return;
-		}
-
 		const auto league = get_current_pf_league(db);
 		if (!league.has_value())
 		{
@@ -1021,6 +1105,7 @@ namespace database::pf_league
 			return;
 		}
 
+		const auto now = std::chrono::system_clock::now();
 		const auto now_s = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
 
 		switch (league->get_state())
@@ -1049,12 +1134,10 @@ namespace database::pf_league
 		}
 		case league_state_completed:
 		{
-#ifndef DEBUG			
 			if (league->get_end_date() - now_s < 1h)
 			{
 				return;
 			}
-#endif
 
 			if (!update_league_ranks(db, league.value()))
 			{
@@ -1079,10 +1162,6 @@ namespace database::pf_league
 			database.run_query("mgstpp.pf_brackets.create");
 			database.run_query("mgstpp.pf_competitors.create");
 			database.run_query("mgstpp.pf_battles.create");
-
-#ifdef DEBUG
-			clear_pf_league(database);
-#endif
 		}
 
 		void run_tasks(database_t& database) override

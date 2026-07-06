@@ -83,7 +83,7 @@ Most relevant commands are implemented, PF league is not.
 | CMD_GET_ONLINE_PRISON_LIST | ✔️ |  |
 | CMD_GET_OWN_FOB_LIST | ✔️ |  |
 | CMD_GET_PAY_ITEM_LIST | ✔️ | unused |
-| CMD_GET_PF_DETAIL_PARAMS | ❌ |  |
+| CMD_GET_PF_DETAIL_PARAMS | ✔️ |  |
 | CMD_GET_PF_POINT_EXCHANGE_PARAMS | ✔️ |  |
 | CMD_GET_PLATFORM_CONSTRUCTION_PROGRESS | ➖ | unused |
 | CMD_GET_PLAYERLIST | ✔️ |  |
@@ -150,7 +150,7 @@ Most relevant commands are implemented, PF league is not.
 | CMD_SYNC_SOLDIER_BIN | ✔️ |  |
 | CMD_SYNC_SOLDIER_DIFF | ✔️ |  |
 | CMD_UPDATE_SESSION | ✔️ |  |
-| CMD_USE_PF_ITEM | ❌ |  |
+| CMD_USE_PF_ITEM | ✔️ |  |
 | CMD_USE_SHORT_PF_ITEM | ❌ |  |
 
 ## MGO

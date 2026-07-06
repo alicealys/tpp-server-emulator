@@ -92,6 +92,8 @@ namespace database::player_data
 		DEFINE_FIELD(insurance_gmp, sqlpp::integer);
 		DEFINE_FIELD(injury_gmp, sqlpp::integer);
 		DEFINE_FIELD(cumulative_grade, sqlpp::integer_unsigned);
+		DEFINE_FIELD(league_attack_item, sqlpp::integer_unsigned);
+		DEFINE_FIELD(league_defense_item, sqlpp::integer_unsigned);
 		DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
 		DEFINE_FIELD(last_sync, sqlpp::time_point);
 		DEFINE_FIELD(client_resource_version, sqlpp::integer_unsigned);
@@ -104,6 +106,7 @@ namespace database::player_data
 			staff_bin_field_t, prison_bin_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
 			insurance_gmp_field_t, injury_gmp_field_t, cumulative_grade_field_t,
+			league_attack_item_field_t, league_defense_item_field_t,
 			mb_coin_field_t, last_sync_field_t, 
 			client_resource_version_field_t, client_staff_version_field_t,
 			server_resource_version_field_t, server_staff_version_field_t,
@@ -140,6 +143,8 @@ namespace database::player_data
 			this->insurance_gmp_ = static_cast<std::int32_t>(row.insurance_gmp);
 			this->injury_gmp_ = static_cast<std::int32_t>(row.injury_gmp);
 			this->cumulative_grade_ = static_cast<std::uint32_t>(row.cumulative_grade);
+			this->league_attack_item_ = static_cast<std::uint32_t>(row.league_attack_item);
+			this->league_defense_item_ = static_cast<std::uint32_t>(row.league_defense_item);
 
 			this->player_id_ = row.player_id;
 
@@ -250,6 +255,16 @@ namespace database::player_data
 			return this->cumulative_grade_;
 		}
 
+		std::uint32_t get_league_attack_item() const
+		{
+			return this->league_attack_item_;
+		}
+
+		std::uint32_t get_league_defense_item() const
+		{
+			return this->league_defense_item_;
+		}
+
 		std::uint32_t get_mb_coin() const
 		{
 			return this->mb_coin_;
@@ -318,6 +333,8 @@ namespace database::player_data
 		std::int32_t insurance_gmp_{};
 		std::int32_t injury_gmp_{};
 		std::uint32_t cumulative_grade_{};
+		std::uint32_t league_attack_item_{};
+		std::uint32_t league_defense_item_{};
 
 		std::chrono::microseconds last_sync_;
 
@@ -368,4 +385,6 @@ namespace database::player_data
 	void give_gmp(const std::uint64_t player_id, const std::uint32_t count);
 
 	void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade);
+
+	bool use_league_item(const std::uint64_t player_id, const std::uint32_t attack_item, const std::uint32_t defense_item, bool use);
 }

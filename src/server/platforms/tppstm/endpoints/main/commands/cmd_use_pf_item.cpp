@@ -20,8 +20,8 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto defence_item = defence_item_j.get<std::uint32_t>();
-		const auto attack_item = attack_item_j.get<std::uint32_t>();
+		const auto defence_item = std::min(1u, defence_item_j.get<std::uint32_t>());
+		const auto attack_item = std::min(1u, attack_item_j.get<std::uint32_t>());
 		const auto section = section_j.get<std::uint32_t>();
 
 		const auto league = database::pf_league::get_current_pf_league();
@@ -47,23 +47,39 @@ namespace emulator::tpp
 
 			found = true;
 
-			if (defence_item && battle.get_defender_id() == player->get_id())
+			if (battle.get_defender_id() == player->get_id())
 			{
-				if (battle.get_defender_buff() != 0)
+				if (battle.get_defender_buff() == 0 && defence_item >= 1)
 				{
-					return error(ERR_DATABASE);
+					if (database::player_data::use_league_item(player->get_id(), 0u, 1u, true))
+					{
+						database::pf_league::inc_battle_buff(battle.get_id(), 0u, 1u, true);
+					}
 				}
-
-				// todo
+				else if (battle.get_defender_buff() >= 1 && defence_item == 0)
+				{
+					if (database::player_data::use_league_item(player->get_id(), 0u, 1u, false))
+					{
+						database::pf_league::inc_battle_buff(battle.get_id(), 0u, 1u, false);
+					}
+				}
 			}
-			else if (attack_item > 0 && battle.get_attacker_id() == player->get_id())
+			else if (battle.get_attacker_id() == player->get_id())
 			{
-				if (battle.get_attacker_buff() != 0)
+				if (battle.get_attacker_buff() == 0 && attack_item >= 1)
 				{
-					return error(ERR_DATABASE);
+					if (database::player_data::use_league_item(player->get_id(), 1u, 0u, true))
+					{
+						database::pf_league::inc_battle_buff(battle.get_id(), 1u, 0u, true);
+					}
 				}
-
-				// todo
+				else if (battle.get_attacker_buff() >= 1 && attack_item == 0)
+				{
+					if (database::player_data::use_league_item(player->get_id(), 1u, 0u, false))
+					{
+						database::pf_league::inc_battle_buff(battle.get_id(), 1u, 0u, false);
+					}
+				}
 			}
 		}
 
