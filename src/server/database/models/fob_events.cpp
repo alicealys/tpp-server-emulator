@@ -18,20 +18,6 @@ namespace database::fob_events
 	{
 		constexpr auto event_number_variable_name = "fob_event_number";
 
-		fob_event_date_range_t get_event_range()
-		{
-			const auto day = date::floor<date::days>(std::chrono::system_clock::now());
-			const auto event_duration = std::chrono::days(7);
-			const auto event_start = (day - (date::weekday{day} - date::Tuesday)) + std::chrono::hours(5);
-			const auto event_end = event_start + event_duration;
-
-			fob_event_date_range_t range{};
-			range.start = std::chrono::duration_cast<std::chrono::seconds>(event_start.time_since_epoch());
-			range.end = std::chrono::duration_cast<std::chrono::seconds>(event_end.time_since_epoch());
-
-			return range;
-		}
-
 		std::uint32_t get_event_number()
 		{
 			const auto now = std::chrono::system_clock::now() + 24h * 7;
@@ -277,6 +263,27 @@ namespace database::fob_events
 			reset_values();
 			variables::set(event_number_variable_name, current_event_number);
 		}
+	}
+
+	void get_maintenance_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end)
+	{
+		const auto day = date::floor<date::days>(std::chrono::system_clock::now());
+		const auto event_duration = std::chrono::days(7);
+		start = (day - (date::weekday{day} - date::Tuesday)) + std::chrono::hours(5);
+		end = start + event_duration;
+	}
+
+	fob_event_date_range_t get_event_range()
+	{
+		std::chrono::system_clock::time_point event_start{};
+		std::chrono::system_clock::time_point event_end{};
+		get_maintenance_range(event_start, event_end);
+
+		fob_event_date_range_t range{};
+		range.start = std::chrono::duration_cast<std::chrono::seconds>(event_start.time_since_epoch());
+		range.end = std::chrono::duration_cast<std::chrono::seconds>(event_end.time_since_epoch());
+
+		return range;
 	}
 
 	std::optional<fob_event_player_t> get_player(const std::uint64_t id)

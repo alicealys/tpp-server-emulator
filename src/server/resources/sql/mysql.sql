@@ -45,6 +45,7 @@ create table if not exists `player_records`
 	league_rank					int not null	default 0,
 	prev_league_rank			int not null	default 0,
 	league_point				int not null	default 0,
+	pf_point					int not null	default 0,
 	event_point					int not null	default 0,
 	playtime					int not null	default 0,
 	point						int not null	default 0,
@@ -74,6 +75,17 @@ with ranked_players as (
 update player_records record
 join ranked_players ranked_player on record.player_id = ranked_player.player_id
 set record.fob_rank = ranked_player.new_rank where record.fob_point > 0;
+-- query:mgstpp.player_records.update_league_ranking
+with ranked_players as (
+	select player_id, league_point, 
+		   (select count(distinct league_point) + 1 
+			from player_records pr2 
+			where pr2.league_point > pr1.league_point) as new_rank
+	from player_records pr1
+)
+update player_records record
+join ranked_players ranked_player on record.player_id = ranked_player.player_id
+set record.league_rank = ranked_player.new_rank where record.league_point > 0;
 -- query:mgstpp.player_records.fob_grade.check_index
 select count(1) has_index from `information_schema`.`statistics` where table_schema='$database_name' and table_name='player_records' and index_name='fob_grade_index';
 -- query:mgstpp.player_records.fob_grade.create_index
@@ -98,6 +110,7 @@ create table if not exists `player_data`
 	loadout_gmp				int default 0,
 	insurance_gmp			int default 0,
 	injury_gmp				int default 0,
+	cumulative_grade		int unsigned default 0,
 	last_sync				datetime default null,
 	mb_coin					int unsigned default 0,
 	client_resource_version bigint unsigned default 0,
@@ -323,4 +336,77 @@ create table if not exists `variables`
 	variable_name			varchar(256) 	not null	unique,
 	variable_value			json			not null,
 	primary key (`id`)
+)
+-- query:mgstpp.pf_leagues.create
+create table if not exists `pf_leagues`
+(
+	id						bigint unsigned	not null	auto_increment,
+	state					int unsigned not null default 0,
+	start_date				datetime not null,
+	end_date				datetime not null,
+	primary key (`id`)
+)
+-- query:mgstpp.pf_brackets.create
+create table if not exists `pf_brackets`
+(
+	id						bigint unsigned	not null	auto_increment,
+	league_id				bigint unsigned	not null,
+	state					int unsigned	not null default 0,
+	primary key (`id`),
+	foreign key (`league_id`) references pf_leagues(`id`)
+)
+-- query:mgstpp.pf_competitors.create
+create table if not exists `pf_competitors`
+(
+	id						bigint unsigned	not null	auto_increment,
+	league_id				bigint unsigned	not null,
+	bracket_id				bigint unsigned	not null,
+	player_id				bigint unsigned	not null,
+	bracket_rank			int unsigned not null default 0,
+	bracket_rank_prev		int unsigned not null default 0,
+	victory_points			int unsigned not null default 0,
+	win						int unsigned not null default 0,
+	narrow_win				int unsigned not null default 0,
+	attack_win				int unsigned not null default 0,
+	defense_win				int unsigned not null default 0,
+	lose					int unsigned not null default 0,
+	narrow_lose				int unsigned not null default 0,
+	attack_lose				int unsigned not null default 0,
+	defense_lose				int unsigned not null default 0,
+	primary key (`id`),
+	foreign key (`league_id`) references pf_leagues(`id`),
+	foreign key (`bracket_id`) references pf_brackets(`id`),
+	foreign key (`player_id`) references players(`id`)
+)
+-- query:mgstpp.pf_battles.create
+create table if not exists `pf_battles`
+(
+	id						bigint unsigned	not null	auto_increment,
+	league_id				bigint unsigned	not null,
+	bracket_id				bigint unsigned	not null,
+	section					int unsigned	not null,
+	attacker_id				bigint unsigned	not null,
+	defender_id				bigint unsigned	not null,
+	attacker_points			int not null default 0,
+	defender_points			int not null default 0,
+	attacker_buff			int unsigned not null default 0,
+	defender_buff			int unsigned not null default 0,
+	attacker_level			int unsigned not null default 0,
+	defender_level			int unsigned not null default 0,
+	attacker_capability		int unsigned not null default 0,
+	defender_capability		int unsigned not null default 0,
+	attacker_durability		int unsigned not null default 0,
+	defender_durability		int unsigned not null default 0,
+	attacker_grade			int unsigned not null default 0,
+	defender_security		int unsigned not null default 0,
+	attacker_staff			int unsigned not null default 0,
+	defender_staff			int unsigned not null default 0,
+	attacker_nuclear		int unsigned not null default 0,
+	defender_nuclear		int unsigned not null default 0,
+	winner_state			int unsigned not null default 0,
+	date					datetime not null,
+	primary key (`id`),
+	foreign key (`bracket_id`) references pf_brackets(`id`),
+	foreign key (`attacker_id`) references players(`id`),
+	foreign key (`defender_id`) references players(`id`)
 )

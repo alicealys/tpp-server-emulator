@@ -140,7 +140,8 @@ namespace database::event_rankings
 				db.get_database<Type>()->operator()(
 					sqlpp::update(event_ranking::table)
 						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0)
-							.where(event_ranking::table.event_id != static_cast<std::uint32_t>(ep_earned))
+							.where(event_ranking::table.event_id != static_cast<std::uint32_t>(ep_earned) &&
+								   event_ranking::table.event_id != static_cast<std::uint32_t>(league_point_total))
 					);
 			});
 		}
@@ -230,7 +231,7 @@ namespace database::event_rankings
 
 	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count)
 	{
-		RUN_IMPL(impl::set_event_value, player_id, event_id, count);
+		RUN_IMPL(impl::increment_event_value, player_id, event_id, count);
 	}
 
 	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)

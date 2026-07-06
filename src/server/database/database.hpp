@@ -180,6 +180,10 @@ namespace database
 	static auto fn = (get_database_type() == database_mysql ? __fn__<database_mysql> : __fn__<database_sqlite3>); \
 	return fn(__VA_ARGS__); \
 
+#define RUN_IMPL_OVERLOAD(__fn__, __def__, ...) \
+	static auto fn = (get_database_type() == database_mysql ? static_cast<__def__>(__fn__<database_mysql>): static_cast<__def__>(__fn__<database_sqlite3>)); \
+	return fn(__VA_ARGS__); \
+
 #else
 
 #define SELECT_IMPL(__fn__) (__fn__<database_sqlite3>)

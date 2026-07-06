@@ -63,6 +63,12 @@ namespace database::player_data
 		std::int64_t get_first_free() const;
 	};
 
+	class resource_array_container : public db_array_container_base<std::uint32_t, game::RESOURCE_TYPE_COUNT>
+	{
+	};
+
+	using resource_arrays_container = resource_array_container[4];
+
 	bool can_recover_prisoner(const prisoner_t& prisoner);
 
 	class player_data
@@ -85,6 +91,7 @@ namespace database::player_data
 		DEFINE_FIELD(loadout_gmp, sqlpp::integer);
 		DEFINE_FIELD(insurance_gmp, sqlpp::integer);
 		DEFINE_FIELD(injury_gmp, sqlpp::integer);
+		DEFINE_FIELD(cumulative_grade, sqlpp::integer_unsigned);
 		DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
 		DEFINE_FIELD(last_sync, sqlpp::time_point);
 		DEFINE_FIELD(client_resource_version, sqlpp::integer_unsigned);
@@ -96,7 +103,8 @@ namespace database::player_data
 			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_counts_field_t, 
 			staff_bin_field_t, prison_bin_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
-			insurance_gmp_field_t, injury_gmp_field_t, mb_coin_field_t, last_sync_field_t, 
+			insurance_gmp_field_t, injury_gmp_field_t, cumulative_grade_field_t,
+			mb_coin_field_t, last_sync_field_t, 
 			client_resource_version_field_t, client_staff_version_field_t,
 			server_resource_version_field_t, server_staff_version_field_t,
 			fob_deploy_damage_param_field_t);
@@ -131,6 +139,7 @@ namespace database::player_data
 			this->loadout_gmp_ = static_cast<std::int32_t>(row.loadout_gmp);
 			this->insurance_gmp_ = static_cast<std::int32_t>(row.insurance_gmp);
 			this->injury_gmp_ = static_cast<std::int32_t>(row.injury_gmp);
+			this->cumulative_grade_ = static_cast<std::uint32_t>(row.cumulative_grade);
 
 			this->player_id_ = row.player_id;
 
@@ -184,6 +193,11 @@ namespace database::player_data
 			return this->unit_levels_[unit];
 		}
 
+		void get_unit_levels(unit_levels_t& out) const
+		{
+			std::memcpy(&out, &this->unit_levels_, sizeof(unit_levels_t));
+		}
+
 		std::uint32_t get_unit_count(const std::uint32_t unit) const
 		{
 			if (unit >= game::unit_count)
@@ -192,6 +206,11 @@ namespace database::player_data
 			}
 
 			return this->unit_counts_[unit];
+		}
+
+		void get_unit_counts(unit_counts_t& out) const
+		{
+			std::memcpy(&out, &this->unit_counts_, sizeof(unit_levels_t));
 		}
 
 		std::uint32_t get_staff_count() const
@@ -224,6 +243,11 @@ namespace database::player_data
 		std::int32_t get_local_gmp() const
 		{
 			return this->local_gmp_;
+		}
+
+		std::uint32_t get_cumulative_grade() const
+		{
+			return this->cumulative_grade_;
 		}
 
 		std::uint32_t get_mb_coin() const
@@ -293,6 +317,7 @@ namespace database::player_data
 		std::int32_t loadout_gmp_{};
 		std::int32_t insurance_gmp_{};
 		std::int32_t injury_gmp_{};
+		std::uint32_t cumulative_grade_{};
 
 		std::chrono::microseconds last_sync_;
 
@@ -341,4 +366,6 @@ namespace database::player_data
 
 	void give_resource(const std::uint64_t player_id, const std::uint32_t type, const std::uint32_t count);
 	void give_gmp(const std::uint64_t player_id, const std::uint32_t count);
+
+	void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade);
 }

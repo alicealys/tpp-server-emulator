@@ -1020,6 +1020,22 @@ namespace game
 
 	bool is_usable_staff(const staff_t& staff);
 	bool is_usable_staff(const staff_fields_t& staff);
+	std::int8_t calc_staff_top_rank(const staff_fields_t& staff);
+	std::int8_t calc_staff_top_rank(const staff_t& staff);
+
+	enum staff_rank_t
+	{
+		rank_e = 0,
+		rank_d = 1,
+		rank_c = 2,
+		rank_b = 3,
+		rank_a = 4,
+		rank_ap = 5,
+		rank_app = 6,
+		rank_s = 7,
+		rank_sp = 8,
+		rank_spp = 9,
+	};
 
 	enum designation_t
 	{
@@ -1316,6 +1332,29 @@ namespace game
 		nlohmann::json to_json() const;
 	};
 
+	struct pf_skill_staff_t
+	{
+		std::uint16_t all_staff_num;
+		std::uint16_t defender1_num;
+		std::uint16_t defender2_num;
+		std::uint16_t defender3_num;
+		std::uint16_t interceptor_missile1_num;
+		std::uint16_t interceptor_missile2_num;
+		std::uint16_t interceptor_missile3_num;
+		std::uint16_t liquid_carbon_missile1_num;
+		std::uint16_t liquid_carbon_missile2_num;
+		std::uint16_t liquid_carbon_missile3_num;
+		std::uint16_t medic1_num;
+		std::uint16_t medic2_num;
+		std::uint16_t medic3_num;
+		std::uint16_t ranger1_num;
+		std::uint16_t ranger2_num;
+		std::uint16_t ranger3_num;
+		std::uint16_t sentry1_num;
+		std::uint16_t sentry2_num;
+		std::uint16_t sentry3_num;
+	};
+
 	struct motherbase_t
 	{
 		std::uint32_t equip_flag[32];
@@ -1323,7 +1362,7 @@ namespace game
 		std::uint8_t equip_grade[28];
 		fob_build_t local_base_param[7];
 		std::uint8_t security_level[18];
-		std::uint16_t pf_skill_staff[19];
+		pf_skill_staff_t pf_skill_staff;
 		std::uint8_t pickup_open;
 		std::uint8_t section_open;
 		std::uint8_t invalid_fob;

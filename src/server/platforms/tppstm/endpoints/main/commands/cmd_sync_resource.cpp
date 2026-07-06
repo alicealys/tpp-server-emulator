@@ -24,8 +24,10 @@ namespace emulator::tpp
 		const auto& diff_resource_1 = data["diff_resource1"];
 		const auto& diff_resource_2 = data["diff_resource2"];
 		const auto& gmp_j = data["gmp"];
+		const auto& cumulative_grade_j = data["cumulative_grade"];
 
 		if (!gmp_j.is_number_integer() ||
+			!cumulative_grade_j.is_number_unsigned() ||
 			!diff_resource_1.is_array() || !diff_resource_2.is_array() ||
 			diff_resource_1.size() < game::RESOURCE_TYPE_COUNT ||
 			diff_resource_2.size() < game::RESOURCE_TYPE_COUNT)
@@ -107,6 +109,9 @@ namespace emulator::tpp
 		}
 
 		database::player_data::sync_client_resource_version(player->get_id());
+
+		const auto cumulative_grade = cumulative_grade_j.get<std::uint32_t>();
+		database::player_data::set_cumulative_grade(player->get_id(), cumulative_grade);
 
 		result["version"] = server_version;
 

@@ -45,8 +45,15 @@ namespace emulator::tpp
 			const auto player_rank = database::event_rankings::get_player_rank(player->get_id(), event_id);
 			if (player_rank.has_value())
 			{
-				const auto page_start = player_rank.value() - (player_rank.value() % num);
-				offset = page_start - 1;
+				if (player_rank.value() > 0)
+				{
+					const auto page_start = player_rank.value() - (player_rank.value() % num);
+					offset = page_start - 1;
+				}
+				else
+				{
+					offset = 0u;
+				}
 			}
 		}
 		else

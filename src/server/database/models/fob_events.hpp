@@ -73,6 +73,8 @@ namespace database::fob_events
 		std::vector<fob_event_t> events;
 	};
 
+	void get_maintenance_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end);
+	fob_event_date_range_t get_event_range();
 	std::optional<fob_event_player_t> get_player(const std::uint64_t id);
 	bool is_event_player(const std::uint64_t id);
 	std::optional<fob_event_t> get_current_event();

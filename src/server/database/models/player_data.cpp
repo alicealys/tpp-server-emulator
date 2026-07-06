@@ -113,6 +113,7 @@ namespace database::player_data
 								  player_data::table.insurance_gmp,
 								  player_data::table.injury_gmp,
 								  player_data::table.mb_coin,
+								  player_data::table.cumulative_grade,
 								  player_data::table.last_sync,
 								  player_data::table.client_resource_version,
 								  player_data::table.client_staff_version,
@@ -616,6 +617,20 @@ namespace database::player_data
 				std::memcpy(out_prison.data(), prison_bin.data(), out_prison.get_raw_size());
 			});
 		}
+
+		template <database_type_t Type>
+		void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.player_id = player_id,
+							 player_data::table.cumulative_grade = grade)
+								.where(player_data::table.player_id == player_id
+					));
+			});
+		}
 	}
 
 	void player_data::get_emblem(game::emblem_t& emblem) const
@@ -848,6 +863,11 @@ namespace database::player_data
 		}
 
 		database::player_data::set_gmp(player_id, new_local_gmp, new_server_gmp);
+	}
+
+	void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade)
+	{
+		RUN_IMPL(impl::set_cumulative_grade, player_id, grade);
 	}
 
 	class table final : public table_interface

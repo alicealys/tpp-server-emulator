@@ -107,6 +107,59 @@ namespace database::player_records
 		}
 
 		template <database_type_t Type>
+		void add_pf_points(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.pf_point = player_record::table.pf_point + value)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
+		
+		template <database_type_t Type>
+		void set_pf_points(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.pf_point = value)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
+		bool spend_pf_points(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.player_id = player_id,
+							 player_record::table.pf_point = player_record::table.pf_point - value)
+								.where(player_record::table.player_id == player_id &&
+									   player_record::table.pf_point >= value)
+					);
+
+				if (result != 0)
+				{
+					event_rankings::increment_event_value(player_id, event_rankings::league_pf_points_exchange, value);
+				}
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
 		void add_event_points(const std::uint64_t player_id, const std::uint32_t value)
 		{
 			database::access([&](database::database_t& db)
@@ -168,7 +221,9 @@ namespace database::player_records
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_record::table)
 						.set(player_record::table.prev_fob_grade = player_record::table.fob_grade,
-							 player_record::table.prev_fob_rank = player_record::table.fob_rank)
+							 player_record::table.prev_fob_rank = player_record::table.fob_rank,
+							 player_record::table.prev_league_grade = player_record::table.league_grade,
+							 player_record::table.prev_league_rank = player_record::table.league_rank)
 								.where(player_record::table.player_id == player_id)
 					);
 			});
@@ -436,6 +491,54 @@ namespace database::player_records
 				}
 			}
 		}
+
+		template <database_type_t Type>
+		void add_league_points(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			event_rankings::increment_event_value(player_id, event_rankings::league_point_total, value);
+
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_record::table)
+						.set(player_record::table.league_point = player_record::table.league_point + value)
+								.where(player_record::table.player_id == player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
+		void inc_league_grade(const std::uint64_t player_id, bool increase)
+		{
+			database::access([&](database::database_t& db)
+			{
+				if (increase)
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::update(player_record::table)
+							.set(player_record::table.league_grade = player_record::table.league_grade + 1)
+									.where(player_record::table.player_id == player_id && player_record::table.league_grade < 28)
+						);
+				}
+				else
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::update(player_record::table)
+							.set(player_record::table.league_grade = player_record::table.league_grade - 1)
+									.where(player_record::table.player_id == player_id && player_record::table.league_grade > 0)
+						);
+				}
+			});
+		}
+
+		template <database_type_t Type>
+		void update_league_ranking()
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.run_query("mgstpp.player_records.update_league_ranking");
+			});
+		}
 	}
 
 	std::optional<player_record> find(const std::uint64_t player_id)
@@ -532,6 +635,36 @@ namespace database::player_records
 	void set_insurance(const std::uint64_t player_id, const std::chrono::seconds duration)
 	{
 		RUN_IMPL(impl::set_insurance, player_id, duration);
+	}
+
+	void add_league_points(const std::uint64_t player_id, const std::uint32_t points)
+	{
+		RUN_IMPL(impl::add_league_points, player_id, points);
+	}
+
+	void inc_league_grade(const std::uint64_t player_id, bool increase)
+	{
+		RUN_IMPL(impl::inc_league_grade, player_id, increase);
+	}
+
+	void add_pf_points(const std::uint64_t player_id, const std::uint32_t points)
+	{
+		RUN_IMPL(impl::add_pf_points, player_id, points);
+	}
+
+	void set_pf_points(const std::uint64_t player_id, const std::uint32_t points)
+	{
+		RUN_IMPL(impl::set_pf_points, player_id, points);
+	}
+
+	bool spend_pf_points(const std::uint64_t player_id, const std::uint32_t points)
+	{
+		RUN_IMPL(impl::spend_pf_points, player_id, points);
+	}
+
+	void update_league_ranking()
+	{
+		RUN_IMPL(impl::update_league_ranking);
 	}
 
 	class table final : public table_interface
