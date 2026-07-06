@@ -31,6 +31,7 @@ namespace database::player_records
 		DEFINE_FIELD(league_rank, sqlpp::integer_unsigned);
 		DEFINE_FIELD(prev_league_rank, sqlpp::integer_unsigned);
 		DEFINE_FIELD(league_point, sqlpp::integer_unsigned);
+		DEFINE_FIELD(pf_point, sqlpp::integer_unsigned);
 		DEFINE_FIELD(event_point, sqlpp::integer_unsigned);
 		DEFINE_FIELD(playtime, sqlpp::integer_unsigned);
 		DEFINE_FIELD(point, sqlpp::integer_unsigned);
@@ -46,7 +47,8 @@ namespace database::player_records
 		DEFINE_FIELD(daily_total, sqlpp::integer_unsigned);
 		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
 			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, insurance_end_field_t,
-			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, league_point_field_t, event_point_field_t,
+			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, 
+			league_point_field_t, pf_point_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
 			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, challenge_tasks_field_t, 
 			daily_last_field_t, daily_last_ack_field_t, daily_total_field_t);
@@ -68,6 +70,7 @@ namespace database::player_records
 			this->league_rank_ = static_cast<std::uint32_t>(row.league_rank);
 			this->prev_league_rank_ = static_cast<std::uint32_t>(row.prev_league_rank);
 			this->league_point_ = static_cast<std::uint32_t>(row.league_point);
+			this->pf_point_ = static_cast<std::uint32_t>(row.pf_point);
 			this->event_point_ = static_cast<std::uint32_t>(row.event_point);
 			this->playtime_ = static_cast<std::uint32_t>(row.playtime);
 			this->point_ = static_cast<std::uint32_t>(row.point);
@@ -150,6 +153,11 @@ namespace database::player_records
 		std::uint32_t get_league_point() const
 		{
 			return this->league_point_;
+		}
+
+		std::uint32_t get_pf_point() const
+		{
+			return this->pf_point_;
 		}
 
 		std::uint32_t get_event_point() const
@@ -247,6 +255,7 @@ namespace database::player_records
 		std::uint32_t league_rank_{};
 		std::uint32_t prev_league_rank_{};
 		std::uint32_t league_point_{};
+		std::uint32_t pf_point_{};
 		std::uint32_t event_point_{};
 		std::uint32_t playtime_{};
 		std::uint32_t point_{};
@@ -289,4 +298,13 @@ namespace database::player_records
 	void set_daily_reward(const std::uint64_t player_id);
 
 	void set_insurance(const std::uint64_t player_id, const std::chrono::seconds duration);
+
+	void add_league_points(const std::uint64_t player_id, const std::uint32_t points);
+	void inc_league_grade(const std::uint64_t player_id, bool increase);
+
+	void add_pf_points(const std::uint64_t player_id, const std::uint32_t points);
+	void set_pf_points(const std::uint64_t player_id, const std::uint32_t points);
+	bool spend_pf_points(const std::uint64_t player_id, const std::uint32_t points);
+
+	void update_league_ranking();
 }

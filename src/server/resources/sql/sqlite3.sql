@@ -100,6 +100,7 @@ create table if not exists `player_data`
 	loadout_gmp				int default 0,
 	insurance_gmp			int default 0,
 	injury_gmp				int default 0,
+	cumulative_grade		int unsigned default 0,
 	last_sync				datetime default null,
 	mb_coin					int unsigned default 0,
 	gp_coin					int unsigned default 0,

@@ -543,6 +543,16 @@ namespace game
 		return is_usable_staff(staff.fields);
 	}
 
+	std::int8_t calc_staff_top_rank(const staff_fields_t& staff)
+	{
+		return staff.header.peak_rank; // todo
+	}
+
+	std::int8_t calc_staff_top_rank(const staff_t& staff)
+	{
+		return calc_staff_top_rank(staff.fields);
+	}
+
 	// fobs
 
 	std::array<fob_security_t, 2> fob_security_caps =
@@ -858,10 +868,32 @@ namespace game
 
 		copy_array(&motherbase.equip_flag[0], motherbase_j["equip_flag"], 32);
 		copy_array(&motherbase.equip_grade[0], motherbase_j["equip_grade"], 28);
-		copy_array(&motherbase.pf_skill_staff[0], motherbase_j["pf_skill_staff"], 19);
 		copy_array(&motherbase.local_base_param->packed, motherbase_j["local_base_param"], 7);
 		copy_array(&motherbase.security_level[0], motherbase_j["security_level"], 18);
 		copy_array(&motherbase.tape_flag[0], motherbase_j["tape_flag"], 8);
+
+		if (motherbase_j["pf_skill_staff"].is_object())
+		{
+			copy_value(motherbase.pf_skill_staff.all_staff_num, motherbase_j["pf_skill_staff"]["all_staff_num"]);
+			copy_value(motherbase.pf_skill_staff.defender1_num, motherbase_j["pf_skill_staff"]["defender1_num"]);
+			copy_value(motherbase.pf_skill_staff.defender2_num, motherbase_j["pf_skill_staff"]["defender2_num"]);
+			copy_value(motherbase.pf_skill_staff.defender3_num, motherbase_j["pf_skill_staff"]["defender3_num"]);
+			copy_value(motherbase.pf_skill_staff.interceptor_missile1_num, motherbase_j["pf_skill_staff"]["interceptor_missile1_num"]);
+			copy_value(motherbase.pf_skill_staff.interceptor_missile2_num, motherbase_j["pf_skill_staff"]["interceptor_missile2_num"]);
+			copy_value(motherbase.pf_skill_staff.interceptor_missile3_num, motherbase_j["pf_skill_staff"]["interceptor_missile3_num"]);
+			copy_value(motherbase.pf_skill_staff.liquid_carbon_missile1_num, motherbase_j["pf_skill_staff"]["liquid_carbon_missile1_num"]);
+			copy_value(motherbase.pf_skill_staff.liquid_carbon_missile2_num, motherbase_j["pf_skill_staff"]["liquid_carbon_missile2_num"]);
+			copy_value(motherbase.pf_skill_staff.liquid_carbon_missile3_num, motherbase_j["pf_skill_staff"]["liquid_carbon_missile3_num"]);
+			copy_value(motherbase.pf_skill_staff.medic1_num, motherbase_j["pf_skill_staff"]["medic1_num"]);
+			copy_value(motherbase.pf_skill_staff.medic2_num, motherbase_j["pf_skill_staff"]["medic2_num"]);
+			copy_value(motherbase.pf_skill_staff.medic3_num, motherbase_j["pf_skill_staff"]["medic3_num"]);
+			copy_value(motherbase.pf_skill_staff.ranger1_num, motherbase_j["pf_skill_staff"]["ranger1_num"]);
+			copy_value(motherbase.pf_skill_staff.ranger2_num, motherbase_j["pf_skill_staff"]["ranger2_num"]);
+			copy_value(motherbase.pf_skill_staff.ranger3_num, motherbase_j["pf_skill_staff"]["ranger3_num"]);
+			copy_value(motherbase.pf_skill_staff.sentry1_num, motherbase_j["pf_skill_staff"]["sentry1_num"]);
+			copy_value(motherbase.pf_skill_staff.sentry2_num, motherbase_j["pf_skill_staff"]["sentry2_num"]);
+			copy_value(motherbase.pf_skill_staff.sentry3_num, motherbase_j["pf_skill_staff"]["sentry3_num"]);
+		}
 
 		copy_value(motherbase.pickup_open, motherbase_j["pickup_open"]);
 		copy_value(motherbase.section_open, motherbase_j["section_open"]);
