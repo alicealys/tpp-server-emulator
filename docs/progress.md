@@ -48,9 +48,9 @@ Most relevant commands are implemented, PF league is not.
 | CMD_DEVELOP_WEPON | ➖ | unused |
 | CMD_ELAPSE_COMBAT_DEPLOY | ➖ | unused |
 | CMD_ENTER_SHORT_PFLEAGUE | ❌ |  |
-| CMD_EXCHANGE_FOB_EVENT_POINT | ❌ |  |
-| CMD_EXCHANGE_LEAGUE_POINT | ❌ |  |
-| CMD_EXCHANGE_LEAGUE_POINT2 | ❌ |  |
+| CMD_EXCHANGE_FOB_EVENT_POINT | ➖ | unused |
+| CMD_EXCHANGE_LEAGUE_POINT | ➖ | unused |
+| CMD_EXCHANGE_LEAGUE_POINT2 | ✔️ |  |
 | CMD_EXTEND_PLATFORM | ➖ | unused |
 | CMD_GDPR_CHECK | ✔️ |  |
 | CMD_GET_ABOLITION_COUNT | ✔️ |  |
