@@ -4,9 +4,34 @@
 #include "cmd_get_daily_reward.hpp"
 
 #include "database/models/combat_deployments.hpp"
+#include "database/models/player_data.hpp"
 
 namespace emulator::tpp
 {
+	namespace
+	{
+		bool give_reward(const std::uint64_t player_id, const database::combat_deployments::mission_reward_t& reward)
+		{
+			switch (reward.type)
+			{
+			case 31:
+			{
+				if (reward.mecha_type == 0)
+				{
+					database::player_data::use_league_item(player_id, reward.value, 0u, false);
+				}
+				else
+				{
+					database::player_data::use_league_item(player_id, 0u, reward.value, false);
+				}
+				return true;
+			}
+			}
+
+			return false;
+		}
+	}
+
 	nlohmann::json cmd_get_combat_deploy_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
@@ -78,7 +103,10 @@ namespace emulator::tpp
 
 			for (auto& reward : iter->rewards)
 			{
-				cmd_get_daily_reward::give_reward(player->get_id(), reward.type, reward.value);
+				if (!give_reward(player->get_id(), reward))
+				{
+					cmd_get_daily_reward::give_reward(player->get_id(), reward.type, reward.value);
+				}
 			}
 
 			database::combat_deployments::delete_deployment(player->get_id(), deployment.get_mission_id());

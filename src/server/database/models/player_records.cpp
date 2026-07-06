@@ -113,7 +113,8 @@ namespace database::player_records
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_record::table)
-						.set(player_record::table.pf_point = player_record::table.pf_point + value)
+						.set(player_record::table.pf_point = player_record::table.pf_point + value,
+							 player_record::table.pf_point_add = player_record::table.pf_point_add + value)
 								.where(player_record::table.player_id == player_id)
 					);
 			});
@@ -223,7 +224,9 @@ namespace database::player_records
 						.set(player_record::table.prev_fob_grade = player_record::table.fob_grade,
 							 player_record::table.prev_fob_rank = player_record::table.fob_rank,
 							 player_record::table.prev_league_grade = player_record::table.league_grade,
-							 player_record::table.prev_league_rank = player_record::table.league_rank)
+							 player_record::table.prev_league_rank = player_record::table.league_rank,
+							 player_record::table.pf_point_add = 0,
+							 player_record::table.league_last_ack = std::chrono::system_clock::now())
 								.where(player_record::table.player_id == player_id)
 					);
 			});

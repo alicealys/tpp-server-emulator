@@ -34,6 +34,7 @@ namespace database::player_records
 		DEFINE_FIELD(prev_league_rank, sqlpp::integer_unsigned);
 		DEFINE_FIELD(league_point, sqlpp::integer_unsigned);
 		DEFINE_FIELD(pf_point, sqlpp::integer_unsigned);
+		DEFINE_FIELD(pf_point_add, sqlpp::integer_unsigned);
 		DEFINE_FIELD(event_point, sqlpp::integer_unsigned);
 		DEFINE_FIELD(playtime, sqlpp::integer_unsigned);
 		DEFINE_FIELD(point, sqlpp::integer_unsigned);
@@ -47,13 +48,14 @@ namespace database::player_records
 		DEFINE_FIELD(daily_last, sqlpp::time_point);
 		DEFINE_FIELD(daily_last_ack, sqlpp::time_point);
 		DEFINE_FIELD(daily_total, sqlpp::integer_unsigned);
+		DEFINE_FIELD(league_last_ack, sqlpp::time_point);
 		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
 			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, insurance_end_field_t,
 			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, 
-			league_point_field_t, pf_point_field_t, event_point_field_t,
+			league_point_field_t, pf_point_field_t, pf_point_add_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
 			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, challenge_tasks_field_t, 
-			daily_last_field_t, daily_last_ack_field_t, daily_total_field_t);
+			daily_last_field_t, daily_last_ack_field_t, daily_total_field_t, league_last_ack_field_t);
 
 		inline static table_t table;
 
@@ -73,6 +75,7 @@ namespace database::player_records
 			this->prev_league_rank_ = static_cast<std::uint32_t>(row.prev_league_rank);
 			this->league_point_ = static_cast<std::uint32_t>(row.league_point);
 			this->pf_point_ = static_cast<std::uint32_t>(row.pf_point);
+			this->pf_point_add_ = static_cast<std::uint32_t>(row.pf_point_add);
 			this->event_point_ = static_cast<std::uint32_t>(row.event_point);
 			this->playtime_ = static_cast<std::uint32_t>(row.playtime);
 			this->point_ = static_cast<std::uint32_t>(row.point);
@@ -91,6 +94,7 @@ namespace database::player_records
 			this->daily_last_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last.value().time_since_epoch());
 			this->daily_last_ack_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last_ack.value().time_since_epoch());
 			this->daily_total_ = static_cast<std::uint32_t>(row.daily_total);
+			this->league_last_ack_ = std::chrono::duration_cast<std::chrono::seconds>(row.league_last_ack.value().time_since_epoch());
 
 			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
 			this->insurance_end_ = std::chrono::duration_cast<std::chrono::seconds>(row.insurance_end.value().time_since_epoch());
@@ -160,6 +164,11 @@ namespace database::player_records
 		std::uint32_t get_pf_point() const
 		{
 			return this->pf_point_;
+		}
+
+		std::uint32_t get_pf_point_add() const
+		{
+			return this->pf_point_add_;
 		}
 
 		std::uint32_t get_event_point() const
@@ -243,6 +252,11 @@ namespace database::player_records
 			return this->daily_total_;
 		}
 
+		std::chrono::seconds get_league_last_ack() const
+		{
+			return this->league_last_ack_;
+		}
+
 	private:
 		std::uint64_t id_{};
 		std::uint64_t player_id_{};
@@ -258,6 +272,7 @@ namespace database::player_records
 		std::uint32_t prev_league_rank_{};
 		std::uint32_t league_point_{};
 		std::uint32_t pf_point_{};
+		std::uint32_t pf_point_add_{};
 		std::uint32_t event_point_{};
 		std::uint32_t playtime_{};
 		std::uint32_t point_{};
@@ -270,7 +285,7 @@ namespace database::player_records
 		std::chrono::seconds daily_last_{};
 		std::chrono::seconds daily_last_ack_{};
 		std::uint32_t daily_total_{};
-
+		std::chrono::seconds league_last_ack_{};
 		std::chrono::seconds shield_date_{};
 
 	};
