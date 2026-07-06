@@ -10,6 +10,24 @@
 
 namespace emulator::tpp
 {
+	namespace
+	{
+		enum notice_flags_t
+		{
+			notice_daily_reward = 1 << 0,
+			notice_pf_points = 1 << 1,
+			notice_league = 1 << 2,
+			notice_fob = 1 << 3,
+			notice_event = 1 << 4,
+			notice_event_points = 1 << 5,
+			notice_unk7 = 1 << 6,
+			notice_unk8 = 1 << 7,
+			notice_league_battles = 1 << 8,
+			notice_league_bonus = 1 << 9,
+			notice_mb_coins = 1 << 10,
+		};
+	}
+
 	nlohmann::json cmd_get_fob_notice::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
@@ -33,23 +51,59 @@ namespace emulator::tpp
 
 		const auto fob_event = database::fob_events::get_current_event();
 
+		auto flag = notice_unk7 | notice_unk8;
+
+		if (player_record->get_event_point() > 1000)
+		{
+			flag |= notice_event_points;
+		}
+
+		if (player_record->get_pf_point() > 1000)
+		{
+			flag |= notice_pf_points;
+		}
+
+		if (player_record->get_league_grade() != player_record->get_prev_league_grade() ||
+			player_record->get_league_rank() != player_record->get_prev_league_rank())
+		{
+			flag |= notice_league;
+		}
+
+		if (player_record->get_fob_grade() != player_record->get_prev_fob_grade() ||
+			player_record->get_fob_rank() != player_record->get_prev_fob_rank())
+		{
+			flag |= notice_fob;
+		}
+
+		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
+		const auto diff = now - player_record->get_daily_last_ack();
+		if (diff > 24h)
+		{
+			flag |= notice_daily_reward;
+		}
+
+		if (fob_event.has_value())
+		{
+			flag |= notice_event;
+		}
+
 		result["active_event_server_text"] = fob_event.has_value() ? fob_event->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 		result["common_server_text"] = "NotImplement";
 		result["common_server_text_title"] = "NotImplement";
 		result["daily"] = 0;
-		result["event_delete_date"] = 0;
+		result["event_delete_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
 		result["event_end_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
 		result["exists_event_point_combat_deploy"] = 0;
-		result["flag"] = 1497;
+		result["flag"] = flag;
 
 		result["league_update"]["get_point"] = 0;
-		result["league_update"]["grade"] = 0;
-		result["league_update"]["now_rank"] = 0;
-		result["league_update"]["point"] = 0;
-		result["league_update"]["prev_grade"] = 0;
-		result["league_update"]["prev_rank"] = 0;
-		result["league_update"]["score"] = 0;
+		result["league_update"]["grade"] = player_record->get_league_grade();
+		result["league_update"]["now_rank"] = player_record->get_league_rank();
+		result["league_update"]["prev_grade"] = player_record->get_prev_league_grade();
+		result["league_update"]["prev_rank"] = player_record->get_prev_league_rank();
+		result["league_update"]["point"] = player_record->get_pf_point();
+		result["league_update"]["score"] = player_record->get_league_point();
 
 		result["mb_coin"] = database::player_data::get_mb_coins(player->get_id());
 		result["pf_current_season"] = 0;

@@ -65,7 +65,7 @@ namespace database::pf_league
 		const auto exp_value = [](const float scalar, const std::uint32_t value)
 		{
 			auto value_f = static_cast<float>(value);
-			return static_cast<std::uint32_t>(scalar * std::powf(value_f, 2.f) + scalar * value_f);
+			return static_cast<std::uint32_t>(scalar * powf(value_f, 2.f) + scalar * value_f);
 		};
 
 		const auto linear_value = [](const float scalar, const std::uint32_t value)
@@ -851,7 +851,7 @@ namespace database::pf_league
 		std::chrono::system_clock::time_point battle_start(league.get_start_date());
 		battle_start += 10h;
 
-		auto count = 0;
+		auto count = 0u;
 		auto section = 0u;
 
 		for (const auto& [p1, p2] : combinations)
