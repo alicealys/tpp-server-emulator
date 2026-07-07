@@ -11,19 +11,26 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
-		const auto enabled = data["status"] == "ENABLE";
-		if (!database::players::set_security_challenge(player->get_id(), enabled))
+		const auto player_record = database::player_records::find(player->get_id());
+		if (!player_record.has_value())
 		{
 			return error(ERR_DATABASE);
 		}
 
+		const auto enabled = data["status"] == "ENABLE";
+		if (enabled && player_record->get_is_insurance())
+		{
+			return error(ERR_IN_CONTRACT);
+		}
+
+		database::players::set_security_challenge(player->get_id(), enabled);
 		database::player_records::clear_shield_date(player->get_id());
 
 		return result;
+	}
+
+	bool cmd_set_security_challenge::needs_player()
+	{
+		return true;
 	}
 }

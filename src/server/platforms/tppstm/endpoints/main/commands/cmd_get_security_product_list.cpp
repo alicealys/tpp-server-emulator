@@ -13,6 +13,7 @@ namespace emulator::tpp
 		void give_insurance(const std::uint64_t player_id, const std::uint32_t duration)
 		{
 			database::player_records::set_insurance(player_id, duration * 1h);
+			database::players::set_security_challenge(player_id, false);
 		}
 	}
 
