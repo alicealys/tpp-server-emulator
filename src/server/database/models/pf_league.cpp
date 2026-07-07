@@ -252,6 +252,8 @@ namespace database::pf_league
 
 		/* defensive durability */
 
+		out_params.defensive_durability.elements[defensive_durability_platforms] = linear_value(892.f, total_platforms);
+		out_params.defensive_durability.elements[defensive_durability_nuclear] = linear_value(25000.f, in_data.resources[game::processed_server][game::NUCLEAR_WEAPON]);
 		out_params.defensive_durability.elements[defensive_durability_skill1] = linear_value(100.f, in_data.motherbase.pf_skill_staff.defender1_num);
 		out_params.defensive_durability.elements[defensive_durability_skill2] = linear_value(200.f, in_data.motherbase.pf_skill_staff.defender2_num);
 		out_params.defensive_durability.elements[defensive_durability_skill3] = linear_value(300.f, in_data.motherbase.pf_skill_staff.defender3_num);
@@ -259,7 +261,7 @@ namespace database::pf_league
 		out_params.defensive_durability.elements[defensive_durability_processed_materials] = linear_value(0.2f, processed_materials);
 		out_params.defensive_durability.elements[defensive_durability_gmp] = linear_value(0.001f, total_gmp);
 
-		for (auto i = static_cast<std::uint32_t>(defensive_durability_rank_e); i <= defensive_durability_gmp; i++)
+		for (auto i = static_cast<std::uint32_t>(defensive_durability_platforms); i <= defensive_durability_gmp; i++)
 		{
 			out_params.defensive_durability.elements[defensive_durability_sum] += out_params.defensive_durability.elements[i];
 		}
@@ -407,6 +409,25 @@ namespace database::pf_league
 		}
 
 		template <database_type_t Type>
+		std::vector<pf_league> get_past_leagues_of_state(database_t& db, const std::uint32_t state)
+		{
+			auto results = db.get_database<Type>()->operator()(
+				sqlpp::select(sqlpp::all_of(pf_league::table))
+						.from(pf_league::table)
+							.where(pf_league::table.end_date < std::chrono::system_clock::now() && 
+								   pf_league::table.state == state));
+
+			std::vector<pf_league> list;
+
+			for (auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		}
+
+		template <database_type_t Type>
 		bool create_pf_league(database_t& db, const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
 		{
 			auto result = db.get_database<Type>()->operator()(
@@ -484,7 +505,7 @@ namespace database::pf_league
 					sqlpp::all_of(player_records::player_record::table))
 						.from(player_records::player_record::table)
 							.where(!IS_SYSTEM_PLAYER_ID(player_records::player_record::table.player_id) && 
-								   !player_records::player_record::table.player_id.in(matched_members))
+								   !player_records::player_record::table.player_id.in(matched_members) && player_records::player_record::table.has_fob)
 								.order_by(player_records::player_record::table.league_grade.desc())
 									.limit(limit));
 
@@ -506,7 +527,7 @@ namespace database::pf_league
 						.from(pf_battle::table)
 							.where(pf_battle::table.winner_state == static_cast<std::uint32_t>(battle_winner_none) && 
 								   pf_battle::table.league_id == league_id && pf_battle::table.date <= std::chrono::system_clock::now())
-									.limit(limit));
+									.order_by(pf_battle::table.date.asc()).limit(limit));
 
 			std::vector<pf_battle> list;
 			for (auto& row : results)
@@ -705,7 +726,15 @@ namespace database::pf_league
 		}
 
 		template <database_type_t Type>
-		void clear_pf_league(database_t& db)
+		void clear_pf_league(database_t& db, const std::uint64_t league_id)
+		{
+			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_battle::table).where(pf_battle::table.league_id == league_id));
+			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_competitor::table).where(pf_competitor::table.league_id == league_id));
+			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_bracket::table).where(pf_bracket::table.league_id == league_id));
+		}
+
+		template <database_type_t Type>
+		void delete_all_pf_leagues(database_t& db)
 		{
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_battle::table).unconditionally());
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_competitor::table).unconditionally());
@@ -722,6 +751,11 @@ namespace database::pf_league
 	std::optional<pf_league> get_current_pf_league()
 	{
 		RUN_IMPL(impl::get_current_pf_league2);
+	}
+
+	std::vector<pf_league> get_past_leagues_of_state(database_t& db, const std::uint32_t state)
+	{
+		RUN_IMPL(impl::get_past_leagues_of_state, db, state);
 	}
 
 	bool create_pf_league(database_t& db, const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
@@ -805,9 +839,14 @@ namespace database::pf_league
 		RUN_IMPL(impl::get_player_battles, bracket_id, player_id);
 	}
 
-	void clear_pf_league(database_t& db)
+	void delete_all_pf_leagues(database_t& db)
 	{
-		RUN_IMPL(impl::clear_pf_league, db);
+		RUN_IMPL(impl::delete_all_pf_leagues, db);
+	}
+
+	void clear_pf_league(database_t& db, const std::uint64_t league_id)
+	{
+		RUN_IMPL(impl::clear_pf_league, db, league_id);
 	}
 
 	void inc_battle_buff(const std::uint64_t battle_id, const std::uint32_t attacker_buff, const std::uint32_t defender_buff, const bool inc)
@@ -848,11 +887,12 @@ namespace database::pf_league
 
 		const auto combinations = create_player_combinations(players);
 
-		std::chrono::system_clock::time_point battle_start(league.get_start_date());
-		battle_start += 10h;
+		std::chrono::system_clock::time_point begin(league.get_start_date());
+		begin += 10h;
 
-		auto count = 0u;
+		std::uint64_t prev_id = 0u;
 		auto section = 0u;
+		auto battle_start = begin;
 
 		for (const auto& [p1, p2] : combinations)
 		{
@@ -860,11 +900,14 @@ namespace database::pf_league
 			create_pf_battle(db, league.get_id(), bracket_id, section, p2, p1, battle_start);
 			++section;
 
-			if (++count >= players.size())
+			battle_start += 10h;
+
+			if (p1 != prev_id)
 			{
-				battle_start += 10h;
-				count = 0;
+				battle_start = begin;
 			}
+
+			prev_id = p1;
 		}
 
 		return true;
@@ -973,7 +1016,7 @@ namespace database::pf_league
 			battle.update_params(attacker_cache.data, defender_cache.data, attacker_cache.params, defender_cache.params);
 			update_pf_battle_params(db, battle);
 
-			run_pf_battle(battle, attacker_cache.params, attacker_cache.params, result);
+			run_pf_battle(battle, attacker_cache.params, defender_cache.params, result);
 			set_pf_battle_result(db, battle.get_id(), result);
 
 			const auto is_defense_lose = result.state == battle_winner_attacker ? 1u : 0u;
@@ -1093,8 +1136,29 @@ namespace database::pf_league
 		return true;
 	}
 
+	void update_past_leagues(database_t& db)
+	{
+		const auto completed_leagues = get_past_leagues_of_state(db, league_state_completed);
+		for (const auto& league : completed_leagues)
+		{
+			if (!update_league_ranks(db, league))
+			{
+				set_league_state(db, league.get_id(), league_state_destroy);
+			}
+		}
+
+		const auto destroy_leagues = get_past_leagues_of_state(db, league_state_destroy);
+		for (const auto& league : destroy_leagues)
+		{
+			clear_pf_league(db, league.get_id());
+			set_league_state(db, league.get_id(), league_state_dead);
+		}
+	}
+
 	void update_league(database_t& db)
 	{
+		update_past_leagues(db);
+
 		const auto league = get_current_pf_league(db);
 		if (!league.has_value())
 		{
@@ -1134,16 +1198,6 @@ namespace database::pf_league
 		}
 		case league_state_completed:
 		{
-			if (league->get_end_date() - now_s < 1h)
-			{
-				return;
-			}
-
-			if (!update_league_ranks(db, league.value()))
-			{
-				set_league_state(db, league->get_id(), league_state_destroy);
-			}
-
 			return;
 		}
 		case league_state_destroy:
@@ -1162,6 +1216,7 @@ namespace database::pf_league
 			database.run_query("mgstpp.pf_brackets.create");
 			database.run_query("mgstpp.pf_competitors.create");
 			database.run_query("mgstpp.pf_battles.create");
+			delete_all_pf_leagues(database);
 		}
 
 		void run_tasks(database_t& database) override
