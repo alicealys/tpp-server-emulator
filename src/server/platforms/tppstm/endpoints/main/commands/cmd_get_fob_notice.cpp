@@ -137,8 +137,10 @@ namespace emulator::tpp
 		result["league_update"]["point"] = player_record->get_pf_point();
 		result["league_update"]["score"] = player_record->get_league_point();
 
+		const auto league = database::pf_league::get_current_pf_league();
+		
 		result["mb_coin"] = database::player_data::get_mb_coins(player->get_id());
-		result["pf_current_season"] = 0;
+		result["pf_current_season"] = league.has_value() ? league->get_id() : 0u;
 		result["pf_finish_num"] = 0;
 		result["pf_finish_num_max"] = 0;
 		result["point_exchange_event_server_text"] = "NotImplement";

@@ -1244,7 +1244,6 @@ namespace database::pf_league
 			database.run_query("mgstpp.pf_brackets.create");
 			database.run_query("mgstpp.pf_competitors.create");
 			database.run_query("mgstpp.pf_battles.create");
-			delete_all_pf_leagues(database);
 		}
 
 		void run_tasks(database_t& database) override
