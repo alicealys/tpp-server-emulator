@@ -6,8 +6,8 @@
 
 namespace database::player_records
 {
-	constexpr const auto lowest_grade = 0;
-	constexpr const auto highest_grade = 11;
+	constexpr const auto lowest_grade = 0u;
+	constexpr const auto highest_grade = 11u;
 	constexpr const auto challenge_tasks_count = 32u;
 	constexpr const auto min_league_grade = 0u;
 	constexpr const auto max_league_grade = 28u;
