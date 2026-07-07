@@ -1,7 +1,6 @@
 #include <std_include.hpp>
 
 #include "pf_league.hpp"
-#include "fob_events.hpp"
 #include "player_records.hpp"
 #include "event_rankings.hpp"
 
@@ -378,6 +377,33 @@ namespace database::pf_league
 		}
 
 		return static_cast<std::uint32_t>(entry.baseline + (static_cast<float>(16u - bracket_rank) * ((0.8f * entry.group) / 15.f)));
+	}
+
+	std::vector<std::vector<fob_events::point_exchange_param_t>> load_point_exchange_params_lists()
+	{
+		std::vector<std::vector<fob_events::point_exchange_param_t>> lists;
+
+		auto lists_j = utils::resources::load_json(RESOURCE_PF_POINTS_EXCHANGE_LIST);
+		for (auto i = 0u; i < lists_j.size(); i++)
+		{
+			lists.emplace_back(fob_events::parse_point_exchange_params(lists_j[i]));
+		}
+
+		return lists;
+	}
+
+	const std::vector<fob_events::point_exchange_param_t>& get_point_exchange_params()
+	{
+		static const auto lists = load_point_exchange_params_lists();
+		static std::vector<fob_events::point_exchange_param_t> default_list;
+		const auto league = get_current_pf_league();
+		if (!league.has_value())
+		{
+			return default_list;
+		}
+
+		const auto idx = league->get_id() % lists.size();
+		return lists[idx];
 	}
 
 	namespace impl
@@ -1168,9 +1194,6 @@ namespace database::pf_league
 			create_pf_league(db, start, end);
 			return;
 		}
-
-		const auto now = std::chrono::system_clock::now();
-		const auto now_s = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
 
 		switch (league->get_state())
 		{
