@@ -13,8 +13,6 @@ namespace database::player_records
 	{
 		void get_grade_window(std::uint32_t grade, bool up, std::uint32_t& low, std::uint32_t& high)
 		{
-			grade = 5;
-
 			auto window_size = 0u;
 			auto high_cap = 0u;
 			switch (grade)
