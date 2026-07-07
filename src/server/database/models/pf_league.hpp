@@ -129,7 +129,7 @@ namespace database::pf_league
 		league_state_dead = 10
 	};
 	
-	constexpr const auto league_subgroup_count = 16u;
+	constexpr const auto pf_bracket_size = 16u;
 
 	class pf_league
 	{
