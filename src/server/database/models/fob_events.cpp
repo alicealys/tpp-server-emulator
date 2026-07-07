@@ -271,6 +271,12 @@ namespace database::fob_events
 		const auto event_duration = std::chrono::days(7);
 		start = (day - (date::weekday{day} - date::Tuesday)) + std::chrono::hours(5);
 		end = start + event_duration;
+
+		if (std::chrono::system_clock::now() < start)
+		{
+			start -= event_duration;
+			end -= event_duration;
+		}
 	}
 
 	fob_event_date_range_t get_event_range()

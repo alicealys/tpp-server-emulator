@@ -37,7 +37,7 @@ namespace emulator::tpp
 			}
 
 			const auto self = database::pf_league::get_player_competitor_instance(league->get_id(), player.get_id());
-			if (self.has_value())
+			if (!self.has_value())
 			{
 				return false;
 			}

@@ -60,22 +60,24 @@ namespace database::pf_league
 		defensive_capability_bonus = 16,
 
 		defensive_durability_sum = 0,
-		defensive_durability_rank_e = 1,
-		defensive_durability_rank_d = 2,
-		defensive_durability_rank_c = 3,
-		defensive_durability_rank_b = 4,
-		defensive_durability_rank_a = 5,
-		defensive_durability_rank_ap = 6,
-		defensive_durability_rank_app = 7,
-		defensive_durability_rank_s = 8,
-		defensive_durability_rank_sp = 9,
-		defensive_durability_rank_spp = 10,
-		defensive_durability_skill1 = 11,
-		defensive_durability_skill2 = 12,
-		defensive_durability_skill3 = 13,
-		defensive_durability_unprocessed_materials = 14,
-		defensive_durability_processed_materials = 15,
-		defensive_durability_gmp = 16,
+		defensive_durability_platforms = 1,
+		defensive_durability_nuclear = 2,
+		defensive_durability_rank_e = 3,
+		defensive_durability_rank_d = 4,
+		defensive_durability_rank_c = 5,
+		defensive_durability_rank_b = 6,
+		defensive_durability_rank_a = 7,
+		defensive_durability_rank_ap = 8,
+		defensive_durability_rank_app = 9,
+		defensive_durability_rank_s = 10,
+		defensive_durability_rank_sp = 11,
+		defensive_durability_rank_spp = 12,
+		defensive_durability_skill1 = 13,
+		defensive_durability_skill2 = 14,
+		defensive_durability_skill3 = 15,
+		defensive_durability_unprocessed_materials = 16,
+		defensive_durability_processed_materials = 17,
+		defensive_durability_gmp = 18,
 	};
 
 	struct player_pf_params_t
@@ -120,7 +122,8 @@ namespace database::pf_league
 		league_state_initial = 1,
 		league_state_running = 2,
 		league_state_completed = 3,
-		league_state_destroy = 4
+		league_state_destroy = 4,
+		league_state_dead = 10
 	};
 	
 	constexpr const auto league_subgroup_count = 16u;
