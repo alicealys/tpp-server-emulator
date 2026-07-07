@@ -709,7 +709,7 @@ namespace database::pf_league
 							.from(pf_battle::table)
 								.where(pf_battle::table.bracket_id == bracket_id && 
 									  (pf_battle::table.attacker_id == player_id || pf_battle::table.defender_id == player_id))
-									.order_by(pf_battle::table.date.asc()));
+									.order_by(pf_battle::table.date.asc(), (pf_battle::table.attacker_id == player_id).desc()));
 
 				std::vector<pf_battle> list;
 
@@ -880,25 +880,9 @@ namespace database::pf_league
 		RUN_IMPL(impl::inc_battle_buff, battle_id, attacker_buff, defender_buff, inc);
 	}
 
-	std::vector<std::pair<std::uint64_t, std::uint64_t>> create_player_combinations(const std::vector<player_records::player_record>& players)
-	{
-		std::vector<std::pair<std::uint64_t, std::uint64_t>> combinations;
-
-		for (auto i = 0u; i < players.size(); i++)
-		{
-			for (auto o = i + 1; o < players.size(); o++)
-			{
-				const auto pair = std::make_pair(players[i].get_player_id(), players[o].get_player_id());
-				combinations.emplace_back(pair);
-			}
-		}
-
-		return combinations;
-	}
-
 	bool create_pf_battles(database_t& db, const pf_league& league)
 	{
-		const auto players = find_unmatched_players(db, league.get_id(), league_subgroup_count);
+		const auto players = find_unmatched_players(db, league.get_id(), pf_bracket_size);
 		if (players.empty())
 		{
 			return false;
@@ -911,29 +895,51 @@ namespace database::pf_league
 			create_pf_competitor(db, league.get_id(), bracket_id, player.get_player_id());
 		}
 
-		const auto combinations = create_player_combinations(players);
+		// ai code below, sorry i could not do it lol
 
-		std::chrono::system_clock::time_point begin(league.get_start_date());
-		begin += 10h;
+		const auto num_players = static_cast<std::uint32_t>(players.size());
+		const bool is_odd = (num_players % 2 != 0);
+		const auto total_sections = is_odd ? num_players : (num_players - 1);
+		const auto total_virtual_players = is_odd ? (num_players + 1) : num_players;
 
-		std::uint64_t prev_id = 0u;
-		auto section = 0u;
-		auto battle_start = begin;
+		std::chrono::system_clock::time_point base_start(league.get_start_date());
+		base_start += 6h;
 
-		for (const auto& [p1, p2] : combinations)
+		std::vector<std::chrono::system_clock::time_point> section_dates(total_sections);
+
+		constexpr auto duration = 6 * 24h;
+		const auto interval = (total_sections > 1)
+			? std::chrono::duration_cast<std::chrono::hours>(duration / (total_sections - 1))
+			: 0h;
+
+		for (auto i = 0u; i < total_sections; i++)
 		{
-			create_pf_battle(db, league.get_id(), bracket_id, section, p1, p2, battle_start);
-			create_pf_battle(db, league.get_id(), bracket_id, section, p2, p1, battle_start);
-			++section;
+			section_dates[i] = base_start + (i * interval);
+		}
 
-			battle_start += 10h;
-
-			if (p1 != prev_id)
+		auto section_idx = 0u;
+		for (auto slot = 0u; slot < total_sections; slot++)
+		{
+			const auto& slot_date = section_dates[slot];
+			for (auto i = 0u; i < total_virtual_players / 2; i++)
 			{
-				battle_start = begin;
-			}
+				auto p1_idx = (slot + i) % (total_virtual_players - 1);
+				auto p2_idx = (slot + total_virtual_players - 1 - i) % (total_virtual_players - 1);
 
-			prev_id = p1;
+				if (i == 0)
+				{
+					p1_idx = total_virtual_players - 1;
+				}
+
+				if (is_odd && (p1_idx == num_players || p2_idx == num_players))
+				{
+					continue;
+				}
+
+				auto idx = section_idx++;
+				create_pf_battle(db, league.get_id(), bracket_id, idx, players[p1_idx].get_player_id(), players[p2_idx].get_player_id(), slot_date);
+				create_pf_battle(db, league.get_id(), bracket_id, idx, players[p2_idx].get_player_id(), players[p1_idx].get_player_id(), slot_date);
+			}
 		}
 
 		return true;
@@ -956,49 +962,48 @@ namespace database::pf_league
 
 		defender_capability += static_cast<std::int32_t>(battle.get_defender_buff()) * 30000;
 
-		auto attacker_capability_p = attacker_capability;
-		auto attacker_durability_p = attacker_durability;
-
-		auto defender_capability_p = defender_capability;
-		auto defender_durability_p = defender_durability;
+		auto attacker_hp = attacker_durability;
+		auto defender_hp = defender_durability;
 
 		auto is_attack = false;
 		auto attacker_attacks = 0;
 		auto defender_attacks = 0;
 
-		while (attacker_durability_p > 0 && defender_durability_p > 0)
+		while (attacker_hp > 0 && defender_hp > 0)
 		{
 			if (is_attack)
 			{
-				attacker_attacks++;
-				defender_durability_p -= attacker_capability_p;
+				++attacker_attacks;
+				defender_hp -= attacker_capability;
 			}
 			else
 			{
-				defender_attacks++;
-				attacker_durability_p -= defender_capability_p;
+				++defender_attacks;
+				attacker_hp -= defender_capability;
 			}
 
 			is_attack = !is_attack;
 		}
 
-		if (attacker_durability_p > 0)
+		const auto calculate_points = [](const std::int32_t winner_power, const std::int32_t winner_health, 
+			const std::int32_t loser_power, const std::int32_t loser_attacks)
+		{
+			const auto base = (winner_power + winner_health - loser_power * loser_attacks) / 100;
+			const auto bonus = loser_power > winner_power
+				? static_cast<std::int32_t>(static_cast<float>(loser_power - winner_power) * 2.2f)
+				: 0;
+			return base + bonus;
+		};
+
+		if (attacker_hp > 0)
 		{
 			result.state = battle_winner_attacker;
-			result.attacker_points = (attacker_capability + attacker_durability - defender_capability * defender_attacks) / 100;
-			if (defender_capability > attacker_capability)
-			{
-				result.attacker_points += static_cast<std::int32_t>(static_cast<float>(defender_capability - attacker_capability) * 2.2f);
-			}
+			result.attacker_points = calculate_points(attacker_capability, attacker_durability, defender_capability, defender_attacks);
 		}
-		else if (defender_durability_p > 0)
+		else if (defender_hp > 0)
 		{
 			result.state = battle_winner_defender;
-			result.defender_points = (defender_capability + defender_durability - attacker_capability * attacker_attacks) / 100;
-			if (attacker_capability > defender_capability)
-			{
-				result.defender_points += static_cast<std::int32_t>(static_cast<float>(attacker_capability - defender_capability) * 2.2f);
-			}
+			result.defender_points = calculate_points(defender_capability, defender_durability, attacker_capability, attacker_attacks);
 		}
 		else
 		{
@@ -1244,6 +1249,9 @@ namespace database::pf_league
 			database.run_query("mgstpp.pf_brackets.create");
 			database.run_query("mgstpp.pf_competitors.create");
 			database.run_query("mgstpp.pf_battles.create");
+#ifdef DEBUG
+			delete_all_pf_leagues(database);
+#endif
 		}
 
 		void run_tasks(database_t& database) override
