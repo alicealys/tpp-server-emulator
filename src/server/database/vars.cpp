@@ -34,5 +34,6 @@ namespace database
 		vars.signup_bonus = config::get_or<bool>("vars.signup_bonus", vars.signup_bonus);
 		vars.no_fob_damage = config::get_or<bool>("vars.no_fob_damage", vars.no_fob_damage);
 		vars.pvp_mode = config::get_or<bool>("vars.pvp_mode", vars.pvp_mode);
+		vars.run_pf_league = config::get_or<bool>("vars.run_pf_league", vars.run_pf_league);
 	}
 }

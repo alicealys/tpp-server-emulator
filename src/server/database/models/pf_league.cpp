@@ -1183,6 +1183,11 @@ namespace database::pf_league
 
 	void update_league(database_t& db)
 	{
+		if (!database::vars.run_pf_league)
+		{
+			return;
+		}
+
 		update_past_leagues(db);
 
 		const auto league = get_current_pf_league(db);

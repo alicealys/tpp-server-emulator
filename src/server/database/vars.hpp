@@ -25,6 +25,7 @@ namespace database
 		bool signup_bonus = false;
 		bool no_fob_damage = false;
 		bool pvp_mode = false;
+		bool run_pf_league = true;
 	};
 	
 	extern vars_t vars;
