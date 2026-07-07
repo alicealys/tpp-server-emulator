@@ -8,7 +8,7 @@ List of implemeted/unimplemented server commands
 
 ## TPP
 
-Most relevant commands are implemented, PF league is not.
+Most relevant commands are implemented, short PF league is not.
 
 ### tppstm/gate
 | name | status | note |
@@ -23,18 +23,18 @@ Most relevant commands are implemented, PF league is not.
 | CMD_ABORT_MOTHER_BASE | ✔️ |  |
 | CMD_ACTIVE_SNEAK_MOTHER_BASE | ✔️ |  |
 | CMD_ADD_FOLLOW | ✔️ |  |
-| CMD_APPROVE_STEAM_SHOP | ❌ |  |
+| CMD_APPROVE_STEAM_SHOP | ➖ |  |
 | CMD_AUTH_STEAMTICKET | ✔️ |  |
 | CMD_CALC_COST_FOB_DEPLOY_REPLACE | ✔️ |  |
 | CMD_CALC_COST_TIME_REDUCTION | ✔️ |  |
 | CMD_CANCEL_COMBAT_DEPLOY | ✔️ |  |
 | CMD_CANCEL_COMBAT_DEPLOY_SINGLE | ✔️ |  |
 | CMD_CANCEL_SHORT_PFLEAGUE | ❌ |  |
-| CMD_CHECK_CONSUME_TRANSACTION | ❌ | unused? |
+| CMD_CHECK_CONSUME_TRANSACTION | ➖ | unused |
 | CMD_CHECK_DEFENCE_MOTHERBASE | ✔️ |  |
 | CMD_CHECK_SERVER_ITEM_CORRECT | ✔️ |  |
 | CMD_CHECK_SHORT_PFLEAGUE_ENTERABLE | ❌ |  |
-| CMD_COMMIT_CONSUME_TRANSACTION | ❌ | unused? |
+| CMD_COMMIT_CONSUME_TRANSACTION | ➖ | unused |
 | CMD_CONSUME_RESERVE | ✔️ |  |
 | CMD_CREATE_NUCLEAR | ✔️ |  |
 | CMD_CREATE_PLAYER | ✔️ |  |
@@ -125,7 +125,7 @@ Most relevant commands are implemented, PF league is not.
 | CMD_REQAUTH_HTTPS | ✔️ |  |
 | CMD_REQAUTH_SESSIONSVR | ➖ | unused |
 | CMD_REQUEST_RELIEF | ➖ | unused |
-| CMD_RESET_MOTHER_BASE | ❌ | unused? |
+| CMD_RESET_MOTHER_BASE | ➖ | unused |
 | CMD_SALE_RESOURCE | ✔️ |  |
 | CMD_SEND_BOOT | ✔️ |  |
 | CMD_SEND_DEPLOY_INJURE | ✔️ |  |
@@ -141,11 +141,11 @@ Most relevant commands are implemented, PF league is not.
 | CMD_SET_SECURITY_CHALLENGE | ✔️ |  |
 | CMD_SNEAK_MOTHER_BASE | ✔️ |  |
 | CMD_SPEND_SERVER_WALLET | ➖ | unused |
-| CMD_START_CONSUME_TRANSACTION | ❌ | unused? |
+| CMD_START_CONSUME_TRANSACTION | ➖ | unused |
 | CMD_SYNC_EMBLEM | ✔️ |  |
 | CMD_SYNC_LOADOUT | ✔️ |  |
 | CMD_SYNC_MOTHER_BASE | ✔️ |  |
-| CMD_SYNC_RESET | ❌ | unused? |
+| CMD_SYNC_RESET | ➖ | unused |
 | CMD_SYNC_RESOURCE | ✔️ |  |
 | CMD_SYNC_SOLDIER_BIN | ✔️ |  |
 | CMD_SYNC_SOLDIER_DIFF | ✔️ |  |
