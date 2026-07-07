@@ -9,6 +9,56 @@
 
 namespace database::player_records
 {
+	namespace
+	{
+		void get_grade_window(std::uint32_t grade, bool up, std::uint32_t& low, std::uint32_t& high)
+		{
+			grade = 5;
+
+			auto window_size = 0u;
+			auto high_cap = 0u;
+			switch (grade)
+			{
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+				window_size = 3u;
+				high_cap = 4u;
+				break;
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				window_size = 2u;
+				high_cap = 9u;
+				break;
+			case 9:
+			case 10:
+			case 11:
+				high_cap = 11u;
+				window_size = 1u;
+				break;
+			}
+
+			if (up)
+			{
+				high = grade + window_size <= highest_grade
+					? std::min(high_cap, grade + window_size)
+					: highest_grade;
+				low = grade;
+			}
+			else
+			{
+				high = grade;
+				low = grade >= window_size
+					? grade - window_size
+					: 0;
+			}
+		}
+	}
+
 	namespace impl
 	{
 		template <database_type_t Type>
@@ -287,7 +337,7 @@ namespace database::player_records
 		}
 
 		template <database_type_t Type>
-		std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)
+		std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t min_grade, const std::uint32_t max_grade, const std::uint32_t limit)
 		{
 			return database::access<std::vector<player_record>>([&](database::database_t& db)
 				-> std::vector<player_record>
@@ -298,8 +348,9 @@ namespace database::player_records
 					sqlpp::select(
 						sqlpp::all_of(player_record::table))
 							.from(player_record::table)
-								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && player_record::table.fob_grade == grade &&
-										player_record::table.player_id != player_id && player_record::table.has_fob)
+								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && 
+									   player_record::table.fob_grade >= min_grade && player_record::table.fob_grade <= max_grade &&
+									   player_record::table.player_id != player_id && player_record::table.has_fob)
 											.order_by(rand.asc())
 												.limit(limit));
 
@@ -325,7 +376,11 @@ namespace database::player_records
 					return {};
 				}
 
-				return find_players_of_grade<Type>(player_id, record->get_fob_grade(), limit);
+				std::uint32_t min_grade{};
+				std::uint32_t max_grade{};
+				get_grade_window(record->get_fob_grade(), false, min_grade, max_grade);
+
+				return find_players_of_grade<Type>(player_id, min_grade, max_grade, limit);
 			});
 		}
 
@@ -342,9 +397,13 @@ namespace database::player_records
 				}
 
 				const auto grade = record->get_fob_grade();
-				const auto higher_grade = grade == highest_grade ? grade : grade + 1;
+				const auto higher_grade = std::min(highest_grade, grade + 1u);
 
-				return find_players_of_grade<Type>(player_id, higher_grade, limit);
+				std::uint32_t min_grade{};
+				std::uint32_t max_grade{};
+				get_grade_window(higher_grade, true, min_grade, max_grade);
+
+				return find_players_of_grade<Type>(player_id, min_grade, max_grade, limit);
 			});
 		}
 
@@ -582,7 +641,7 @@ namespace database::player_records
 
 	std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t grade, const std::uint32_t limit)
 	{
-		RUN_IMPL(impl::find_players_of_grade, player_id, grade, limit);
+		RUN_IMPL(impl::find_players_of_grade, player_id, grade, grade, limit);
 	}
 
 	std::vector<player_record> find_same_grade_players(const std::uint64_t player_id, const std::uint32_t limit)
