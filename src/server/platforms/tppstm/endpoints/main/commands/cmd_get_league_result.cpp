@@ -190,7 +190,7 @@ namespace emulator::tpp
 
 		result["info"]["player_count"] = idx;
 		result["info"]["point"] = player_record->get_pf_point();
-		result["info"]["section"] = 0;
+		result["info"]["section"] = league->get_id();
 
 		return result;
 	}
