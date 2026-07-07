@@ -3,6 +3,7 @@
 #include "../database.hpp"
 #include "player_data.hpp"
 #include "fobs.hpp"
+#include "fob_events.hpp"
 
 namespace database::pf_league
 {
@@ -115,6 +116,8 @@ namespace database::pf_league
 	void calculate_pf_params(player_pf_data_t& in_data, player_pf_params_t& out_params);
 	bool calculate_pf_params(const std::uint64_t player_id, player_pf_data_t& pf_data, player_pf_params_t& out_params);
 	const std::vector<pf_point_info_t>& get_pf_points_table();
+
+	const std::vector<fob_events::point_exchange_param_t>& get_point_exchange_params();
 
 	enum pf_league_state_t
 	{

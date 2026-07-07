@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "database/models/fob_events.hpp"
+#include "database/models/pf_league.hpp"
 
 #include "cmd_get_pf_point_exchange_params.hpp"
 
@@ -19,32 +20,35 @@ namespace emulator::tpp
 		result["param_list"] = nlohmann::json::array();
 		result["param_num"] = 0;
 
+		const auto serialize_list = [&](const database::fob_events::point_exchange_params_t& params)
+		{
+			for (auto i = 0ull; i < params.size(); i++)
+			{
+				result["param_list"][i]["common_value"] = params[i].common_value;
+				result["param_list"][i]["count"] = params[i].count;
+				result["param_list"][i]["exchange_limit"] = params[i].exchange_limit;
+				result["param_list"][i]["info_lang_id"] = params[i].info_lang_id;
+				result["param_list"][i]["limited_count"] = params[i].limited_count;
+				result["param_list"][i]["name_lang_id"] = params[i].name_lang_id;
+				result["param_list"][i]["point"] = params[i].point;
+				result["param_list"][i]["type"] = params[i].type;
+				result["param_list"][i]["unique_id"] = params[i].unique_id;
+			}
+
+			result["param_num"] = params.size();
+		};
+
 		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
-		if (!is_event)
-		{
-			return result;
-		}
-
 		const auto fob_event = database::fob_events::get_current_event();
-		if (!fob_event.has_value())
+		if (is_event && fob_event.has_value())
 		{
-			return {};
+			serialize_list(fob_event->point_exchange_params);
 		}
-
-		for (auto i = 0ull; i < fob_event->point_exchange_params.size(); i++)
+		else
 		{
-			result["param_list"][i]["common_value"] = fob_event->point_exchange_params[i].common_value;
-			result["param_list"][i]["count"] = fob_event->point_exchange_params[i].count;
-			result["param_list"][i]["exchange_limit"] = fob_event->point_exchange_params[i].exchange_limit;
-			result["param_list"][i]["info_lang_id"] = fob_event->point_exchange_params[i].info_lang_id;
-			result["param_list"][i]["limited_count"] = fob_event->point_exchange_params[i].limited_count;
-			result["param_list"][i]["name_lang_id"] = fob_event->point_exchange_params[i].name_lang_id;
-			result["param_list"][i]["point"] = fob_event->point_exchange_params[i].point;
-			result["param_list"][i]["type"] = fob_event->point_exchange_params[i].type;
-			result["param_list"][i]["unique_id"] = fob_event->point_exchange_params[i].unique_id;
+			const auto& pf_params = database::pf_league::get_point_exchange_params();
+			serialize_list(pf_params);
 		}
-
-		result["param_num"] = fob_event->point_exchange_params.size();
 
 		return result;
 	}
