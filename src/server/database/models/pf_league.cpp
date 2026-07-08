@@ -158,7 +158,7 @@ namespace database::pf_league
 				out_params.offensive_durability.elements[top_rank + 1] += staff_rank_scores[top_rank];
 				break;
 			case game::des_security:
-				out_params.defensive_durability.elements[top_rank + 1] += staff_rank_scores[top_rank];
+				out_params.defensive_durability.elements[top_rank + 3] += staff_rank_scores[top_rank];
 				break;
 			}
 		}
@@ -216,8 +216,8 @@ namespace database::pf_league
 		out_params.offensive_durability.elements[offensive_durability_skill1] = linear_value(100.f, in_data.motherbase.pf_skill_staff.medic1_num);
 		out_params.offensive_durability.elements[offensive_durability_skill2] = linear_value(200.f, in_data.motherbase.pf_skill_staff.medic2_num);
 		out_params.offensive_durability.elements[offensive_durability_skill3] = linear_value(300.f, in_data.motherbase.pf_skill_staff.medic3_num);
-		out_params.offensive_durability.elements[offensive_durability_unprocessed_materials] = linear_value(0.2f, unprocessed_materials);
-		out_params.offensive_durability.elements[offensive_durability_processed_materials] = linear_value(0.4f, processed_materials);
+		out_params.offensive_durability.elements[offensive_durability_unprocessed_materials] = linear_value(0.02f, unprocessed_materials);
+		out_params.offensive_durability.elements[offensive_durability_processed_materials] = linear_value(0.04f, processed_materials);
 		out_params.offensive_durability.elements[offensive_durability_gmp] = linear_value(0.001f, total_gmp);
 
 		for (auto i = static_cast<std::uint32_t>(offensive_durability_rank_e); i <= offensive_durability_gmp; i++)
@@ -256,8 +256,8 @@ namespace database::pf_league
 		out_params.defensive_durability.elements[defensive_durability_skill1] = linear_value(100.f, in_data.motherbase.pf_skill_staff.defender1_num);
 		out_params.defensive_durability.elements[defensive_durability_skill2] = linear_value(200.f, in_data.motherbase.pf_skill_staff.defender2_num);
 		out_params.defensive_durability.elements[defensive_durability_skill3] = linear_value(300.f, in_data.motherbase.pf_skill_staff.defender3_num);
-		out_params.defensive_durability.elements[defensive_durability_unprocessed_materials] = linear_value(0.2f, unprocessed_materials);
-		out_params.defensive_durability.elements[defensive_durability_processed_materials] = linear_value(0.2f, processed_materials);
+		out_params.defensive_durability.elements[defensive_durability_unprocessed_materials] = linear_value(0.02f, unprocessed_materials);
+		out_params.defensive_durability.elements[defensive_durability_processed_materials] = linear_value(0.02f, processed_materials);
 		out_params.defensive_durability.elements[defensive_durability_gmp] = linear_value(0.001f, total_gmp);
 
 		for (auto i = static_cast<std::uint32_t>(defensive_durability_platforms); i <= defensive_durability_gmp; i++)
@@ -952,26 +952,26 @@ namespace database::pf_league
 		result.attacker_points = 0;
 		result.defender_points = 0;
 
-		auto attacker_capability = static_cast<std::int32_t>(attacker.offensive_capability.elements[offensive_capability_sum]);
-		auto attacker_durability = static_cast<std::int32_t>(attacker.offensive_durability.elements[offensive_durability_sum]);
+		auto attacker_capability = static_cast<float>(attacker.offensive_capability.elements[offensive_capability_sum]);
+		auto attacker_durability = static_cast<float>(attacker.offensive_durability.elements[offensive_durability_sum]);
 
-		attacker_capability += static_cast<std::int32_t>(battle.get_attacker_buff()) * 30000;
+		attacker_capability += static_cast<float>(battle.get_attacker_buff()) * 30000;
 
-		auto defender_capability = static_cast<std::int32_t>(defender.defensive_capability.elements[defensive_capability_sum]);
-		auto defender_durability = static_cast<std::int32_t>(defender.defensive_durability.elements[defensive_durability_sum]);
+		auto defender_capability = static_cast<float>(defender.defensive_capability.elements[defensive_capability_sum]);
+		auto defender_durability = static_cast<float>(defender.defensive_durability.elements[defensive_durability_sum]);
 
-		defender_capability += static_cast<std::int32_t>(battle.get_defender_buff()) * 30000;
+		defender_capability += static_cast<float>(battle.get_defender_buff()) * 30000;
 
 		auto attacker_hp = attacker_durability;
 		auto defender_hp = defender_durability;
 
-		auto is_attack = false;
+		auto is_attack = true;
 		auto attacker_attacks = 0;
 		auto defender_attacks = 0;
 
-		while (attacker_hp > 0 && defender_hp > 0)
+		const auto run_turn = [&](bool attack)
 		{
-			if (is_attack)
+			if (attack)
 			{
 				++attacker_attacks;
 				defender_hp -= attacker_capability;
@@ -982,26 +982,47 @@ namespace database::pf_league
 				attacker_hp -= defender_capability;
 			}
 
+		};
+
+		while (attacker_hp > 0 && defender_hp > 0)
+		{
+			run_turn(is_attack);
 			is_attack = !is_attack;
 		}
 
-		const auto calculate_points = [](const std::int32_t winner_power, const std::int32_t winner_health, 
-			const std::int32_t loser_power, const std::int32_t loser_attacks)
+		const auto calculate_points = [](const float winner_power, const float winner_health, const float loser_power, const std::int32_t loser_attacks)
 		{
-			const auto base = (winner_power + winner_health - loser_power * loser_attacks) / 100;
+			const auto base = std::ceil((winner_power + winner_health - loser_power * static_cast<float>(loser_attacks)) / 100);
 			const auto bonus = loser_power > winner_power
-				? static_cast<std::int32_t>(static_cast<float>(loser_power - winner_power) * 2.2f)
+				? std::ceil((loser_power - winner_power) * 2.2f)
 				: 0;
-			return base + bonus;
+			return static_cast<std::int32_t>(std::ceil(base + bonus));
 		};
 
 		if (attacker_hp > 0)
 		{
-			result.state = battle_winner_attacker;
-			result.attacker_points = calculate_points(attacker_capability, attacker_durability, defender_capability, defender_attacks);
+			run_turn(false);
+
+			if (attacker_hp < 0)
+			{
+				result.state = battle_winner_draw;
+
+				const auto diff = std::abs(attacker_capability - defender_capability);
+				const auto draw_points = static_cast<std::int32_t>(std::ceil(diff / 272.72f));
+
+				result.attacker_points = draw_points;
+				result.defender_points = draw_points;
+			}
+			else
+			{
+				run_turn(false);
+				result.state = battle_winner_attacker;
+				result.attacker_points = calculate_points(attacker_capability, attacker_durability, defender_capability, defender_attacks);
+			}
 		}
 		else if (defender_hp > 0)
 		{
+			run_turn(true);
 			result.state = battle_winner_defender;
 			result.defender_points = calculate_points(defender_capability, defender_durability, attacker_capability, attacker_attacks);
 		}
