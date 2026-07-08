@@ -25,7 +25,7 @@ namespace emulator::tpp
 			result["event_list"][i]["attacker_id"] = sneak.get_attacker_id();
 			result["event_list"][i]["event_index"] = sneak.get_id();
 			result["event_list"][i]["fob_index"] = sneak.get_fob_index();
-			result["event_list"][i]["is_win"] = sneak.is_win();
+			result["event_list"][i]["is_win"] = sneak.is_win() ? 1 : 0;
 			result["event_list"][i]["cluster"] = sneak.get_platform();
 			result["event_list"][i]["layout_code"] = event_data.layout_code;
 		}

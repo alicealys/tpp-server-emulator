@@ -623,7 +623,7 @@
     "msgid": "CMD_GET_LOGIN_PARAM",
     "not_hero_threshold_point": 100000,
     "online_challenge_task": {
-        "end_date": 1694498400,
+        "end_date": 0,
         "task_list": [
             {
                 "mission_id": 10036,
@@ -730,7 +730,7 @@
                 "threshold": 1
             }
         ],
-        "version": 20230905
+        "version": 0
     },
     "ranking_espi_event_ids": [
         1,
