@@ -4458,7 +4458,7 @@
                 {
                     "important": false,
                     "info_id": 11902,
-                    "mes_body": [
+                    "body": [
                         {
                             "lang": "EN",
                             "text": "<I=C=cmn-col-special|** [Event] \"Mosquito's Legacy\" Event FOB missions **>\n\nBeginner-friendly Event FOB missions ! \nInfiltrate this Event FOB with no fear of retaliation (the enemy force will not counter-attack your base), and exchange the Event Points you earn for amazing rewards! \n\n[Event Point rewards]\n<I=C=cmn-col-special|- Item [ENERGY WALL (Protective Shield)] Blueprint.>\n<I=C=cmn-col-special|- Limited edition event-only FOB color schemes. / weapon colors. / FOB staff swimwears.>\nIn addition, you can trade for various exclusive rewards such as S, S+, S++ staff, etc.\n\n[Event period]\nAug. 12, 2025, end of maintenance time to Aug. 26, 2025, 5AM (GMT)\n\n<I=C=cmn-col-ng|* Event rankings are not available.>"
@@ -4468,7 +4468,7 @@
                 {
                     "important": false,
                     "info_id": 11912,
-                    "mes_body": [
+                    "body": [
                         {
                             "lang": "EN",
                             "text": "<I=C=cmn-col-special|** [Event] \"Mosquito's Legacy\" Event FOB missions **>\n\n* Access the Event Points exchange via [FOB MISSIONS] > [Events] > [Event Points Exchange].\n* Event Points are only valid <I=C=cmn-col-special|during the event in which they were earned.>\n\n<I=C=cmn-col-ng|* Event Points are not carried over to the next event.>\n<I=C=cmn-col-ng|  Be aware that any Event Points earned during this event will be lost when the event period ends.>\n\n* Event FOB missions can only be played <I=C=cmn-col-special|after completing Episode 22> in the main game."

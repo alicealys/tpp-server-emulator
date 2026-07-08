@@ -38,6 +38,7 @@
 #include "../../../tppstm/endpoints/main/commands/cmd_get_purchase_history.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_get_purchase_history_num.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_get_shop_item_name_list.hpp"
+#include "../../../tppstm/endpoints/main/commands/cmd_get_steam_shop_item_list.hpp"
 #include "commands/cmd_mgo_dlc_update.hpp"
 #include "commands/cmd_mgo_mission_result.hpp"
 #include "commands/cmd_purchase_mgo_boost.hpp"
@@ -99,6 +100,7 @@ namespace emulator::mgo
 		this->register_handler<tpp::cmd_get_purchase_history>("CMD_GET_PURCHASE_HISTORY");
 		this->register_handler<tpp::cmd_get_purchase_history_num>("CMD_GET_PURCHASE_HISTORY_NUM");
 		this->register_handler<tpp::cmd_get_shop_item_name_list>("CMD_GET_SHOP_ITEM_NAME_LIST");
+		this->register_handler<tpp::cmd_get_steam_shop_item_list>("CMD_GET_STEAM_SHOP_ITEM_LIST");
 		this->register_handler<cmd_mgo_dlc_update>("CMD_MGO_DLC_UPDATE");
 		this->register_handler<cmd_mgo_mission_result>("CMD_MGO_MISSION_RESULT");
 		this->register_handler<cmd_purchase_mgo_boost>("CMD_PURCHASE_MGO_BOOST");
