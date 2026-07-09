@@ -101,6 +101,7 @@ create table if not exists `player_data`
 	unit_levels				blob default null,
 	resource_arrays			blob default null,
 	nuke_count				bigint unsigned default 0,
+	nuke_destruct_count		bigint unsigned default 0,
 	staff_count				int unsigned not null,
 	staff_counts			blob default null,
 	staff_bin				mediumblob default null,

@@ -105,6 +105,7 @@ namespace database::player_data
 								  player_data::table.unit_counts,
 								  player_data::table.unit_levels,
 								  player_data::table.nuke_count,
+								  player_data::table.nuke_destruct_count,
 								  player_data::table.staff_count,
 								  player_data::table.staff_counts,
 								  player_data::table.local_gmp,
@@ -232,7 +233,7 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
-			const auto nuke_count = arrays[game::processed_local][game::NUCLEAR_WEAPON] + arrays[game::processed_server][game::NUCLEAR_WEAPON];
+			const auto nuke_count = arrays[game::processed_server][game::NUCLEAR_WEAPON];
 
 			database::access([&](database::database_t& db)
 			{
@@ -434,15 +435,15 @@ namespace database::player_data
 				return static_cast<std::uint32_t>(result.front().sum.value());
 			});
 		}
-
+		
 		template <database_type_t Type>
-		bool set_nuke_count(const std::uint64_t player_id, const std::uint32_t count)
+		bool inc_nuke_destruct_count(const std::uint64_t player_id, const std::uint32_t count)
 		{
 			return database::access<bool>([&](database::database_t& db)
 			{
 				const auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.nuke_count = count)
+						.set(player_data::table.nuke_destruct_count = player_data::table.nuke_destruct_count + count)
 							.where(player_data::table.player_id == player_id));
 				return result != 0;
 			});
@@ -665,6 +666,30 @@ namespace database::player_data
 				}
 			});
 		}
+		
+		template <database_type_t Type>
+		std::vector<players::player> get_nuclear_abolition_contributors(const std::uint32_t limit)
+		{
+			return database::access<std::vector<players::player>>([&](database::database_t& db)
+				-> std::vector<players::player>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(players::player::table))
+							.from(players::player::table.join(player_data::table).on(player_data::table.player_id == players::player::table.id))
+								.where(player_data::table.nuke_destruct_count > 0)
+									.order_by(player_data::table.nuke_destruct_count.desc()).limit(limit)
+					);
+
+				std::vector<players::player> list;
+
+				for (auto& row : results)
+				{
+					list.emplace_back(row);
+				}
+
+				return list;
+			});
+		}
 	}
 
 	void player_data::get_emblem(game::emblem_t& emblem) const
@@ -785,9 +810,9 @@ namespace database::player_data
 		RUN_IMPL(impl::get_nuke_count);
 	}
 
-	bool set_nuke_count(const std::uint64_t player_id, const std::uint32_t count)
+	bool inc_nuke_destruct_count(const std::uint64_t player_id, const std::uint32_t count)
 	{
-		RUN_IMPL(impl::set_nuke_count, player_id, count);
+		RUN_IMPL(impl::inc_nuke_destruct_count, player_id, count);
 	}
 
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id)
@@ -907,6 +932,11 @@ namespace database::player_data
 	bool use_league_item(const std::uint64_t player_id, const std::uint32_t attack_item, const std::uint32_t defense_item, const bool use)
 	{
 		RUN_IMPL(impl::use_league_item, player_id, attack_item, defense_item, use);
+	}
+
+	std::vector<players::player> get_nuclear_abolition_contributors(const std::uint32_t limit)
+	{
+		RUN_IMPL(impl::get_nuclear_abolition_contributors, limit);
 	}
 
 	class table final : public table_interface

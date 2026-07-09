@@ -4,8 +4,9 @@
 
 #include "game/game.hpp"
 
-#include "utils/static_vector.hpp"
+#include "players.hpp"
 
+#include "utils/static_vector.hpp"
 #include "utils/encoding.hpp"
 
 #include <utils/memory.hpp>
@@ -80,6 +81,7 @@ namespace database::player_data
 		DEFINE_FIELD(unit_levels, sqlpp::binary);
 		DEFINE_FIELD(resource_arrays, sqlpp::binary);
 		DEFINE_FIELD(nuke_count, sqlpp::integer_unsigned);
+		DEFINE_FIELD(nuke_destruct_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(staff_counts, sqlpp::binary);
 		DEFINE_FIELD(staff_bin, sqlpp::binary);
@@ -102,7 +104,7 @@ namespace database::player_data
 		DEFINE_FIELD(server_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
 		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-			resource_arrays_field_t, nuke_count_field_t, staff_count_field_t, staff_counts_field_t, 
+			resource_arrays_field_t, nuke_count_field_t, nuke_destruct_count_field_t, staff_count_field_t, staff_counts_field_t,
 			staff_bin_field_t, prison_bin_field_t,
 			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
 			insurance_gmp_field_t, injury_gmp_field_t, cumulative_grade_field_t,
@@ -157,6 +159,7 @@ namespace database::player_data
 			this->server_staff_version_ = static_cast<std::uint32_t>(row.server_staff_version);
 
 			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
+			this->nuke_destruct_count_ = static_cast<std::uint32_t>(row.nuke_destruct_count);
 
 			if (!row.fob_deploy_damage_param.is_null())
 			{
@@ -300,6 +303,11 @@ namespace database::player_data
 			return this->nuke_count_;
 		}
 
+		std::uint32_t get_nuke_destruct_count() const
+		{
+			return this->nuke_destruct_count_;
+		}
+
 		std::optional<nlohmann::json> get_fob_deploy_damage_param() const
 		{
 			return this->fob_deploy_damage_param_;
@@ -316,6 +324,7 @@ namespace database::player_data
 		std::uint64_t player_id_;
 
 		std::uint32_t nuke_count_;
+		std::uint32_t nuke_destruct_count_;
 
 		unit_levels_t unit_levels_{};
 		unit_counts_t unit_counts_{};
@@ -370,7 +379,7 @@ namespace database::player_data
 
 	std::uint32_t get_nuke_count();
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id);
-	bool set_nuke_count(const std::uint64_t player_id, const std::uint32_t count);
+	bool inc_nuke_destruct_count(const std::uint64_t player_id, const std::uint32_t count);
 
 	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param);
 
@@ -387,4 +396,6 @@ namespace database::player_data
 	void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade);
 
 	bool use_league_item(const std::uint64_t player_id, const std::uint32_t attack_item, const std::uint32_t defense_item, bool use);
+
+	std::vector<players::player> get_nuclear_abolition_contributors(const std::uint32_t limit);
 }
