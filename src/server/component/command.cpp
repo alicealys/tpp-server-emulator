@@ -57,7 +57,11 @@ namespace command
 		for (auto i = index; i < this->size(); i++)
 		{
 			buffer.append(this->tokens_[i]);
-			buffer.append(" ");
+
+			if (i < this->size() - 1)
+			{
+				buffer.append(" ");
+			}
 		}
 
 		return buffer;

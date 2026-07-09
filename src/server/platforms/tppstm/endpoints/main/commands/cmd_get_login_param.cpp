@@ -5,11 +5,16 @@
 #include "database/models/items.hpp"
 #include "database/models/fob_events.hpp"
 
+#include "component/motd.hpp"
+
 namespace emulator::tpp
 {
 	cmd_get_login_param::cmd_get_login_param()
 	{
 		this->list_ = resource(RESOURCE_LOGIN_PARAM);
+		this->server_text_langs_ = {"jp", "en", "fr", "it", "de", "es", "pt", "ru", "ct", "ko"};
+		this->custom_server_texts_.emplace_back("mb_motd_title", motd::get_motd_title);
+		this->custom_server_texts_.emplace_back("mb_motd_text", motd::get_motd_text);
 	}
 
 	nlohmann::json cmd_get_login_param::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
@@ -38,6 +43,18 @@ namespace emulator::tpp
 		{
 			result["online_challenge_task"]["end_date"] = 0;
 			result["online_challenge_task"]["version"] = 0;
+		}
+
+		auto begin = result["server_texts"].size();
+		for (const auto& text : this->custom_server_texts_)
+		{
+			for (const auto& lang : this->server_text_langs_)
+			{
+				auto& entry = result["server_texts"][begin++];
+				entry["identifier"] = text.key;
+				entry["language"] = lang;
+				entry["text"] = text.text();
+			}
 		}
 
 		return result;
