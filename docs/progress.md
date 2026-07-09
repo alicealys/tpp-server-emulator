@@ -59,7 +59,7 @@ Most relevant commands are implemented, short PF league is not.
 | CMD_GET_CHALLENGE_TASK_TARGET_VALUES | ✔️ |  |
 | CMD_GET_COMBAT_DEPLOY_LIST | ✔️ |  |
 | CMD_GET_COMBAT_DEPLOY_RESULT | ✔️ |  |
-| CMD_GET_CONTRIBUTE_PLAYER_LIST | ➖ | unused |
+| CMD_GET_CONTRIBUTE_PLAYER_LIST | ✔️ |  |
 | CMD_GET_DAILY_REWARD | ✔️ |  |
 | CMD_GET_DEVELOPMENT_PROGRESS | ➖ | unused |
 | CMD_GET_ENTITLEMENT_ID_LIST | ➖ | unused |
