@@ -4,6 +4,12 @@
 
 namespace emulator::tpp
 {
+	struct server_text_t
+	{
+		std::string key;
+		std::function<std::string()> text;
+	};
+
 	class cmd_get_login_param final : public command_handler
 	{
 	public:
@@ -12,6 +18,8 @@ namespace emulator::tpp
 
 	private:
 		nlohmann::json list_;
+		std::vector<std::string> server_text_langs_;
+		std::vector<server_text_t> custom_server_texts_;
 
 	};
 }

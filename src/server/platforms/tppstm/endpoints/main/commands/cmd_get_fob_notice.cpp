@@ -9,6 +9,8 @@
 #include "database/models/fob_events.hpp"
 #include "database/models/pf_league.hpp"
 
+#include "component/motd.hpp"
+
 namespace emulator::tpp
 {
 	namespace
@@ -26,6 +28,7 @@ namespace emulator::tpp
 			notice_league_battles = 1 << 8,
 			notice_league_bonus = 1 << 9,
 			notice_mb_coins = 1 << 10,
+			notice_common_text = 1 << 11,
 		};
 
 		bool has_unacked_league_results(const database::players::player& player, const std::chrono::seconds last_ack)
@@ -119,10 +122,23 @@ namespace emulator::tpp
 			flag |= notice_league_battles;
 		}
 
+		const auto motd_text = motd::get_motd_text();
+
 		result["active_event_server_text"] = fob_event.has_value() ? fob_event->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
-		result["common_server_text"] = "NotImplement";
-		result["common_server_text_title"] = "NotImplement";
+
+		if (!motd_text.empty())
+		{
+			result["common_server_text"] = "mb_motd_text";
+			result["common_server_text_title"] = "mb_motd_title";
+			flag |= notice_common_text;
+		}
+		else
+		{
+			result["common_server_text"] = "NotImplement";
+			result["common_server_text_title"] = "NotImplement";
+		}
+
 		result["daily"] = 0;
 		result["event_delete_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
 		result["event_end_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
