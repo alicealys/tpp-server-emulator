@@ -30,4 +30,7 @@ namespace database::variables
 
 		return value.has_value() ? value->get<T>() : default_value;
 	}
+
+	void access_with_lock(const std::string& name, const std::function<void()>& callback);
+	void register_lock(const std::string& name);
 }

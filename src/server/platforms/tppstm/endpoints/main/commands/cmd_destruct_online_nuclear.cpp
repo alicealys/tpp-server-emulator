@@ -7,6 +7,11 @@
 
 namespace emulator::tpp
 {
+	cmd_destruct_online_nuclear::cmd_destruct_online_nuclear()
+	{
+		database::variables::register_lock("abolition_lock");
+	}
+
 	nlohmann::json cmd_destruct_online_nuclear::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
@@ -32,10 +37,12 @@ namespace emulator::tpp
 		const auto total_nukes = database::player_data::get_nuke_count();
 		if (total_nukes == 0)
 		{
-			const auto count = database::variables::get<std::uint32_t>("abolition_count", 0u);
-			database::variables::set("abolition_count", count + 1);
-			database::variables::set("abolition_date", std::time(nullptr));
-			database::variables::set("abolition_max", 0);
+			database::variables::access_with_lock("abolition_lock", [&]()
+			{
+				const auto count = database::variables::get<std::uint32_t>("abolition_count", 0u);
+				database::variables::set("abolition_count", count + 1);
+				database::variables::set("abolition_date", std::time(nullptr));
+			});
 		}
 
 		return result;
