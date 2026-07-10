@@ -164,7 +164,6 @@ namespace database::pf_league
 		}
 
 		auto total_platforms = 0u;
-		auto total_security_level = 0u;
 		auto unprocessed_materials = 0u;
 		auto processed_materials = 0u;
 		auto total_gmp = in_data.local_gmp + in_data.server_gmp;
@@ -181,7 +180,7 @@ namespace database::pf_league
 			for (auto i = 0u; i < game::fob_sections_count; i++)
 			{
 				total_platforms += param.param[i].build.fields.platform_count;
-				total_security_level += param.param[i].cluster_security.fields.level;
+				out_params.security_level += param.param[i].cluster_security.fields.level;
 			}
 		}
 
@@ -227,7 +226,7 @@ namespace database::pf_league
 
 		/* defensive capability */
 
-		out_params.defensive_capability.elements[defensive_capability_total_defense] = linear_value(59.f, total_security_level);
+		out_params.defensive_capability.elements[defensive_capability_total_defense] = linear_value(59.f, out_params.security_level);
 		out_params.defensive_capability.elements[defensive_capability_security] = exp_value(3.f, in_data.unit_levels[game::unit_security]);
 		out_params.defensive_capability.elements[defensive_capability_platforms] = linear_value(268.f, total_platforms);
 		out_params.defensive_capability.elements[defensive_capability_nuclear] = linear_value(15000.f, in_data.resources[game::processed_server][game::NUCLEAR_WEAPON]);
@@ -293,7 +292,7 @@ namespace database::pf_league
 		this->defender_staff_ = defender_data.unit_counts[game::unit_security];
 
 		this->attacker_grade_ = attacker_data.cumulative_grade;
-		this->defender_security_ = defender_params.defensive_capability.elements[defensive_capability_total_defense] / 59;
+		this->defender_security_ = defender_params.security_level;
 
 		this->attacker_level_ = attacker_data.unit_levels[game::unit_combat];
 		this->defender_level_ = defender_data.unit_levels[game::unit_security];

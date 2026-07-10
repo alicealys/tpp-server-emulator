@@ -4,6 +4,7 @@
 
 #include "database/models/player_records.hpp"
 #include "database/models/player_follows.hpp"
+#include "database/models/pf_league.hpp"
 
 namespace emulator::tpp
 {
@@ -29,9 +30,21 @@ namespace emulator::tpp
 		result["pf_rating_defense_life"] = 0;
 		result["pf_rating_offence_force"] = 0;
 		result["pf_rating_offence_life"] = 0;
-		result["pf_rating_rank"] = record->get_league_grade();
+		result["pf_rating_rank"] = record->get_league_rank();
 		result["total_development_grade"] = 0;
 		result["total_fob_security_level"] = 0;
+
+		database::pf_league::player_pf_data_t player_pf_data{};
+		database::pf_league::player_pf_params_t player_pf_params{};
+		if (database::pf_league::calculate_pf_params(player->get_id(), player_pf_data, player_pf_params))
+		{
+			result["pf_rating_defense_force"] = player_pf_params.defensive_capability.elements[database::pf_league::defensive_capability_sum];
+			result["pf_rating_defense_life"] = player_pf_params.defensive_durability.elements[database::pf_league::defensive_durability_sum];
+			result["pf_rating_offence_force"] = player_pf_params.offensive_capability.elements[database::pf_league::offensive_capability_sum];
+			result["pf_rating_offence_life"] = player_pf_params.offensive_durability.elements[database::pf_league::offensive_durability_sum];
+			result["total_development_grade"] = player_pf_data.cumulative_grade;
+			result["total_fob_security_level"] = player_pf_params.security_level;
+		}
 
 		return result;
 	}
