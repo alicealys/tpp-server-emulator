@@ -4,8 +4,6 @@
 
 #include "player_data.hpp"
 
-#define ITEM_DEBUG
-
 namespace database::items
 {
 	struct item_t
@@ -63,12 +61,6 @@ namespace database::items
 			this->create_date_ = std::chrono::time_point<std::chrono::system_clock>(row.create_date.value().time_since_epoch());
 			this->created_ = true;
 			this->valid_ = true;
-
-#ifdef ITEM_DEBUG
-			this->develop_ = 2;
-			this->open_ = 1;
-			this->left_second_ = 0;
-#endif
 		}
 
 		item_status(const std::uint32_t item_id, const std::uint64_t player_id)

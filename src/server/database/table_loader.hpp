@@ -15,6 +15,10 @@ namespace database
 		{
 		}
 
+		virtual void post_start(database_t& db)
+		{
+		}
+
 		virtual void run_tasks(database_t& db)
 		{
 		}

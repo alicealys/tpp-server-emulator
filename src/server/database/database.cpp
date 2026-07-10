@@ -276,6 +276,24 @@ namespace database
 		});
 	}
 
+	void post_start()
+	{
+		database::access([](database_t& db)
+		{
+			for (const auto& table : get_tables())
+			{
+				try
+				{
+					table.inst->post_start(db);
+				}
+				catch (const std::exception& e)
+				{
+					console::error("database::run_tasks: %s\n", e.what());
+				}
+			}
+		});
+	}
+
 	void initialize()
 	{
 		initialize_vars();

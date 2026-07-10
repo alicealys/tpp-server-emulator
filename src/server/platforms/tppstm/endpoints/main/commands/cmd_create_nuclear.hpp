@@ -8,6 +8,8 @@ namespace emulator::tpp
 
 	class cmd_create_nuclear final : public command_handler
 	{
+	public:
+		cmd_create_nuclear();
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
 		bool needs_player() override;
 	};

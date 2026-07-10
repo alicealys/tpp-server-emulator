@@ -75,6 +75,7 @@ namespace emulator
 			}
 		});
 
+		database::post_start();
 		component_loader::post_start();
 
 		scripting::start();

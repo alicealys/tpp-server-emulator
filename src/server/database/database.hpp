@@ -170,6 +170,8 @@ namespace database
 
 	void cleanup_connections();
 
+	void post_start();
+
 	void run_tasks();
 
 #ifdef MYSQL_SUPPORTED
