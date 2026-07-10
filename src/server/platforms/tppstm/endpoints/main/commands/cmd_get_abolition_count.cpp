@@ -13,7 +13,7 @@ namespace emulator::tpp
 
 		result["info"]["count"] = database::variables::get<std::uint32_t>("abolition_count", 0u);
 		result["info"]["date"] = database::variables::get<std::uint32_t>("abolition_date", 0u);
-		result["info"]["max"] = std::numeric_limits<std::int32_t>::max();
+		result["info"]["max"] = database::variables::get<std::uint32_t>("abolition_max", 0u);
 		result["info"]["num"] = database::player_data::get_nuke_count();
 		result["info"]["status"] = 0;
 
