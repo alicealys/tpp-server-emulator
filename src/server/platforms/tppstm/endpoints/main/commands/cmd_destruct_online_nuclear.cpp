@@ -35,6 +35,7 @@ namespace emulator::tpp
 			const auto count = database::variables::get<std::uint32_t>("abolition_count", 0u);
 			database::variables::set("abolition_count", count + 1);
 			database::variables::set("abolition_date", std::time(nullptr));
+			database::variables::set("abolition_max", 0);
 		}
 
 		return result;

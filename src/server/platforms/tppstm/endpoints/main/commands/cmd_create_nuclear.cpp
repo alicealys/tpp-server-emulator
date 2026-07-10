@@ -4,6 +4,7 @@
 
 #include "database/models/items.hpp"
 #include "database/models/player_data.hpp"
+#include "database/models/variables.hpp"
 
 namespace emulator::tpp
 {
@@ -34,6 +35,13 @@ namespace emulator::tpp
 		resources[game::processed_server][game::NUCLEAR_WEAPON] = capped;
 
 		database::player_data::set_resources(player->get_id(), resources, player_data->get_local_gmp(), player_data->get_server_gmp());
+
+		const auto nuke_count = database::player_data::get_nuke_count();
+		const auto max_nuke_count = database::variables::get<std::uint32_t>("abolition_max", 0);
+		if (nuke_count > max_nuke_count)
+		{
+			database::variables::set("abolition_max", nuke_count);
+		}
 
 		return error(NOERR);
 	}
