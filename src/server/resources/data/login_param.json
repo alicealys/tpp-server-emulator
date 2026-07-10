@@ -1307,52 +1307,52 @@
         {
             "identifier": "ranking_evnt_term",
             "language": "jp",
-            "text": "期間： 2023/08/29 ～ 2023/09/12"
+            "text": "期間： {event_start} ～ {event_end}"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "en",
-            "text": "Specified Period: 2023/08/29 to 2023/09/12 (YYYY/MM/DD)"
+            "text": "Specified Period: {event_start} to {event_end} (YYYY/MM/DD)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "fr",
-            "text": "Période spécifiée : du 2023/08/29  au 2023/09/12 (AAAA/MM/JJ)"
+            "text": "Période spécifiée : du {event_start}  au {event_end} (AAAA/MM/JJ)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "it",
-            "text": "Periodo: 29/08/2023 - 12/09/2023 (DD/MM/YYYY)"
+            "text": "Periodo: {event_start_rev} - {event_end_rev} (DD/MM/YYYY)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "de",
-            "text": "Festgelegter Zeitraum: 29/08/2023 bis 12/09/2023 (TT/MM/JJJJ)"
+            "text": "Festgelegter Zeitraum: {event_start_rev} bis {event_end_rev} (TT/MM/JJJJ)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "es",
-            "text": "Período específico: 2023/08/29 hasta 2023/09/12 (AÑO/MM/DD)"
+            "text": "Período específico: {event_start} hasta {event_end} (AÑO/MM/DD)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "pt",
-            "text": "Período especificado: 2023/08/29 a 2023/09/12 (AAAA/MM/DD)"
+            "text": "Período especificado: {event_start} a {event_end} (AAAA/MM/DD)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "ru",
-            "text": "Указанный период: 2023/08/29 - 2023/09/12 (ГГГГ/ММ/ДД)"
+            "text": "Указанный период: {event_start} - {event_end} (ГГГГ/ММ/ДД)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "ct",
-            "text": "活動期間：2023/08/29 ～ 2023/09/12 (YYYY/MM/DD)"
+            "text": "活動期間：{event_start} ～ {event_end} (YYYY/MM/DD)"
         },
         {
             "identifier": "ranking_evnt_term",
             "language": "ko",
-            "text": "이벤트 기간： 2023/08/29 ～ 2023/09/12"
+            "text": "이벤트 기간： {event_start} ～ {event_end}"
         },
         {
             "identifier": "info_gmp_mission_500",

@@ -92,6 +92,7 @@ namespace database::pf_league
 		category_t offensive_durability;
 		category_t defensive_capability;
 		category_t defensive_durability;
+		std::uint32_t security_level;
 	};
 
 	struct player_pf_data_t
