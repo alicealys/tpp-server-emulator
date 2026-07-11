@@ -12,6 +12,7 @@ namespace database::pf_league
 {
 	GET_FIELD_C(pf_league, std::uint64_t, id);
 	GET_FIELD_C(pf_league, std::uint32_t, state);
+	GET_FIELD_C(pf_league, std::uint32_t, type);
 	GET_FIELD_C(pf_league, std::chrono::seconds, start_date);
 	GET_FIELD_C(pf_league, std::chrono::seconds, end_date);
 
@@ -58,6 +59,12 @@ namespace database::pf_league
 	GET_FIELD_C(pf_battle, std::uint32_t, defender_nuclear);
 	GET_FIELD_C(pf_battle, std::uint32_t, winner_state);
 	GET_FIELD_C(pf_battle, std::chrono::seconds, date);
+
+	GET_FIELD_C(pf_application, std::uint64_t, id);
+	GET_FIELD_C(pf_application, std::uint64_t, league_id);
+	GET_FIELD_C(pf_application, std::uint64_t, player_id);
+	GET_FIELD_C(pf_application, std::uint32_t, read_state);
+	GET_FIELD_C(pf_application, std::chrono::seconds, date);
 
 	void calculate_pf_params(player_pf_data_t& in_data, player_pf_params_t& out_params)
 	{
@@ -405,6 +412,26 @@ namespace database::pf_league
 		return lists[idx];
 	}
 
+	void get_short_pf_league_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end)
+	{
+		const auto now = std::chrono::system_clock::now();
+		start = std::chrono::floor<std::chrono::days>(now);
+		start = start + 15h + 30 * 60s;
+		end = start + 24h;
+
+		if (now < start)
+		{
+			start -= 24h;
+			end -= 24h;
+		}
+	}
+
+	void get_short_pf_league_duration(std::chrono::hours& start_offset, std::chrono::hours& duration)
+	{
+		start_offset = 0h;
+		duration = 16h;
+	}
+
 	namespace impl
 	{
 		template <database_type_t Type>
@@ -414,7 +441,26 @@ namespace database::pf_league
 				sqlpp::select(sqlpp::all_of(pf_league::table))
 						.from(pf_league::table)
 							.where(pf_league::table.start_date <= std::chrono::system_clock::now() &&
-								   pf_league::table.end_date > std::chrono::system_clock::now()).limit(1u));
+								   pf_league::table.end_date > std::chrono::system_clock::now() &&
+								   pf_league::table.type == static_cast<std::uint32_t>(league_type_long)).limit(1u));
+
+			if (results.empty())
+			{
+				return {};
+			}
+
+			return pf_league(results.front());
+		}
+
+		template <database_type_t Type>
+		std::optional<pf_league> get_current_short_pf_league1(database_t& db)
+		{
+			auto results = db.get_database<Type>()->operator()(
+				sqlpp::select(sqlpp::all_of(pf_league::table))
+						.from(pf_league::table)
+							.where(pf_league::table.start_date <= std::chrono::system_clock::now() &&
+								   pf_league::table.end_date > std::chrono::system_clock::now() && 
+								   pf_league::table.type == static_cast<std::uint32_t>(league_type_short)).limit(1u));
 
 			if (results.empty())
 			{
@@ -430,6 +476,15 @@ namespace database::pf_league
 			return database::access<std::optional<pf_league>>([](database_t& db)
 			{
 				return impl::get_current_pf_league1<Type>(db);
+			});
+		}
+
+		template <database_type_t Type>
+		std::optional<pf_league> get_current_short_pf_league2()
+		{
+			return database::access<std::optional<pf_league>>([](database_t& db)
+			{
+				return impl::get_current_short_pf_league1<Type>(db);
 			});
 		}
 
@@ -453,12 +508,14 @@ namespace database::pf_league
 		}
 
 		template <database_type_t Type>
-		bool create_pf_league(database_t& db, const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
+		bool create_pf_league(database_t& db, const std::uint32_t type, 
+			const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
 		{
 			auto result = db.get_database<Type>()->operator()(
 				sqlpp::insert_into(pf_league::table)
 					.set(pf_league::table.start_date = start_date,
 						 pf_league::table.end_date = end_date,
+						 pf_league::table.type = type,
 						 pf_league::table.state = static_cast<std::uint32_t>(league_state_none)));
 			return result != 0ull;
 		}
@@ -535,6 +592,34 @@ namespace database::pf_league
 									.limit(limit));
 
 			std::vector<player_records::player_record> list;
+			for (auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		}
+
+		template <database_type_t Type>
+		std::vector<pf_application> find_unmatched_pf_applications(database_t& db, const pf_league& league, const std::uint32_t limit)
+		{
+			const auto applications = 
+				sqlpp::select(pf_application::table.player_id)
+					.from(pf_application::table)
+						.where(pf_application::table.date < std::chrono::system_clock::time_point(league.get_end_date()) &&
+							   pf_application::table.date > std::chrono::system_clock::now() - 24h && 
+							   pf_application::table.league_id.is_null());
+
+			auto results = db.get_database<Type>()->operator()(
+				sqlpp::select(
+					sqlpp::all_of(pf_application::table))
+						.from(pf_application::table.join(player_records::player_record::table).on(player_records::player_record::table.player_id == pf_application::table.player_id))
+							.where(!IS_SYSTEM_PLAYER_ID(player_records::player_record::table.player_id) && 
+								   player_records::player_record::table.player_id.in(applications))
+								.order_by(player_records::player_record::table.league_grade.desc())
+									.limit(limit));
+
+			std::vector<pf_application> list;
 			for (auto& row : results)
 			{
 				list.emplace_back(row);
@@ -756,6 +841,7 @@ namespace database::pf_league
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_battle::table).where(pf_battle::table.league_id == league_id));
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_competitor::table).where(pf_competitor::table.league_id == league_id));
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_bracket::table).where(pf_bracket::table.league_id == league_id));
+			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_application::table).where(pf_application::table.league_id == league_id));
 		}
 
 		template <database_type_t Type>
@@ -764,7 +850,117 @@ namespace database::pf_league
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_battle::table).unconditionally());
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_competitor::table).unconditionally());
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_bracket::table).unconditionally());
+			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_application::table).unconditionally());
 			db.get_database<Type>()->operator()(sqlpp::remove_from(pf_league::table).unconditionally());
+		}
+
+		template <database_type_t Type>
+		void accept_league_application(database_t& db, const std::uint64_t application_id, const std::uint64_t league_id)
+		{
+			db.get_database<Type>()->operator()(
+				sqlpp::update(pf_application::table)
+					.set(pf_application::table.league_id = league_id)
+						.where(pf_application::table.id == application_id));
+		}
+		
+		template <database_type_t Type>
+		std::optional<pf_application> get_current_league_application(const std::uint64_t player_id)
+		{
+			return database::access<std::optional<pf_application>>([&](database_t& db)
+				-> std::optional<pf_application>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(pf_application::table))
+						.from(pf_application::table)
+							.where(pf_application::table.player_id == player_id && 
+								   pf_application::table.date > std::chrono::system_clock::now() - 24h)
+										.order_by(pf_application::table.date.desc()));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				return pf_application(results.front());
+			});
+		}
+
+		template <database_type_t Type>
+		std::optional<pf_application> get_previous_league_application(const std::uint64_t player_id)
+		{
+			return database::access<std::optional<pf_application>>([&](database_t& db)
+				-> std::optional<pf_application>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(pf_application::table))
+						.from(pf_application::table)
+							.where(pf_application::table.player_id == player_id && 
+								   pf_application::table.date < std::chrono::system_clock::now() - 24h)
+										.order_by(pf_application::table.date.desc()));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				return pf_application(results.front());
+			});
+		}
+
+		template <database_type_t Type>
+		bool create_league_application(const std::uint64_t player_id)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::insert_into(pf_application::table)
+						.set(pf_application::table.player_id = player_id, pf_application::table.date = std::chrono::system_clock::now()));
+				return result != 0u;
+			});
+		}
+
+		template <database_type_t Type>
+		std::optional<pf_league> get_league(const std::uint64_t league_id)
+		{
+			return database::access<std::optional<pf_league>>([&](database_t& db)
+				-> std::optional<pf_league>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(pf_league::table))
+						.from(pf_league::table)
+							.where(pf_league::table.id == league_id));
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				return pf_league(results.front());
+			});
+		}
+		
+		template <database_type_t Type>
+		void set_league_application_read_state(const std::uint64_t application_id, const std::uint32_t read_state)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(pf_application::table)
+						.set(pf_application::table.read_state = read_state)
+							.where(pf_application::table.id == application_id));
+			});
+		}
+				
+		template <database_type_t Type>
+		bool remove_league_application(const std::uint64_t application_id)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::remove_from(pf_application::table)
+						.where(pf_application::table.id == application_id));
+				return result != 0u;
+			});
 		}
 	}
 
@@ -778,14 +974,25 @@ namespace database::pf_league
 		RUN_IMPL(impl::get_current_pf_league2);
 	}
 
+	std::optional<pf_league> get_current_short_pf_league(database_t& db)
+	{
+		RUN_IMPL(impl::get_current_short_pf_league1, db);
+	}
+
+	std::optional<pf_league> get_current_short_pf_league()
+	{
+		RUN_IMPL(impl::get_current_short_pf_league2);
+	}
+
 	std::vector<pf_league> get_past_leagues_of_state(database_t& db, const std::uint32_t state)
 	{
 		RUN_IMPL(impl::get_past_leagues_of_state, db, state);
 	}
 
-	bool create_pf_league(database_t& db, const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
+	bool create_pf_league(database_t& db, const std::uint32_t type, 
+		const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
 	{
-		RUN_IMPL(impl::create_pf_league, db, start_date, end_date);
+		RUN_IMPL(impl::create_pf_league, db, type, start_date, end_date);
 	}
 
 	void set_league_state(database_t& db, const std::uint64_t league_id, const std::uint32_t state)
@@ -827,6 +1034,11 @@ namespace database::pf_league
 	std::vector<player_records::player_record> find_unmatched_players(database_t& db, const std::uint64_t league_id, const std::uint32_t limit)
 	{
 		RUN_IMPL(impl::find_unmatched_players, db, league_id, limit);
+	}
+
+	std::vector<pf_application> find_unmatched_pf_applications(database_t& db, const pf_league& league, const std::uint32_t limit)
+	{
+		RUN_IMPL(impl::find_unmatched_pf_applications, db, league, limit);
 	}
 
 	void set_pf_battle_result(database_t& db, const std::uint64_t battle_id, const battle_result_t& result)
@@ -879,14 +1091,44 @@ namespace database::pf_league
 		RUN_IMPL(impl::inc_battle_buff, battle_id, attacker_buff, defender_buff, inc);
 	}
 
-	bool create_pf_battles(database_t& db, const pf_league& league)
+	void accept_league_application(database_t& db, const std::uint64_t application_id, const std::uint64_t league_id)
 	{
-		const auto players = find_unmatched_players(db, league.get_id(), pf_bracket_size);
-		if (players.empty())
-		{
-			return false;
-		}
+		RUN_IMPL(impl::accept_league_application, db, application_id, league_id);
+	}
 
+	std::optional<pf_application> get_current_league_application(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::get_current_league_application, player_id);
+	}
+
+	std::optional<pf_application> get_previous_league_application(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::get_previous_league_application, player_id);
+	}
+
+	bool create_league_application(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::create_league_application, player_id);
+	}
+
+	bool remove_league_application(const std::uint64_t application_id)
+	{
+		RUN_IMPL(impl::remove_league_application, application_id);
+	}
+
+	std::optional<pf_league> get_league(const std::uint64_t id)
+	{
+		RUN_IMPL(impl::get_league, id);
+	}
+
+	void set_league_application_read_state(const std::uint64_t id, const std::uint32_t state)
+	{
+		RUN_IMPL(impl::set_league_application_read_state, id, state);
+	}
+
+	template <typename T>
+	void arrange_pf_battles(database_t& db, const pf_league& league, const std::vector<T>& players)
+	{
 		const auto bracket_id = create_pf_bracket(db, league.get_id());
 
 		for (const auto& player : players)
@@ -902,11 +1144,22 @@ namespace database::pf_league
 		const auto total_virtual_players = is_odd ? (num_players + 1) : num_players;
 
 		std::chrono::system_clock::time_point base_start(league.get_start_date());
-		base_start += 6h;
 
 		std::vector<std::chrono::system_clock::time_point> section_dates(total_sections);
 
-		constexpr auto duration = 6 * 24h;
+		auto duration = 0h;
+		if (league.get_type() == league_type_long)
+		{
+			duration = 6 * 24h;
+			base_start += 6h;
+		}
+		else if (league.get_type() == league_type_short)
+		{
+			std::chrono::hours start_offset;
+			get_short_pf_league_duration(start_offset, duration);
+			base_start += start_offset;
+		}
+
 		const auto interval = (total_sections > 1)
 			? std::chrono::duration_cast<std::chrono::hours>(duration / (total_sections - 1))
 			: 0h;
@@ -940,8 +1193,48 @@ namespace database::pf_league
 				create_pf_battle(db, league.get_id(), bracket_id, idx, players[p2_idx].get_player_id(), players[p1_idx].get_player_id(), slot_date);
 			}
 		}
+	}
 
+	bool create_pf_battles_long_league(database_t& db, const pf_league& league)
+	{
+		const auto players = find_unmatched_players(db, league.get_id(), pf_bracket_size);
+		if (players.size() < 2)
+		{
+			return false;
+		}
+
+		arrange_pf_battles(db, league, players);
 		return true;
+	}
+
+	bool create_pf_battles_short_league(database_t& db, const pf_league& league)
+	{
+		const auto applications = find_unmatched_pf_applications(db, league, pf_bracket_size);
+		if (applications.size() < 2)
+		{
+			return false;
+		}
+
+		for (const auto& app : applications)
+		{
+			accept_league_application(db, app.get_id(), league.get_id());
+		}
+
+		arrange_pf_battles(db, league, applications);
+		return true;
+	}
+
+	bool create_pf_battles(database_t& db, const pf_league& league)
+	{
+		switch (league.get_type())
+		{
+		case league_type_long:
+			return create_pf_battles_long_league(db, league);
+		case league_type_short:
+			return create_pf_battles_short_league(db, league);
+		}
+
+		return false;
 	}
 
 	void run_pf_battle(const pf_battle& battle, const player_pf_params_t& attacker, const player_pf_params_t& defender, battle_result_t& result)
@@ -1169,7 +1462,7 @@ namespace database::pf_league
 		for (const auto& bracket : brackets)
 		{
 			const auto players = get_players_in_bracket(bracket.get_id());
-			if (players.size() > 1)
+			if (league.get_type() == league_type_long && players.size() > 1)
 			{
 				update_player_grades(players);
 			}
@@ -1182,7 +1475,10 @@ namespace database::pf_league
 			set_bracket_state(db, bracket.get_id(), bracket_state_done);
 		}
 		
-		database::player_records::update_league_ranking();
+		if (league.get_type() == league_type_long)
+		{
+			database::player_records::update_league_ranking();
+		}
 
 		return true;
 	}
@@ -1206,46 +1502,29 @@ namespace database::pf_league
 		}
 	}
 
-	void update_league(database_t& db)
+	void update_pf_league(database_t& db, const pf_league& league)
 	{
-		if (!database::vars.run_pf_league)
-		{
-			return;
-		}
-
-		update_past_leagues(db);
-
-		const auto league = get_current_pf_league(db);
-		if (!league.has_value())
-		{
-			std::chrono::system_clock::time_point start;
-			std::chrono::system_clock::time_point end;
-			fob_events::get_maintenance_range(start, end);
-			create_pf_league(db, start, end);
-			return;
-		}
-
-		switch (league->get_state())
+		switch (league.get_state())
 		{
 		case league_state_none:
 		{
-			set_league_state(db, league->get_id(), league_state_initial);
+			set_league_state(db, league.get_id(), league_state_initial);
 			return;
 		}
 		case league_state_initial:
 		{
-			if (!create_pf_battles(db, league.value()))
+			if (!create_pf_battles(db, league))
 			{
-				set_league_state(db, league->get_id(), league_state_running);
+				set_league_state(db, league.get_id(), league_state_running);
 			}
 
 			return;
 		}
 		case league_state_running:
 		{
-			if (!run_pf_battles(db, league.value()))
+			if (!run_pf_battles(db, league))
 			{
-				set_league_state(db, league->get_id(), league_state_completed);
+				set_league_state(db, league.get_id(), league_state_completed);
 			}
 			return;
 		}
@@ -1260,6 +1539,48 @@ namespace database::pf_league
 		}
 	}
 
+	void update_pf_league_weekly(database_t& db)
+	{
+		const auto league = get_current_pf_league(db);
+		if (!league.has_value())
+		{
+			std::chrono::system_clock::time_point start;
+			std::chrono::system_clock::time_point end;
+			fob_events::get_maintenance_range(start, end);
+			create_pf_league(db, league_type_long, start, end);
+			return;
+		}
+
+		update_pf_league(db, league.value());
+	}
+
+	void update_pf_league_daily(database_t& db)
+	{
+		const auto league = get_current_short_pf_league(db);
+		if (!league.has_value())
+		{
+			std::chrono::system_clock::time_point start;
+			std::chrono::system_clock::time_point end;
+			get_short_pf_league_range(start, end);
+			create_pf_league(db, league_type_short, start, end);
+			return;
+		}
+
+		update_pf_league(db, league.value());
+	}
+
+	void update_pf_leagues(database_t& db)
+	{
+		if (!database::vars.run_pf_league)
+		{
+			return;
+		}
+
+		update_past_leagues(db);
+		update_pf_league_weekly(db);
+		update_pf_league_daily(db);
+	}
+
 	class table final : public table_interface
 	{
 	public:
@@ -1269,14 +1590,32 @@ namespace database::pf_league
 			database.run_query("mgstpp.pf_brackets.create");
 			database.run_query("mgstpp.pf_competitors.create");
 			database.run_query("mgstpp.pf_battles.create");
+			database.run_query("mgstpp.pf_applications.create");
 #ifdef DEBUG
 			delete_all_pf_leagues(database);
 #endif
+
+			create_league_application(1000);
+			create_league_application(1001);
+			create_league_application(1002);
+			create_league_application(1003);
+			create_league_application(1004);
+			create_league_application(1005);
+			create_league_application(1006);
+			create_league_application(1007);
+			create_league_application(1008);
+			create_league_application(1009);
+			create_league_application(1010);
+			create_league_application(1011);
+			create_league_application(1012);
+			create_league_application(1013);
+			create_league_application(1014);
+			create_league_application(1015);
 		}
 
 		void run_tasks(database_t& database) override
 		{
-			update_league(database);
+			update_pf_leagues(database);
 		}
 	};
 }

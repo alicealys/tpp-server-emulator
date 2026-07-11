@@ -2,12 +2,13 @@
 
 #include "cmd_use_pf_item.hpp"
 
-#include "database/models/pf_league.hpp"
 #include "database/models/player_data.hpp"
 
 namespace emulator::tpp
 {
-	nlohmann::json cmd_use_pf_item::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
+	nlohmann::json cmd_use_pf_item::generate(nlohmann::json& data, 
+		const std::optional<database::players::player>& player, 
+		const std::optional<database::pf_league::pf_league>& league)
 	{
 		nlohmann::json result;
 
@@ -24,7 +25,6 @@ namespace emulator::tpp
 		const auto attack_item = std::min(1u, attack_item_j.get<std::uint32_t>());
 		const auto section = section_j.get<std::uint32_t>();
 
-		const auto league = database::pf_league::get_current_pf_league();
 		if (!league.has_value())
 		{
 			return error(ERR_DATABASE);
@@ -89,6 +89,12 @@ namespace emulator::tpp
 		}
 
 		return result;
+	}
+
+	nlohmann::json cmd_use_pf_item::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
+	{
+		const auto league = database::pf_league::get_current_pf_league();
+		return cmd_use_pf_item::generate(data, player, league);
 	}
 
 	bool cmd_use_pf_item::needs_player()
