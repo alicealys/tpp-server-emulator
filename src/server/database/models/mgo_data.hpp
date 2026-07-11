@@ -55,10 +55,10 @@ namespace database::mgo_data
 		DEFINE_FIELD(bgm_selected, sqlpp::integer_unsigned);
 		DEFINE_FIELD(gp_coin, sqlpp::integer_unsigned);
 		DEFINE_FIELD(gp_boost_mag, sqlpp::integer_unsigned);
-		DEFINE_FIELD(gp_expire_unix_timestamp, sqlpp::integer_unsigned);
+		DEFINE_FIELD(gp_boost_expire, sqlpp::time_point);
 		DEFINE_FIELD(rank_xp, sqlpp::integer_unsigned);
 		DEFINE_FIELD(xp_boost_mag, sqlpp::integer_unsigned);
-		DEFINE_FIELD(xp_expire_unix_timestamp, sqlpp::integer_unsigned);
+		DEFINE_FIELD(xp_boost_expire, sqlpp::time_point);
 		DEFINE_FIELD(reward_category, sqlpp::integer_unsigned);
 		DEFINE_FIELD(reward_id_a, sqlpp::integer_unsigned);
 		DEFINE_FIELD(reward_id_b, sqlpp::integer_unsigned);
@@ -71,8 +71,8 @@ namespace database::mgo_data
 		DEFINE_FIELD(preset_radio, sqlpp::binary);
 		DEFINE_TABLE(mgo_data, id_field_t, player_id_field_t,
 			last_character_used_field_t, bgm_selected_field_t,
-			gp_coin_field_t, gp_boost_mag_field_t, gp_expire_unix_timestamp_field_t,
-			rank_xp_field_t, xp_boost_mag_field_t, xp_expire_unix_timestamp_field_t,
+			gp_coin_field_t, gp_boost_mag_field_t, gp_boost_expire_field_t,
+			rank_xp_field_t, xp_boost_mag_field_t, xp_boost_expire_field_t,
 			reward_category_field_t, reward_id_a_field_t, reward_id_b_field_t, reward_id_c_field_t,
 			survival_ticket_remain_field_t,
 			matches_played_field_t, matches_abandoned_field_t, matches_started_field_t,
@@ -89,10 +89,8 @@ namespace database::mgo_data
 			this->bgm_selected_ = row.bgm_selected;
 			this->gp_coin_ = row.gp_coin;
 			this->gp_boost_mag_ = row.gp_boost_mag;
-			this->gp_expire_unix_timestamp_ = row.gp_expire_unix_timestamp;
 			this->rank_xp_ = row.rank_xp;
 			this->xp_boost_mag_ = row.xp_boost_mag;
-			this->xp_expire_unix_timestamp_ = row.xp_expire_unix_timestamp;
 			this->reward_category_ = row.reward_category;
 			this->reward_id_a_ = row.reward_id_a;
 			this->reward_id_b_ = row.reward_id_b;
@@ -101,6 +99,22 @@ namespace database::mgo_data
 			this->matches_played_ = row.matches_played;
 			this->matches_abandoned_ = row.matches_abandoned;
 			this->matches_started_ = row.matches_started;
+
+			const auto expire = [](const std::chrono::system_clock::time_point t, std::uint32_t& boost)
+			{
+				if (t > std::chrono::system_clock::now())
+				{
+					return std::chrono::duration_cast<std::chrono::seconds>(t.time_since_epoch());
+				}
+				else
+				{
+					boost = 100u;
+					return 0s;
+				}
+			};
+
+			this->xp_boost_expire_ = expire(row.xp_boost_expire.value(), this->xp_boost_mag_);
+			this->gp_boost_expire_ = expire(row.gp_boost_expire.value(), this->gp_boost_mag_);
 
 			load_binary_field(&this->match_settings_, row.match_settings.value());
 			load_binary_field(&this->preset_radio_, row.preset_radio.value());
@@ -112,10 +126,10 @@ namespace database::mgo_data
 		GET_FIELD_H(std::uint32_t, bgm_selected);
 		GET_FIELD_H(std::uint32_t, gp_coin);
 		GET_FIELD_H(std::uint32_t, gp_boost_mag);
-		GET_FIELD_H(std::uint32_t, gp_expire_unix_timestamp);
+		GET_FIELD_H(std::chrono::seconds, gp_boost_expire);
 		GET_FIELD_H(std::uint32_t, rank_xp);
 		GET_FIELD_H(std::uint32_t, xp_boost_mag);
-		GET_FIELD_H(std::uint32_t, xp_expire_unix_timestamp);
+		GET_FIELD_H(std::chrono::seconds, xp_boost_expire);
 		GET_FIELD_H(std::uint32_t, reward_category);
 		GET_FIELD_H(std::uint32_t, reward_id_a);
 		GET_FIELD_H(std::uint32_t, reward_id_b);
@@ -146,4 +160,6 @@ namespace database::mgo_data
 	bool update_match_stats(const std::uint64_t player_id, const std::uint32_t abandon, const std::uint32_t started, const std::uint32_t played);
 
 	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag);
+
+	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire);
 }

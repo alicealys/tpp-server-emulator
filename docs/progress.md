@@ -8,8 +8,6 @@ List of implemeted/unimplemented server commands
 
 ## TPP
 
-Most relevant commands are implemented, short PF league is not.
-
 ### tppstm/gate
 | name | status | note |
 | --- | --- | --- |
@@ -205,7 +203,7 @@ Most commands are implemented, missing survival stuff & player titles.
 | CMD_GET_SHOP_ITEM_NAME_LIST | ✔️ |  |
 | CMD_MGO_DLC_UPDATE | ✔️ |  |
 | CMD_MGO_MISSION_RESULT | ✔️ |  |
-| CMD_PURCHASE_MGO_BOOST | ❌ |  |
+| CMD_PURCHASE_MGO_BOOST | ✔️ |  |
 | CMD_PURCHASE_MGO_GEAR_COLOR | ✔️ |  |
 | CMD_PURCHASE_MGO_ITEM | ✔️ |  |
 | CMD_PURCHASE_MGO_WEAPON_COLOR | ✔️ |  |
@@ -216,7 +214,7 @@ Most commands are implemented, missing survival stuff & player titles.
 | CMD_SET_MGO_CHARACTER2 | ✔️ |  |
 | CMD_SET_MGO_CHARACTER_AND_LOADOUT2 | ✔️ |  |
 | CMD_SET_MGO_LOADOUT | ✔️ |  |
-| CMD_SET_MGO_LOG | ❌ |  |
+| CMD_SET_MGO_LOG | ➖ | unused |
 | CMD_SET_MGO_MATCH_STAT | ✔️ |  |
 | CMD_SET_MGO_PROGRESSION | ➖ | unused |
 | CMD_SET_MGO_STAT | ✔️ |  |
