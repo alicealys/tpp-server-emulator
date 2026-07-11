@@ -346,6 +346,7 @@ create table if not exists `variables`
 create table if not exists `pf_leagues`
 (
 	id						bigint unsigned	not null	auto_increment,
+	type					int unsigned not null default 0,
 	state					int unsigned not null default 0,
 	start_date				datetime not null,
 	end_date				datetime not null,
@@ -414,4 +415,16 @@ create table if not exists `pf_battles`
 	foreign key (`bracket_id`) references pf_brackets(`id`),
 	foreign key (`attacker_id`) references players(`id`),
 	foreign key (`defender_id`) references players(`id`)
+)
+-- query:mgstpp.pf_applications.create
+create table if not exists `pf_applications`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	league_id				bigint unsigned	default null,
+	read_state				int unsigned	not null default 0,
+	date					datetime not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`),
+	foreign key (`league_id`) references pf_leagues(`id`)
 )

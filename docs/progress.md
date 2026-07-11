@@ -29,11 +29,11 @@ Most relevant commands are implemented, short PF league is not.
 | CMD_CALC_COST_TIME_REDUCTION | ✔️ |  |
 | CMD_CANCEL_COMBAT_DEPLOY | ✔️ |  |
 | CMD_CANCEL_COMBAT_DEPLOY_SINGLE | ✔️ |  |
-| CMD_CANCEL_SHORT_PFLEAGUE | ❌ |  |
+| CMD_CANCEL_SHORT_PFLEAGUE | ✔️ |  |
 | CMD_CHECK_CONSUME_TRANSACTION | ➖ | unused |
 | CMD_CHECK_DEFENCE_MOTHERBASE | ✔️ |  |
 | CMD_CHECK_SERVER_ITEM_CORRECT | ✔️ |  |
-| CMD_CHECK_SHORT_PFLEAGUE_ENTERABLE | ❌ |  |
+| CMD_CHECK_SHORT_PFLEAGUE_ENTERABLE | ✔️ |  |
 | CMD_COMMIT_CONSUME_TRANSACTION | ➖ | unused |
 | CMD_CONSUME_RESERVE | ✔️ |  |
 | CMD_CREATE_NUCLEAR | ✔️ |  |
@@ -47,7 +47,7 @@ Most relevant commands are implemented, short PF league is not.
 | CMD_DEVELOP_SERVER_ITEM | ✔️ |  |
 | CMD_DEVELOP_WEPON | ➖ | unused |
 | CMD_ELAPSE_COMBAT_DEPLOY | ➖ | unused |
-| CMD_ENTER_SHORT_PFLEAGUE | ❌ |  |
+| CMD_ENTER_SHORT_PFLEAGUE | ✔️ |  |
 | CMD_EXCHANGE_FOB_EVENT_POINT | ➖ | unused |
 | CMD_EXCHANGE_LEAGUE_POINT | ➖ | unused |
 | CMD_EXCHANGE_LEAGUE_POINT2 | ✔️ |  |
@@ -88,7 +88,7 @@ Most relevant commands are implemented, short PF league is not.
 | CMD_GET_PLATFORM_CONSTRUCTION_PROGRESS | ➖ | unused |
 | CMD_GET_PLAYERLIST | ✔️ |  |
 | CMD_GET_PLAYER_PLATFORM_LIST | ✔️ |  |
-| CMD_GET_PREVIOUS_SHORT_PFLEAGUE_RESULT | ❌ |  |
+| CMD_GET_PREVIOUS_SHORT_PFLEAGUE_RESULT | ✔️ |  |
 | CMD_GET_PURCHASABLE_AREA_LIST | ✔️ |  |
 | CMD_GET_PURCHASE_HISTORY | ✔️ |  |
 | CMD_GET_PURCHASE_HISTORY_NUM | ✔️ |  |
@@ -101,7 +101,7 @@ Most relevant commands are implemented, short PF league is not.
 | CMD_GET_SERVER_ITEM | ✔️ |  |
 | CMD_GET_SERVER_ITEM_LIST | ✔️ |  |
 | CMD_GET_SHOP_ITEM_NAME_LIST | ✔️ |  |
-| CMD_GET_SHORT_PFLEAGUE_RESULT | ❌ |  |
+| CMD_GET_SHORT_PFLEAGUE_RESULT | ✔️ |  |
 | CMD_GET_SNEAK_TARGET_LIST | ➖ | unused |
 | CMD_GET_STEAM_SHOP_ITEM_LIST | ✔️ |  |
 | CMD_GET_TROOPS_LIST | ➖ | unused |
@@ -151,7 +151,7 @@ Most relevant commands are implemented, short PF league is not.
 | CMD_SYNC_SOLDIER_DIFF | ✔️ |  |
 | CMD_UPDATE_SESSION | ✔️ |  |
 | CMD_USE_PF_ITEM | ✔️ |  |
-| CMD_USE_SHORT_PF_ITEM | ❌ |  |
+| CMD_USE_SHORT_PF_ITEM | ✔️ |  |
 
 ## MGO
 

@@ -6,11 +6,12 @@
 #include "database/models/players.hpp"
 #include "database/models/player_data.hpp"
 #include "database/models/player_records.hpp"
-#include "database/models/pf_league.hpp"
 
 namespace emulator::tpp
 {
-	nlohmann::json cmd_get_league_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
+	nlohmann::json cmd_get_league_result::generate(nlohmann::json& data, 
+		const std::optional<database::players::player>& player,
+		const std::optional<database::pf_league::pf_league>& league)
 	{
 		nlohmann::json result;
 
@@ -26,7 +27,6 @@ namespace emulator::tpp
 		result["info"]["match_history"] = nlohmann::json::array();
 		result["info"]["player_info"] = nlohmann::json::array();
 
-		const auto league = database::pf_league::get_current_pf_league();
 		if (!league.has_value())
 		{
 			return result;
@@ -193,6 +193,12 @@ namespace emulator::tpp
 		result["info"]["section"] = league->get_id();
 
 		return result;
+	}
+
+	nlohmann::json cmd_get_league_result::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
+	{
+		const auto league = database::pf_league::get_current_pf_league();
+		return cmd_get_league_result::generate(data, player, league);
 	}
 
 	bool cmd_get_league_result::needs_player()

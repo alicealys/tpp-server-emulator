@@ -120,6 +120,9 @@ namespace database::pf_league
 
 	const std::vector<fob_events::point_exchange_param_t>& get_point_exchange_params();
 
+	void get_short_pf_league_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end);
+	void get_short_pf_league_duration(std::chrono::hours& start_offset, std::chrono::hours& duration);
+
 	enum pf_league_state_t
 	{
 		league_state_none = 0,
@@ -129,6 +132,12 @@ namespace database::pf_league
 		league_state_destroy = 4,
 		league_state_dead = 10
 	};
+
+	enum pf_league_type_t
+	{
+		league_type_long = 0,
+		league_type_short = 1,
+	};
 	
 	constexpr const auto pf_bracket_size = 16u;
 
@@ -136,10 +145,11 @@ namespace database::pf_league
 	{
 	public:
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(type, sqlpp::integer_unsigned);
 		DEFINE_FIELD(state, sqlpp::integer_unsigned);
 		DEFINE_FIELD(start_date, sqlpp::time_point);
 		DEFINE_FIELD(end_date, sqlpp::time_point);
-		DEFINE_TABLE(pf_leagues, id_field_t, state_field_t, start_date_field_t, end_date_field_t);
+		DEFINE_TABLE(pf_leagues, id_field_t, type_field_t, state_field_t, start_date_field_t, end_date_field_t);
 
 		inline static table_t table;
 
@@ -147,12 +157,14 @@ namespace database::pf_league
 		pf_league(const sqlpp::result_row_t<Args...>& row)
 		{
 			this->id_ = row.id;
+			this->type_ = static_cast<std::uint32_t>(row.type);
 			this->state_ = static_cast<std::uint32_t>(row.state);
 			this->start_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.start_date.value().time_since_epoch());
 			this->end_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.end_date.value().time_since_epoch());
 		}
 
 		GET_FIELD_H(std::uint64_t, id);
+		GET_FIELD_H(std::uint32_t, type);
 		GET_FIELD_H(std::uint32_t, state);
 		GET_FIELD_H(std::chrono::seconds, start_date);
 		GET_FIELD_H(std::chrono::seconds, end_date);
@@ -399,9 +411,46 @@ namespace database::pf_league
 
 	};
 
+	class pf_application
+	{
+	public:
+		DEFINE_FIELD(id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(league_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(read_state, sqlpp::integer_unsigned);
+		DEFINE_FIELD(date, sqlpp::time_point);
+	
+		DEFINE_TABLE(pf_applications, id_field_t, player_id_field_t, league_id_field_t, read_state_field_t, date_field_t);
+
+		inline static table_t table;
+
+		template <typename ...Args>
+		pf_application(const sqlpp::result_row_t<Args...>& row)
+		{
+			this->id_ = row.id;
+			this->player_id_ = row.player_id;
+			this->league_id_ = row.league_id;
+			this->read_state_ = static_cast<std::uint32_t>(row.read_state);
+			this->date_ = std::chrono::duration_cast<std::chrono::seconds>(row.date.value().time_since_epoch());
+		}
+
+		GET_FIELD_H(std::uint64_t, id);
+		GET_FIELD_H(std::uint64_t, player_id);
+		GET_FIELD_H(std::uint64_t, league_id);
+		GET_FIELD_H(std::uint32_t, read_state);
+		GET_FIELD_H(std::chrono::seconds, date);
+	};
+
 	std::optional<pf_league> get_current_pf_league();
+	std::optional<pf_league> get_current_short_pf_league();
+	std::optional<pf_league> get_league(const std::uint64_t id);
 	std::optional<pf_competitor> get_player_competitor_instance(const std::uint64_t league_id, const std::uint64_t player_id);
 	std::vector<pf_competitor> get_players_in_bracket(const std::uint64_t bracket_id);
 	std::vector<pf_battle> get_player_battles(const std::uint64_t bracket_id, const std::uint64_t player_id);
 	void inc_battle_buff(const std::uint64_t battle_id, const std::uint32_t attacker_buff, const std::uint32_t defender_buff, const bool inc);
+	std::optional<pf_application> get_previous_league_application(const std::uint64_t player_id);
+	std::optional<pf_application> get_current_league_application(const std::uint64_t player_id);
+	bool create_league_application(const std::uint64_t player_id);
+	bool remove_league_application(const std::uint64_t application_id);
+	void set_league_application_read_state(const std::uint64_t id, const std::uint32_t state);
 }
