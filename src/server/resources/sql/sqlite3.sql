@@ -265,7 +265,7 @@ create table if not exists `mgo_data`
 	reward_id_a					int unsigned default 0 not null,
 	reward_id_b					int unsigned default 0 not null,
 	reward_id_c					int unsigned default 0 not null,
-	survival_ticket_remain		int unsigned default 0 not null,
+	survival_tickets			int unsigned default 0 not null,
 	matches_played				int unsigned default 0 not null,
 	matches_abandoned			int unsigned default 0 not null,
 	matches_started				int unsigned default 0 not null,

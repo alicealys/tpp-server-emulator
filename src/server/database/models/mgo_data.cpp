@@ -23,7 +23,7 @@ namespace database::mgo_data
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_a);
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_b);
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_c);
-	GET_FIELD_C(mgo_data, std::uint32_t, survival_ticket_remain);
+	GET_FIELD_C(mgo_data, std::uint32_t, survival_tickets);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_played);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_abandoned);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_started);
@@ -36,6 +36,26 @@ namespace database::mgo_data
 	const preset_radio_t& mgo_data::get_preset_radio() const
 	{
 		return this->preset_radio_;
+	}
+
+	std::string mgo_data::get_gp_boost_expire_date() const
+	{
+		if (this->gp_boost_expire_ == 0s)
+		{
+			return "NotImplement";
+		}
+
+		return date::format("%Y-%m-%d %H:%M:%OS", std::chrono::system_clock::time_point(this->gp_boost_expire_));
+	}
+
+	std::string mgo_data::get_xp_boost_expire_date() const
+	{
+		if (this->xp_boost_expire_ == 0s)
+		{
+			return "NotImplement";
+		}
+
+		return date::format("%Y-%m-%d %H:%M:%OS", std::chrono::system_clock::time_point(this->xp_boost_expire_));
 	}
 
 	namespace impl
@@ -93,7 +113,6 @@ namespace database::mgo_data
 			});
 		}
 
-		
 		template <database_type_t Type>
 		bool spend_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
 		{
@@ -139,6 +158,99 @@ namespace database::mgo_data
 				}
 
 				return static_cast<std::uint32_t>(results.front().gp_coin.value());
+			});
+		}
+		
+		template <database_type_t Type>
+		std::uint32_t get_survival_tickets(const std::uint64_t player_id)
+		{
+			return database::access<std::uint32_t>([&](database_t& db)
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(mgo_data::table.survival_tickets)
+							.from(mgo_data::table)
+								.where(mgo_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(results.front().survival_tickets.value());
+			});
+		}
+
+		template <database_type_t Type>
+		bool spend_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			if (value == 0)
+			{
+				return true;
+			}
+
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+						.set(mgo_data::table.player_id = player_id,
+							 mgo_data::table.survival_tickets = mgo_data::table.survival_tickets - value)
+								.where(mgo_data::table.player_id == player_id &&
+									   mgo_data::table.survival_tickets >= value)
+					);
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
+		std::uint32_t add_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			return database::access<std::uint32_t>([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+						.set(mgo_data::table.player_id = player_id,
+							 mgo_data::table.survival_tickets = mgo_data::table.survival_tickets + value)
+								.where(mgo_data::table.player_id == player_id)
+					);
+
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(mgo_data::table.survival_tickets)
+							.from(mgo_data::table)
+								.where(mgo_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(results.front().survival_tickets.value());
+			});
+		}
+
+		template <database_type_t Type>
+		std::uint32_t set_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
+		{
+			return database::access<std::uint32_t>([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+						.set(mgo_data::table.player_id = player_id,
+							 mgo_data::table.survival_tickets = value)
+								.where(mgo_data::table.player_id == player_id)
+					);
+
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(mgo_data::table.survival_tickets)
+							.from(mgo_data::table)
+								.where(mgo_data::table.player_id == player_id));
+
+				if (results.empty())
+				{
+					return 0u;
+				}
+
+				return static_cast<std::uint32_t>(results.front().survival_tickets.value());
 			});
 		}
 
@@ -240,6 +352,26 @@ namespace database::mgo_data
 	std::uint32_t add_gp_coins(const std::uint64_t player_id, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::add_gp_coins, player_id, value);
+	}
+
+	std::uint32_t get_survival_tickets(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::get_survival_tickets, player_id);
+	}
+
+	bool spend_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::spend_survival_tickets, player_id, value);
+	}
+
+	std::uint32_t add_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::add_survival_tickets, player_id, value);
+	}
+
+	std::uint32_t set_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
+	{
+		RUN_IMPL(impl::set_survival_tickets, player_id, value);
 	}
 
 	bool set_values_from_character(const std::uint64_t player_id, const data_params& params)

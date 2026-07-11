@@ -19,9 +19,8 @@ namespace emulator::mgo
 		const auto mgo_data = database::mgo_data::find_or_create(player->get_id());
 		const auto boost_type = boost_type_j.get<std::uint32_t>();
 
-		const auto set_result = [&](const std::uint32_t boost, const std::chrono::seconds expire)
+		const auto set_result = [&](const std::uint32_t boost, const std::chrono::seconds expire, const std::string& date)
 		{
-			const auto date = date::format("%Y-%m-%d %H:%M:%OS", std::chrono::system_clock::time_point(expire));
 			result["expire"] = date;
 			result["boost_mag"] = boost;
 			result["expire_unix_timestamp"] = expire.count();
@@ -31,12 +30,12 @@ namespace emulator::mgo
 		{
 		case 0:
 		{
-			set_result(mgo_data->get_xp_boost_mag(), mgo_data->get_xp_boost_expire());
+			set_result(mgo_data->get_xp_boost_mag(), mgo_data->get_xp_boost_expire(), mgo_data->get_xp_boost_expire_date());
 			break;
 		}
 		case 1:
 		{
-			set_result(mgo_data->get_gp_boost_mag(), mgo_data->get_gp_boost_expire());
+			set_result(mgo_data->get_gp_boost_mag(), mgo_data->get_gp_boost_expire(), mgo_data->get_gp_boost_expire_date());
 			break;
 		}
 		default:
