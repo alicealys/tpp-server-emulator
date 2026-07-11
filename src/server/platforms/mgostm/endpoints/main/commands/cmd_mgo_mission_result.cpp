@@ -32,10 +32,8 @@ namespace emulator::mgo
 		const auto earned_xp = earned_xp_j.get<std::uint32_t>();
 
 		const auto earned_gp = earned_gp_j.get<std::uint32_t>();
-		const auto gp_boost_mag = gp_boost_mag_j.get<std::uint32_t>();
-		const auto xp_boost_mag = xp_boost_mag_j.get<std::uint32_t>();
-
-		database::mgo_data::set_boost(player->get_id(), xp_boost_mag, gp_boost_mag);
+		[[ maybe_unused ]] const auto gp_boost_mag = gp_boost_mag_j.get<std::uint32_t>();
+		[[ maybe_unused ]] const auto xp_boost_mag = xp_boost_mag_j.get<std::uint32_t>();
 
 		const auto current_gp = database::mgo_data::add_gp_coins(player->get_id(), earned_gp);
 		const auto current_xp = database::mgo_characters::increase_xp(player->get_id(), char_index, earned_xp);

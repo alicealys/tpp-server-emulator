@@ -15,7 +15,7 @@ namespace emulator::mgo
 		result["gp"] = mgo_data->get_gp_coin();
 		result["gp_boost_mag"] = mgo_data->get_gp_boost_mag();
 		result["gp_expire"] = "NotImplement";
-		result["gp_expire_unix_timestamp"] = mgo_data->get_gp_expire_unix_timestamp();
+		result["gp_expire_unix_timestamp"] = mgo_data->get_gp_boost_expire().count();
 		result["rank_xp"] = mgo_data->get_rank_xp();
 		result["reward"]["reward_category"] = "";
 		result["reward"]["reward_id_a"] = mgo_data->get_reward_id_a();
@@ -24,7 +24,7 @@ namespace emulator::mgo
 		result["survival_ticket_remain"] = mgo_data->get_survival_ticket_remain();
 		result["xp_boost_mag"] = mgo_data->get_xp_boost_mag();
 		result["xp_expire"] = "NotImplement";
-		result["xp_expire_unix_timestamp"] = mgo_data->get_xp_expire_unix_timestamp();
+		result["xp_expire_unix_timestamp"] = mgo_data->get_xp_boost_expire().count();
 
 		return result;
 	}

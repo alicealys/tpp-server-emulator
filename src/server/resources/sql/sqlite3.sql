@@ -257,10 +257,10 @@ create table if not exists `mgo_data`
 	bgm_selected				int unsigned default 0 not null,
 	gp_coin						int unsigned default 0 not null,
 	gp_boost_mag				int unsigned default 0 not null,
-	gp_expire_unix_timestamp	int unsigned default 0 not null,
+	gp_boost_expire				datetime default null,
 	rank_xp						int unsigned default 0 not null,
 	xp_boost_mag				int unsigned default 0 not null,
-	xp_expire_unix_timestamp	int unsigned default 0 not null,
+	xp_boost_expire				datetime default null,
 	reward_category				int unsigned default 0 not null,
 	reward_id_a					int unsigned default 0 not null,
 	reward_id_b					int unsigned default 0 not null,
@@ -341,6 +341,7 @@ create table if not exists `variables`
 create table if not exists `pf_leagues`
 (
 	id						integer	primary key autoincrement,
+	type					int unsigned not null default 0,
 	state					int unsigned not null default 0,
 	start_date				datetime not null,
 	end_date				datetime not null
@@ -405,4 +406,15 @@ create table if not exists `pf_battles`
 	foreign key (`bracket_id`) references pf_brackets(`id`),
 	foreign key (`attacker_id`) references players(`id`),
 	foreign key (`defender_id`) references players(`id`)
+)
+-- query:mgstpp.pf_applications.create
+create table if not exists `pf_applications`
+(
+	id						integer	primary key autoincrement,
+	player_id				bigint unsigned	not null,
+	league_id				bigint unsigned	default null,
+	read_state				int unsigned	not null default 0,
+	date					datetime not null,
+	foreign key (`player_id`) references players(`id`),
+	foreign key (`league_id`) references pf_leagues(`id`)
 )

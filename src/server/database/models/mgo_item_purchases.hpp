@@ -21,6 +21,19 @@ namespace database::mgo_item_purchases
 
 	std::optional<purchase_info_t> get_purchase_info(const std::uint32_t purchase_id);
 
+	struct mgo_boost_t
+	{
+		std::uint32_t boost_mag;
+		std::uint32_t boost_type;
+		std::uint32_t effect_seconds;
+		std::uint32_t price;
+		std::uint32_t purchase_id;
+		std::uint32_t purchase_type;
+	};
+
+	const std::vector<mgo_boost_t>& get_purchaseable_boosts();
+	std::optional<mgo_boost_t> get_purchaseable_boost(const std::uint32_t id);
+
 	class mgo_item_purchase
 	{
 	public:

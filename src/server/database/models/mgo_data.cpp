@@ -15,10 +15,10 @@ namespace database::mgo_data
 	GET_FIELD_C(mgo_data, std::uint32_t, bgm_selected);
 	GET_FIELD_C(mgo_data, std::uint32_t, gp_coin);
 	GET_FIELD_C(mgo_data, std::uint32_t, gp_boost_mag);
-	GET_FIELD_C(mgo_data, std::uint32_t, gp_expire_unix_timestamp);
+	GET_FIELD_C(mgo_data, std::chrono::seconds, gp_boost_expire);
 	GET_FIELD_C(mgo_data, std::uint32_t, rank_xp);
 	GET_FIELD_C(mgo_data, std::uint32_t, xp_boost_mag);
-	GET_FIELD_C(mgo_data, std::uint32_t, xp_expire_unix_timestamp);
+	GET_FIELD_C(mgo_data, std::chrono::seconds, xp_boost_expire);
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_category);
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_a);
 	GET_FIELD_C(mgo_data, std::uint32_t, reward_id_b);
@@ -185,6 +185,20 @@ namespace database::mgo_data
 				return result != 0;
 			});
 		}
+		
+		template <database_type_t Type>
+		bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+							.set(mgo_data::table.gp_boost_mag = gp_boost_mag, mgo_data::table.gp_boost_expire = expire)
+								.where(mgo_data::table.player_id == player_id));
+
+				return result != 0;
+			});
+		}
 	}
 
 	bool create(const std::uint64_t player_id)
@@ -241,6 +255,11 @@ namespace database::mgo_data
 	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag)
 	{
 		RUN_IMPL(impl::set_boost, player_id, xp_boost_mag, gp_boost_mag);
+	}
+
+	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire)
+	{
+		RUN_IMPL(impl::set_gp_boost, player_id, gp_boost_mag, expire);
 	}
 
 	class table final : public table_interface

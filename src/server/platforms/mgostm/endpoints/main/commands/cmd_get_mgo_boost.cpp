@@ -10,11 +10,42 @@ namespace emulator::mgo
 	{
 		nlohmann::json result;
 
-		const auto mgo_data = database::mgo_data::find_or_create(player->get_id());
+		auto& boost_type_j = data["boost_type"];
+		if (!boost_type_j.is_number_unsigned())
+		{
+			return error(ERR_INVALIDARG);
+		}
 
-		result["expire"] = "";
-		result["boost_mag"] = mgo_data->get_xp_boost_mag();
-		result["expire_unix_timestamp"] = mgo_data->get_xp_expire_unix_timestamp();
+		const auto mgo_data = database::mgo_data::find_or_create(player->get_id());
+		const auto boost_type = boost_type_j.get<std::uint32_t>();
+
+		const auto set_result = [&](const std::uint32_t boost, const std::chrono::seconds expire)
+		{
+			const auto date = date::format("%Y-%m-%d %H:%M:%OS", std::chrono::system_clock::time_point(expire));
+			result["expire"] = date;
+			result["boost_mag"] = boost;
+			result["expire_unix_timestamp"] = expire.count();
+		};
+
+		switch (boost_type)
+		{
+		case 0:
+		{
+			set_result(mgo_data->get_xp_boost_mag(), mgo_data->get_xp_boost_expire());
+			break;
+		}
+		case 1:
+		{
+			set_result(mgo_data->get_gp_boost_mag(), mgo_data->get_gp_boost_expire());
+			break;
+		}
+		default:
+		{
+			result["expire"] = "";
+			result["boost_mag"] = 0;
+			result["expire_unix_timestamp"] = 0;
+		}
+		}
 
 		return result;
 	}

@@ -44,6 +44,50 @@ namespace database::mgo_item_purchases
 		return iter->second;
 	}
 
+	std::vector<mgo_boost_t> load_purchaseable_boosts()
+	{
+		std::vector<mgo_boost_t> result;
+
+		auto list = utils::resources::load_json(RESOURCE_MGO_PURCHASABLE_LIST);
+		const auto& boost_list = list["purchasable_boost_list"];
+
+		for (auto i = 0u; i < boost_list.size(); i++)
+		{
+			mgo_boost_t boost{};
+			boost.boost_mag = boost_list[i]["boost_mag"].get<std::uint32_t>();
+			boost.boost_type = boost_list[i]["boost_type"].get<std::uint32_t>();
+			boost.effect_seconds = boost_list[i]["effect_seconds"].get<std::uint32_t>();
+			boost.price = boost_list[i]["price"].get<std::uint32_t>();
+			boost.purchase_id = boost_list[i]["purchase_id"].get<std::uint32_t>();
+			boost.purchase_type = boost_list[i]["purchase_type"].get<std::uint32_t>();
+			result.emplace_back(boost);
+		}
+		
+		return result;
+	}
+
+	const std::vector<mgo_boost_t>& get_purchaseable_boosts()
+	{
+		static const auto list = load_purchaseable_boosts();
+		return list;
+	}
+
+	std::optional<mgo_boost_t> get_purchaseable_boost(const std::uint32_t id)
+	{
+		const auto& list = get_purchaseable_boosts();
+		const auto iter = std::ranges::find_if(list.begin(), list.end(), [&](const mgo_boost_t& boost)
+		{
+			return boost.purchase_id == id;
+		});
+
+		if (iter == list.end())
+		{
+			return {};
+		}
+
+		return {*iter};
+	}
+
 	namespace impl
 	{
 		template <database_type_t Type>
