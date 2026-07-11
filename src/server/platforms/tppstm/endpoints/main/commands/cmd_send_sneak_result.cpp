@@ -255,8 +255,8 @@ namespace emulator::tpp
 				const std::uint32_t resource_type, 
 				const std::uint32_t resource_id, const std::uint32_t cap, bool destroy = false)
 			{
-				const auto max_count = game::resource_caps[game::processed_server][resource_type];
-				const auto attacker_count = attacker_resources[game::processed_server][resource_type];
+				const auto max_count = game::resource_caps[resource_type][resource_id];
+				const auto attacker_count = attacker_resources[resource_type][resource_id];
 
 				const auto base_value = std::min(cap, from[key].get<std::uint32_t>());
 				const auto sub_value = std::min(owner_resources[resource_type][resource_id], base_value);
@@ -266,7 +266,7 @@ namespace emulator::tpp
 					add_value = std::min(sub_value, max_count - attacker_count);
 				}
 				
-				if (!has_insurance || resource_type == game::NUCLEAR_WEAPON)
+				if (!has_insurance || resource_id == game::NUCLEAR_WEAPON)
 				{
 					owner_resources[resource_type][resource_id] -= sub_value;
 				}
