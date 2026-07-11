@@ -63,7 +63,7 @@ namespace database::mgo_data
 		DEFINE_FIELD(reward_id_a, sqlpp::integer_unsigned);
 		DEFINE_FIELD(reward_id_b, sqlpp::integer_unsigned);
 		DEFINE_FIELD(reward_id_c, sqlpp::integer_unsigned);
-		DEFINE_FIELD(survival_ticket_remain, sqlpp::integer_unsigned);
+		DEFINE_FIELD(survival_tickets, sqlpp::integer_unsigned);
 		DEFINE_FIELD(matches_played, sqlpp::integer_unsigned);
 		DEFINE_FIELD(matches_abandoned, sqlpp::integer_unsigned);
 		DEFINE_FIELD(matches_started, sqlpp::integer_unsigned);
@@ -74,7 +74,7 @@ namespace database::mgo_data
 			gp_coin_field_t, gp_boost_mag_field_t, gp_boost_expire_field_t,
 			rank_xp_field_t, xp_boost_mag_field_t, xp_boost_expire_field_t,
 			reward_category_field_t, reward_id_a_field_t, reward_id_b_field_t, reward_id_c_field_t,
-			survival_ticket_remain_field_t,
+			survival_tickets_field_t,
 			matches_played_field_t, matches_abandoned_field_t, matches_started_field_t,
 			match_settings_field_t, preset_radio_field_t);
 
@@ -95,7 +95,7 @@ namespace database::mgo_data
 			this->reward_id_a_ = row.reward_id_a;
 			this->reward_id_b_ = row.reward_id_b;
 			this->reward_id_c_ = row.reward_id_c;
-			this->survival_ticket_remain_ = row.survival_ticket_remain;
+			this->survival_tickets_ = row.survival_tickets;
 			this->matches_played_ = row.matches_played;
 			this->matches_abandoned_ = row.matches_abandoned;
 			this->matches_started_ = row.matches_started;
@@ -134,13 +134,16 @@ namespace database::mgo_data
 		GET_FIELD_H(std::uint32_t, reward_id_a);
 		GET_FIELD_H(std::uint32_t, reward_id_b);
 		GET_FIELD_H(std::uint32_t, reward_id_c);
-		GET_FIELD_H(std::uint32_t, survival_ticket_remain);
+		GET_FIELD_H(std::uint32_t, survival_tickets);
 		GET_FIELD_H(std::uint32_t, matches_played);
 		GET_FIELD_H(std::uint32_t, matches_abandoned);
 		GET_FIELD_H(std::uint32_t, matches_started);
 
 		const match_settings_t& get_match_settings() const;
 		const preset_radio_t& get_preset_radio() const;
+
+		std::string get_gp_boost_expire_date() const;
+		std::string get_xp_boost_expire_date() const;
 
 	private:
 		match_settings_t match_settings_{};
@@ -155,6 +158,11 @@ namespace database::mgo_data
 	std::uint32_t get_gp_coins(const std::uint64_t player_id);
 	bool spend_gp_coins(const std::uint64_t player_id, const std::uint32_t value);
 	std::uint32_t add_gp_coins(const std::uint64_t player_id, const std::uint32_t value);
+
+	std::uint32_t get_survival_tickets(const std::uint64_t player_id);
+	bool spend_survival_tickets(const std::uint64_t player_id, const std::uint32_t value);
+	std::uint32_t add_survival_tickets(const std::uint64_t player_id, const std::uint32_t value);
+	std::uint32_t set_survival_tickets(const std::uint64_t player_id, const std::uint32_t value);
 
 	bool set_values_from_character(const std::uint64_t player_id, const data_params& params);
 	bool update_match_stats(const std::uint64_t player_id, const std::uint32_t abandon, const std::uint32_t started, const std::uint32_t played);

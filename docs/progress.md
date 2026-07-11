@@ -189,8 +189,8 @@ Most commands are implemented, missing survival stuff & player titles.
 | CMD_GET_MGO_PURCHASED_ITEM | ✔️ |  |
 | CMD_GET_MGO_RANK_XP_LIST | ✔️ |  |
 | CMD_GET_MGO_STAT | ✔️ |  |
-| CMD_GET_MGO_SURVIVAL_FREE_TICKET | ❌ |  |
-| CMD_GET_MGO_SURVIVAL_RULE_SET | ❌ |  |
+| CMD_GET_MGO_SURVIVAL_FREE_TICKET | ✔️ |  |
+| CMD_GET_MGO_SURVIVAL_RULE_SET | ✔️ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
 | CMD_GET_MGO_TITLE_USR | ✔️ | backend not implemented |
@@ -219,4 +219,4 @@ Most commands are implemented, missing survival stuff & player titles.
 | CMD_SET_MGO_PROGRESSION | ➖ | unused |
 | CMD_SET_MGO_STAT | ✔️ |  |
 | CMD_UPDATE_SESSION | ✔️ |  |
-| CMD_USE_MGO_SURVIVAL_FREE_TICKET | ❌ |  |
+| CMD_USE_MGO_SURVIVAL_FREE_TICKET | ✔️ |  |
