@@ -153,8 +153,6 @@ List of implemeted/unimplemented server commands
 
 ## MGO
 
-Most commands are implemented, missing survival stuff & player titles.
-
 ### mgostm/gate
 | name | status | note |
 | --- | --- | --- |
@@ -193,8 +191,8 @@ Most commands are implemented, missing survival stuff & player titles.
 | CMD_GET_MGO_SURVIVAL_RULE_SET | ✔️ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
 | CMD_GET_MGO_TITLE_LIST | ✔️ |  |
-| CMD_GET_MGO_TITLE_USR | ✔️ | backend not implemented |
-| CMD_GET_MGO_TITLE_USR2 | ✔️ | backend not implemented |
+| CMD_GET_MGO_TITLE_USR | ✔️ | title assignment not implemented |
+| CMD_GET_MGO_TITLE_USR2 | ✔️ | title assignment not implemented |
 | CMD_GET_MGO_USER_DATA | ✔️ |  |
 | CMD_GET_NEXT_MAINTENANCE | ✔️ |  |
 | CMD_GET_PLAYERLIST | ✔️ |  |
