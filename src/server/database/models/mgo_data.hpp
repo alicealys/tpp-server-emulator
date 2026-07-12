@@ -4,6 +4,8 @@
 
 namespace database::mgo_data
 {
+	constexpr const auto base_survival_tickets = 10u;
+
 	struct match_mission_slot_t
 	{
 		std::uint8_t flags;

@@ -218,7 +218,7 @@ namespace database::fob_events
 		{
 			database::event_rankings::reset_values(database::event_rankings::fob_event_ranking);
 			database::player_records::reset_event_points();
-			database::mgo_data::reset_survival_tickets(10u);
+			database::mgo_data::reset_survival_tickets(database::mgo_data::base_survival_tickets);
 		}
 
 		void update_event()
