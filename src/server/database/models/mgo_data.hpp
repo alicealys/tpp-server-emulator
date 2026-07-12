@@ -163,11 +163,11 @@ namespace database::mgo_data
 	bool spend_survival_tickets(const std::uint64_t player_id, const std::uint32_t value);
 	std::uint32_t add_survival_tickets(const std::uint64_t player_id, const std::uint32_t value);
 	std::uint32_t set_survival_tickets(const std::uint64_t player_id, const std::uint32_t value);
+	void reset_survival_tickets(const std::uint32_t default_value);
 
 	bool set_values_from_character(const std::uint64_t player_id, const data_params& params);
 	bool update_match_stats(const std::uint64_t player_id, const std::uint32_t abandon, const std::uint32_t started, const std::uint32_t played);
 
 	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag);
-
 	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire);
 }
