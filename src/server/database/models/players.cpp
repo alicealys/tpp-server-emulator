@@ -2,6 +2,7 @@
 
 #include "players.hpp"
 #include "player_records.hpp"
+#include "../auth.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -10,19 +11,6 @@ namespace database::players
 {
 	namespace
 	{
-		std::string generate_data(const size_t len, bool base64)
-		{
-			const auto data = utils::cryptography::random::get_data(len);
-			if (base64)
-			{
-				return utils::cryptography::base64::encode(data);
-			}
-			else
-			{
-				return utils::string::dump_hex(data, "", false);
-			}
-		}
-
 		std::vector<std::string> nat_types =
 		{
 			"SYMMETRIC_NAT",
@@ -230,7 +218,7 @@ namespace database::players
 					sqlpp::insert_into(player::table)
 						.set(player::table.account_id = account_id,
 							 player::table.currency = "EUR",
-							 player::table.smart_device_id = generate_data(80, true),
+							 player::table.smart_device_id = auth::generate_data(80, true),
 							 player::table.last_update = std::chrono::system_clock::now(),
 							 player::table.creation_time = std::chrono::system_clock::now()));
 			});
@@ -283,7 +271,7 @@ namespace database::players
 		template <database_type_t Type>
 		std::string generate_login_password(const std::uint64_t account_id)
 		{
-			const auto password = generate_data(16, false);
+			const auto password = auth::generate_data(16, false);
 
 			database::access([&](database::database_t& db)
 			{
@@ -299,7 +287,7 @@ namespace database::players
 		template <database_type_t Type>
 		std::string generate_session_id(const std::uint64_t account_id)
 		{
-			const auto session_id = generate_data(16, false);
+			const auto session_id = auth::generate_data(16, false);
 
 			database::access([&](database::database_t& db)
 			{
@@ -316,7 +304,7 @@ namespace database::players
 		template <database_type_t Type>
 		std::string generate_crypto_key(const std::uint64_t account_id)
 		{
-			const auto crypto_key = generate_data(16, true);
+			const auto crypto_key = auth::generate_data(16, true);
 
 			database::access([&](database::database_t& db)
 			{

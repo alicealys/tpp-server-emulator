@@ -6,6 +6,7 @@
 #include "component/console.hpp"
 
 #include "models/players.hpp"
+#include "models/steam_users.hpp"
 
 #include "utils/tpp_client.hpp"
 #include "utils/encoding.hpp"
@@ -23,6 +24,14 @@ namespace auth
 
 		constexpr auto allow_list_file = "allow_list.json";
 		constexpr auto deny_list_file = "deny_list.json";
+
+		std::unordered_map<std::string, std::uint32_t> auth_mode_map =
+		{
+			{"offline", auth_offline},
+			{"konami", auth_konami},
+			{"custom", auth_custom},
+			{"hybrid", auth_hybrid},
+		};
 
 		std::optional<std::unordered_set<std::uint64_t>> parse_list(const std::string& file)
 		{
@@ -91,6 +100,18 @@ namespace auth
 		bool can_authenticate(const std::uint64_t steam_id)
 		{
 			return !is_steam_id_denied(steam_id) && is_steam_id_allowed(steam_id);
+		}
+
+		std::optional<std::uint32_t> get_auth_mode()
+		{
+			const auto auth_mode_str = config::get<std::string>("auth_mode");
+			const auto iter = auth_mode_map.find(auth_mode_str);
+			if (iter == auth_mode_map.end())
+			{
+				return {};
+			}
+
+			return {iter->second};
 		}
 	}
 
@@ -167,17 +188,67 @@ namespace auth
 		return {account_id};
 	}
 
+	std::optional<std::uint64_t> verify_ticket_custom(const std::string& auth_ticket, const size_t ticket_size)
+	{
+		const auto data = utils::cryptography::base64::decode(auth_ticket);
+		if (data.size() < sizeof(auth_ticket_custom_t))
+		{
+			return {};
+		}
+
+		const auto ticket = reinterpret_cast<const auth_ticket_custom_t*>(data.data());
+		const auto token = std::string{ticket->auth_token, sizeof(auth_ticket_custom_t::auth_token)};
+
+		const auto is_valid = std::ranges::all_of(token.begin(), token.end(), [](const char c)
+		{
+			return std::isalnum(static_cast<int>(c));
+		});
+
+		if (!is_valid)
+		{
+			return {};
+		}
+
+		if (database::steam_users::authenticate(ticket->account_id, token))
+		{
+			return {ticket->account_id};
+		}
+
+		return {};
+	}
+
 	std::optional<std::uint64_t> verify_ticket(const std::string& auth_ticket, const size_t ticket_size, const bool is_tpp)
 	{
-		static const auto use_konami_auth = config::get<bool>("use_konami_auth");
-		if (use_konami_auth)
+		const auto auth_mode = get_auth_mode();
+		if (!auth_mode.has_value())
 		{
-			return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
+			return {};
 		}
-		else
+
+		switch (auth_mode.value())
 		{
+		case auth_offline:
 			return verify_ticket_offline(auth_ticket, ticket_size);
+		case auth_konami:
+			return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
+		case auth_custom:
+			return verify_ticket_custom(auth_ticket, ticket_size);
+		case auth_hybrid:
+		{
+			if (ticket_size == sizeof(auth_ticket_custom_t))
+			{
+				return verify_ticket_custom(auth_ticket, ticket_size);
+			}
+			else
+			{
+				return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
+			}
+
+			return {};
 		}
+		}
+
+		return {};
 	}
 
 	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket, const size_t ticket_size, const bool is_tpp)
@@ -237,5 +308,29 @@ namespace auth
 		response.crypto_key = database::players::generate_crypto_key(account_id_int);
 
 		return {response};
+	}
+
+	std::string generate_data(const size_t len, bool base64)
+	{
+		const auto data = utils::cryptography::random::get_data(len);
+		if (base64)
+		{
+			return utils::cryptography::base64::encode(data);
+		}
+		else
+		{
+			return utils::string::dump_hex(data, "", false);
+		}
+	}
+
+	bool validate_auth_mode(const nlohmann::json& value)
+	{
+		if (!value.is_string())
+		{
+			return false;
+		}
+
+		const auto value_str = value.get<std::string>();
+		return auth_mode_map.contains(value_str);
 	}
 }

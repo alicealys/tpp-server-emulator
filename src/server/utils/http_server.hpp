@@ -15,12 +15,22 @@ namespace utils
 		bool is_valid;
 	};
 
+	class request_query : public std::unordered_map<std::string, std::string>
+	{
+	public:
+		std::optional<std::string> get(const std::string& key) const;
+		std::optional<std::int32_t> get_int(const std::string& key) const;
+		std::optional<std::uint32_t> get_uint(const std::string& key) const;
+		std::optional<std::uint64_t> get_uint64(const std::string& key) const;
+	};
+
 	struct request_params
 	{
 		std::string uri;
 		std::string headers;
 		std::string body;
 		request_address address;
+		request_query query;
 	};
 
 	struct response_params
