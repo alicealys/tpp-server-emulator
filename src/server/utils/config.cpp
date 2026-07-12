@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "config.hpp"
+#include "database/auth.hpp"
 
 #include <utils/io.hpp>
 #include <utils/flags.hpp>
@@ -33,7 +34,7 @@ namespace config
 			{define_field("database_host", field_type::string, "localhost")},
 			{define_field("database_port", field_type::number_unsigned, 3306)},
 			{define_field("database_name", field_type::string, "mgstpp")},
-			{define_field("use_konami_auth", field_type::boolean, false)},
+			{define_field("auth_mode", field_type::string, "offline", auth::validate_auth_mode)},
 			{define_field("cert_file", field_type::string, "")},
 			{define_field("key_file", field_type::string, "")},
 			{define_field("use_tmp_folder", field_type::boolean, true)},

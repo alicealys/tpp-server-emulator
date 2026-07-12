@@ -5,6 +5,7 @@
 #include "platforms/mgostm/mgostm_handler.hpp"
 #include "platforms/tppstm/tppstm_handler.hpp"
 #include "platforms/tppstmweb/tppstmweb_handler.hpp"
+#include "platforms/api/api_handler.hpp"
 
 #include "utils/encoding.hpp"
 #include "utils/http_server.hpp"
@@ -21,6 +22,7 @@ namespace emulator
 		this->register_handler<mgo::mgostm_handler>("mgostm");
 		this->register_handler<tpp::tppstm_handler>("tppstm");
 		this->register_handler<tppstmweb_handler>("tppstmweb");
+		this->register_handler<api_handler>("api");
 	}
 
 	utils::response_params server::handle_request(const utils::request_params& params, const std::string& platform, 
@@ -43,7 +45,7 @@ namespace emulator
 
 		std::string headers;
 		headers.append("Set-Cookie: \r\n");
-		headers.append("Content-Type: text/plain\r\n");
+		headers.append(std::format("Content-Type: {}\r\n", handler->second->get_content_type()));
 		headers.append("Keep-Alive: timeout=5, max=100\r\n");
 		headers.append("Connection: Keep-Alive\r\n");
 

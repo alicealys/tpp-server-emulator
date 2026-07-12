@@ -38,6 +38,92 @@ namespace utils
 
 			return true;
 		}
+
+		bool mg_span(mg_str s, mg_str* a, mg_str* b, char sep)
+		{
+			if (s.len == 0 || s.ptr == NULL)
+			{
+				return false;
+			}
+			else
+			{
+				size_t len = 0;
+				while (len < s.len && s.ptr[len] != sep) len++;
+				if (a) *a = mg_str_n(s.ptr, len);
+				if (b) *b = mg_str_n(s.ptr + len, s.len - len);
+				if (b && len < s.len) b->ptr++, b->len--;
+				return true;
+			}
+		}
+
+		void parse_query_params(mg_http_message* msg, std::unordered_map<std::string, std::string>& query)
+		{
+			mg_str entry{};
+			mg_str k{};
+			mg_str v{};
+			while (mg_span(msg->query, &entry, &msg->query, '&'))
+			{
+				if (mg_span(entry, &k, &v, '='))
+				{
+					const auto key = std::string{k.ptr, k.len};
+					std::string value;
+					value.resize(0x100);
+					const auto res = mg_url_decode(v.ptr, v.len, value.data(), value.size(), 1);
+					if (res != -1)
+					{
+						value.resize(res);
+					}
+					query.insert(std::make_pair(key, value));
+				}
+			}
+		}
+	}
+
+	std::optional<std::string> request_query::get(const std::string& key) const
+	{
+		const auto iter = this->find(key);
+		if (iter == this->end())
+		{
+			return {};
+		}
+
+		return {iter->second};
+	}
+
+	std::optional<std::int32_t> request_query::get_int(const std::string& key) const
+	{
+		const auto iter = this->find(key);
+		if (iter == this->end())
+		{
+			return {};
+		}
+
+		const auto value = std::atoi(iter->second.data());
+		return {value};
+	}
+
+	std::optional<std::uint32_t> request_query::get_uint(const std::string& key) const
+	{
+		const auto iter = this->find(key);
+		if (iter == this->end())
+		{
+			return {};
+		}
+
+		const auto value = std::strtoul(iter->second.data(), nullptr, 0);
+		return {static_cast<std::uint32_t>(value)};
+	}
+
+	std::optional<std::uint64_t> request_query::get_uint64(const std::string& key) const
+	{
+		const auto iter = this->find(key);
+		if (iter == this->end())
+		{
+			return {};
+		}
+
+		const auto value = std::strtoull(iter->second.data(), nullptr, 0);
+		return {value};
 	}
 
 	http_connection::http_connection(mg_connection* c)
@@ -142,6 +228,7 @@ namespace utils
 			params.body = body;
 			params.uri = uri;
 			params.address.is_valid = parse_client_ip(c, http_message, params.address.ip);
+			parse_query_params(http_message, params.query);
 
 			inst->request_handler->operator()(conn, params);
 			break;

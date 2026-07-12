@@ -1594,23 +1594,6 @@ namespace database::pf_league
 #ifdef DEBUG
 			delete_all_pf_leagues(database);
 #endif
-
-			create_league_application(1000);
-			create_league_application(1001);
-			create_league_application(1002);
-			create_league_application(1003);
-			create_league_application(1004);
-			create_league_application(1005);
-			create_league_application(1006);
-			create_league_application(1007);
-			create_league_application(1008);
-			create_league_application(1009);
-			create_league_application(1010);
-			create_league_application(1011);
-			create_league_application(1012);
-			create_league_application(1013);
-			create_league_application(1014);
-			create_league_application(1015);
 		}
 
 		void run_tasks(database_t& database) override

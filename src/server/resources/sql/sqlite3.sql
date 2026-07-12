@@ -430,3 +430,11 @@ create table if not exists `pf_applications`
 	foreign key (`player_id`) references players(`id`),
 	foreign key (`league_id`) references pf_leagues(`id`)
 )
+-- query:mgstpp.steam_users.create
+create table if not exists `steam_users`
+(
+	id						integer	primary key autoincrement,
+	account_id				bigint unsigned	not null	 unique,
+	auth_token				char(32)		default null unique,
+	expire_date				datetime not null
+)
