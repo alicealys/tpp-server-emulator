@@ -125,8 +125,7 @@ namespace database::mgo_data
 			{
 				const auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
-						.set(mgo_data::table.player_id = player_id,
-							 mgo_data::table.gp_coin = mgo_data::table.gp_coin - value)
+						.set(mgo_data::table.gp_coin = mgo_data::table.gp_coin - value)
 								.where(mgo_data::table.player_id == player_id &&
 									   mgo_data::table.gp_coin >= value)
 					);
@@ -142,8 +141,7 @@ namespace database::mgo_data
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
-						.set(mgo_data::table.player_id = player_id,
-							 mgo_data::table.gp_coin = mgo_data::table.gp_coin + value)
+						.set(mgo_data::table.gp_coin = mgo_data::table.gp_coin + value)
 								.where(mgo_data::table.player_id == player_id)
 					);
 
@@ -192,8 +190,7 @@ namespace database::mgo_data
 			{
 				const auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
-						.set(mgo_data::table.player_id = player_id,
-							 mgo_data::table.survival_tickets = mgo_data::table.survival_tickets - value)
+						.set(mgo_data::table.survival_tickets = mgo_data::table.survival_tickets - value)
 								.where(mgo_data::table.player_id == player_id &&
 									   mgo_data::table.survival_tickets >= value)
 					);
@@ -209,8 +206,7 @@ namespace database::mgo_data
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
-						.set(mgo_data::table.player_id = player_id,
-							 mgo_data::table.survival_tickets = mgo_data::table.survival_tickets + value)
+						.set(mgo_data::table.survival_tickets = mgo_data::table.survival_tickets + value)
 								.where(mgo_data::table.player_id == player_id)
 					);
 
@@ -235,8 +231,7 @@ namespace database::mgo_data
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(mgo_data::table)
-						.set(mgo_data::table.player_id = player_id,
-							 mgo_data::table.survival_tickets = value)
+						.set(mgo_data::table.survival_tickets = value)
 								.where(mgo_data::table.player_id == player_id)
 					);
 
@@ -251,6 +246,19 @@ namespace database::mgo_data
 				}
 
 				return static_cast<std::uint32_t>(results.front().survival_tickets.value());
+			});
+		}
+		
+		template <database_type_t Type>
+		void reset_survival_tickets(const std::uint32_t default_value)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+						.set(mgo_data::table.survival_tickets = default_value)
+								.unconditionally()
+					);
 			});
 		}
 
@@ -372,6 +380,11 @@ namespace database::mgo_data
 	std::uint32_t set_survival_tickets(const std::uint64_t player_id, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::set_survival_tickets, player_id, value);
+	}
+
+	void reset_survival_tickets(const std::uint32_t default_value)
+	{
+		RUN_IMPL(impl::reset_survival_tickets, default_value);
 	}
 
 	bool set_values_from_character(const std::uint64_t player_id, const data_params& params)

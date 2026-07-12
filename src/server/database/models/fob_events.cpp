@@ -7,6 +7,7 @@
 #include "fobs.hpp"
 #include "variables.hpp"
 #include "event_rankings.hpp"
+#include "mgo_data.hpp"
 #include "../../component/command.hpp"
 
 #include <utils/cryptography.hpp>
@@ -217,6 +218,7 @@ namespace database::fob_events
 		{
 			database::event_rankings::reset_values(database::event_rankings::fob_event_ranking);
 			database::player_records::reset_event_points();
+			database::mgo_data::reset_survival_tickets(10u);
 		}
 
 		void update_event()

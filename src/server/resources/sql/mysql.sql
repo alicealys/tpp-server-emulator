@@ -281,7 +281,20 @@ create table if not exists `mgo_stats`
 	stats					blob	not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
-	unique key `unique_mgo_stat_player_id_stat_id` (`player_id`)
+	unique key `unique_mgo_stat_player_id` (`player_id`)
+)
+-- query:mgstpp.mgo_titles.create
+create table if not exists `mgo_titles`
+(
+	id						bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	title_id				int unsigned	not null,
+	flag					int unsigned	default 0,
+	gp						int unsigned	default 0,
+	date					datetime	not null,
+	primary key (`id`),
+	foreign key (`player_id`) references players(`id`),
+	unique key `unique_mgo_titles_player_id_title_id` (`player_id`, `title_id`)
 )
 -- query:mgstpp.mgo_color_purchases.create
 create table if not exists `mgo_color_purchases`
