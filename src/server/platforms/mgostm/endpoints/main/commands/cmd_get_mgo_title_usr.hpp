@@ -10,6 +10,6 @@ namespace emulator::mgo
 		static nlohmann::json generate(nlohmann::json& data, const std::optional<database::players::player>& player);
 
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
-		bool needs_player();
+		bool needs_player() override;
 	};
 }
