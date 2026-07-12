@@ -67,7 +67,7 @@ namespace database::mgo_data
 			{
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::insert_into(mgo_data::table)
-							.set(mgo_data::table.player_id = player_id));
+							.set(mgo_data::table.player_id = player_id, mgo_data::table.survival_tickets = base_survival_tickets));
 
 				return result != 0ull;
 			});
