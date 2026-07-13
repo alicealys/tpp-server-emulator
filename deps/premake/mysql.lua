@@ -6,7 +6,7 @@ end
 mysql = {
 	source = path.join(dependencies.basePath, "mysql"),
 	version = "8.1.0",
-	download = "http://cdn.alicent.cat/mysql-8.1.0-winx64.zip",
+	download = "http://cdn.alicent.cat/mysql-9.7.1-winx64.zip",
 }
 
 function mysql.install()
@@ -17,8 +17,8 @@ function mysql.install()
 
     os.execute(string.format("mkdir \"%s\" 2> nul", mysql.source))
 
-	local folder = path.join(mysql.source, "mysql-8.1.0-winx64")
-	local archive = path.join(mysql.source, "mysql-8.1.0-winx64.zip")
+	local folder = path.join(mysql.source, "mysql-9.7.1-winx64")
+	local archive = path.join(mysql.source, "mysql-9.7.1-winx64.zip")
 
 	print("Downloading MYSQL")
 	os.execute(string.format("curl \"%s\" -L -o \"%s\"", mysql.download, archive))
