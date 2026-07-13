@@ -15,6 +15,12 @@ namespace emulator
 	namespace
 	{
 		std::atomic_bool killed;
+		std::chrono::system_clock::time_point startup;
+	}
+
+	std::chrono::system_clock::time_point get_server_startup()
+	{
+		return startup;
 	}
 
 	void stop_server()
@@ -47,6 +53,8 @@ namespace emulator
 			console::error("Failed to start server (%i)\n", errno);
 			return;
 		}
+
+		startup = std::chrono::system_clock::now();
 
 		threads.emplace_back([&]
 		{
