@@ -296,7 +296,7 @@ namespace database::player_records
 
 			static std::vector<std::pair<std::uint32_t, std::uint32_t>> rank_ranges =
 			{
-				{0, 0},				// 0
+				{0, 1},				// 0
 				{1, 2},				// 1
 				{2, 4},				// 2
 				{5, 10},			// 3
