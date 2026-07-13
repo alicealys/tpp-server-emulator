@@ -5,8 +5,6 @@
 
 #include <mongoose.h>
 
-#define HTTP_DEBUG
-
 namespace utils
 {
 	struct request_address
@@ -42,7 +40,7 @@ namespace utils
 
 	struct task_data_t
 	{
-#ifdef HTTP_DEBUG
+#ifdef DEBUG
 		std::chrono::high_resolution_clock::time_point start;
 #endif
 		response_params params;
@@ -99,7 +97,7 @@ namespace utils
 		std::optional<event_handler_t> request_handler;
 
 	private:
-		static void event_handler(mg_connection* c, const int ev, void* ev_data, void* fn_data);
+		static void event_handler(mg_connection* c, int ev, void* ev_data);
 
 		mg_mgr manager_{};
 
