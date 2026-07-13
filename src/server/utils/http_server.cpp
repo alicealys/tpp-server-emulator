@@ -149,10 +149,10 @@ namespace utils
 
 	void http_connection::reply_async(const std::function<response_params()>& cb) const
 	{
-		const auto index = thread_index++;
 		auto task = new task_data_t{};
 
 #ifdef DEBUG
+		const auto index = thread_index++;
 		task->start = std::chrono::high_resolution_clock::now();
 		console::debug("[HTTP Server] [Request %lli] Started\n", index);
 #endif
@@ -167,7 +167,7 @@ namespace utils
 			console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index,
 				std::chrono::duration_cast<std::chrono::milliseconds>(now - task->start).count());
 #endif
-			mg_wakeup(conn->mgr, conn->id, "a", 1);
+			mg_wakeup(conn->mgr, conn->id, nullptr, 0);
 		});
 
 		this->set_data<task_data_t>(task);

@@ -49,16 +49,9 @@ namespace utils::cryptography
 
 		key generate_key(int bits);
 		key generate_key(int bits, const std::string& entropy);
-		std::string sign_message(const key& key, const std::string& message);
-		bool verify_message(const key& key, const std::string& message, const std::string& signature);
 
 		bool encrypt(const key& key, std::string& data);
 		bool decrypt(const key& key, std::string& data);
-	}
-
-	namespace rsa
-	{
-		std::string encrypt(const std::string& data, const std::string& hash, const std::string& key);
 	}
 
 	namespace des3
