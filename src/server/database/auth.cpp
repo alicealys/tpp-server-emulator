@@ -243,8 +243,6 @@ namespace auth
 			{
 				return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
 			}
-
-			return {};
 		}
 		}
 

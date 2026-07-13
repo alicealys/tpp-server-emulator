@@ -283,31 +283,6 @@ namespace utils::cryptography
 		return key;
 	}
 
-	std::string ecc::sign_message(const key& key, const std::string& message)
-	{
-		if (!key.is_valid()) return "";
-
-		uint8_t buffer[512];
-		unsigned long length = sizeof(buffer);
-
-		ecc_sign_hash(cs(message.data()), ul(message.size()), buffer, &length, prng_.get_state(), prng_.get_id(),
-		              &key.get());
-
-		return std::string(cs(buffer), length);
-	}
-
-	bool ecc::verify_message(const key& key, const std::string& message, const std::string& signature)
-	{
-		if (!key.is_valid()) return false;
-
-		auto result = 0;
-		return (ecc_verify_hash(cs(signature.data()),
-		                        ul(signature.size()),
-		                        cs(message.data()),
-		                        ul(message.size()), &result,
-		                        &key.get()) == CRYPT_OK && result != 0);
-	}
-
 	bool ecc::encrypt(const key& key, std::string& data)
 	{
 		std::string out_data{};
@@ -365,43 +340,6 @@ namespace utils::cryptography
 		out_data.resize(out_len);
 		data = std::move(out_data);
 		return true;
-	}
-
-	std::string rsa::encrypt(const std::string& data, const std::string& hash, const std::string& key)
-	{
-		rsa_key new_key;
-		rsa_import(cs(key.data()), ul(key.size()), &new_key);
-		const auto _ = gsl::finally([&]()
-		{
-			rsa_free(&new_key);
-		});
-
-
-		std::string out_data{};
-		out_data.resize(std::max(ul(data.size() * 3), ul(0x100)));
-
-		auto out_len = ul(out_data.size());
-		auto crypt = [&]()
-		{
-			return rsa_encrypt_key(cs(data.data()), ul(data.size()), cs(out_data.data()), &out_len, cs(hash.data()),
-			                       ul(hash.size()), prng_.get_state(), prng_.get_id(), find_hash("sha512"), &new_key);
-		};
-
-		auto res = crypt();
-
-		if (res == CRYPT_BUFFER_OVERFLOW)
-		{
-			out_data.resize(out_len);
-			res = crypt();
-		}
-
-		if (res == CRYPT_OK)
-		{
-			out_data.resize(out_len);
-			return out_data;
-		}
-
-		return {};
 	}
 
 	std::string des3::encrypt(const std::string& data, const std::string& iv, const std::string& key)
