@@ -9,7 +9,7 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		result["result_already_read"] = 0;
+		result["result_already_read"] = 1;
 		result["status"] = "ACCEPTING";
 		result["pfleague_date"] = 0;
 
@@ -40,8 +40,6 @@ namespace emulator::tpp
 			result["status"] = "ALREADY_HELD";
 			result["pfleague_date"] = league->get_start_date().count();
 		}
-
-		result["result_already_read"] = 1;
 
 		const auto previous_application = database::pf_league::get_previous_league_application(player->get_id());
 		if (previous_application.has_value() && previous_application->get_read_state() == 0)
