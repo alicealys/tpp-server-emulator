@@ -30,7 +30,7 @@ namespace emulator::tpp
 		{
 			this->message_vars_.insert(std::make_pair(name, [=]()
 			{
-				return std::to_string(cb());
+				return std::format("{}", cb());
 			}));
 		}
 

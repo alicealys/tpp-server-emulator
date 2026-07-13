@@ -927,7 +927,7 @@ namespace game
 		return 0u;
 	}
 
-	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem)
+	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem, bool validate_tags)
 	{
 		if (!emblem_j.is_object())
 		{
@@ -969,9 +969,19 @@ namespace game
 				return value_j.get<std::int8_t>();
 			};
 
-			emblem.parts[index].base_color = validate_emblem_tag(get_u("base_color"), emblem_list.color_params);
-			emblem.parts[index].frame_color = validate_emblem_tag(get_u("frame_color"), emblem_list.color_params);
-			emblem.parts[index].texture_tag = validate_emblem_texture(get_u("texture_tag"), index, emblem_list);
+			if (validate_tags)
+			{
+				emblem.parts[index].base_color = validate_emblem_tag(get_u("base_color"), emblem_list.color_params);
+				emblem.parts[index].frame_color = validate_emblem_tag(get_u("frame_color"), emblem_list.color_params);
+				emblem.parts[index].texture_tag = validate_emblem_texture(get_u("texture_tag"), index, emblem_list);
+			}
+			else
+			{
+				emblem.parts[index].base_color = get_u("base_color");
+				emblem.parts[index].frame_color = get_u("frame_color");
+				emblem.parts[index].texture_tag = get_u("texture_tag");
+			}
+
 			emblem.parts[index].position_x = get("position_x");
 			emblem.parts[index].position_y = get("position_y");
 			emblem.parts[index].rotate = get("rotate");

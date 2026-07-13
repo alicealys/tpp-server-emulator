@@ -1370,5 +1370,5 @@ namespace game
 	};
 
 	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase);
-	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem);
+	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem, bool validate_tags = true);
 }
