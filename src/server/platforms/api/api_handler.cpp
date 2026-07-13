@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "endpoints/steam_openid.hpp"
+#include "endpoints/status.hpp"
 
 #include "api_handler.hpp"
 
@@ -16,5 +17,6 @@ namespace emulator
 	{
 		this->set_content_type("application/json");
 		this->register_handler<steam_openid>("steam_openid");
+		this->register_handler<status>("status");
 	}
 }
