@@ -173,7 +173,7 @@ namespace database
 #ifdef MYSQL_SUPPORTED
 		if (get_database_type() == database_mysql)
 		{
-			return this->dbs_.mysql_.get() && this->dbs_.mysql_->is_valid();
+			return this->dbs_.mysql_.get() && this->dbs_.mysql_->ping_server();
 		}
 #endif
 
