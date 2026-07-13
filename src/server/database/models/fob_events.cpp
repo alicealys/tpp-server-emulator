@@ -32,7 +32,7 @@ namespace database::fob_events
 		{
 			fob_event_player_t player{};
 
-			game::parse_emblem(player_j["emblem"], player.emblem);
+			game::parse_emblem(player_j["emblem"], player.emblem, false);
 			game::parse_motherbase(player_j["motherbase"], player.motherbase);
 			player.reward = player_j["reward"];
 			player.player_id = player_j["player_id"].get<std::uint64_t>();

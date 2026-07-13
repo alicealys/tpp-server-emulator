@@ -11,6 +11,30 @@ namespace emulator::tpp
 	{
 		this->register_message_var("online_players", static_cast<std::uint64_t(*)()>(database::players::get_online_player_count));
 		this->register_message_var("total_players", database::players::get_player_count);
+
+		this->register_message_var("event_start", []()
+			-> std::string
+		{
+			const auto current_event = database::fob_events::get_current_event();
+			if (!current_event.has_value())
+			{
+				return {};
+			}
+
+			return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.start));
+		});
+
+		this->register_message_var("event_end", []()
+			-> std::string
+		{
+			const auto current_event = database::fob_events::get_current_event();
+			if (!current_event.has_value())
+			{
+				return {};
+			}
+
+			return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.end));
+		});
 	}
 
 	information_list_entry_t cmd_get_informationlist2_base::parse_message(nlohmann::json& info)
