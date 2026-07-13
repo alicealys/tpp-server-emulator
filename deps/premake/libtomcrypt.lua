@@ -27,7 +27,6 @@ end
 function libtomcrypt.project()
 	project "libtomcrypt"
 		language "C"
-		cdialect "C89"
 
 		libtomcrypt.includes()
 		libtommath.import()
