@@ -1,6 +1,5 @@
 mbedtls = {
-	source = path.join(dependencies.basePath, "mbedtls"),
-	extra = path.join(dependencies.basePath, "extra/mbedtls"),
+	source = path.join(dependencies.basePath, "mbedtls")
 }
 
 function mbedtls.import()
@@ -23,7 +22,6 @@ function mbedtls.project()
 		files {
 			path.join(mbedtls.source, "library/*.h"),
 			path.join(mbedtls.source, "library/*.c"),
-			path.join(mbedtls.extra, "*.c"),
 		}
 
 		warnings "Off"

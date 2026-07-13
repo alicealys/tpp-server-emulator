@@ -25,35 +25,18 @@ namespace utils
 					return false;
 				}
 
-				const auto address = std::string{header_value->ptr, header_value->len};
+				const auto address = std::string{header_value->buf, header_value->len};
 				return inet_pton(AF_INET, address.data(), ip);
 			}
 			else
 			{
-				ip[0] = c->rem.ip[0];
-				ip[1] = c->rem.ip[1];
-				ip[2] = c->rem.ip[2];
-				ip[3] = c->rem.ip[3];
+				ip[0] = c->rem.addr.ip[0];
+				ip[1] = c->rem.addr.ip[1];
+				ip[2] = c->rem.addr.ip[2];
+				ip[3] = c->rem.addr.ip[3];
 			}
 
 			return true;
-		}
-
-		bool mg_span(mg_str s, mg_str* a, mg_str* b, char sep)
-		{
-			if (s.len == 0 || s.ptr == NULL)
-			{
-				return false;
-			}
-			else
-			{
-				size_t len = 0;
-				while (len < s.len && s.ptr[len] != sep) len++;
-				if (a) *a = mg_str_n(s.ptr, len);
-				if (b) *b = mg_str_n(s.ptr + len, s.len - len);
-				if (b && len < s.len) b->ptr++, b->len--;
-				return true;
-			}
 		}
 
 		void parse_query_params(mg_http_message* msg, std::unordered_map<std::string, std::string>& query)
@@ -65,10 +48,10 @@ namespace utils
 			{
 				if (mg_span(entry, &k, &v, '='))
 				{
-					const auto key = std::string{k.ptr, k.len};
+					const auto key = std::string{k.buf, k.len};
 					std::string value;
 					value.resize(0x100);
-					const auto res = mg_url_decode(v.ptr, v.len, value.data(), value.size(), 1);
+					const auto res = mg_url_decode(v.buf, v.len, value.data(), value.size(), 1);
 					if (res != -1)
 					{
 						value.resize(res);
@@ -169,20 +152,22 @@ namespace utils
 		const auto index = thread_index++;
 		auto task = new task_data_t{};
 
-#ifdef HTTP_DEBUG
+#ifdef DEBUG
 		task->start = std::chrono::high_resolution_clock::now();
 		console::debug("[HTTP Server] [Request %lli] Started\n", index);
 #endif
+		const auto conn = this->conn_;
 		task->thread = std::thread([=]()
 		{
 			const auto result = cb();
 			task->params = result;
 			task->done = true;
-#ifdef HTTP_DEBUG
+#ifdef DEBUG
 			const auto now = std::chrono::high_resolution_clock::now();
 			console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index,
 				std::chrono::duration_cast<std::chrono::milliseconds>(now - task->start).count());
 #endif
+			mg_wakeup(conn->mgr, conn->id, "a", 1);
 		});
 
 		this->set_data<task_data_t>(task);
@@ -203,14 +188,22 @@ namespace utils
 		this->request_handler.emplace(handler);
 	}
 
-	void http_server::event_handler(mg_connection* c, const int ev, void* ev_data, void* fn_data)
+	void http_server::event_handler(mg_connection* c, int ev, void* ev_data)
 	{
-		const auto inst = reinterpret_cast<http_server*>(fn_data);
+		const auto inst = reinterpret_cast<http_server*>(c->fn_data);
 		http_connection conn = c;
 		const auto task = conn.get_data<task_data_t>();
 
 		switch (ev)
 		{
+		case MG_EV_ACCEPT:
+		{
+			if (inst->using_tls_)
+			{
+				mg_tls_init(c, &inst->tls_options_);
+			}
+			break;
+		}
 		case MG_EV_HTTP_MSG:
 		{
 			const auto http_message = static_cast<mg_http_message*>(ev_data);
@@ -221,8 +214,8 @@ namespace utils
 				return;
 			}
 
-			const auto uri = std::string(http_message->uri.ptr, http_message->uri.len);
-			const auto body = std::string(http_message->body.ptr, http_message->body.len);
+			const auto uri = std::string(http_message->uri.buf, http_message->uri.len);
+			const auto body = std::string(http_message->body.buf, http_message->body.len);
 
 			request_params params{};
 			params.body = body;
@@ -233,7 +226,7 @@ namespace utils
 			inst->request_handler->operator()(conn, params);
 			break;
 		}
-		case MG_EV_POLL:
+		case MG_EV_WAKEUP:
 		{
 			if (task == nullptr || !task->done)
 			{
@@ -274,8 +267,8 @@ namespace utils
 		this->tls_cert_ = utils::io::read_file(cert);
 		this->tls_key_ = utils::io::read_file(key);
 
-		this->tls_options_.server_cert = mg_str_n(this->tls_cert_.data(), this->tls_cert_.size());
-		this->tls_options_.server_key = mg_str_n(this->tls_key_.data(), this->tls_key_.size());
+		this->tls_options_.cert = mg_str_n(this->tls_cert_.data(), this->tls_cert_.size());
+		this->tls_options_.ca = mg_str_n(this->tls_key_.data(), this->tls_key_.size());
 
 		this->using_tls_ = true;
 	}
@@ -292,17 +285,19 @@ namespace utils
 
 		if (this->using_tls_)
 		{
-			mg_tls_ctx_init(&this->manager_, &this->tls_options_);
 			mg_http_listen(&this->manager_, this->https_url_.data(), http_server::event_handler, this);
 		}
 
 		const auto conn = mg_http_listen(&this->manager_, this->http_url_.data(), http_server::event_handler, this);
+
+		mg_wakeup_init(&this->manager_);
+
 		return conn != nullptr;
 	}
 
 	void http_server::run_frame()
 	{
-		mg_mgr_poll(&this->manager_, 1);
+		mg_mgr_poll(&this->manager_, 100);
 	}
 
 	void http_server::shutdown()
