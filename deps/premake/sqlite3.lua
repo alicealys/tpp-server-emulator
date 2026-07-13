@@ -1,7 +1,7 @@
 sqlite3 = {
 	source = path.join(dependencies.basePath, "sqlite3"),
-	foldername = "sqlite-amalgamation-3500400",
-	download = "https://www.sqlite.org/2025/sqlite-amalgamation-3500400.zip"
+	foldername = "sqlite-amalgamation-3530300",
+	download = "https://www.sqlite.org/2026/sqlite-amalgamation-3530300.zip"
 }
 
 function sqlite3.install_linux()
@@ -32,8 +32,8 @@ function sqlite3.install_win()
 
     os.execute(string.format("mkdir \"%s\" 2> nul", sqlite3.source))
 
-	local folder = path.join(sqlite3.source, "sqlite-amalgamation-3500400")
-	local archive = path.join(sqlite3.source, "sqlite-amalgamation-3500400.zip")
+	local folder = path.join(sqlite3.source, sqlite3.foldername)
+	local archive = path.join(sqlite3.source, sqlite3.foldername .. ".zip")
 
 	print("Downloading sqlite3")
 	os.execute(string.format("curl \"%s\" -L -o \"%s\"", sqlite3.download, archive))
