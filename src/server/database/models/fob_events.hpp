@@ -61,6 +61,8 @@ namespace database::fob_events
 
 	struct fob_event_t
 	{
+		std::uint32_t index;
+		std::uint32_t number;
 		std::string server_text;
 		nlohmann::json one_event_task;
 		fob_event_date_range_t date_range;

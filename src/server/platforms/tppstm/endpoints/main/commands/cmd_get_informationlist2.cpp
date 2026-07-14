@@ -163,7 +163,8 @@ namespace emulator::tpp
 			for (auto i = 0ull; i < current_event->information.size(); i++)
 			{
 				result["info_list"][i] = cmd_get_informationlist2_base::serialize_message(current_event->information[i], language);
-				result["info_list"][i]["date"] = current_event->date_range.start.count();
+				result["info_list"][i]["date"] = std::time(nullptr);
+				result["info_list"][i]["info_id"] = 1000000 + i * 10 + (current_event->number) * 20;
 			}
 		}
 
