@@ -3,6 +3,8 @@
 #include <utils/memory.hpp>
 #include <utils/string.hpp>
 
+#include "thread_pool.hpp"
+
 #include <mongoose.h>
 
 namespace utils
@@ -49,36 +51,7 @@ namespace utils
 		bool done;
 	};
 
-	class http_connection
-	{
-	public:
-		http_connection(mg_connection* c);
-		void reply(const std::uint32_t code, const std::string& headers = "", const std::string& data = "") const;
-		void reply(const std::uint32_t code, const char* headers, const char* data) const;
-		void reply(const std::function<response_params()>& cb) const;
-
-		void reply_async(const std::function<response_params()>& cb) const;
-
-		template <typename T>
-		void set_data(T* data) const
-		{
-			*reinterpret_cast<T**>(&this->conn_->data) = data;
-		}
-
-		template <typename T>
-		T* get_data() const
-		{
-			return *reinterpret_cast<T**>(&this->conn_->data);
-		}
-
-		void clear_task();
-
-	private:
-		mg_connection* conn_;
-
-	};
-
-	using event_handler_t = std::function<void(const http_connection&, const request_params&)>;
+	using event_handler_t = std::function<void(const request_params&, response_params& response)>;
 
 	class http_server
 	{
@@ -111,6 +84,8 @@ namespace utils
 
 		std::uint16_t http_port_{};
 		std::uint16_t https_port_{};
+
+		thread_pool thread_pool_;
 
 	};
 }

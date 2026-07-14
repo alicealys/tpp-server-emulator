@@ -14,7 +14,7 @@ namespace emulator::tpp
 			return target_list_follow::generate_impl(player, player_data, limit);
 		}
 
-		const auto list = database::player_records::find_same_grade_players(player.get_id(), std::min(limit, 30u));
+		const auto list = database::player_records::find_same_grade_players(player.get_id(), std::min(limit, 10u));
 		target_list_t targets;
 
 		for (const auto& row : list)

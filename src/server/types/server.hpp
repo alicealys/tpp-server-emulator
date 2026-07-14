@@ -29,7 +29,7 @@ namespace emulator
 		bool start();
 		void run_frame();
 
-		void request_handler(const utils::http_connection& conn, const utils::request_params& params);
+		void request_handler(const utils::request_params& params, utils::response_params& response);
 
 		utils::response_params handle_request(const utils::request_params& params, const std::string& platform, 
 			const std::string& endpoint, const std::string& body);

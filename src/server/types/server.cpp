@@ -55,33 +55,28 @@ namespace emulator
 		return response;
 	}
 
-	void server::request_handler(const utils::http_connection& conn, const utils::request_params& params)
+	void server::request_handler(const utils::request_params& request, utils::response_params& response)
 	{
-		conn.reply_async([=, this]
+		response.code = 200;
+
+		try
 		{
-			utils::response_params response;
-			response.code = 200;
-
-			try
+			const auto endpoint_params = utils::string::split(request.uri.substr(1), '/');
+			if (endpoint_params.size() < 2)
 			{
-				const auto endpoint_params = utils::string::split(params.uri.substr(1), '/');
-				if (endpoint_params.size() < 2)
-				{
-					return response;
-				}
-
-				const auto& platform = endpoint_params[0];
-				const auto& endpoint = endpoint_params[1];
-
-				return this->handle_request(params, platform, endpoint, params.body);
+				return;
 			}
-			catch (const std::exception& e)
-			{
-				printf("server error: %s\n", e.what());
-				response.code = 500;
-				return response;
-			}
-		});
+
+			const auto& platform = endpoint_params[0];
+			const auto& endpoint = endpoint_params[1];
+
+			response = this->handle_request(request, platform, endpoint, request.body);
+		}
+		catch (const std::exception& e)
+		{
+			console::error("[server] error handling request: %s\n", e.what());
+			response.code = 500;
+		}
 	}
 
 	bool server::start()
@@ -98,10 +93,9 @@ namespace emulator
 			this->http_server.set_tls(cert_file, key_file);
 		}
 
-		this->http_server.set_request_handler([&](
-			const utils::http_connection& conn, const utils::request_params& params)
+		this->http_server.set_request_handler([&](const utils::request_params& request, utils::response_params& response)
 		{
-			this->request_handler(conn, params);
+			this->request_handler(request, response);
 		});
 
 		return this->http_server.start();
