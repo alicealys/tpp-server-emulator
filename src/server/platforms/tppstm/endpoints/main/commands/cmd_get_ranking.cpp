@@ -28,7 +28,7 @@ namespace emulator::tpp
 		const auto lookup_type_opt = database::event_rankings::get_lookup_type_from_name(get_type);
 		const auto type = type_j.get<std::string>();
 		const auto event_id_opt = database::event_rankings::get_event_type_from_id(event_id_j.get<std::uint32_t>(), type);
-		const auto num = std::min(12u, num_j.get<std::uint32_t>());
+		const auto num = std::min(50u, num_j.get<std::uint32_t>());
 
 		if (!event_id_opt.has_value() || !lookup_type_opt.has_value())
 		{

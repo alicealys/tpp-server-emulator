@@ -107,72 +107,8 @@ namespace utils
 		return {value};
 	}
 
-	http_connection::http_connection(mg_connection* c)
-		: conn_(c)
-	{
-	}
-
-	void http_connection::reply(const std::uint32_t code, const std::string& headers, const std::string& data) const
-	{
-		this->reply(code, headers.data(), data.data());
-	}
-
-	void http_connection::reply(const std::uint32_t code, const char* headers, const char* data) const
-	{
-		mg_http_reply(this->conn_, code, headers, "%s", data);
-	}
-
-	void http_connection::reply(const std::function<response_params()>& cb) const
-	{
-		const auto result = cb();
-		this->reply(result.code, result.headers, result.body);
-	}
-
-	void http_connection::clear_task()
-	{
-		const auto task = this->get_data<task_data_t>();
-		if (task == nullptr)
-		{
-			return;
-		}
-
-		if (task->thread.joinable())
-		{
-			task->thread.join();
-		}
-
-		delete task;
-		std::memset(this->conn_->data, 0, MG_DATA_SIZE);
-	}
-
-	void http_connection::reply_async(const std::function<response_params()>& cb) const
-	{
-		auto task = new task_data_t{};
-
-#ifdef DEBUG
-		static std::atomic_int64_t thread_index;
-		const auto index = thread_index++;
-		task->start = std::chrono::high_resolution_clock::now();
-		console::debug("[HTTP Server] [Request %lli] Started\n", index);
-#endif
-		const auto conn = this->conn_;
-		task->thread = std::thread([=]()
-		{
-			const auto result = cb();
-			task->params = result;
-			task->done = true;
-#ifdef DEBUG
-			const auto now = std::chrono::high_resolution_clock::now();
-			console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index,
-				std::chrono::duration_cast<std::chrono::milliseconds>(now - task->start).count());
-#endif
-			mg_wakeup(conn->mgr, conn->id, nullptr, 0);
-		});
-
-		this->set_data<task_data_t>(task);
-	}
-
 	http_server::http_server()
+		: thread_pool_(100)
 	{
 		this->set_ports(80, 443);
 	}
@@ -190,8 +126,6 @@ namespace utils
 	void http_server::event_handler(mg_connection* c, int ev, void* ev_data)
 	{
 		const auto inst = reinterpret_cast<http_server*>(c->fn_data);
-		http_connection conn = c;
-		const auto task = conn.get_data<task_data_t>();
 
 		switch (ev)
 		{
@@ -206,10 +140,9 @@ namespace utils
 		case MG_EV_HTTP_MSG:
 		{
 			const auto http_message = static_cast<mg_http_message*>(ev_data);
-
 			if (!inst->request_handler.has_value())
 			{
-				conn.reply(500);
+				mg_http_reply(c, 500, "", "");
 				return;
 			}
 
@@ -222,31 +155,34 @@ namespace utils
 			params.address.is_valid = parse_client_ip(c, http_message, params.address.ip);
 			parse_query_params(http_message, params.query);
 
-			inst->request_handler->operator()(conn, params);
+#ifdef DEBUG
+			static std::atomic_int64_t thread_index;
+			const auto index = thread_index++;
+			const auto start = std::chrono::high_resolution_clock::now();
+			console::debug("[HTTP Server] [Request %lli] Started\n", index);
+#endif
+
+			inst->thread_pool_.push([=]()
+			{
+				auto response = new response_params();
+				inst->request_handler->operator()(params, *response);
+				mg_wakeup(c->mgr, c->id, &response, sizeof(response));
+
+#ifdef DEBUG
+				const auto now = std::chrono::high_resolution_clock::now();
+				console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index,
+					std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count());
+#endif
+			});
+
 			break;
 		}
 		case MG_EV_WAKEUP:
 		{
-			if (task == nullptr || !task->done)
-			{
-				return;
-			}
-
-			try
-			{
-				conn.reply(task->params.code, task->params.headers, task->params.body);
-			}
-			catch (const std::exception& e)
-			{
-				printf("error: %s\n", e.what());
-			}
-
-			conn.clear_task();
-			break;
-		}
-		case MG_EV_CLOSE:
-		{
-			conn.clear_task();
+			auto data = reinterpret_cast<mg_str*>(ev_data);
+			auto response = *reinterpret_cast<response_params**>(data->buf);
+			mg_http_reply(c, response->code, response->headers.data(), "%s", response->body.data());
+			delete response;
 			break;
 		}
 		}
@@ -291,16 +227,24 @@ namespace utils
 
 		mg_wakeup_init(&this->manager_);
 
-		return conn != nullptr;
+		if (conn != nullptr)
+		{
+			this->thread_pool_.start();
+			return true;
+		}
+
+		return false;
 	}
 
 	void http_server::run_frame()
 	{
 		mg_mgr_poll(&this->manager_, 100);
+		this->thread_pool_.update();
 	}
 
 	void http_server::shutdown()
 	{
 		mg_mgr_free(&this->manager_);
+		this->thread_pool_.stop();
 	}
 }
