@@ -11,8 +11,6 @@ namespace utils
 {
 	namespace
 	{
-		std::size_t thread_index{};
-
 		bool parse_client_ip(mg_connection* c, mg_http_message* http_message, std::uint8_t* ip)
 		{
 			static const auto client_ip_header = config::get<std::string>("http_client_ip_header");
@@ -152,6 +150,7 @@ namespace utils
 		auto task = new task_data_t{};
 
 #ifdef DEBUG
+		static std::atomic_int64_t thread_index;
 		const auto index = thread_index++;
 		task->start = std::chrono::high_resolution_clock::now();
 		console::debug("[HTTP Server] [Request %lli] Started\n", index);

@@ -338,6 +338,8 @@ namespace database::fob_events
 
 		const auto index = get_current_event_index();
 		auto& event = events_data.events[index];
+		event.index = static_cast<std::uint32_t>(index);
+		event.number = get_event_number();
 		event.date_range = get_event_range();
 		return event;
 	}
