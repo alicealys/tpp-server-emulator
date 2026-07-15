@@ -97,7 +97,7 @@ namespace utils
 			{
 #ifdef WIN32
 				closesocket(c->mgr->pipe.fd);
-#elif
+#else
 				close(c->mgr->pipe.fd);
 #endif
 				c->mgr->pipe.fd = MG_INVALID_SOCKET;
