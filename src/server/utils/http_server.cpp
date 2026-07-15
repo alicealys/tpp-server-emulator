@@ -95,7 +95,11 @@ namespace utils
 			}
 			else if (ev == MG_EV_CLOSE) 
 			{
+#ifdef WIN32
 				closesocket(c->mgr->pipe.fd);
+#elif
+				close(c->mgr->pipe.fd);
+#endif
 				c->mgr->pipe.fd = MG_INVALID_SOCKET;
 			}
 		}
