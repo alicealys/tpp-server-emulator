@@ -25,42 +25,12 @@ namespace emulator
 		this->register_handler<api_handler>("api");
 	}
 
-	utils::response_params server::handle_request(const utils::request_params& params, const std::string& platform, 
-		const std::string& endpoint, const std::string& data)
+	void server::request_handler(const utils::request_params& request, utils::response_params& response) noexcept
 	{
-		utils::response_params response;
-		response.code = 200;
-
-		const auto handler = this->handlers_.find(platform);
-		if (handler == this->handlers_.end())
-		{
-			return response;
-		}
-
-		const auto result_opt = handler->second->handle_endpoint(params, endpoint, data);
-		if (!result_opt.has_value())
-		{
-			return response;
-		}
-
-		std::string headers;
-		headers.append("Set-Cookie: \r\n");
-		headers.append(std::format("Content-Type: {}\r\n", handler->second->get_content_type()));
-		headers.append("Keep-Alive: timeout=5, max=100\r\n");
-		headers.append("Connection: Keep-Alive\r\n");
-
-		response.headers = headers;
-		response.body = result_opt.value();
-
-		return response;
-	}
-
-	void server::request_handler(const utils::request_params& request, utils::response_params& response)
-	{
-		response.code = 200;
-
 		try
 		{
+			response.code = 200;
+
 			const auto endpoint_params = utils::string::split(request.uri.substr(1), '/');
 			if (endpoint_params.size() < 2)
 			{
@@ -70,7 +40,25 @@ namespace emulator
 			const auto& platform = endpoint_params[0];
 			const auto& endpoint = endpoint_params[1];
 
-			response = this->handle_request(request, platform, endpoint, request.body);
+			const auto handler = this->handlers_.find(platform);
+			if (handler == this->handlers_.end())
+			{
+				return;
+			}
+
+			const auto result_opt = handler->second->handle_endpoint(request, endpoint);
+			if (!result_opt.has_value())
+			{
+				return;
+			}
+
+			std::string headers;
+			headers.append(std::format("Content-Type: {}\r\n", handler->second->get_content_type()));
+			headers.append("Keep-Alive: timeout=5, max=100\r\n");
+			headers.append("Connection: Keep-Alive\r\n");
+
+			response.headers = headers;
+			response.body = result_opt.value();
 		}
 		catch (const std::exception& e)
 		{

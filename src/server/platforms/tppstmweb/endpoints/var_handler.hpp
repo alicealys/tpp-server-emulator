@@ -7,7 +7,7 @@ namespace emulator
 	public:
 		var_handler(const std::string& name, const std::string& value);
 
-		std::optional<std::string> handle_command(const utils::request_params& params, const std::string& data) override;
+		std::optional<std::string> handle_command(const utils::request_params& params) override;
 
 	private:
 		std::string name_;

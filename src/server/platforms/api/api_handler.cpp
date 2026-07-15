@@ -7,9 +7,9 @@
 
 namespace emulator
 {
-	std::optional<std::string> api_endpoint::handle_command(const utils::request_params& params, const std::string& data)
+	std::optional<std::string> api_endpoint::handle_command(const utils::request_params& params)
 	{
-		const auto result = this->handle_request(params, data);
+		const auto result = this->handle_request(params);
 		return result.dump();
 	}
 

@@ -11,7 +11,7 @@ namespace emulator
 		this->content_type_ = "text/plain";
 	}
 
-	std::optional<std::string> platform_handler::handle_endpoint(const utils::request_params& params, const std::string& endpoint, const std::string& data)
+	std::optional<std::string> platform_handler::handle_endpoint(const utils::request_params& params, const std::string& endpoint)
 	{
 		const auto handler = this->handlers_.find(endpoint);
 		if (handler == this->handlers_.end())
@@ -21,7 +21,7 @@ namespace emulator
 
 		try
 		{
-			return handler->second->handle_command(params, data);
+			return handler->second->handle_command(params);
 		}
 		catch (const std::exception& e)
 		{

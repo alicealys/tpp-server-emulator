@@ -18,17 +18,17 @@ namespace emulator
 			return {};
 		}
 
-		virtual bool verify_request(const nlohmann::json& request)
+		virtual bool verify_request(nlohmann::json& request)
 		{
 			return false;
 		}
 
-		virtual std::optional<std::string> encrypt_response(const nlohmann::json& request, nlohmann::json data, const std::optional<database::players::player>& player)
+		virtual std::optional<std::string> encrypt_response(nlohmann::json& request, nlohmann::json& data, const std::optional<database::players::player>& player)
 		{
 			return {};
 		}
 
-		virtual std::optional<std::string> handle_command(const utils::request_params& params, const std::string& data);
+		virtual std::optional<std::string> handle_command(const utils::request_params& params);
 
 		void print_handler_name([[ maybe_unused ]] const std::string& name) override;
 

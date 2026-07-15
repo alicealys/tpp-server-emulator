@@ -1,5 +1,7 @@
 #pragma once
 
+#include "http_server.hpp"
+
 namespace utils::encoding
 {
 	std::string split_into_lines(const std::string& string, const size_t chars_per_line = 76);

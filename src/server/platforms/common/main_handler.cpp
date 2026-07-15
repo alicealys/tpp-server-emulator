@@ -93,16 +93,16 @@ namespace emulator
 		return json;
 	}
 
-	bool main_handler::verify_request(const nlohmann::json& request)
+	bool main_handler::verify_request(nlohmann::json& request)
 	{
-		const auto& data = request["data"];
+		auto& data = request["data"];
 		if (!data.is_object())
 		{
 			return false;
 		}
 
-		const auto& session_crypto = request["session_crypto"];
-		const auto& session_key = request["session_key"];
+		auto& session_crypto = request["session_crypto"];
+		auto& session_key = request["session_key"];
 		if (!session_crypto.is_boolean())
 		{
 			return false;
@@ -113,8 +113,8 @@ namespace emulator
 			return false;
 		}
 
-		const auto& msgid = data["msgid"];
-		const auto& rq_id = data["rqid"];
+		auto& msgid = data["msgid"];
+		auto& rq_id = data["rqid"];
 
 		if (!msgid.is_string() || !rq_id.is_number_integer())
 		{
@@ -124,7 +124,7 @@ namespace emulator
 		return true;
 	}
 
-	std::optional<std::string> main_handler::encrypt_response(const nlohmann::json& request, nlohmann::json data, 
+	std::optional<std::string> main_handler::encrypt_response(nlohmann::json& request, nlohmann::json& data, 
 		const std::optional<database::players::player>& player)
 	{
 		const auto& session_crypto_val = request["session_crypto"];

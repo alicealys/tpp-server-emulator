@@ -8,11 +8,10 @@
 
 namespace emulator
 {
-	std::optional<std::string> endpoint_handler::handle_command([[maybe_unused]] const utils::request_params& params, 
-		const std::string& data)
+	std::optional<std::string> endpoint_handler::handle_command(const utils::request_params& params)
 	{
 		std::optional<database::players::player> player;
-		auto json_req_opt = this->decrypt_request(data, player);
+		auto json_req_opt = this->decrypt_request(params.body, player);
 		if (!json_req_opt.has_value())
 		{
 			return {};
@@ -89,21 +88,16 @@ namespace emulator
 		};
 
 		auto json_res = get_json_response();
-		if (!json_res.contains("result"))
+		auto& result_j = json_res["result"];
+
+		if (!json_res["result"].is_string())
 		{
 			json_res["result"] = "NOERR";
 		}
 
 #ifdef DEBUG
-		if (json_res["result"].is_string())
-		{
-			const auto result = json_res["result"].get<std::string>();
-			console::debug("[Endpoint] Command \"%s\" (%lli) result: %s\n", msgid_str.data(), id, result.data());
-		}
-		else
-		{
-			console::warning("[Endpoint] Command \"%s\" has no result set\n", msgid_str.data());
-		}
+		const auto result = result_j.get<std::string>();
+		console::debug("[Endpoint] Command \"%s\" (%lli) result: %s\n", msgid_str.data(), id, result.data());
 #endif
 
 		return this->encrypt_response(json_req, json_res, player);

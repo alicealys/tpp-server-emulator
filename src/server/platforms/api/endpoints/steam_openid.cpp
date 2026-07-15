@@ -8,7 +8,7 @@
 
 namespace emulator
 {
-	nlohmann::json steam_openid::handle_request(const utils::request_params& params, const std::string&)
+	nlohmann::json steam_openid::handle_request(const utils::request_params& params)
 	{
 		nlohmann::json result;
 		result["is_valid"] = false;

@@ -11,7 +11,7 @@
 
 namespace emulator
 {
-	nlohmann::json status::handle_request(const utils::request_params& params, const std::string&)
+	nlohmann::json status::handle_request(const utils::request_params& params)
 	{
 		nlohmann::json result;
 

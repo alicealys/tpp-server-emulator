@@ -58,6 +58,47 @@ namespace utils
 				}
 			}
 		}
+
+		static void mg_wakeup_handler(struct mg_connection* c, int ev, void* ev_data) 
+		{
+			if (ev == MG_EV_READ) 
+			{
+				auto id = reinterpret_cast<unsigned long*>(c->recv.buf);
+
+				if (c->recv.len >= sizeof(*id)) 
+				{
+					mg_connection* t{};
+
+					auto data = mg_str_n(
+						reinterpret_cast<char*>(c->recv.buf) + sizeof(*id),
+						c->recv.len - sizeof(*id)
+					);
+
+					for (t = c->mgr->conns; t != NULL; t = t->next) 
+					{
+						if (t->id == *id) 
+						{
+							mg_call(t, MG_EV_WAKEUP, &data);
+						}
+					}
+
+					if (data.len == 8)
+					{
+						auto task_data = *reinterpret_cast<response_params**>(data.buf);
+						delete task_data;
+					}
+
+					console::debug("[HTTP Server] Delete task data\n");
+				}
+
+				c->recv.len = 0;
+			}
+			else if (ev == MG_EV_CLOSE) 
+			{
+				closesocket(c->mgr->pipe.fd);
+				c->mgr->pipe.fd = MG_INVALID_SOCKET;
+			}
+		}
 	}
 
 	std::optional<std::string> request_query::get(const std::string& key) const
@@ -143,15 +184,12 @@ namespace utils
 			if (!inst->request_handler.has_value())
 			{
 				mg_http_reply(c, 500, "", "");
-				return;
+				break;
 			}
 
-			const auto uri = std::string(http_message->uri.buf, http_message->uri.len);
-			const auto body = std::string(http_message->body.buf, http_message->body.len);
-
 			request_params params{};
-			params.body = body;
-			params.uri = uri;
+			params.body = {http_message->body.buf, http_message->body.len};
+			params.uri = {http_message->uri.buf, http_message->uri.len};
 			params.address.is_valid = parse_client_ip(c, http_message, params.address.ip);
 			parse_query_params(http_message, params.query);
 
@@ -162,15 +200,18 @@ namespace utils
 			console::debug("[HTTP Server] [Request %lli] Started\n", index);
 #endif
 
+
+			auto response = new response_params();
+			const auto id = c->id;
+			console::debug("[HTTP Server] Create task data\n");
+
 			inst->thread_pool_.push([=]()
 			{
-				auto response = new response_params();
 				inst->request_handler->operator()(params, *response);
-				mg_wakeup(c->mgr, c->id, &response, sizeof(response));
-
+				mg_wakeup(&inst->manager_, id, &response, sizeof(response));
 #ifdef DEBUG
 				const auto now = std::chrono::high_resolution_clock::now();
-				console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index,
+				console::debug("[HTTP Server] [Request %lli] Finished in %lli msec\n", index, 
 					std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count());
 #endif
 			});
@@ -182,7 +223,11 @@ namespace utils
 			auto data = reinterpret_cast<mg_str*>(ev_data);
 			auto response = *reinterpret_cast<response_params**>(data->buf);
 			mg_http_reply(c, response->code, response->headers.data(), "%s", response->body.data());
-			delete response;
+			break;
+		}
+		case MG_EV_CLOSE:
+		{
+			console::debug("[HTTP Server] Close connection %i\n", c->id);
 			break;
 		}
 		}
@@ -215,7 +260,7 @@ namespace utils
 #ifdef DEBUG
 		mg_log_set(MG_LL_DEBUG);
 #else
-		mg_log_set(MG_LL_NONE);
+		mg_log_set(MG_LL_ERROR);
 #endif
 
 		if (this->using_tls_)
@@ -226,6 +271,7 @@ namespace utils
 		const auto conn = mg_http_listen(&this->manager_, this->http_url_.data(), http_server::event_handler, this);
 
 		mg_wakeup_init(&this->manager_);
+		this->manager_.conns->fn = mg_wakeup_handler;
 
 		if (conn != nullptr)
 		{

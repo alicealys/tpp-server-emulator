@@ -35,20 +35,9 @@ namespace utils
 
 	struct response_params
 	{
-		std::uint32_t code;
+		std::uint32_t code{};
 		std::string headers;
 		std::string body;
-	};
-
-	struct task_data_t
-	{
-#ifdef DEBUG
-		std::chrono::high_resolution_clock::time_point start;
-#endif
-		response_params params;
-		std::thread thread;
-		std::size_t index;
-		bool done;
 	};
 
 	using event_handler_t = std::function<void(const request_params&, response_params& response)>;
