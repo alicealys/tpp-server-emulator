@@ -34,7 +34,7 @@ namespace utils
 		void push(const job& job);
 
 	private:
-		void pop_job();
+		thread_pool::job pop_job();
 		void wait_job();
 
 		std::mutex mutex_;

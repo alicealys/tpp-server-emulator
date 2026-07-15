@@ -34,11 +34,11 @@ namespace utils
 		}
 	}
 
-	void thread_pool::pop_job()
+	thread_pool::job thread_pool::pop_job()
 	{
-		auto& job = this->jobs_.front();
-		job();
+		auto job = this->jobs_.front();
 		this->jobs_.pop_front();
+		return job;
 	}
 
 	void thread_pool::wait_job()
@@ -55,7 +55,9 @@ namespace utils
 			return;
 		}
 
-		this->pop_job();
+		auto job = this->pop_job();
+		lock.unlock();
+		job();
 	}
 
 	thread_pool::thread_pool(const std::size_t num_workers)

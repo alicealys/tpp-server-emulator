@@ -10,7 +10,7 @@ namespace emulator
 	{
 	}
 
-	std::optional<std::string> var_handler::handle_command(const utils::request_params& params, const std::string& data)
+	std::optional<std::string> var_handler::handle_command(const utils::request_params& params)
 	{
 		if (params.uri == "/tppstmweb/"s + this->name_)
 		{

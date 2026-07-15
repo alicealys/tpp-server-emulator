@@ -9,7 +9,7 @@ namespace emulator
 	{
 	public:
 		platform_handler();
-		std::optional<std::string> handle_endpoint(const utils::request_params& params, const std::string& endpoint, const std::string& body);
+		std::optional<std::string> handle_endpoint(const utils::request_params& params, const std::string& endpoint);
 
 		void print_handler_name([[ maybe_unused ]] const std::string& name) override;
 		void set_content_type(const std::string& content_type);

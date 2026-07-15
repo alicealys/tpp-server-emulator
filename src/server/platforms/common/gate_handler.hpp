@@ -12,8 +12,8 @@ namespace emulator
 		gate_handler();
 
 		std::optional<nlohmann::json> decrypt_request(const std::string& data, std::optional<database::players::player>& player) override;
-		bool verify_request(const nlohmann::json& request) override;
-		std::optional<std::string> encrypt_response(const nlohmann::json& request, nlohmann::json data,
+		bool verify_request(nlohmann::json& request) override;
+		std::optional<std::string> encrypt_response(nlohmann::json& request, nlohmann::json& data,
 			const std::optional<database::players::player>& player) override;
 
 	private:
