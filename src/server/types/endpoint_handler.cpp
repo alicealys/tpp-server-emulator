@@ -90,9 +90,9 @@ namespace emulator
 		auto json_res = get_json_response();
 		auto& result_j = json_res["result"];
 
-		if (!json_res["result"].is_string())
+		if (!result_j.is_string())
 		{
-			json_res["result"] = "NOERR";
+			result_j = "NOERR";
 		}
 
 #ifdef DEBUG
