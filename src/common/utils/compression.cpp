@@ -92,11 +92,11 @@ namespace utils::compression
 			return buffer;
 		}
 
-		std::string compress(const std::string& data)
+		std::string compress(const std::string& data, const std::uint32_t extra_bound)
 		{
 			std::string result{};
 			auto length = compressBound(static_cast<uLong>(data.size()));
-			result.resize(length);
+			result.resize(static_cast<std::size_t>(length) + extra_bound);
 
 			if (compress2(reinterpret_cast<Bytef*>(result.data()), &length,
 			              reinterpret_cast<const Bytef*>(data.data()), static_cast<uLong>(data.size()),

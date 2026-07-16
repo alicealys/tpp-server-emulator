@@ -4,17 +4,15 @@
 
 namespace utils
 {
-	thread_pool::worker::worker(thread_pool* handler)
-		: handler_(handler)
+	thread_pool::worker::worker()
 	{
 	}
 
-	void thread_pool::worker::start()
+	void thread_pool::worker::start(thread_pool& pool)
 	{
-		this->stopped_ = false;
-		this->thread_ = std::thread([this]
+		this->thread_ = std::thread([&]
 		{
-			this->worker_loop(*this);
+			this->loop(pool);
 		});
 	}
 
@@ -26,65 +24,53 @@ namespace utils
 		}
 	}
 
-	void thread_pool::worker::worker_loop(worker& worker)
+	void thread_pool::worker::loop(thread_pool& pool)
 	{
-		while (!worker.handler_->stopped_)
+		while (!pool.stopped_)
 		{
-			worker.handler_->wait_job();
+			pool.run_job();
 		}
 	}
 
-	thread_pool::job thread_pool::pop_job()
+	thread_pool::job_ptr thread_pool::pop_job()
 	{
-		auto job = this->jobs_.front();
-		this->jobs_.pop_front();
+		thread_pool::job_ptr job = std::move(this->queue_.front());
+		this->queue_.pop_front();
 		return job;
 	}
 
-	void thread_pool::wait_job()
+	void thread_pool::run_job()
 	{
 		std::unique_lock<std::mutex> lock(this->mutex_);
 
 		this->event_.wait(lock, [&]()
 		{
-			return !this->jobs_.empty() || this->stopped_;
+			return !this->queue_.empty() || this->stopped_;
 		});
 
-		if (this->stopped_ || this->jobs_.empty())
+		if (this->stopped_ || this->queue_.empty())
 		{
 			return;
 		}
 
 		auto job = this->pop_job();
 		lock.unlock();
-		job();
+		job->operator()();
 	}
 
 	thread_pool::thread_pool(const std::size_t num_workers)
 	{
 		for (auto i = 0u; i < num_workers; i++)
 		{
-			this->workers_.emplace_back(std::make_unique<thread_pool::worker>(this));
+			this->workers_.emplace_back(std::make_unique<thread_pool::worker>());
 		}
-	}
-
-	void thread_pool::push(const job& job)
-	{
-		if (this->stopped_)
-		{
-			return;
-		}
-
-		std::lock_guard lock(this->mutex_);
-		this->jobs_.emplace_back(job);
-		this->event_.notify_one();
 	}
 
 	void thread_pool::start()
 	{
 		for (auto& worker : this->workers_)
 		{
-			worker->start();
+			worker->start(*this);
 		}
 	}
 

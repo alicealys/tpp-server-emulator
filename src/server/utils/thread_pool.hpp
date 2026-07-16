@@ -6,23 +6,22 @@ namespace utils
 	{
 	public:
 		using job = std::function<void()>;
+		using job_ptr = std::unique_ptr<job>;
+
 		friend class worker;
 		class worker
 		{
 		public:
-			worker(thread_pool*);
+			worker();
 
 			friend class thread_pool;
 
-			void start();
+			void start(thread_pool& pool);
 			void stop();
-
-			static void worker_loop(worker& worker);
+			void loop(thread_pool& pool);
 
 		private:
 			std::thread thread_;
-			std::atomic_bool stopped_;
-			thread_pool* handler_{};
 
 		};
 
@@ -31,15 +30,27 @@ namespace utils
 		void start();
 		void update();
 		void stop();
-		void push(const job& job);
+
+		template <typename F>
+		void push(F&& job)
+		{
+			if (this->stopped_)
+			{
+				return;
+			}
+
+			std::lock_guard lock(this->mutex_);
+			this->queue_.emplace_back(std::make_unique<thread_pool::job>(std::forward<F>(job)));
+			this->event_.notify_one();
+		}
 
 	private:
-		thread_pool::job pop_job();
-		void wait_job();
+		thread_pool::job_ptr pop_job();
+		void run_job();
 
 		std::mutex mutex_;
 		std::atomic_bool stopped_;
-		std::deque<job> jobs_;
+		std::deque<job_ptr> queue_;
 		std::condition_variable event_;
 		std::deque<std::unique_ptr<worker>> workers_;
 
