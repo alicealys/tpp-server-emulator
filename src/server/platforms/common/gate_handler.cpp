@@ -105,9 +105,10 @@ namespace emulator
 		data["rqid"] = request["data"]["rqid"];
 		data["msgid"] = request["data"]["msgid"];
 
-		if (data["result"].is_null())
+		auto& result = data["result"];
+		if (result.is_null())
 		{
-			data["result"] = "NOERR";
+			result = "NOERR";
 		}
 
 		auto data_dump = data.dump();
