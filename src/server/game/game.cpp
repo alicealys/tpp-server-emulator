@@ -730,12 +730,12 @@ namespace game
 
 	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param)
 	{
-		if (!param_j.is_array() || param_j.size() != game::fob_sections_count)
+		if (!param_j.is_array() || param_j.size() != game::fob_clusters_count)
 		{
 			return false;
 		}
 
-		for (auto i = 0u; i < game::fob_sections_count; i++)
+		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{
 			auto& section_param_j = param_j[i];
 			auto& section_param = param.param[i];

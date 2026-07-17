@@ -184,14 +184,14 @@ namespace database::pf_league
 		for (const auto& fob : in_data.fobs)
 		{
 			const auto& param = fob.get_cluster_param();
-			for (auto i = 0u; i < game::fob_sections_count; i++)
+			for (auto i = 0u; i < game::fob_clusters_count; i++)
 			{
 				total_platforms += param.param[i].build.fields.platform_count;
 				out_params.security_level += param.param[i].cluster_security.fields.level;
 			}
 		}
 
-		for (auto i = 0u; i < game::fob_sections_count; i++)
+		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{
 			total_platforms += in_data.motherbase.local_base_param[i].fields.platform_count;
 		}

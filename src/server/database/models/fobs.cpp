@@ -54,7 +54,7 @@ namespace database::fobs
 		}
 
 		const auto cluster_index = cluster_index_j.get<std::uint32_t>();
-		if (cluster_index >= game::fob_sections_count)
+		if (cluster_index >= game::fob_clusters_count)
 		{
 			return;
 		}
@@ -193,7 +193,7 @@ namespace database::fobs
 				auto& fob_param = fob_params[index];
 				auto& server_cluster_param = server_fob.get_cluster_param();
 
-				for (auto i = 0ull; i < game::fob_sections_count; i++)
+				for (auto i = 0ull; i < game::fob_clusters_count; i++)
 				{
 					auto& old_param = server_cluster_param.param[i];
 					auto& new_param = fob_param.cluster_param.param[i];

@@ -86,7 +86,7 @@ namespace emulator::tpp
 		auto damage_params = player_data->get_fob_deploy_damage_param();
 		database::fobs::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
 
-		for (auto i = 0u; i < game::fob_sections_count; i++)
+		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{
 			const auto& param = cluster_param.param[i];
 			detail["mother_base_param"]["cluster_param"][i] = param.to_json();

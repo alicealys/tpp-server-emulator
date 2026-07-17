@@ -110,7 +110,7 @@ namespace emulator::tpp
 				entry["mother_base_param"][o]["security_rank"] = competitor_params.fobs[o].get_security_rank();
 
 				const auto& cluster = competitor_params.fobs[o].get_cluster_param();
-				for (auto l = 0u; l < game::fob_sections_count; l++)
+				for (auto l = 0u; l < game::fob_clusters_count; l++)
 				{
 					security_rank += cluster.param[l].cluster_security.fields.level;
 				}

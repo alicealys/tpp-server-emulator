@@ -325,4 +325,5 @@ namespace database::players
 	std::uint64_t get_player_count();
 	std::uint64_t get_online_player_count();
 	std::uint64_t get_online_player_count(const std::chrono::milliseconds within);
+	void disable_all_security_challenges();
 }

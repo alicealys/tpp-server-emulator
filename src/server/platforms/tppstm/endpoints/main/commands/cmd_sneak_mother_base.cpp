@@ -97,7 +97,7 @@ namespace emulator::tpp
 		}
 
 		auto& cluster_param = fob->get_cluster_param();
-		if (platform >= game::fob_sections_count)
+		if (platform >= game::fob_clusters_count)
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -265,7 +265,7 @@ namespace emulator::tpp
 		stage_param["cluster_param"] = mapped_cluster_param.to_json();
 		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
 
-		for (auto i = 0ull; i < game::fob_sections_count; i++)
+		for (auto i = 0ull; i < game::fob_clusters_count; i++)
 		{
 			stage_param["build"][i] = cluster_param.param[i].build.packed;
 		}

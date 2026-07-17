@@ -701,6 +701,19 @@ namespace database::players
 				return results.front().count.value();
 			});
 		}
+
+		template <database_type_t Type>
+		void disable_all_security_challenges()
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player::table)
+						.set(player::table.security_challenge = false)
+								.unconditionally()
+					);
+			});
+		}
 	}
 
 	std::optional<player> find(const std::uint64_t id)
@@ -820,6 +833,11 @@ namespace database::players
 	std::uint64_t get_online_player_count()
 	{
 		return get_online_player_count(database::vars.session_timeout);
+	}
+
+	void disable_all_security_challenges()
+	{
+		RUN_IMPL(impl::disable_all_security_challenges);
 	}
 
 	class table final : public table_interface

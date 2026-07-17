@@ -1254,11 +1254,11 @@ namespace game
 		nlohmann::json to_json() const;
 	};
 
-	constexpr auto fob_sections_count = 7;
+	constexpr auto fob_clusters_count = 7;
 
 	struct fob_cluster_param_t
 	{
-		fob_cluster_param_single_t param[fob_sections_count];
+		fob_cluster_param_single_t param[fob_clusters_count];
 	};
 
 	struct fob_param_t
