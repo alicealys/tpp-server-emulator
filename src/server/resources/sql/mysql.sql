@@ -68,26 +68,24 @@ create table if not exists `player_records`
 )
 -- query:mgstpp.player_records.update_fob_ranking
 with ranked_players as (
-	select player_id, fob_point, 
-		   (select count(distinct fob_point) + 1 
-			from player_records pr2 
-			where pr2.fob_point > pr1.fob_point) as new_rank
-	from player_records pr1
+	select
+        player_id,
+        player_rank as new_rank
+	from event_rankings where event_id = 0
 )
 update player_records record
 join ranked_players ranked_player on record.player_id = ranked_player.player_id
-set record.fob_rank = ranked_player.new_rank where record.fob_point > 0;
+set record.fob_rank = ranked_player.new_rank;
 -- query:mgstpp.player_records.update_league_ranking
 with ranked_players as (
-	select player_id, league_point, 
-		   (select count(distinct league_point) + 1 
-			from player_records pr2 
-			where pr2.league_point > pr1.league_point) as new_rank
-	from player_records pr1
+	select
+        player_id,
+        player_rank as new_rank
+	from event_rankings where event_id = 15
 )
 update player_records record
 join ranked_players ranked_player on record.player_id = ranked_player.player_id
-set record.league_rank = ranked_player.new_rank where record.league_point > 0;
+set record.league_rank = ranked_player.new_rank;
 -- query:mgstpp.player_records.fob_grade.check_index
 select count(1) has_index from `information_schema`.`statistics` where table_schema='$database_name' and table_name='player_records' and index_name='fob_grade_index';
 -- query:mgstpp.player_records.fob_grade.create_index

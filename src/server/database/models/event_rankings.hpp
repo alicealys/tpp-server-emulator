@@ -134,4 +134,6 @@ namespace database::event_rankings
 	void reset_values(const event_type event_id);
 
 	std::chrono::seconds get_last_update();
+
+	void update_league(database_t& db);
 }

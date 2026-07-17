@@ -425,12 +425,17 @@ namespace database::event_rankings
 		last_update = now;
 
 		db.run_query("mgstpp.event_rankings.update_entries", static_cast<std::uint32_t>(league_point_total));
-		db.run_query("mgstpp.event_rankings.update_entries_league", static_cast<std::uint32_t>(league_point_total));
+		player_records::update_fob_ranking(db);
 	}
 
 	std::chrono::seconds get_last_update()
 	{
 		return std::chrono::duration_cast<std::chrono::seconds>(last_update.time_since_epoch());
+	}
+
+	void update_league(database_t& db)
+	{
+		db.run_query("mgstpp.event_rankings.update_entries_league", static_cast<std::uint32_t>(league_point_total));
 	}
 
 	class table final : public table_interface

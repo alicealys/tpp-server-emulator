@@ -323,5 +323,6 @@ namespace database::player_records
 	void set_pf_points(const std::uint64_t player_id, const std::uint32_t points);
 	bool spend_pf_points(const std::uint64_t player_id, const std::uint32_t points);
 
-	void update_league_ranking();
+	void update_fob_ranking(database_t& db);
+	void update_league_ranking(database_t& db);
 }

@@ -1477,7 +1477,8 @@ namespace database::pf_league
 		
 		if (league.get_type() == league_type_long)
 		{
-			database::player_records::update_league_ranking();
+			database::event_rankings::update_league(db);
+			database::player_records::update_league_ranking(db);
 		}
 
 		return true;

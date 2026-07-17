@@ -283,15 +283,6 @@ namespace database::player_records
 		template <database_type_t Type>
 		void update_fob_ranking(database_t& db)
 		{
-			static std::chrono::high_resolution_clock::time_point last_update{};
-			const auto now = std::chrono::high_resolution_clock::now();
-			if (now - last_update < 10min)
-			{
-				return;
-			}
-
-			last_update = now;
-
 			db.run_query("mgstpp.player_records.update_fob_ranking");
 
 			static std::vector<std::pair<std::uint32_t, std::uint32_t>> rank_ranges =
@@ -590,15 +581,6 @@ namespace database::player_records
 				}
 			});
 		}
-
-		template <database_type_t Type>
-		void update_league_ranking()
-		{
-			database::access([&](database::database_t& db)
-			{
-				db.run_query("mgstpp.player_records.update_league_ranking");
-			});
-		}
 	}
 
 	std::optional<player_record> find(const std::uint64_t player_id)
@@ -722,9 +704,9 @@ namespace database::player_records
 		RUN_IMPL(impl::spend_pf_points, player_id, points);
 	}
 
-	void update_league_ranking()
+	void update_league_ranking(database_t& db)
 	{
-		RUN_IMPL(impl::update_league_ranking);
+		db.run_query("mgstpp.player_records.update_league_ranking");
 	}
 
 	class table final : public table_interface
@@ -738,7 +720,7 @@ namespace database::player_records
 
 		void run_tasks(database_t& database) override
 		{
-			update_fob_ranking(database);
+
 		}
 	};
 }
