@@ -15,6 +15,7 @@ namespace database::event_rankings
 		{
 			{"BEST", lookup_best},
 			{"AROUND", lookup_around},
+			{"GRADE", lookup_grade},
 		};
 
 		std::unordered_map<std::string, event_class> event_class_map =
@@ -63,6 +64,7 @@ namespace database::event_rankings
 	GET_FIELD_C(event_ranking, std::uint64_t, player_id);
 	GET_FIELD_C(event_ranking, std::uint32_t, event_id);
 	GET_FIELD_C(event_ranking, std::uint64_t, rank);
+	GET_FIELD_C(event_ranking, std::uint64_t, rank_number);
 	GET_FIELD_C(event_ranking, std::int32_t, value);
 	GET_FIELD_C(event_ranking, std::uint32_t, fob_grade);
 	GET_FIELD_C(event_ranking, std::uint32_t, league_grade);
@@ -180,6 +182,142 @@ namespace database::event_rankings
 				return {results.front().player_rank};
 			});
 		}
+		
+		template <database_type_t Type>
+		std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id)
+		{
+			return database::access<std::optional<event_ranking>>([&](database_t& db)
+				-> std::optional<event_ranking>
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(event_ranking::table))
+						.from(event_ranking::table)
+							.where(event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && 
+								   event_ranking::table.player_id == player_id)
+					);
+
+				if (results.empty())
+				{
+					return {};
+				}
+
+				return event_ranking(results.front());
+			});
+		}
+				
+		template <database_type_t Type>
+		std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const event_type event_id, const bool league)
+		{
+			return database::access<std::optional<std::uint64_t>>([&](database_t& db)
+				-> std::optional<std::uint64_t>
+			{
+				auto joined_tables = event_ranking::table
+						.join(player_records::player_record::table)
+							.on(event_ranking::table.player_id == player_records::player_record::table.player_id)
+						.join(players::player::table)
+							.on(event_ranking::table.player_id == player_records::player_record::table.player_id && event_ranking::table.player_id == players::player::table.id);
+
+				if (league)
+				{
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(event_ranking::table), player_records::player_record::table.fob_grade, player_records::player_record::table.league_grade,
+									  players::player::table.account_id)
+							.from(joined_tables)
+								.where(event_ranking::table.player_rank != 0 && 
+									   event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && 
+									   player_records::player_record::table.league_grade <= grade)
+									.order_by(event_ranking::table.player_rank.asc())
+										.limit(1u)
+						);
+
+
+					if (results.empty())
+					{
+						return {};
+					}
+
+					return results.front().player_rank_number;
+				}
+				else
+				{
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(event_ranking::table), player_records::player_record::table.fob_grade, player_records::player_record::table.league_grade,
+									  players::player::table.account_id)
+							.from(joined_tables)
+								.where(event_ranking::table.player_rank != 0 && 
+									   event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && 
+									   player_records::player_record::table.fob_grade <= grade)
+									.order_by(event_ranking::table.player_rank.asc())
+										.limit(1u)
+						);
+
+
+					if (results.empty())
+					{
+						return {};
+					}
+
+					return results.front().player_rank_number;
+				}
+			});
+		}
+						
+		template <database_type_t Type>
+		std::uint32_t snap_grade(const std::uint32_t grade, const event_type event_id, const bool league)
+		{
+			return database::access<uint32_t>([&](database_t& db)
+				-> std::uint32_t
+			{
+				auto joined_tables = event_ranking::table
+						.join(player_records::player_record::table)
+							.on(event_ranking::table.player_id == player_records::player_record::table.player_id)
+						.join(players::player::table)
+							.on(event_ranking::table.player_id == player_records::player_record::table.player_id && event_ranking::table.player_id == players::player::table.id);
+
+				if (league)
+				{
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(event_ranking::table), player_records::player_record::table.fob_grade, player_records::player_record::table.league_grade,
+									  players::player::table.account_id)
+							.from(joined_tables)
+								.where(event_ranking::table.player_rank != 0 && 
+									   event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && 
+									   player_records::player_record::table.league_grade >= grade)
+									.order_by(player_records::player_record::table.league_grade.asc())
+										.limit(1u)
+						);
+
+
+					if (results.empty())
+					{
+						grade;
+					}
+
+					return static_cast<std::uint32_t>(results.front().league_grade);
+				}
+				else
+				{
+					auto results = db.get_database<Type>()->operator()(
+						sqlpp::select(sqlpp::all_of(event_ranking::table), player_records::player_record::table.fob_grade, player_records::player_record::table.league_grade,
+									  players::player::table.account_id)
+							.from(joined_tables)
+								.where(event_ranking::table.player_rank != 0 && 
+									   event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && 
+									   player_records::player_record::table.fob_grade >= grade)
+									.order_by(player_records::player_record::table.fob_grade.asc())
+										.limit(1u)
+						);
+
+
+					if (results.empty())
+					{
+						return grade;
+					}
+
+					return static_cast<std::uint32_t>(results.front().fob_grade);
+				}
+			});
+		}
 
 		template <database_type_t Type>
 		std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num)
@@ -200,9 +338,9 @@ namespace database::event_rankings
 								  players::player::table.account_id)
 						.from(joined_tables)
 							.where(event_ranking::table.player_rank != 0 && event_ranking::table.event_id == static_cast<std::uint32_t>(event_id))
-								.order_by(event_ranking::table.player_rank.asc())
+								.order_by(event_ranking::table.player_rank_number.asc())
 									.limit(num)
-									.offset(offset)
+										.offset(offset)
 					);
 
 				for (auto& row : results)
@@ -254,6 +392,21 @@ namespace database::event_rankings
 		RUN_IMPL(impl::get_player_rank, player_id, event_id);
 	}
 
+	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id)
+	{
+		RUN_IMPL(impl::get_player_entry, player_id, event_id);
+	}
+
+	std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const event_type event_id, const bool league)
+	{
+		RUN_IMPL(impl::get_grade_offset, grade, event_id, league);
+	}
+
+	std::uint32_t snap_grade(const std::uint32_t grade, const event_type event_id, const bool league)
+	{
+		RUN_IMPL(impl::snap_grade, grade, event_id, league);
+	}
+
 	std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num)
 	{
 		RUN_IMPL(impl::get_entries, event_id, offset, num);
@@ -271,7 +424,8 @@ namespace database::event_rankings
 
 		last_update = now;
 
-		db.run_query("mgstpp.event_rankings.update_entries");
+		db.run_query("mgstpp.event_rankings.update_entries", static_cast<std::uint32_t>(league_point_total));
+		db.run_query("mgstpp.event_rankings.update_entries_league", static_cast<std::uint32_t>(league_point_total));
 	}
 
 	std::chrono::seconds get_last_update()
