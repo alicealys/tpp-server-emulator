@@ -205,6 +205,7 @@ create table if not exists `event_rankings`
 	player_id	        bigint unsigned	not null,
 	event_id	        int unsigned	not null,
 	player_rank		    bigint unsigned	not null default 0,
+	player_rank_number	bigint unsigned	not null default 0,
 	value		        int 			not null default 0,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
@@ -217,14 +218,26 @@ join (
 		player_id,
 		event_id,
 		value,
-		case 
-			when value = 0 then 0 
-			else rank() over (partition by event_id order by value desc)
-		end as new_rank
-	from event_rankings
+		rank() over (partition by event_id order by value desc) as new_rank,
+		row_number() over (partition by event_id order by value desc) as new_rank_number
+	from event_rankings where event_id != {}
 ) ranked
 on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
-set event_ranking.player_rank = ranked.new_rank;
+set event_ranking.player_rank = ranked.new_rank, event_ranking.player_rank_number = new_rank_number;
+-- query:mgstpp.event_rankings.update_entries_league
+update event_rankings event_ranking
+join (
+	select
+		event_rankings.player_id,
+		event_id,
+        league_grade,
+		value,
+		rank() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank,
+		row_number() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank_number
+	from event_rankings join player_records on event_rankings.player_id = player_records.player_id where event_id = {}
+) ranked
+on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
+set event_ranking.player_rank = ranked.new_rank, event_ranking.player_rank_number = new_rank_number;
 -- query:mgstpp.mgo_characters.create
 create table if not exists `mgo_characters`
 (

@@ -54,7 +54,8 @@ namespace database::event_rankings
 	enum event_ranking_lookup_type
 	{
 		lookup_best,  // best global
-		lookup_around // around your placement
+		lookup_around, // around your placement
+		lookup_grade
 	};
 
 	enum event_ranking_type
@@ -73,8 +74,9 @@ namespace database::event_rankings
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(event_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_rank, sqlpp::integer_unsigned);
+		DEFINE_FIELD(player_rank_number, sqlpp::integer_unsigned);
 		DEFINE_FIELD(value, sqlpp::integer);
-		DEFINE_TABLE(event_rankings, id_field_t, player_id_field_t, event_id_field_t, player_rank_field_t, value_field_t);
+		DEFINE_TABLE(event_rankings, id_field_t, player_id_field_t, event_id_field_t, player_rank_field_t, player_rank_number_field_t, value_field_t);
 
 		inline static table_t table;
 
@@ -85,6 +87,7 @@ namespace database::event_rankings
 			this->player_id_ = row.player_id;
 			this->event_id_ = static_cast<std::uint32_t>(row.event_id);
 			this->rank_ = row.player_rank;
+			this->rank_number_ = row.player_rank_number;
 			this->value_ = static_cast<std::uint32_t>(row.value);
 		}
 
@@ -107,13 +110,11 @@ namespace database::event_rankings
 		GET_FIELD_H(std::uint64_t, player_id);
 		GET_FIELD_H(std::uint32_t, event_id);
 		GET_FIELD_H(std::uint64_t, rank);
+		GET_FIELD_H(std::uint64_t, rank_number);
 		GET_FIELD_H(std::int32_t, value);
 		GET_FIELD_H(std::uint32_t, fob_grade);
 		GET_FIELD_H(std::uint32_t, league_grade);
 		GET_FIELD_H(std::uint64_t, account_id);
-
-	private:
-
 	};
 
 	void create_entries(const std::uint64_t player_id);
@@ -123,6 +124,9 @@ namespace database::event_rankings
 	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value);
 
 	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const event_type event_id);
+	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id);
+	std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const event_type event_id, const bool league);
+	std::uint32_t snap_grade(const std::uint32_t grade, const event_type event_id, const bool league);
 
 	std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num);
 

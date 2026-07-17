@@ -205,6 +205,7 @@ create table if not exists `event_rankings`
 	player_id	        bigint unsigned	not null,
 	event_id	        int unsigned	not null,
 	player_rank		    bigint unsigned	not null default 0,
+	player_rank_number	bigint unsigned	not null default 0,
 	value		        int				not null default 0,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`, `event_id`)
@@ -215,15 +216,42 @@ with ranked as (
         player_id,
         event_id,
         value,
-        case 
-            when value = 0 then 0 
-            else rank() over (partition by event_id order by value desc)
-        end as new_rank
-    from event_rankings
+        rank() over (partition by event_id order by value desc) as new_rank,
+        row_number() over (partition by event_id order by value desc) as new_rank_number
+    from event_rankings where event_id != {}
 )
 update event_rankings
 set player_rank = (
     select ranked.new_rank
+    from ranked
+    where ranked.player_id = event_rankings.player_id
+      and ranked.event_id = event_rankings.event_id
+),
+player_rank_number = (
+    select ranked.new_rank_number
+    from ranked
+    where ranked.player_id = event_rankings.player_id
+      and ranked.event_id = event_rankings.event_id
+);
+-- query:mgstpp.event_rankings.update_entries_league
+with ranked as (
+    select
+        event_rankings.player_id,
+        event_id,
+        value,
+        rank() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank,
+		row_number() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank_number    
+	from event_rankings join player_records on event_rankings.player_id = player_records.player_id where event_id = {}
+)
+update event_rankings
+set player_rank = (
+    select ranked.new_rank
+    from ranked
+    where ranked.player_id = event_rankings.player_id
+      and ranked.event_id = event_rankings.event_id
+),
+player_rank_number = (
+    select ranked.new_rank_number
     from ranked
     where ranked.player_id = event_rankings.player_id
       and ranked.event_id = event_rankings.event_id

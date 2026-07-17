@@ -29,6 +29,7 @@ namespace emulator::tpp
 		const auto type = type_j.get<std::string>();
 		const auto event_id_opt = database::event_rankings::get_event_type_from_id(event_id_j.get<std::uint32_t>(), type);
 		const auto num = std::min(50u, num_j.get<std::uint32_t>());
+		const auto index = index_j.get<std::uint64_t>();
 
 		if (!event_id_opt.has_value() || !lookup_type_opt.has_value())
 		{
@@ -40,52 +41,60 @@ namespace emulator::tpp
 		const auto lookup_type = lookup_type_opt.value();
 		auto offset = 0ull;
 
-		if (lookup_type == database::event_rankings::lookup_around)
+		switch (lookup_type)
 		{
-			const auto player_rank = database::event_rankings::get_player_rank(player->get_id(), event_id);
-			if (player_rank.has_value())
-			{
-				if (player_rank.value() > 0)
-				{
-					const auto page_start = player_rank.value() - (player_rank.value() % num);
-					offset = page_start - 1;
-				}
-				else
-				{
-					offset = 0u;
-				}
-			}
-		}
-		else
+		case database::event_rankings::lookup_best:
 		{
-			offset = index_j.get<std::uint64_t>();
-			if (offset > 0)
-			{
-				offset--;
-			}
+			offset = index;
+			break;
 		}
+		case database::event_rankings::lookup_around:
+		{
+			const auto entry = database::event_rankings::get_player_entry(player->get_id(), event_id);
+			if (entry.has_value())
+			{
+				offset = entry->get_rank_number() - (entry->get_rank_number() % num);
+			}
+			break;
+		}
+		case database::event_rankings::lookup_grade:
+		{
+			const auto league = event_id >= database::event_rankings::league_event_start;
+			const auto grade = database::event_rankings::snap_grade(static_cast<std::uint32_t>(index), event_id, league);
+			const auto idx = database::event_rankings::get_grade_offset(grade, event_id, league);
+			if (idx.has_value())
+			{
+				offset = idx.value();
+			}
 
-		const auto entries = database::event_rankings::get_entries(event_id, offset, num);
+			break;
+		}
+		}
 
 		result["ranking_list"] = nlohmann::json::array();
 
+		if (offset > 0)
+		{
+			offset -= 1;
+		}
+
+		const auto entries = database::event_rankings::get_entries(event_id, offset, num);
 		for (auto i = 0ull; i < entries.size(); i++)
 		{
 			const auto& entry = entries[i];
 			auto& json_entry = result["ranking_list"][i];
 
-			json_entry["disp_rank"] = 0;
-			json_entry["rank"] = entry.get_rank();
+			json_entry["disp_rank"] = entry.get_rank();
+			json_entry["rank"] = entry.get_rank_number();
 			json_entry["fob_grade"] = entry.get_fob_grade();
 			json_entry["league_grade"] = entry.get_league_grade();
 			json_entry["score"] = entry.get_value();
-			json_entry["is_grade_top"] = lookup_type == database::event_rankings::lookup_best && offset == 0 && i == 0;
+			json_entry["is_grade_top"] = entry.get_rank_number() == 1 ? 1 : 0;
 			json_entry["player_info"] = player_info(entry.get_player_id(), entry.get_account_id());
 		}
 
 		result["ranking_num"] = entries.size();
 		result["update_date"] = database::event_rankings::get_last_update().count();
-		result["result"] = game::get_error(NOERR);
 
 		return result;
 	}
