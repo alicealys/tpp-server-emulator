@@ -251,6 +251,7 @@ namespace database::fob_events
 
 			reset_values();
 			variables::set(event_number_variable_name, current_event_number);
+			players::disable_all_security_challenges();
 		}
 	}
 

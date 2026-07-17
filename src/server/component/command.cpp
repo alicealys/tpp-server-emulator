@@ -331,7 +331,7 @@ namespace command
 					for (auto& fob : fobs)
 					{
 						const auto& clusters = fob.get_cluster_param();
-						for (auto i = 0; i < game::fob_sections_count; i++)
+						for (auto i = 0; i < game::fob_clusters_count; i++)
 						{
 							if (clusters.param->build.fields.platform_count != 0)
 							{

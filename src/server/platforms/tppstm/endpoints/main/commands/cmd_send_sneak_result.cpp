@@ -146,7 +146,32 @@ namespace emulator::tpp
 			owner_prison = new_prison;
 		}
 
-		void write_staff(const database::player_data::player_data& player_data, const database::player_data::staff_array_container& staff_array)
+		void check_disable_security_challenge(const database::player_data::player_data& player_data, database::player_data::unit_counts_t& unit_counts)
+		{
+			const auto fob_list = database::fobs::get_fob_list(player_data.get_player_id());
+			auto min_guards = 0u;
+
+			for (const auto& fob : fob_list)
+			{
+				const auto& clusters = fob.get_cluster_param();
+				for (auto i = 0u; i < game::fob_clusters_count; i++)
+				{
+					auto guard_count = 0u;
+					guard_count += clusters.param[i].common_security[0].soldier;
+					guard_count += clusters.param[i].common_security[1].soldier;
+					guard_count += clusters.param[i].common_security[2].soldier;
+					guard_count += clusters.param[i].unique_security.soldier;
+					min_guards = std::max(min_guards, guard_count);
+				}
+			}
+
+			if (unit_counts[game::unit_security] < min_guards)
+			{
+				database::players::set_security_challenge(player_data.get_player_id(), false);
+			}
+		}
+
+		void write_staff(const database::player_data::player_data& player_data, const database::player_data::staff_array_container& staff_array, bool is_owner)
 		{
 			database::player_data::unit_counts_t counts{};
 			database::player_data::unit_levels_t levels{};
@@ -170,6 +195,11 @@ namespace emulator::tpp
 			for (auto i = 0; i < game::unit_count; i++)
 			{
 				levels[i] = player_data.get_unit_level(i);
+			}
+
+			if (is_owner)
+			{
+				check_disable_security_challenge(player_data, counts);
 			}
 
 			database::player_data::set_soldier_data(player_data.get_player_id(), new_staff_count, staff_array, levels, counts);
@@ -229,10 +259,10 @@ namespace emulator::tpp
 
 			if (!has_insurance)
 			{
-				write_staff(owner_data, owner_staff);
+				write_staff(owner_data, owner_staff, true);
 			}
 
-			write_staff(attacker_data, attacker_staff);
+			write_staff(attacker_data, attacker_staff, false);
 
 			database::player_data::set_prison_bin(owner_data.get_player_id(), owner_prison);
 			database::player_data::set_prison_bin(attacker_data.get_player_id(), attacker_prison);
