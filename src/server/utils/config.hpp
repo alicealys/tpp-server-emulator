@@ -67,12 +67,4 @@ namespace config
 	}
 
 	nlohmann::json get_raw(const std::string& key);
-
-	template <typename T>
-	void set(const std::string& key, const T& value)
-	{
-		auto cfg = read_config();
-		cfg[key] = validate_config_field(key, value);
-		write_config(cfg);
-	}
 }
