@@ -18,12 +18,8 @@
 #include "utils/resources.hpp"
 #include "vars.hpp"
 
-#define SINGLE_CONNECTION_INDEX 0
-
 namespace database
 {
-	constexpr auto max_connections = 256;
-
 	using database_mutex_t = std::recursive_mutex;
 
 	enum database_type_t
@@ -113,66 +109,42 @@ namespace database
 
 	using database_t = database_container;
 
-	struct connection_t
+	class connection
 	{
+	public:
+		connection() = default;
+		void check();
+		void cleanup();
+
 		database_t db;
 		database_mutex_t mutex;
-		std::chrono::high_resolution_clock::time_point start;
-		std::chrono::high_resolution_clock::time_point last_access;
+
+	private:
+		std::chrono::high_resolution_clock::time_point start_;
+		std::chrono::high_resolution_clock::time_point last_access_;
+
 	};
 
-	extern std::array<connection_t, max_connections> connection_pool;
-
-	void initialize();
-
-	void check_connection(connection_t& connection);
+	connection* get_connection(std::unique_lock<database_mutex_t>& lock);
 
 	template <typename T = void, typename F>
 	T access(F&& accessor)
 	{
-		const auto access_multi = [&]
+		std::unique_lock<database_mutex_t> lock;
+		auto conn = get_connection(lock);
+		if (conn == nullptr)
 		{
-			for (auto& connection : connection_pool)
-			{
-				std::unique_lock<database_mutex_t> lock(connection.mutex, std::try_to_lock);
-				if (!lock.owns_lock())
-				{
-					continue;
-				}
-
-				check_connection(connection);
-				return accessor(connection.db);
-			}
-
 			throw std::runtime_error("out of connections");
-		};
-
-		const auto access_single = [&]
-		{
-			auto& connection = connection_pool[SINGLE_CONNECTION_INDEX];
-
-			std::unique_lock<database_mutex_t> lock(connection.mutex);
-			check_connection(connection);
-
-			return accessor(connection.db);
-		};
-
-
-		if (get_database_def().use_multi_connection)
-		{
-			return access_multi();
 		}
-		else
-		{
-			return access_single();
-		}
+
+		conn->check();
+		return accessor(conn->db);
 	}
 
-	void cleanup_connections();
-
+	void initialize();
 	void post_start();
-
 	void run_tasks();
+	void stop();
 
 #ifdef MYSQL_SUPPORTED
 

@@ -13,9 +13,10 @@ namespace database
 	namespace
 	{
 		database_def_t database_def{};
+		constexpr const auto max_connections = 150;
+		constexpr const auto connection_lifetime = 60s * 10;
+		std::array<connection, max_connections> connection_pool;
 	}
-
-	std::array<connection_t, max_connections> connection_pool;
 
 	database_type_t get_database_type()
 	{
@@ -201,49 +202,94 @@ namespace database
 		this->dbs_.sqlite3_.reset();
 	}
 
-	void check_connection(connection_t& connection)
+	void connection::check()
 	{
 		const auto now = std::chrono::high_resolution_clock::now();
-		const auto diff = now - connection.start;
+		const auto diff = now - this->start_;
 
-		if (!connection.db.is_valid() || diff >= 1h)
+		if (!this->db.is_valid() || diff >= connection_lifetime)
 		{
-			connection.db.create_connection();
-			connection.start = now;
+			this->db.create_connection();
+			this->start_ = now;
 		}
 
-		connection.last_access = now;
+		this->last_access_ = now;
 	}
 
-	void cleanup_connection(connection_t& connection)
+	void connection::cleanup()
 	{
-		std::unique_lock<database_mutex_t> lock(connection.mutex, std::try_to_lock);
+		std::unique_lock<database_mutex_t> lock(this->mutex, std::try_to_lock);
 		if (!lock.owns_lock())
 		{
 			return;
 		}
 
 		const auto now = std::chrono::high_resolution_clock::now();
-		const auto diff = now - connection.last_access;
+		const auto diff = now - this->last_access_;
 		if (diff >= database::vars.session_timeout)
 		{
-			connection.db.reset();
+			this->db.reset();
 		}
+	}
+
+	connection* get_connection(std::unique_lock<database_mutex_t>& lock)
+	{
+		if (!get_database_def().use_multi_connection)
+		{
+			static connection single_connection;
+			return &single_connection;
+		}
+
+		static thread_local connection* last_connection{};
+		if (last_connection != nullptr)
+		{
+			lock = std::unique_lock(last_connection->mutex, std::try_to_lock);
+			if (lock.owns_lock())
+			{
+				return last_connection;
+			}
+		}
+
+		for (auto i = 0ull; i < connection_pool.size(); i++)
+		{
+			auto connection = &connection_pool[i];
+			if (connection == last_connection)
+			{
+				continue;
+			}
+
+			lock = std::unique_lock(connection->mutex, std::try_to_lock);
+			if (!lock.owns_lock())
+			{
+				continue;
+			}
+
+			last_connection = connection;
+			return connection;
+		}
+
+		return nullptr;
 	}
 
 	void cleanup_connections()
 	{
-		if (get_database_def().use_multi_connection)
+		if (!get_database_def().use_multi_connection)
 		{
-			for (auto& connection : connection_pool)
-			{
-				cleanup_connection(connection);
-			}
+			return;
 		}
-		else
+
+		const auto now = std::chrono::high_resolution_clock::now();
+		static auto last_check = now;
+		if (now - last_check < connection_lifetime)
 		{
-			auto& connection = connection_pool[SINGLE_CONNECTION_INDEX];
-			cleanup_connection(connection);
+			return;
+		}
+
+		last_check = now;
+
+		for (auto& connection : connection_pool)
+		{
+			connection.cleanup();
 		}
 	}
 
@@ -260,6 +306,8 @@ namespace database
 
 	void run_tasks()
 	{
+		cleanup_connections();
+
 		database::access([](database_t& db)
 		{
 			for (const auto& table : get_tables())
@@ -298,5 +346,10 @@ namespace database
 	{
 		initialize_vars();
 		create_tables();
+	}
+
+	void stop()
+	{
+
 	}
 }
