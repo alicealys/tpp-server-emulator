@@ -12,24 +12,6 @@ namespace emulator::scripting
 #ifdef MYSQL_SUPPORTED
 		namespace mysql
 		{
-			nlohmann::json field_to_value(const MYSQL_FIELD* field, const std::string& row)
-			{
-				switch (field->type)
-				{
-				case enum_field_types::MYSQL_TYPE_INT24:
-				case enum_field_types::MYSQL_TYPE_LONG:
-				case enum_field_types::MYSQL_TYPE_SHORT:
-					return std::atoi(row.data());
-				case enum_field_types::MYSQL_TYPE_LONGLONG:
-					return row;
-				case enum_field_types::MYSQL_TYPE_FLOAT:
-				case enum_field_types::MYSQL_TYPE_DOUBLE:
-					return static_cast<float>(std::atof(row.data()));
-				}
-
-				return row;
-			}
-
 			nlohmann::json bind_to_value(const MYSQL_BIND* bind)
 			{
 				switch (bind->buffer_type)
