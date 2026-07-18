@@ -247,7 +247,7 @@ namespace command
 						for (auto f = 0u; f < num_fields; f++)
 						{
 							separator.push_back('+');
-							for (auto i = 0; i < max_field_lengths[f] + 2; i++)
+							for (auto i = 0u; i < max_field_lengths[f] + 2; i++)
 							{
 								separator.push_back('-');
 							}
@@ -276,7 +276,7 @@ namespace command
 
 								row_buffer.append(field_value);
 
-								for (auto i = 0; i < diff; i++)
+								for (auto i = 0u; i < diff; i++)
 								{
 									row_buffer.push_back(' ');
 								}
@@ -298,7 +298,7 @@ namespace command
 							print_values(fields_str);
 							print_separator();
 
-							for (auto i = 0; i < result->row_count; i++)
+							for (auto i = 0u; i < result->row_count; i++)
 							{
 								print_values(rows[i]);
 							}
