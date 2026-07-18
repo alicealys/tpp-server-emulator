@@ -126,20 +126,6 @@ namespace config
 		return validate_config_field(key, cfg[key]);
 	}
 
-	void write_config(const nlohmann::json& json)
-	{
-		try
-		{
-			const auto path = get_config_file_path();
-			const auto str = json.dump(4);
-			utils::io::write_file(path, str, false);
-		}
-		catch (const std::exception& e)
-		{
-			printf("Failed to write config file: %s\n", e.what());
-		}
-	}
-
 	nlohmann::json read_config()
 	{
 		const auto path = get_config_file_path();
@@ -155,8 +141,7 @@ namespace config
 		}
 		catch (const std::exception& e)
 		{
-			printf("Failed to parse config file: %s\n", e.what());
-			utils::io::write_file(path, "{}", false);
+			console::error("Failed to parse config file: %s\n", e.what());
 		}
 
 		return {};
