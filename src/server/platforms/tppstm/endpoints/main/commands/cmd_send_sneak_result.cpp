@@ -434,13 +434,17 @@ namespace emulator::tpp
 
 		const auto sneak_result = sneak_result_j.get<std::string>();
 		const auto is_win = sneak_result == "WIN";
-		const auto sneak_point = sneak_point_j.get<std::int32_t>();
-		const auto event_point = event_point_j.get<std::uint32_t>();
 		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
 		const auto is_goal = is_goal_j.get<std::uint32_t>() == 1;
 		const auto is_perfect_stealth = is_perfect_stealth_j.get<std::uint32_t>() == 1;
 		const auto mode_str = mode_str_j.get<std::string>();
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
+
+		auto sneak_point = sneak_point_j.get<std::int32_t>();
+		auto event_point = event_point_j.get<std::uint32_t>();
+
+		sneak_point = std::clamp(sneak_point, -500000, 500000);
+		event_point = std::clamp(event_point, 0u, 500000u);
 
 		const auto fob = database::fobs::get_fob(mother_base_id);
 		if (!fob.has_value())
