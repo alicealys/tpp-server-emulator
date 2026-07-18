@@ -12,6 +12,7 @@
 
 namespace
 {
+#ifdef _WIN32
 	std::unordered_map<std::string, int> embedded_dlls =
 	{
 		{"libmysql.dll", RESOURCE_DLL_LIBMYSQL},
@@ -21,7 +22,6 @@ namespace
 
 	void write_dlls()
 	{
-#ifdef _WIN32
 		const auto use_tmp_folder = config::get<bool>("use_tmp_folder");
 
 		if (use_tmp_folder)
@@ -42,8 +42,8 @@ namespace
 				utils::io::write_file(name, binary_resource.get_data());
 			}
 		}
-#endif
 	}
+#endif
 
 	void set_working_dir()
 	{
@@ -56,10 +56,13 @@ namespace
 	}
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	utils::flags::init(argc, argv);
 	set_working_dir();
+#ifdef _WIN32
 	write_dlls();
+#endif
 	emulator::start_server();
 	return 0;
 }
