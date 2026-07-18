@@ -56,14 +56,7 @@ namespace emulator
 
 		startup = std::chrono::system_clock::now();
 
-		threads.emplace_back([&]
-		{
-			while (!killed)
-			{
-				scripting::run_frame();
-				std::this_thread::sleep_for(10ms);
-			}
-		});
+		static const auto use_lua_scripts = config::get<bool>("use_lua_scripts");
 
 		threads.emplace_back([&]
 		{
@@ -77,7 +70,6 @@ namespace emulator
 		{
 			while (!killed)
 			{
-				database::cleanup_connections();
 				database::run_tasks();
 				std::this_thread::sleep_for(100ms);
 			}
@@ -86,7 +78,18 @@ namespace emulator
 		database::post_start();
 		component_loader::post_start();
 
-		scripting::start();
+		if (use_lua_scripts)
+		{
+			scripting::start();
+			threads.emplace_back([&]
+			{
+				while (!killed)
+				{
+					scripting::run_frame();
+					std::this_thread::sleep_for(10ms);
+				}
+			});
+		}
 
 		while (!killed)
 		{
@@ -95,6 +98,7 @@ namespace emulator
 		}
 
 		scripting::stop();
+		database::stop();
 
 		for (auto& thread : threads)
 		{
