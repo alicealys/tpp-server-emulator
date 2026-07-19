@@ -68,10 +68,18 @@ namespace emulator
 
 		threads.emplace_back([]
 		{
-			while (!killed)
+			try
 			{
-				database::run_tasks();
-				std::this_thread::sleep_for(100ms);
+				while (!killed)
+				{
+					database::run_tasks();
+					std::this_thread::sleep_for(100ms);
+				}
+			}
+			catch (const std::exception& e)
+			{
+				console::error("database thread: %s\n", e.what());
+				killed = true;
 			}
 		});
 
