@@ -65,7 +65,7 @@ jobs:
       - name: Upload ${{matrix.arch}} libs
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.arch}}-libs
+          name: libs
           path: |
             deps/mysql/lib/*.dll
   build-linux:
@@ -127,7 +127,7 @@ jobs:
       - name: Upload ${{matrix.arch}} libs
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.arch}}-libs
+          name: libs
           path: |
             deps/mysql/lib/*.so*
   deploy:
@@ -156,10 +156,10 @@ jobs:
           name: release-resources
           path: resources
 
-      - name: Download release libs
+      - name: Download libs
         uses: actions/download-artifact@v4
         with:
-          name: release-libs
+          name: libs
           path: libs
 
       - name: Install SSH key
