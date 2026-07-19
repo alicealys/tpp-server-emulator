@@ -81,7 +81,7 @@ namespace emulator
 			this->http_server.set_tls(cert_file, key_file);
 		}
 
-		this->http_server.set_request_handler([&](const utils::request_params& request, utils::response_params& response)
+		this->http_server.set_request_handler([this](const utils::request_params& request, utils::response_params& response)
 		{
 			this->request_handler(request, response);
 		});
