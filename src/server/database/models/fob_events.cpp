@@ -216,7 +216,7 @@ namespace database::fob_events
 
 		void reset_values()
 		{
-			database::event_rankings::reset_values(database::event_rankings::fob_event_ranking);
+			database::event_rankings::reset_periodic_values();
 			database::player_records::reset_event_points();
 			database::mgo_data::reset_survival_tickets(database::mgo_data::base_survival_tickets);
 		}

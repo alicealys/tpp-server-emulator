@@ -141,7 +141,7 @@ namespace database::event_rankings
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(event_ranking::table)
-						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0)
+						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0, event_ranking::table.player_rank_number = 0)
 							.where(event_ranking::table.event_id != static_cast<std::uint32_t>(ep_earned) &&
 								   event_ranking::table.event_id != static_cast<std::uint32_t>(league_point_total))
 					);
@@ -155,7 +155,7 @@ namespace database::event_rankings
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(event_ranking::table)
-						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0)
+						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0, event_ranking::table.player_rank_number = 0)
 							.where(event_ranking::table.event_id == static_cast<std::uint32_t>(event_id))
 					);
 			});
