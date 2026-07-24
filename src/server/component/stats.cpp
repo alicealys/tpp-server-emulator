@@ -17,11 +17,14 @@ namespace stats
 	{
 		void update_window_title()
 		{
-#ifdef _WIN32
 			const auto total_count = database::players::get_player_count();
 			const auto active_count = database::players::get_online_player_count();
 			const auto title = std::format("tpp-server-emulator - ({} / {} active players)", active_count, total_count);
+
+#ifdef _WIN32
 			SetConsoleTitle(title.data());
+#else
+			printf("\033]0;%s\007", title.data());
 #endif
 		}
 	}
