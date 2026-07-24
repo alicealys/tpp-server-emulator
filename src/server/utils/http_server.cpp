@@ -82,7 +82,7 @@ namespace utils
 						}
 					}
 
-					if (data.len == 8)
+					if (data.len == sizeof(response_params*))
 					{
 						auto task_data = *reinterpret_cast<response_params**>(data.buf);
 						delete task_data;
