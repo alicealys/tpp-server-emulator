@@ -43,8 +43,7 @@ namespace emulator::tpp
 		{
 			game::fob_construct_param_t param{};
 			param.packed = fob.get_construct_param().packed;
-			param.fields.area_id = area_id;
-			param.fields.area_code = area_id;
+			param.fields.area = area_id;
 
 			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::waters_transfer_fee, price, area_id);
 			database::fobs::set_construct_param(player->get_id(), fob_index, param);

@@ -559,7 +559,7 @@ namespace game
 	{{
 		// common
 		{
-			.uav = 4,
+			.uav = 2,
 			.mine = 9,
 			.decoy = 9,
 			.camera = 7,
@@ -577,13 +577,24 @@ namespace game
 			.decoy = 12,
 			.camera = 8,
 			.soldier = 12,
-			.antitheft = 6,
+			.antitheft = 0,
 			.ir_sensor = 5,
 			.caution_area = 0,
 			.voluntary_coord_mine_count = max_fob_voluntary_mine_count,
 			.voluntary_coord_camera_count = max_fob_voluntary_camera_count,
 		},
 	}};
+
+	std::array<std::uint8_t, 7> antitheft_unique_caps =
+	{
+		6,
+		4,
+		4,
+		22,
+		4,
+		4,
+		4,
+	};
 
 	std::vector<std::string> unit_names =
 	{
@@ -630,7 +641,7 @@ namespace game
 		{"unique_security"},
 	};
 
-	void parse_cluster_param_security(nlohmann::json& security_j, game::fob_security_t& security, bool is_unique)
+	void parse_cluster_param_security(nlohmann::json& security_j, game::fob_security_t& security, bool is_unique, const std::uint32_t cluster)
 	{
 		if (!security_j.is_object())
 		{
@@ -655,7 +666,15 @@ namespace game
 			return std::min(cap, value);
 		};
 
-		security.antitheft = get("antitheft", game::fob_security_caps[is_unique].antitheft);
+		if (is_unique)
+		{
+			security.antitheft = get("antitheft", antitheft_unique_caps[cluster]);
+		}
+		else
+		{
+			security.antitheft = get("antitheft", game::fob_security_caps[is_unique].antitheft);
+		}
+
 		security.camera = get("camera", game::fob_security_caps[is_unique].camera);
 		security.caution_area = get("caution_area", game::fob_security_caps[is_unique].caution_area);
 		security.decoy = get("decoy", game::fob_security_caps[is_unique].decoy);
@@ -693,7 +712,7 @@ namespace game
 			coord.rotation_w = get_value("rotation_w");
 
 			coord.placed_index = placed_index_j.get<std::int32_t>();
-			return true;
+			return coord.placed_index != 255;
 		};
 
 		const auto parse_coords = [&](nlohmann::json& coords_j, game::fob_voluntary_coord_t* coords, const std::uint8_t cap)
@@ -705,27 +724,88 @@ namespace game
 			}
 
 			const auto count = std::min(cap, static_cast<std::uint8_t>(coords_j.size()));
+			std::uint8_t result_count = 0u;
 
 			for (auto i = 0u; i < count; i++)
 			{
 				auto& coord_j = coords_j[i];
-				if (!parse_coord(coord_j, coords[i]))
+				if (parse_coord(coord_j, coords[i]))
 				{
-					return 0u;
+					result_count++;
 				}
 			}
 
-			return count;
+			return result_count;
 		};
 
 		auto& voluntary_coord_mine_params_j = security_j["voluntary_coord_mine_params"];
 		auto& voluntary_coord_camera_params_j = security_j["voluntary_coord_camera_params"];
 
-		security.voluntary_coord_mine_count =
-			parse_coords(voluntary_coord_mine_params_j, &security.voluntary_coord_mine_params[0], game::max_fob_voluntary_mine_count);
+		if (voluntary_coord_mine_params_j.is_array())
+		{
+			security.voluntary_coord_mine_count = parse_coords(voluntary_coord_mine_params_j, 
+				&security.voluntary_coord_mine_params[0], game::max_fob_voluntary_mine_count);
+		}
+		else
+		{
+			security.voluntary_coord_mine_count = -1;
+		}
 
-		security.voluntary_coord_camera_count =
-			parse_coords(voluntary_coord_camera_params_j, &security.voluntary_coord_camera_params[0], game::max_fob_voluntary_camera_count);
+		if (voluntary_coord_camera_params_j.is_array())
+		{
+			security.voluntary_coord_camera_count = parse_coords(voluntary_coord_camera_params_j, 
+				&security.voluntary_coord_camera_params[0], game::max_fob_voluntary_camera_count);
+		}
+		else
+		{
+			security.voluntary_coord_camera_count = -1;
+		}
+
+	}
+
+	void validate_construct_param(fob_construct_param_t& param)
+	{
+		param.fields.unk1 = 1;
+		param.fields.pad = 0;
+
+#define SNAP_VALUE(value, min, max, ceil) \
+			if (value >= min && param.fields.layout <= ceil) \
+			{ \
+				value = std::clamp(param.fields.layout, min, max); \
+			} \
+
+		if (param.fields.layout >= 10 && param.fields.layout <= 110)
+		{
+			SNAP_VALUE(param.fields.layout, 10u, 13u, 19u);
+			SNAP_VALUE(param.fields.layout, 20u, 23u, 29u);
+			SNAP_VALUE(param.fields.layout, 30u, 33u, 39u);
+			SNAP_VALUE(param.fields.layout, 40u, 43u, 49u);
+			SNAP_VALUE(param.fields.layout, 50u, 53u, 59u);
+			SNAP_VALUE(param.fields.layout, 60u, 63u, 69u);
+			SNAP_VALUE(param.fields.layout, 70u, 73u, 79u);
+			SNAP_VALUE(param.fields.layout, 80u, 83u, 89u);
+			SNAP_VALUE(param.fields.layout, 90u, 93u, 99u);
+			SNAP_VALUE(param.fields.layout, 100u, 103u, 110u);
+		}
+		else
+		{
+			param.fields.layout = 10;
+		}
+
+		if (param.fields.area >= 10 && param.fields.area < 80)
+		{
+			SNAP_VALUE(param.fields.layout, 10u, 11u, 19u);
+			SNAP_VALUE(param.fields.layout, 20u, 21u, 29u);
+			SNAP_VALUE(param.fields.layout, 30u, 32u, 39u);
+			SNAP_VALUE(param.fields.layout, 40u, 42u, 49u);
+			SNAP_VALUE(param.fields.layout, 50u, 53u, 59u);
+			SNAP_VALUE(param.fields.layout, 60u, 63u, 69u);
+			SNAP_VALUE(param.fields.layout, 70u, 71u, 79u);
+		}
+		else
+		{
+			param.fields.area = 10;
+		}
 	}
 
 	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param)
@@ -750,14 +830,57 @@ namespace game
 			}
 
 			section_param.build.packed = section_param_j["build"].get<std::uint32_t>();
-			section_param.cluster_security.packed = section_param_j["cluster_security"].get<std::uint32_t>();
-			section_param.soldier_rank = section_param_j["soldier_rank"].get<std::uint8_t>();
 
-			parse_cluster_param_security(section_param_j["unique_security"], section_param.unique_security, true);
-			parse_cluster_param_security(section_param_j["common1_security"], section_param.common_security[0], false);
-			parse_cluster_param_security(section_param_j["common2_security"], section_param.common_security[1], false);
-			parse_cluster_param_security(section_param_j["common3_security"], section_param.common_security[2], false);
+			section_param.cluster_security.packed = section_param_j["cluster_security"].get<std::uint32_t>();
+			section_param.cluster_security.fields.level = std::clamp(section_param.cluster_security.fields.level, 0u, 78u);
+			section_param.cluster_security.fields.grade = std::clamp(section_param.cluster_security.fields.grade, 0u, 11u);
+
+			section_param.soldier_rank = section_param_j["soldier_rank"].get<std::uint8_t>();
+			section_param.soldier_rank = std::clamp(section_param.soldier_rank, std::uint8_t(0u), std::uint8_t(9u));
+
+			parse_cluster_param_security(section_param_j["unique_security"], section_param.unique_security, true, i);
+			parse_cluster_param_security(section_param_j["common1_security"], section_param.common_security[0], false, i);
+			parse_cluster_param_security(section_param_j["common2_security"], section_param.common_security[1], false, i);
+			parse_cluster_param_security(section_param_j["common3_security"], section_param.common_security[2], false, i);
 		}
+
+		return true;
+	}
+
+	bool parse_fob_param(nlohmann::json& param_j, game::fob_param_t& param)
+	{
+		param.security_rank = param_j["security_rank"].get<std::uint8_t>();
+		param.construct_param.packed = param_j["construct_param"].get<std::uint32_t>();
+		
+		validate_construct_param(param.construct_param);
+
+		param.area_id = param.construct_param.fields.area;
+
+		if (!game::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
+		{
+			return false;
+		}
+
+		auto security_rank_total = 0u;
+		auto section_count = 0u;
+
+		for (auto i = 0; i < fob_clusters_count; i++)
+		{
+			if (param.cluster_param.param[i].build.fields.platform_count > 4)
+			{
+				param.cluster_param.param[i].build.fields.platform_count = 4;
+			}
+
+			if (param.cluster_param.param[i].build.fields.platform_count > 0)
+			{
+				section_count++;
+			}
+
+			security_rank_total += param.cluster_param.param[i].cluster_security.fields.level;
+			param.platform_count += static_cast<std::uint8_t>(param.cluster_param.param[i].build.fields.platform_count);
+		}
+
+		param.security_rank = static_cast<std::uint8_t>(static_cast<float>(security_rank_total) / static_cast<float>(section_count));
 
 		return true;
 	}
@@ -777,8 +900,18 @@ namespace game
 			security_j["ir_sensor"] = security.ir_sensor;
 			security_j["caution_area"] = security.caution_area;
 
-			const auto mine_count = std::min(static_cast<std::uint8_t>(max_fob_voluntary_mine_count), security.voluntary_coord_mine_count);
-			const auto camera_count = std::min(static_cast<std::uint8_t>(max_fob_voluntary_camera_count), security.voluntary_coord_camera_count);
+			auto mine_count = std::min(static_cast<std::int8_t>(max_fob_voluntary_mine_count), security.voluntary_coord_mine_count);
+			auto camera_count = std::min(static_cast<std::int8_t>(max_fob_voluntary_camera_count), security.voluntary_coord_camera_count);
+
+			if (mine_count < 0)
+			{
+				mine_count = 0;
+			}
+
+			if (camera_count < 0)
+			{
+				camera_count = 0;
+			}
 
 			security_j["voluntary_coord_mine_count"] = mine_count;
 			security_j["voluntary_coord_camera_count"] = camera_count;
@@ -798,12 +931,12 @@ namespace game
 				coord_j["placed_index"] = coord.placed_index;
 			};
 
-			for (auto o = 0u; o < mine_count; o++)
+			for (auto o = 0; o < mine_count; o++)
 			{
 				add_coord(security_j["voluntary_coord_mine_params"][o], security.voluntary_coord_mine_params[o]);
 			}
 
-			for (auto o = 0u; o < camera_count; o++)
+			for (auto o = 0; o < camera_count; o++)
 			{
 				add_coord(security_j["voluntary_coord_camera_params"][o], security.voluntary_coord_camera_params[o]);
 			}

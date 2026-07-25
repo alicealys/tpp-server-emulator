@@ -147,6 +147,8 @@ namespace database::fobs
 				const auto index = list.size();
 
 				static game::fob_cluster_param_t cluster_param_default{};
+				game::fob_construct_param_t default_construct_param{};
+				game::validate_construct_param(default_construct_param);
 
 				if (fob_id == 0)
 				{
@@ -156,7 +158,7 @@ namespace database::fobs
 								 fob::table.area_id = area_id,
 								 fob::table.fob_index = index,
 								 fob::table.cluster_param = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(cluster_param_default)),
-								 fob::table.construct_param = 0,
+								 fob::table.construct_param = default_construct_param.packed,
 								 fob::table.create_date = std::chrono::system_clock::now()
 						));
 				}
@@ -169,7 +171,7 @@ namespace database::fobs
 								 fob::table.area_id = area_id,
 								 fob::table.fob_index = index,
 								 fob::table.cluster_param = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(cluster_param_default)),
-								 fob::table.construct_param = 0,
+								 fob::table.construct_param = default_construct_param.packed,
 								 fob::table.create_date = std::chrono::system_clock::now()
 						));
 				}
@@ -200,14 +202,32 @@ namespace database::fobs
 
 					const auto merge_security = [&](game::fob_security_t& new_security, game::fob_security_t& old_security)
 					{
-						if (new_security.voluntary_coord_mine_count == 0u && new_security.voluntary_coord_camera_count == 0u &&
-							old_security.voluntary_coord_mine_count != 0u && old_security.voluntary_coord_camera_count != 0u)
+						if (new_security.voluntary_coord_camera_count < 0)
 						{
-							new_security.voluntary_coord_mine_count = old_security.voluntary_coord_mine_count;
-							new_security.voluntary_coord_camera_count = old_security.voluntary_coord_camera_count;
+							if (old_security.voluntary_coord_camera_count > 0)
+							{
+								new_security.voluntary_coord_camera_count = old_security.voluntary_coord_camera_count;
+								std::memcpy(new_security.voluntary_coord_camera_params,
+									old_security.voluntary_coord_camera_params, sizeof(game::fob_security_t::voluntary_coord_camera_params));
+							}
+							else
+							{
+								new_security.voluntary_coord_camera_count = 0;
+							}
+						}
 
-							std::memcpy(new_security.voluntary_coord_mine_params, old_security.voluntary_coord_mine_params, sizeof(game::fob_security_t::voluntary_coord_mine_params));
-							std::memcpy(new_security.voluntary_coord_camera_params, old_security.voluntary_coord_camera_params, sizeof(game::fob_security_t::voluntary_coord_camera_params));
+						if (new_security.voluntary_coord_mine_count < 0)
+						{
+							if (old_security.voluntary_coord_mine_count > 0)
+							{
+								new_security.voluntary_coord_mine_count = old_security.voluntary_coord_mine_count;
+								std::memcpy(new_security.voluntary_coord_mine_params,
+									old_security.voluntary_coord_mine_params, sizeof(game::fob_security_t::voluntary_coord_mine_params));
+							}
+							else
+							{
+								new_security.voluntary_coord_mine_count = 0;
+							}
 						}
 					};
 

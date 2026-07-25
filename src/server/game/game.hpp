@@ -1159,10 +1159,12 @@ namespace game
 	struct fob_construct_param_fields_t
 	{
 		std::uint32_t unk1 : 1;
-		std::uint32_t area_id : 7;
-		std::uint32_t color : 4;
-		std::uint32_t area_code : 7;
-		std::uint32_t unk3 : 13;
+		std::uint32_t area : 7;
+		std::uint32_t color_bits1 : 4;
+		std::uint32_t layout : 10;
+		std::uint32_t lat_long : 6;
+		std::uint32_t color_bits2 : 1;
+		std::uint32_t pad : 3;
 	};
 
 	struct fob_cluster_security_fields_t
@@ -1181,9 +1183,10 @@ namespace game
 	struct fob_build_fields_t
 	{
 		std::uint32_t unk : 1;
-		std::uint32_t pad1 : 11;
-		std::uint32_t platform_count : 3;
-		std::uint32_t pad2 : 17;
+		std::uint32_t pad1 : 8;
+		std::uint32_t indev_platform_count : 3;
+		std::uint32_t platform_count : 4;
+		std::uint32_t pad2 : 16;
 	};
 
 	struct fob_cluster_security_t
@@ -1238,9 +1241,9 @@ namespace game
 		std::uint8_t antitheft;
 		std::uint8_t ir_sensor;
 		std::uint8_t caution_area;
-		std::uint8_t voluntary_coord_mine_count;
+		std::int8_t voluntary_coord_mine_count;
 		fob_voluntary_coord_t voluntary_coord_mine_params[max_fob_voluntary_mine_count]{};
-		std::uint8_t voluntary_coord_camera_count;
+		std::int8_t voluntary_coord_camera_count;
 		fob_voluntary_coord_t voluntary_coord_camera_params[max_fob_voluntary_camera_count]{};
 	};
 
@@ -1270,12 +1273,12 @@ namespace game
 		fob_cluster_param_t cluster_param;
 	};
 
+	void validate_construct_param(fob_construct_param_t& param);
 	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param);
+	bool parse_fob_param(nlohmann::json& param_j, game::fob_param_t& param);
 
 	extern std::array<fob_security_t, 2> fob_security_caps;
-
 	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
-
 	extern std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map;
 
 	extern std::vector<std::string> unit_names;

@@ -45,7 +45,6 @@ namespace emulator::tpp
 	nlohmann::json cmd_create_player::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["xuid"] = {};
 
 		if (!player.has_value())
 		{
@@ -105,7 +104,6 @@ namespace emulator::tpp
 		}
 
 		result["player_id"] = player->get_id();
-		result["result"] = "NOERR";
 
 		return result;
 	}
