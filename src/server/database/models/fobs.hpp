@@ -34,12 +34,6 @@ namespace database::fobs
 		template <typename ...Args>
 		fob(const sqlpp::result_row_t<Args...>& row)
 		{
-			const auto cluster_param_str = row.cluster_param.value();
-			if (cluster_param_str.size() == sizeof(game::fob_cluster_param_t))
-			{
-				std::memcpy(&this->param_.cluster_param, cluster_param_str.data(), sizeof(game::fob_cluster_param_t));
-			}
-
 			this->id_ = row.id;
 			this->player_id_ = row.player_id;
 			this->index_ = row.fob_index;
@@ -50,6 +44,8 @@ namespace database::fobs
 			this->param_.security_rank = static_cast<std::uint8_t>(row.security_rank);
 
 			this->create_date_ = row.create_date.value().time_since_epoch();
+
+			load_binary_field(&this->param_.cluster_param, row.cluster_param.value());
 		}
 
 		std::uint64_t get_id() const

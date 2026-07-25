@@ -12,11 +12,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		auto& mother_base_param = data["mother_base_param"];
 		if (mother_base_param.is_array())
 		{
@@ -34,12 +29,7 @@ namespace emulator::tpp
 				}
 
 				game::fob_param_t param{};
-
-				param.platform_count = param_j["platform_count"].get<std::uint8_t>();
-				param.security_rank = param_j["security_rank"].get<std::uint8_t>();
-				param.construct_param.packed = param_j["construct_param"].get<std::uint32_t>();
-
-				if (!game::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
+				if (!game::parse_fob_param(param_j, param))
 				{
 					return error(ERR_INVALIDARG);
 				}
@@ -60,5 +50,10 @@ namespace emulator::tpp
 		result["version"] = 0;
 
 		return result;
+	}
+	
+	bool cmd_sync_mother_base::needs_player()
+	{
+		return true;
 	}
 }
