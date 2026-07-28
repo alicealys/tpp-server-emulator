@@ -794,13 +794,13 @@ namespace game
 
 		if (param.fields.area >= 10 && param.fields.area < 80)
 		{
-			SNAP_VALUE(param.fields.layout, 10u, 11u, 19u);
-			SNAP_VALUE(param.fields.layout, 20u, 21u, 29u);
-			SNAP_VALUE(param.fields.layout, 30u, 32u, 39u);
-			SNAP_VALUE(param.fields.layout, 40u, 42u, 49u);
-			SNAP_VALUE(param.fields.layout, 50u, 53u, 59u);
-			SNAP_VALUE(param.fields.layout, 60u, 63u, 69u);
-			SNAP_VALUE(param.fields.layout, 70u, 71u, 79u);
+			SNAP_VALUE(param.fields.area, 10u, 11u, 19u);
+			SNAP_VALUE(param.fields.area, 20u, 21u, 29u);
+			SNAP_VALUE(param.fields.area, 30u, 32u, 39u);
+			SNAP_VALUE(param.fields.area, 40u, 42u, 49u);
+			SNAP_VALUE(param.fields.area, 50u, 53u, 59u);
+			SNAP_VALUE(param.fields.area, 60u, 63u, 69u);
+			SNAP_VALUE(param.fields.area, 70u, 71u, 79u);
 		}
 		else
 		{
