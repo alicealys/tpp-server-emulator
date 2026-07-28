@@ -129,8 +129,7 @@ newaction {
 		-- generate version.hpp with a revision number if not equal
 		gitDescribeOutputQuoted = cstrquote(gitDescribeOutput)
 		if oldVersion ~= gitDescribeOutputQuoted then
-			-- get current git hash and write to version.txt (used by the preliminary updater)
-			-- TODO - remove once proper updater and release versioning exists
+			-- get current git hash and write to version.txt
 			local proc = assert(io.popen("git rev-parse HEAD", "r"))
 			local gitCommitHash = assert(proc:read('*a')):gsub("%s+", "")
 			proc:close()
@@ -172,7 +171,6 @@ newaction {
 			print ("Update " .. oldVersion .. " -> " .. gitDescribeOutputQuoted)
 
 			-- write to version.txt for preliminary updater
-			-- NOTE - remove this once we have a proper updater and proper release versioning
 			local versionFile = assert(io.open(wks.location .. "/version.txt", "w"))
 			versionFile:write(gitCommitHash)
 			versionFile:close()

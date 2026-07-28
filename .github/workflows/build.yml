@@ -24,7 +24,7 @@ jobs:
           - release
     steps:
       - name: Check out files
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
@@ -36,7 +36,7 @@ jobs:
           version: ${{ env.PREMAKE_VERSION }}
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Generate project files
         run: premake5 vs2022
@@ -48,7 +48,7 @@ jobs:
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/tpp-server-emulator.sln
 
       - name: Upload ${{matrix.configuration}} binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-${{matrix.configuration}}
           path: |
@@ -56,14 +56,14 @@ jobs:
             build/bin/x64/${{matrix.configuration}}/tpp-server-emulator.pdb
 
       - name: Upload ${{matrix.configuration}} resources
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{matrix.configuration}}-resources
           path: |
             src/server/resources/*
 
       - name: Upload ${{matrix.arch}} libs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libs
           path: |
@@ -91,7 +91,7 @@ jobs:
           update-alternatives --set g++ /usr/bin/g++-13
 
       - name: Check out files
-        uses: actions/checkout@main
+        uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
@@ -118,14 +118,14 @@ jobs:
           make -C build config=${{matrix.configuration}}_${{matrix.arch}} -j$(nproc)
 
       - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-${{matrix.arch}}-${{matrix.configuration}}
           path: |
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/tpp-server-emulator
 
       - name: Upload ${{matrix.arch}} libs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libs
           path: |
@@ -141,23 +141,23 @@ jobs:
         run: echo "ALICE_MASTER_PATH=${{ secrets.ALICE_MASTER_SSH_PATH }}" >> $GITHUB_ENV
 
       - name: Download windows release binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: windows-release
 
       - name: Download linux release binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: linux-x64-release
 
       - name: Download release resources
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: release-resources
           path: resources
 
       - name: Download libs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: libs
           path: libs
