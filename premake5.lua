@@ -121,6 +121,10 @@ newaction {
 			end
 		end
 
+		local proc = assert(io.popen("git config --global --add safe.directory '*'", "r"))
+		assert(proc:read('*a')):gsub("%s+", "")
+		proc:close()
+
 		-- get current version via git
 		local proc = assert(io.popen(gitVersioningCommand, "r"))
 		local gitDescribeOutput = assert(proc:read('*a')):gsub("%s+", "")
@@ -170,7 +174,6 @@ newaction {
 
 			print ("Update " .. oldVersion .. " -> " .. gitDescribeOutputQuoted)
 
-			-- write to version.txt for preliminary updater
 			local versionFile = assert(io.open(wks.location .. "/version.txt", "w"))
 			versionFile:write(gitCommitHash)
 			versionFile:close()
