@@ -339,12 +339,14 @@ workspace "tpp-server-emulator"
 
 			resincludedirs {"$(ProjectDir)src"}
 
-			dependson {"tlsdll"}
-
 			links {"common"}
 
 			filter { "toolset:msc*" }
 				prebuildcommands {"pushd %{_MAIN_SCRIPT_DIR}", "premake5 generate-buildinfo", "popd"}
+			filter {}
+
+			filter { "system:linux" }
+				prebuildcommands {"cd %{_MAIN_SCRIPT_DIR} && premake5 generate-buildinfo"}
 			filter {}
 
 			if _OPTIONS["copy-to"] then
