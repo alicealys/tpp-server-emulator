@@ -8,6 +8,7 @@
 #include "server.hpp"
 
 #include <utils/http.hpp>
+#include <version.h>
 
 namespace emulator
 {
@@ -23,6 +24,7 @@ namespace emulator
 		result["online_player_count"] = database::players::get_online_player_count();
 		result["total_player_count"] = database::players::get_player_count();
 		result["nuke_count"] = database::player_data::get_nuke_count();
+		result["version"] = VERSION;
 
 		const auto current_event = database::fob_events::get_current_event();
 		if (current_event.has_value())
