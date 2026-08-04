@@ -13,7 +13,7 @@ namespace database
 		std::int32_t max_local_gmp = 5000000;
 		std::uint32_t item_dev_limit = 4;
 		std::uint32_t server_version_tpp = 18;
-		std::uint32_t server_version_mgo = 15;
+		std::uint32_t server_version_mgo = 16;
 		float gmp_ratio = 1.f;
 		float nuclear_find_probability = 1.f;
 		float cost_factor_generic = 0.01565f;
