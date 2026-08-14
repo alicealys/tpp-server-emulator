@@ -223,13 +223,13 @@ with ranked as (
 update event_rankings
 set player_rank = (
     select ranked.new_rank
-    from ranked
+    from ranked, event_rankings
     where ranked.player_id = event_rankings.player_id
       and ranked.event_id = event_rankings.event_id
 ),
 player_rank_number = (
     select ranked.new_rank_number
-    from ranked
+    from ranked, event_rankings
     where ranked.player_id = event_rankings.player_id
       and ranked.event_id = event_rankings.event_id
 );
@@ -246,13 +246,13 @@ with ranked as (
 update event_rankings
 set player_rank = (
     select ranked.new_rank
-    from ranked
+    from ranked, event_rankings
     where ranked.player_id = event_rankings.player_id
       and ranked.event_id = event_rankings.event_id
 ),
 player_rank_number = (
     select ranked.new_rank_number
-    from ranked
+    from ranked, event_rankings
     where ranked.player_id = event_rankings.player_id
       and ranked.event_id = event_rankings.event_id
 );
