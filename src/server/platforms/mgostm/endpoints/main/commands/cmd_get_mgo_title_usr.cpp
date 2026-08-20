@@ -22,11 +22,6 @@ namespace emulator::mgo
 			target_player_opt = player;
 		}
 
-		if (!target_player_opt.has_value())
-		{
-			return error(ERR_PLAYER_NOTFOUND);
-		}
-
 		result["title_list"] = nlohmann::json::array();
 
 		if (!target_player_opt.has_value())
