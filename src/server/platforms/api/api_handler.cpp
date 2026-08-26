@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "endpoints/steam_openid.hpp"
+#include "endpoints/steam_openid_url.hpp"
 #include "endpoints/status.hpp"
 #include "endpoints/delete_account.hpp"
 #include "utils/config.hpp"
@@ -25,6 +26,7 @@ namespace emulator
 
 		this->set_content_type("application/json");
 		this->register_handler<steam_openid>("steam_openid");
+		this->register_handler<steam_openid_url>("steam_openid_url");
 		this->register_handler<status>("status");
 		this->register_handler<delete_account>("delete_account");
 	}
