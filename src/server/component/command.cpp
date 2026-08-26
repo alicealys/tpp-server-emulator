@@ -9,6 +9,7 @@
 
 #include "database/models/players.hpp"
 #include "database/models/player_data.hpp"
+#include "database/models/steam_users.hpp"
 
 #include "scripting/engine.hpp"
 
@@ -343,6 +344,19 @@ namespace command
 
 					database::player_records::set_has_fob(player.get_id(), has_an_fob);
 				}
+			});
+
+			add("delete_user", [](const params& params)
+			{
+				const auto arg = params.get(1);
+				const auto account_id = std::strtoull(arg.data(), nullptr, 10);
+				if (!database::steam_users::delete_all_user_data(account_id))
+				{
+					console::warning("user %lli not found\n", account_id);
+					return;
+				}
+
+				console::print("deleted user %lli\n", account_id);
 			});
 		}
 	};

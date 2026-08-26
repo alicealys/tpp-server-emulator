@@ -220,6 +220,17 @@ namespace database::combat_deployments
 				return result != 0;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(combat_deployment::table)
+						.where(combat_deployment::table.player_id == player_id));
+			});
+		}
 	}
 
 	std::vector<combat_deployment> get_deployments(const std::uint64_t player_id)
@@ -251,6 +262,11 @@ namespace database::combat_deployments
 	bool complete_deployment(const std::uint64_t player_id, const std::uint32_t mission_id)
 	{
 		RUN_IMPL(impl::complete_deployment, player_id, mission_id);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

@@ -453,4 +453,5 @@ namespace database::pf_league
 	bool create_league_application(const std::uint64_t player_id);
 	bool remove_league_application(const std::uint64_t application_id);
 	void set_league_application_read_state(const std::uint64_t id, const std::uint32_t state);
+	void delete_player_data(const std::uint64_t player_id);
 }

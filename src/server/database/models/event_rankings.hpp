@@ -136,4 +136,6 @@ namespace database::event_rankings
 	std::chrono::seconds get_last_update();
 
 	void update_league(database_t& db);
+
+	void delete_player_data(const std::uint64_t player_id);
 }

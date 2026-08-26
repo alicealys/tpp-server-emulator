@@ -60,4 +60,6 @@ namespace database::mgo_item_purchases
 
 	bool purchase_item(const std::uint64_t player_id, const std::uint32_t purchase_id);
 	std::vector<std::uint32_t> get_purchase_list(const std::uint64_t player_id);
+
+	void delete_player_data(const std::uint64_t player_id);
 }

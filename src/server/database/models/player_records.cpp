@@ -581,6 +581,17 @@ namespace database::player_records
 				}
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(player_record::table)
+						.where(player_record::table.player_id == player_id));
+			});
+		}
 	}
 
 	std::optional<player_record> find(const std::uint64_t player_id)
@@ -707,6 +718,11 @@ namespace database::player_records
 	void update_league_ranking(database_t& db)
 	{
 		db.run_query("mgstpp.player_records.update_league_ranking");
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

@@ -87,6 +87,17 @@ namespace database::player_follows
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(player_follow::table)
+						.where(player_follow::table.to_player_id == player_id || player_follow::table.player_id == player_id));
+			});
+		}
 	}
 
 	bool add_follow(const std::uint64_t player_id, const std::uint64_t to_player_id)
@@ -107,6 +118,11 @@ namespace database::player_follows
 	std::unordered_set<std::uint64_t> get_followers(const std::uint64_t to_player_id)
 	{
 		RUN_IMPL(impl::get_followers, to_player_id);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

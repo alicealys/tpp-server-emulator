@@ -123,4 +123,5 @@ namespace database::shop_purchases
 	std::vector<shop_purchase> get_history(const std::uint64_t player_id, const std::uint32_t limit);
 	std::optional<shop_purchase> get_last_item_purchase(const std::uint64_t player_id, const std::uint32_t item_type);
 	std::optional<shop_purchase> get_last_item_purchase_range(const std::uint64_t player_id, const std::uint32_t item_type_beg, const std::uint32_t item_type_end);
+	void delete_player_data(const std::uint64_t player_id);
 }

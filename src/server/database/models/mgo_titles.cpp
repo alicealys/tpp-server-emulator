@@ -110,6 +110,17 @@ namespace database::mgo_titles
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(mgo_title::table)
+						.where(mgo_title::table.player_id == player_id));
+			});
+		}
 	}
 
 	void set_player_title(const std::uint64_t player_id, const std::uint32_t title_id, const std::uint32_t flag, const std::uint32_t gp)
@@ -134,6 +145,11 @@ namespace database::mgo_titles
 		}
 
 		return map;
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

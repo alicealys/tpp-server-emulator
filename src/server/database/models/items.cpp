@@ -342,6 +342,17 @@ namespace database::items
 				return result != 0;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(item_status::table)
+						.where(item_status::table.player_id == player_id));
+			});
+		}
 	}
 
 	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
@@ -367,6 +378,11 @@ namespace database::items
 	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id)
 	{
 		RUN_IMPL(impl::force_develop, player_id, item_id);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

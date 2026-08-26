@@ -690,6 +690,17 @@ namespace database::player_data
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(player_data::table)
+						.where(player_data::table.player_id == player_id));
+			});
+		}
 	}
 
 	void player_data::get_emblem(game::emblem_t& emblem) const
@@ -937,6 +948,11 @@ namespace database::player_data
 	std::vector<players::player> get_nuclear_abolition_contributors(const std::uint32_t limit)
 	{
 		RUN_IMPL(impl::get_nuclear_abolition_contributors, limit);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

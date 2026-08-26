@@ -126,4 +126,5 @@ namespace database::combat_deployments
 	bool delete_deployment(const std::uint64_t player_id, const std::uint32_t mission_id);
 	bool delete_all_deployments(const std::uint64_t player_id);
 	bool complete_deployment(const std::uint64_t player_id, const std::uint32_t mission_id);
+	void delete_player_data(const std::uint64_t player_id);
 }
