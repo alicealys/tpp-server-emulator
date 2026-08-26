@@ -107,6 +107,8 @@ tpp-server-emulator allows for 4 different authentication modes to verify player
     }
     ```
 
+    The auth token will be valid for 365 days, or until a new one is generated.
+
     The game client must then send a ticket with this information using the format described above in the **CMD_AUTH_STEAMTICKET** request.  
     An example of the redirect URL you should provide the client:
 
@@ -119,6 +121,19 @@ tpp-server-emulator allows for 4 different authentication modes to verify player
     openid.mode=checkid_setup
     ```
 - **hybrid**: automatically chooses **konami** or **custom** authentication based on ticket size.
+
+## Web API
+
+tpp-server-emulator exposes some web APIs that can be accessed through regular HTTP requests (not using the game's protocol or format).  
+The API is enabled by default, but can be disabled by setting `enable_web_api` to `false` in the config.  
+All APIs return in JSON format.  
+
+### API list
+
+- `api/steam_openid?{Steam OpenID redirect url}`: generates a new auth token from a valid Steam OpenID redirect url.
+- `api/steam_openid_url?target={target endpoint}`: formats the Steam OpenID redirect url given a target api.
+- `api/status`: returns some server status information (player count, current event, uptime, ...).
+- `api/delete_account?{Steam OpenID redirect url}`: allows a user to delete all their data, requires a valid Steam OpenID redirect url.
 
 ## Resource files
 
