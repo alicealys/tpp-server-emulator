@@ -218,6 +218,17 @@ namespace database::mgo_color_purchases
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(mgo_color_purchase::table)
+						.where(mgo_color_purchase::table.player_id == player_id));
+			});
+		}
 	}
 
 	bool has_gear(const std::uint64_t player_id, const std::uint32_t gear_id)
@@ -238,6 +249,11 @@ namespace database::mgo_color_purchases
 	std::vector<mgo_color_purchase> get_all_purchased_colors(const std::uint64_t player_id, const item_category category)
 	{
 		RUN_IMPL(impl::get_all_purchased_colors, player_id, category);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

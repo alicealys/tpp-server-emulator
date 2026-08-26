@@ -319,6 +319,17 @@ namespace database::mgo_data
 				return result != 0;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(mgo_data::table)
+						.where(mgo_data::table.player_id == player_id));
+			});
+		}
 	}
 
 	bool create(const std::uint64_t player_id)
@@ -405,6 +416,11 @@ namespace database::mgo_data
 	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire)
 	{
 		RUN_IMPL(impl::set_gp_boost, player_id, gp_boost_mag, expire);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

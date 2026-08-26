@@ -166,4 +166,5 @@ namespace database::items
 	bool create(const std::uint64_t player_id, const std::uint32_t item_id);
 	bool remove(const std::uint64_t player_id, const std::uint32_t item_id);
 	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id);
+	void delete_player_data(const std::uint64_t player_id);
 }

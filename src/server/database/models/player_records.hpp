@@ -325,4 +325,6 @@ namespace database::player_records
 
 	void update_fob_ranking(database_t& db);
 	void update_league_ranking(database_t& db);
+
+	void delete_player_data(const std::uint64_t player_id);
 }

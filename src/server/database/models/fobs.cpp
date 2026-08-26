@@ -302,6 +302,17 @@ namespace database::fobs
 							.where(fob::table.player_id == player_id && fob::table.id == fob_index));
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(fob::table)
+						.where(fob::table.player_id == player_id));
+			});
+		}
 	}
 	
 	std::vector<fob> get_fob_list(const std::uint64_t player_id)
@@ -332,6 +343,11 @@ namespace database::fobs
 	void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param_t& param)
 	{
 		RUN_IMPL(impl::set_construct_param, player_id, fob_index, param);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

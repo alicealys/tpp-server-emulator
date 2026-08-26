@@ -72,4 +72,5 @@ namespace database::mgo_color_purchases
 	bool buy_color(const std::uint64_t player_id, const item_category category, const std::uint32_t item_id, const std::uint32_t color_id);
 	std::unordered_set<std::uint32_t> get_purchased_colors(const std::uint64_t player_id, const item_category category, const std::uint32_t item_id);
 	std::vector<mgo_color_purchase> get_all_purchased_colors(const std::uint64_t player_id, const item_category category);
+	void delete_player_data(const std::uint64_t player_id);
 }

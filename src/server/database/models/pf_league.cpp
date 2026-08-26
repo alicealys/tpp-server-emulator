@@ -855,6 +855,25 @@ namespace database::pf_league
 		}
 
 		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(pf_battle::table)
+						.where(pf_battle::table.attacker_id == player_id || pf_battle::table.defender_id == player_id));
+
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(pf_competitor::table)
+						.where(pf_competitor::table.player_id == player_id));
+
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(pf_application::table)
+						.where(pf_application::table.player_id == player_id));
+			});
+		}
+
+		template <database_type_t Type>
 		void accept_league_application(database_t& db, const std::uint64_t application_id, const std::uint64_t league_id)
 		{
 			db.get_database<Type>()->operator()(
@@ -1079,6 +1098,11 @@ namespace database::pf_league
 	void delete_all_pf_leagues(database_t& db)
 	{
 		RUN_IMPL(impl::delete_all_pf_leagues, db);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	void clear_pf_league(database_t& db, const std::uint64_t league_id)

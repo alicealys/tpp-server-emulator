@@ -131,7 +131,18 @@ namespace database::wormholes
 
 				return list;
 			});
-		} 
+		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(wormhole::table)
+						.where(wormhole::table.player_id == player_id || wormhole::table.to_player_id == player_id));
+			});
+		}
 	}
 
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id,
@@ -245,6 +256,11 @@ namespace database::wormholes
 		status.open = status.score > 0;
 
 		return status;
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

@@ -483,6 +483,17 @@ namespace database::mgo_characters
 				return static_cast<std::uint32_t>(results.front().xp.value());
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(mgo_character::table)
+						.where(mgo_character::table.player_id == player_id));
+			});
+		}
 	}
 
 	std::vector<mgo_character> get_character_list(const std::uint64_t player_id)
@@ -524,6 +535,11 @@ namespace database::mgo_characters
 	std::uint32_t increase_xp(const std::uint64_t player_id, const std::uint32_t character_index, const std::uint32_t value)
 	{
 		RUN_IMPL(impl::increase_xp, player_id, character_index, value);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

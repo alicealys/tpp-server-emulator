@@ -34,4 +34,6 @@ namespace database::steam_users
 
 	bool set_auth_token(const std::uint64_t account_id, const std::string& auth_token);
 	bool authenticate(const std::uint64_t account_id, const std::string& auth_token);
+	void delete_player_data(const std::uint64_t account_id);
+	bool delete_all_user_data(const std::uint64_t account_id);
 }

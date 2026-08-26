@@ -398,4 +398,5 @@ namespace database::player_data
 	bool use_league_item(const std::uint64_t player_id, const std::uint32_t attack_item, const std::uint32_t defense_item, bool use);
 
 	std::vector<players::player> get_nuclear_abolition_contributors(const std::uint32_t limit);
+	void delete_player_data(const std::uint64_t player_id);
 }

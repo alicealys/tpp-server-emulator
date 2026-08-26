@@ -182,4 +182,5 @@ namespace database::mgo_stats
 
     std::shared_ptr<stats_t> get_stats(const std::uint64_t player_id);
     bool set_stats(const std::uint64_t player_id, const std::shared_ptr<stats_t>& stats);
+    void delete_player_data(const std::uint64_t player_id);
 }

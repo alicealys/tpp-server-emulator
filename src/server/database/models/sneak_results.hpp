@@ -136,4 +136,5 @@ namespace database::sneak_results
 
 	std::vector<sneak_result> get_sneak_results(const std::uint64_t target_id, const std::uint32_t limit);
 	std::optional<sneak_result> get_sneak_result(const std::uint64_t player_id, const std::uint64_t event_id);
+	void delete_player_data(const std::uint64_t player_id);
 }

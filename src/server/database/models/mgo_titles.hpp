@@ -47,4 +47,5 @@ namespace database::mgo_titles
 	void set_player_title(const std::uint64_t player_id, const std::uint32_t title_id, const std::uint32_t flag, const std::uint32_t gp);
 	std::vector<mgo_title> get_player_title_list(const std::uint64_t player_id);
 	std::unordered_map<std::uint32_t, mgo_title> get_player_title_map(const std::uint64_t player_id);
+	void delete_player_data(const std::uint64_t player_id);
 }

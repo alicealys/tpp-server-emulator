@@ -213,4 +213,5 @@ namespace database::mgo_characters
 	bool update_character_progression(const std::uint64_t player_id, const std::uint32_t character_index, const character_progression_params& params);
 	bool delete_character(const std::uint64_t player_id, const std::uint32_t character_index);
 	std::uint32_t increase_xp(const std::uint64_t player_id, const std::uint32_t character_index, const std::uint32_t value);
+	void delete_player_data(const std::uint64_t player_id);
 }

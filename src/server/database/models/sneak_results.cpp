@@ -100,6 +100,17 @@ namespace database::sneak_results
 				return results.front().event_log.value();
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(sneak_result::table)
+						.where(sneak_result::table.attacker_id == player_id || sneak_result::table.target_id == player_id));
+			});
+		}
 	}
 
 	std::string sneak_result::get_event_log() const
@@ -134,6 +145,11 @@ namespace database::sneak_results
 	std::optional<sneak_result> get_sneak_result(const std::uint64_t target_id, const std::uint64_t event_id)
 	{
 		RUN_IMPL(impl::get_sneak_result, target_id, event_id);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

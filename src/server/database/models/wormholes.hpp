@@ -107,4 +107,5 @@ namespace database::wormholes
 
 	std::vector<wormhole_status> get_wormholes_status(const std::uint64_t player_id, const std::uint32_t flag = wormhole_flag_invalid);
 	wormhole_status get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id, const std::uint32_t flag = wormhole_flag_invalid);
+	void delete_player_data(const std::uint64_t player_id);
 }

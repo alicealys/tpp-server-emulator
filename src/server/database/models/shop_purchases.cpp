@@ -183,6 +183,17 @@ namespace database::shop_purchases
 				return shop_purchase(results.front());
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(shop_purchase::table)
+						.where(shop_purchase::table.player_id == player_id));
+			});
+		}
 	}
 
 	bool add_entry(const std::uint64_t player_id, const entry_params_t& params)
@@ -234,6 +245,11 @@ namespace database::shop_purchases
 	std::optional<shop_purchase> get_last_item_purchase_range(const std::uint64_t player_id, const std::uint32_t item_type_beg, const std::uint32_t item_type_end)
 	{
 		RUN_IMPL(impl::get_last_item_purchase_range, player_id, item_type_beg, item_type_end);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

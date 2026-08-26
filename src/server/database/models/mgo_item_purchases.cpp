@@ -123,6 +123,17 @@ namespace database::mgo_item_purchases
 				return list;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(mgo_item_purchase::table)
+						.where(mgo_item_purchase::table.player_id == player_id));
+			});
+		}
 	}
 
 	bool purchase_item(const std::uint64_t player_id, const std::uint32_t purchase_id)
@@ -133,6 +144,11 @@ namespace database::mgo_item_purchases
 	std::vector<std::uint32_t> get_purchase_list(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::get_purchase_list, player_id);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

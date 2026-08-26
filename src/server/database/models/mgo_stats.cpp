@@ -289,6 +289,17 @@ namespace database::mgo_stats
 				return stats;
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(mgo_stats::table)
+						.where(mgo_stats::table.player_id == player_id));
+			});
+		}
 	}
 
 	std::shared_ptr<stats_t> get_stats(const std::uint64_t player_id)
@@ -299,6 +310,11 @@ namespace database::mgo_stats
 	bool set_stats(const std::uint64_t player_id, const std::shared_ptr<stats_t>& stats)
 	{
 		RUN_IMPL(impl::set_stats, player_id, stats);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

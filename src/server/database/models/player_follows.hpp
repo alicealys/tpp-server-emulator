@@ -54,4 +54,5 @@ namespace database::player_follows
 
 	std::unordered_set<std::uint64_t> get_follows(const std::uint64_t player_id);
 	std::unordered_set<std::uint64_t> get_followers(const std::uint64_t to_player_id);
+	void delete_player_data(const std::uint64_t player_id);
 }

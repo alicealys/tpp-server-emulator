@@ -714,6 +714,17 @@ namespace database::players
 					);
 			});
 		}
+
+		template <database_type_t Type>
+		void delete_player_data(const std::uint64_t player_id)
+		{
+			return database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(player::table)
+						.where(player::table.id == player_id));
+			});
+		}
 	}
 
 	std::optional<player> find(const std::uint64_t id)
@@ -838,6 +849,11 @@ namespace database::players
 	void disable_all_security_challenges()
 	{
 		RUN_IMPL(impl::disable_all_security_challenges);
+	}
+
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
 	class table final : public table_interface

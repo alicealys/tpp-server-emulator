@@ -172,4 +172,6 @@ namespace database::mgo_data
 
 	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag);
 	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire);
+
+	void delete_player_data(const std::uint64_t player_id);
 }

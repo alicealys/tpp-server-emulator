@@ -116,4 +116,6 @@ namespace database::fobs
 	void set_construct_param(const std::uint64_t player_id, const std::uint64_t fob_index, const game::fob_construct_param_t& param);
 
 	void delete_all(const std::uint64_t player_id);
+
+	void delete_player_data(const std::uint64_t player_id);
 }
