@@ -75,8 +75,7 @@ namespace emulator::tpp
 
             if (iter != deployments.end())
             {
-                const auto time_left = iter->get_end_date() - iter->get_start_date();
-                const auto time_left_s = std::chrono::duration_cast<std::chrono::seconds>(time_left);
+                const auto time_left = iter->get_time_left();
 
                 const auto& deployment_info = iter->get_deployment_info();
                 team_j["armored"] = deployment_info.armored;
@@ -96,7 +95,7 @@ namespace emulator::tpp
                 team_j["tank"] = deployment_info.tank;
                 team_j["team_id"] = deployment_info.team_id;
                 team_j["team_power"] = deployment_info.team_power;
-                team_j["time"] = time_left_s.count();
+                team_j["time"] = time_left.count();
                 team_j["truck"] = deployment_info.truck;
                 team_j["walker_gear"] = deployment_info.walker_gear;
                 team_j["win_rate"] = deployment_info.win_rate;
