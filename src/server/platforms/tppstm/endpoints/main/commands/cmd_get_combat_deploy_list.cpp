@@ -3,6 +3,7 @@
 #include "cmd_get_combat_deploy_list.hpp"
 
 #include "database/models/combat_deployments.hpp"
+#include "cmd_get_combat_deploy_result.hpp"
 
 #include <utils/cryptography.hpp>
 
@@ -12,15 +13,42 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
+        const auto player_data = database::player_data::find(player->get_id());
+        if (!player_data.has_value())
+        {
+            return error(ERR_DATABASE);
+        }
+
 		const auto& mission_list = database::combat_deployments::get_mission_list();
 		const auto deployments = database::combat_deployments::get_deployments(player->get_id());
 
 		result["mission_list"] = nlohmann::json::array();
 		result["mission_num"] = mission_list.size();
 
+        auto idx = 0u;
 		for (auto i = 0u; i < mission_list.size(); i++)
 		{
-			auto& mission_j = result["mission_list"][i];
+            auto can_give_reward = true;
+            for (auto o = 0u; o < mission_list[i].rewards.size(); o++)
+            {
+                if (!cmd_get_combat_deploy_result::can_give_reward(player_data.value(), mission_list[i].rewards[o]))
+                {
+                    can_give_reward = false;
+                    break;
+                }
+            }
+
+            const auto iter = std::ranges::find_if(deployments, [&](const database::combat_deployments::combat_deployment& deployment)
+            {
+                return deployment.get_mission_id() == mission_list[i].id;
+            });
+
+            if (iter == deployments.end() && !can_give_reward)
+            {
+                continue;
+            }
+
+			auto& mission_j = result["mission_list"][idx++];
             mission_j["armored_max"] = 0;
             mission_j["armored_min"] = 0;
             mission_j["battle_gear"] = 0;
@@ -65,11 +93,6 @@ namespace emulator::tpp
                 mission_j["primary_reward"][o]["type"] = mission_list[i].rewards[o].type;
                 mission_j["primary_reward"][o]["value"] = mission_list[i].rewards[o].value;
             }
-
-            const auto iter = std::ranges::find_if(deployments, [&](const database::combat_deployments::combat_deployment& deployment)
-            {
-                return deployment.get_mission_id() == mission_list[i].id;
-            });
 
             auto& team_j = mission_j["team"];
 

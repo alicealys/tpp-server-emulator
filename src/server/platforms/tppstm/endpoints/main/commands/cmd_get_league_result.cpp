@@ -27,26 +27,27 @@ namespace emulator::tpp
 		result["info"]["match_history"] = nlohmann::json::array();
 		result["info"]["player_info"] = nlohmann::json::array();
 
+		const auto player_record = database::player_records::find(player->get_id());
+		if (!player_record.has_value())
+		{
+			return result;
+		}
+
+		result["info"]["point"] = player_record->get_pf_point();
+
 		if (!league.has_value())
 		{
 			return result;
 		}
 
-		const auto player_record = database::player_records::find(player->get_id());
+		result["info"]["section"] = league->get_id();
 
-		const auto self = database::pf_league::get_player_competitor_instance(league->get_id(), player->get_id());
-		if (!player_record.has_value() || !self.has_value())
-		{
-			return result;
-		}
-
-		const auto pf_players = database::pf_league::get_players_in_bracket(self->get_bracket_id());
 		auto idx = 0u;
-		for (auto i = 0u; i < pf_players.size(); i++)
+		const auto add_player = [&](
+			const std::uint64_t competitor_id, const std::uint32_t rank,
+			const std::optional<database::pf_league::pf_competitor>& pf_competitor,
+			const std::vector<database::pf_league::pf_battle>& battles)
 		{
-			const auto& pf_competitor = pf_players[i];
-			const auto competitor_id = pf_competitor.get_player_id();
-
 			database::pf_league::player_pf_data_t competitor_params{};
 
 			const auto competitor = database::players::find(competitor_id);
@@ -56,7 +57,7 @@ namespace emulator::tpp
 
 			if (!competitor.has_value() || !competitor_record.has_value() || !competitor_data.has_value())
 			{
-				continue;
+				return;
 			}
 
 			game::emblem_t emblem{};
@@ -80,11 +81,9 @@ namespace emulator::tpp
 			entry["attack_durability"] = fake_battle.get_attacker_durability();
 			entry["attack_item"] = competitor_data->get_league_attack_item();
 			entry["attack_level"] = competitor_params.unit_levels[game::unit_combat];
-			entry["attack_lose"] = pf_competitor.get_attack_lose();
 			entry["attack_nuclear"] = competitor_data->get_nuke_count();
 			entry["attack_point"] = fake_battle.get_attacker_capability();
 			entry["attack_staff"] = competitor_params.unit_counts[game::unit_combat];
-			entry["attack_win"] = pf_competitor.get_attack_win();
 			entry["conbat_point"] = 0;
 			entry["cumulative_grade"] = competitor_data->get_cumulative_grade();
 			entry["defence_durability"] = fake_battle.get_defender_durability();
@@ -93,9 +92,6 @@ namespace emulator::tpp
 			entry["defence_nuclear"] = competitor_data->get_nuke_count();
 			entry["defence_point"] = fake_battle.get_defender_capability();
 			entry["defence_staff"] = competitor_params.unit_counts[game::unit_security];
-			entry["defense_lose"] = pf_competitor.get_defense_lose();
-			entry["defense_win"] = pf_competitor.get_defense_win();
-			entry["lose"] = pf_competitor.get_lose();
 
 			auto security_rank = 0u;
 			for (auto o = 0u; o < competitor_params.fobs.size(); o++)
@@ -116,8 +112,6 @@ namespace emulator::tpp
 				}
 			}
 
-			entry["narrow_lose"] = pf_competitor.get_narrow_lose();
-			entry["narrow_win"] = pf_competitor.get_narrow_win();
 			entry["planned_attack_item"] = 0;
 			entry["planned_defence_item"] = 0;
 
@@ -145,7 +139,6 @@ namespace emulator::tpp
 			entry["player_detail_record"]["staff_count"] = competitor_data->get_staff_count();
 
 			entry["player_info"] = player_info(competitor);
-			entry["rank"] = i + 1;
 
 			for (auto o = 0; o < 18; o++)
 			{
@@ -153,11 +146,52 @@ namespace emulator::tpp
 			}
 
 			entry["security_rank"] = security_rank;
-			entry["win"] = pf_competitor.get_win();
-			entry["winning_point"] = pf_competitor.get_victory_points();
+			entry["rank"] = rank;
+
+			if (pf_competitor.has_value())
+			{
+				entry["win"] = pf_competitor->get_win();
+				entry["winning_point"] = pf_competitor->get_victory_points();
+				entry["narrow_lose"] = pf_competitor->get_narrow_lose();
+				entry["narrow_win"] = pf_competitor->get_narrow_win();
+				entry["defense_lose"] = pf_competitor->get_defense_lose();
+				entry["defense_win"] = pf_competitor->get_defense_win();
+				entry["lose"] = pf_competitor->get_lose();
+				entry["attack_win"] = pf_competitor->get_attack_win();
+				entry["attack_lose"] = pf_competitor->get_attack_lose();
+			}
+			else
+			{
+				entry["win"] = 0;
+				entry["winning_point"] = 0;
+				entry["narrow_lose"] = 0;
+				entry["narrow_win"] = 0;
+				entry["defense_lose"] = 0;
+				entry["defense_win"] = 0;
+				entry["lose"] = 0;
+				entry["attack_win"] = 0;
+				entry["attack_lose"] = 0;
+			}
+		};
+
+		const auto self = database::pf_league::get_player_competitor_instance(league->get_id(), player->get_id());
+		if (!self.has_value())
+		{
+			add_player(player->get_id(), 0, {}, {});
+			result["info"]["player_count"] = 1;
+			return result;
 		}
 
-		auto battles = database::pf_league::get_player_battles(self->get_bracket_id(), self->get_player_id());
+		const auto pf_players = database::pf_league::get_players_in_bracket(self->get_bracket_id());
+		const auto battles = database::pf_league::get_player_battles(self->get_bracket_id(), self->get_player_id());
+
+		for (auto i = 0u; i < pf_players.size(); i++)
+		{
+			const auto& pf_competitor = pf_players[i];
+			const auto competitor_id = pf_competitor.get_player_id();
+			add_player(competitor_id, i + 1, pf_competitor, battles);
+		}
+
 		for (auto i = 0u; i < battles.size(); i++)
 		{
 			auto& battle = battles[i];
@@ -170,7 +204,6 @@ namespace emulator::tpp
 			entry["attack_level"] = battle.get_attacker_level();
 			entry["attack_nuclear"] = battle.get_attacker_nuclear();
 			entry["attack_pid"] = battle.get_attacker_id();
-			entry["attack_point"] = battle.get_attacker_capability();
 			entry["attack_staff"] = battle.get_attacker_staff();
 			entry["cumulative_grade"] = battle.get_attacker_grade();
 			entry["defence_durability"] = battle.get_defender_durability();
@@ -178,7 +211,6 @@ namespace emulator::tpp
 			entry["defence_level"] = battle.get_defender_level();
 			entry["defence_nuclear"] = battle.get_defender_nuclear();
 			entry["defence_pid"] = battle.get_defender_id();
-			entry["defence_point"] = battle.get_defender_capability();
 			entry["defence_staff"] = battle.get_defender_staff();
 			entry["match_date"] = battle.get_date().count();
 			entry["result"] = battle.get_winner_state();
@@ -186,11 +218,21 @@ namespace emulator::tpp
 			entry["security_rank"] = battle.get_defender_security();
 			entry["weather"] = 0;
 			entry["win_point"] = is_attacker ? battle.get_attacker_points() : battle.get_defender_points();
+
+			auto attack_point = battle.get_attacker_capability();
+			auto defence_point = battle.get_defender_capability();
+
+			if (battle.get_winner_state() == database::pf_league::battle_winner_none)
+			{
+				attack_point += battle.get_attacker_buff() * database::pf_league::battle_buff_amount;
+				defence_point += battle.get_defender_buff() * database::pf_league::battle_buff_amount;
+			}
+
+			entry["attack_point"] = attack_point;
+			entry["defence_point"] = defence_point;
 		}
 
 		result["info"]["player_count"] = idx;
-		result["info"]["point"] = player_record->get_pf_point();
-		result["info"]["section"] = league->get_id();
 
 		return result;
 	}

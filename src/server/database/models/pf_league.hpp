@@ -7,6 +7,8 @@
 
 namespace database::pf_league
 {
+	constexpr const auto battle_buff_amount = 30000u;
+
 	enum pf_param_type_t : std::uint32_t
 	{
 		offensive_capability_sum = 0,
