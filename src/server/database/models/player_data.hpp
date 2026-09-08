@@ -23,6 +23,7 @@ namespace database::player_data
 	using staff_counts_t = std::uint32_t[game::rank_count];
 
 	constexpr const std::chrono::seconds prisoner_hold_time = 24h * 3;
+	constexpr const auto league_item_cap = 10u;
 
 	struct prisoner_t
 	{

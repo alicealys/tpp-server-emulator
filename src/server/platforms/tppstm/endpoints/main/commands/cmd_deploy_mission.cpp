@@ -3,6 +3,7 @@
 #include "cmd_deploy_mission.hpp"
 
 #include "database/models/combat_deployments.hpp"
+#include "cmd_get_combat_deploy_result.hpp"
 
 #include <utils/cryptography.hpp>
 
@@ -53,6 +54,27 @@ namespace emulator::tpp
 		if (!mission.has_value())
 		{
 			return error(ERR_INVALIDARG);
+		}
+
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.has_value())
+		{
+			return error(ERR_DATABASE);
+		}
+
+		auto can_give_reward = true;
+		for (auto o = 0u; o < mission->rewards.size(); o++)
+		{
+			if (!cmd_get_combat_deploy_result::can_give_reward(player_data.value(), mission->rewards[o]))
+			{
+				can_give_reward = false;
+				break;
+			}
+		}
+
+		if (!can_give_reward)
+		{
+			return error(ERR_DATABASE);
 		}
 
 		const auto current_deployment = database::combat_deployments::get_deployment(player->get_id(), mission_id);

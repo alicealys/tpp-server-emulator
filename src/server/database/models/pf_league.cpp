@@ -286,8 +286,8 @@ namespace database::pf_league
 	void pf_battle::update_params(const player_pf_data_t& attacker_data, const player_pf_data_t& defender_data,
 		const player_pf_params_t& attacker_params, const player_pf_params_t& defender_params)
 	{
-		this->attacker_capability_ = attacker_params.offensive_capability.elements[offensive_capability_sum] + this->get_attacker_buff() * 30000;
-		this->defender_capability_ = defender_params.defensive_capability.elements[defensive_capability_sum] + this->get_defender_capability() * 30000;
+		this->attacker_capability_ = attacker_params.offensive_capability.elements[offensive_capability_sum] + this->get_attacker_buff() * database::pf_league::battle_buff_amount;
+		this->defender_capability_ = defender_params.defensive_capability.elements[defensive_capability_sum] + this->get_defender_capability() * database::pf_league::battle_buff_amount;
 
 		this->attacker_durability_ = attacker_params.offensive_durability.elements[offensive_durability_sum];
 		this->defender_durability_ = defender_params.defensive_durability.elements[defensive_durability_sum];
@@ -1271,12 +1271,12 @@ namespace database::pf_league
 		auto attacker_capability = static_cast<float>(attacker.offensive_capability.elements[offensive_capability_sum]);
 		auto attacker_durability = static_cast<float>(attacker.offensive_durability.elements[offensive_durability_sum]);
 
-		attacker_capability += static_cast<float>(battle.get_attacker_buff()) * 30000;
+		attacker_capability += static_cast<float>(battle.get_attacker_buff() * database::pf_league::battle_buff_amount);
 
 		auto defender_capability = static_cast<float>(defender.defensive_capability.elements[defensive_capability_sum]);
 		auto defender_durability = static_cast<float>(defender.defensive_durability.elements[defensive_durability_sum]);
 
-		defender_capability += static_cast<float>(battle.get_defender_buff()) * 30000;
+		defender_capability += static_cast<float>(battle.get_defender_buff() * database::pf_league::battle_buff_amount);
 
 		auto attacker_hp = attacker_durability;
 		auto defender_hp = defender_durability;

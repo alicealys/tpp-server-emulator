@@ -3,32 +3,48 @@
 #include "cmd_get_combat_deploy_result.hpp"
 #include "cmd_get_daily_reward.hpp"
 
-#include "database/models/combat_deployments.hpp"
-#include "database/models/player_data.hpp"
-
 namespace emulator::tpp
 {
-	namespace
+	void cmd_get_combat_deploy_result::give_reward(const std::uint64_t player_id, const database::combat_deployments::mission_reward_t& reward)
 	{
-		bool give_reward(const std::uint64_t player_id, const database::combat_deployments::mission_reward_t& reward)
+		switch (reward.type)
 		{
-			switch (reward.type)
+		case 31:
+		{
+			if (reward.mecha_type == 0)
 			{
-			case 31:
+				database::player_data::use_league_item(player_id, reward.value, 0u, false);
+			}
+			else
 			{
-				if (reward.mecha_type == 0)
-				{
-					database::player_data::use_league_item(player_id, reward.value, 0u, false);
-				}
-				else
-				{
-					database::player_data::use_league_item(player_id, 0u, reward.value, false);
-				}
-				return true;
+				database::player_data::use_league_item(player_id, 0u, reward.value, false);
 			}
-			}
+			break;
+		}
+		default:
+			cmd_get_daily_reward::give_reward(player_id, reward.type, reward.value);
+			break;
+		}
+	}
 
-			return false;
+	bool cmd_get_combat_deploy_result::can_give_reward(const database::player_data::player_data& player_data, 
+		const database::combat_deployments::mission_reward_t& reward)
+	{
+		switch (reward.type)
+		{
+		case 31:
+		{
+			if (reward.mecha_type == 0)
+			{
+				return player_data.get_league_attack_item() + reward.value <= database::player_data::league_item_cap;
+			}
+			else
+			{
+				return player_data.get_league_defense_item() + reward.value <= database::player_data::league_item_cap;
+			}
+		}
+		default:
+			return true;
 		}
 	}
 
@@ -103,10 +119,7 @@ namespace emulator::tpp
 
 			for (auto& reward : iter->rewards)
 			{
-				if (!give_reward(player->get_id(), reward))
-				{
-					cmd_get_daily_reward::give_reward(player->get_id(), reward.type, reward.value);
-				}
+				cmd_get_combat_deploy_result::give_reward(player->get_id(), reward);
 			}
 
 			database::combat_deployments::delete_deployment(player->get_id(), deployment.get_mission_id());
