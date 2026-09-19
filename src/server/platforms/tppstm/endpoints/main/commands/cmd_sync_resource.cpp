@@ -61,14 +61,27 @@ namespace emulator::tpp
 					}
 
 					const auto ratio = game::get_local_resource_ratio(local_type, server_type, i);
+					const auto value = value_j.get<std::int32_t>();
 
-					const auto current_local_value = game::cap_resource_value(local_type, i, value_j.get<std::uint32_t>());
-					const auto current_server_value = game::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
+					auto current_local_value = 0u;
+					auto current_server_value = game::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
+
+					if (value >= 0)
+					{
+						current_local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(value));
+					}
+					else
+					{
+						current_local_value = 0u;
+						current_server_value -= std::min(current_server_value, static_cast<std::uint32_t>(-1 * value));
+					}
 
 					const auto total = current_local_value + current_server_value;
 
-					const auto local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(total * ratio));
-					const auto server_value = game::cap_resource_value(server_type, i, total - local_value);
+					const auto local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(static_cast<float>(total) * ratio));
+					const auto server_value = total >= local_value
+						? total - local_value
+						: 0u;
 
 					resource_arrays[local_type][i] = local_value;
 					resource_arrays[server_type][i] = server_value;
