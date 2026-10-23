@@ -49,11 +49,11 @@ namespace database::mgo_characters
 		switch (prestige)
 		{
 		case 1:
-			return 926000u;
+			return 846000u;
 		case 2:
-			return 1011000u;
+			return 926000u;
 		case 3:
-			return 1105000u;
+			return 1011000u;
 		}
 
 		return 0u;
