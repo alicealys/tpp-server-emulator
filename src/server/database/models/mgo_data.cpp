@@ -27,6 +27,7 @@ namespace database::mgo_data
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_played);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_abandoned);
 	GET_FIELD_C(mgo_data, std::uint32_t, matches_started);
+	GET_FIELD_C(mgo_data, std::uint32_t, dlc_flags);
 
 	const match_settings_t& mgo_data::get_match_settings() const
 	{
@@ -305,7 +306,7 @@ namespace database::mgo_data
 				return result != 0;
 			});
 		}
-		
+
 		template <database_type_t Type>
 		bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire)
 		{
@@ -320,6 +321,19 @@ namespace database::mgo_data
 			});
 		}
 
+		template <database_type_t Type>
+		bool set_dlc_flags(const std::uint64_t player_id, const std::uint32_t dlc_flags)
+		{
+			return database::access<bool>([&](database_t& db)
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::update(mgo_data::table)
+							.set(mgo_data::table.dlc_flags = dlc_flags)
+								.where(mgo_data::table.player_id == player_id));
+
+				return result != 0;
+			});
+		}
 		template <database_type_t Type>
 		void delete_player_data(const std::uint64_t player_id)
 		{
@@ -416,6 +430,11 @@ namespace database::mgo_data
 	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire)
 	{
 		RUN_IMPL(impl::set_gp_boost, player_id, gp_boost_mag, expire);
+	}
+
+	bool set_dlc_flags(const std::uint64_t player_id, const std::uint32_t dlc_flags)
+	{
+		RUN_IMPL(impl::set_dlc_flags, player_id, dlc_flags);
 	}
 
 	void delete_player_data(const std::uint64_t player_id)

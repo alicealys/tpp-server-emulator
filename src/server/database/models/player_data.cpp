@@ -362,10 +362,9 @@ namespace database::player_data
 			{
 				const auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.mb_coin = player_data::table.mb_coin - value)
-								.where(player_data::table.player_id == player_id &&
-									   player_data::table.mb_coin >= value)
+						.set(player_data::table.mb_coin = player_data::table.mb_coin - value)
+							.where(player_data::table.player_id == player_id &&
+								   player_data::table.mb_coin >= value)
 					);
 
 				return result != 0;
@@ -384,9 +383,8 @@ namespace database::player_data
 			{
 				const auto result = db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							player_data::table.mb_coin = player_data::table.mb_coin + value)
-								.where(player_data::table.player_id == player_id)
+						.set(player_data::table.mb_coin = player_data::table.mb_coin + value)
+							.where(player_data::table.player_id == player_id)
 					);
 
 				return result != 0;

@@ -299,6 +299,7 @@ create table if not exists `mgo_data`
 	matches_started				int unsigned default 0 not null,
 	match_settings				tinyblob default null,
 	preset_radio				tinyblob default null,
+	dlc_flags					int unsigned default 0 not null,
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)
 )
