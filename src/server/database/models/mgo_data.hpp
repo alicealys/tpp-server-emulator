@@ -71,6 +71,7 @@ namespace database::mgo_data
 		DEFINE_FIELD(matches_started, sqlpp::integer_unsigned);
 		DEFINE_FIELD(match_settings, sqlpp::binary);
 		DEFINE_FIELD(preset_radio, sqlpp::binary);
+		DEFINE_FIELD(dlc_flags, sqlpp::integer_unsigned);
 		DEFINE_TABLE(mgo_data, id_field_t, player_id_field_t,
 			last_character_used_field_t, bgm_selected_field_t,
 			gp_coin_field_t, gp_boost_mag_field_t, gp_boost_expire_field_t,
@@ -78,7 +79,8 @@ namespace database::mgo_data
 			reward_category_field_t, reward_id_a_field_t, reward_id_b_field_t, reward_id_c_field_t,
 			survival_tickets_field_t,
 			matches_played_field_t, matches_abandoned_field_t, matches_started_field_t,
-			match_settings_field_t, preset_radio_field_t);
+			match_settings_field_t, preset_radio_field_t,
+			dlc_flags_field_t);
 
 		inline static table_t table;
 
@@ -101,6 +103,7 @@ namespace database::mgo_data
 			this->matches_played_ = row.matches_played;
 			this->matches_abandoned_ = row.matches_abandoned;
 			this->matches_started_ = row.matches_started;
+			this->dlc_flags_ = static_cast<std::uint32_t>(row.dlc_flags);
 
 			const auto expire = [](const std::chrono::system_clock::time_point t, std::uint32_t& boost)
 			{
@@ -140,6 +143,7 @@ namespace database::mgo_data
 		GET_FIELD_H(std::uint32_t, matches_played);
 		GET_FIELD_H(std::uint32_t, matches_abandoned);
 		GET_FIELD_H(std::uint32_t, matches_started);
+		GET_FIELD_H(std::uint32_t, dlc_flags);
 
 		const match_settings_t& get_match_settings() const;
 		const preset_radio_t& get_preset_radio() const;
@@ -172,6 +176,7 @@ namespace database::mgo_data
 
 	bool set_boost(const std::uint64_t player_id, const std::uint32_t xp_boost_mag, const std::uint32_t gp_boost_mag);
 	bool set_gp_boost(const std::uint64_t player_id, const std::uint32_t gp_boost_mag, const std::chrono::system_clock::time_point expire);
+	bool set_dlc_flags(const std::uint64_t player_id, const std::uint32_t dlc_flags);
 
 	void delete_player_data(const std::uint64_t player_id);
 }
