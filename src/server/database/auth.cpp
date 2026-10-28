@@ -5,12 +5,15 @@
 
 #include "component/console.hpp"
 
+#include "game/game.hpp"
+
 #include "models/players.hpp"
 #include "models/steam_users.hpp"
 
 #include "utils/tpp_client.hpp"
 #include "utils/encoding.hpp"
 #include "utils/config.hpp"
+#include "utils/steam_ticket.hpp"
 
 #include <utils/string.hpp>
 #include <utils/cryptography.hpp>
@@ -31,6 +34,8 @@ namespace auth
 			{"konami", auth_konami},
 			{"custom", auth_custom},
 			{"hybrid", auth_hybrid},
+			{"nosteam", auth_nosteam},
+			{"hybrid_offline", auth_hybrid_offline},
 		};
 
 		std::optional<std::unordered_set<std::uint64_t>> parse_list(const std::string& file)
@@ -113,6 +118,25 @@ namespace auth
 
 			return {iter->second};
 		}
+
+		bool check_steam_id(const std::uint64_t id)
+		{
+			game::steam_id steam_id{.bits = id};
+			return steam_id.raw.account_type == 1 && steam_id.raw.universe == 1 &&
+				steam_id.raw.account_instance == 1 && steam_id.raw.account_id != 0;
+		}
+
+		std::string load_steam_public_key()
+		{
+			const auto key = config::get<std::string>("steam_public_key");
+			return utils::cryptography::base64::decode(key);
+		}
+
+		const std::string& get_steam_public_key()
+		{
+			static const auto key = load_steam_public_key();
+			return key;
+		}
 	}
 
 	void initialize_lists()
@@ -175,17 +199,44 @@ namespace auth
 		return {account_id};
 	}
 
-	std::optional<std::uint64_t> verify_ticket_offline(const std::string& auth_ticket, const size_t ticket_size)
+	std::optional<std::uint64_t> verify_ticket_nosteam(const std::string& auth_ticket, const size_t ticket_size)
 	{
 		const auto data = utils::cryptography::base64::decode(auth_ticket);
+
 		if (data.size() < 20)
 		{
 			return {};
 		}
 
 		const auto data_ptr = reinterpret_cast<size_t>(data.data());
-		const auto account_id = *reinterpret_cast<std::uint64_t*>(data_ptr + 12);
-		return {account_id};
+		const auto steam_id = *reinterpret_cast<std::uint64_t*>(data_ptr + 12);
+
+		if (!check_steam_id(steam_id))
+		{
+			return {};
+		}
+
+		return {steam_id};
+	}
+
+	std::optional<std::uint64_t> verify_ticket_offline(const std::string& auth_ticket, const size_t ticket_size)
+	{
+		const auto data = utils::cryptography::base64::decode(auth_ticket);
+
+		utils::steam::auth_ticket ticket{};
+		if (!ticket.parse(data))
+		{
+			return {};
+		}
+
+		if (ticket.ownership.app_id != 287700u || ticket.is_expired() || !ticket.verify_signature(get_steam_public_key()) ||
+			!check_steam_id(ticket.ownership.steam_id))
+		{
+			return {};
+		}
+
+
+		return {ticket.ownership.steam_id};
 	}
 
 	std::optional<std::uint64_t> verify_ticket_custom(const std::string& auth_ticket, const size_t ticket_size)
@@ -233,6 +284,8 @@ namespace auth
 			return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
 		case auth_custom:
 			return verify_ticket_custom(auth_ticket, ticket_size);
+		case auth_nosteam:
+			return verify_ticket_nosteam(auth_ticket, ticket_size);
 		case auth_hybrid:
 		{
 			if (ticket_size == sizeof(auth_ticket_custom_t))
@@ -242,6 +295,17 @@ namespace auth
 			else
 			{
 				return verify_ticket_konami(auth_ticket, ticket_size, is_tpp);
+			}
+		}
+		case auth_hybrid_offline:
+		{
+			if (ticket_size == sizeof(auth_ticket_custom_t))
+			{
+				return verify_ticket_custom(auth_ticket, ticket_size);
+			}
+			else
+			{
+				return verify_ticket_offline(auth_ticket, ticket_size);
 			}
 		}
 		}
@@ -330,5 +394,13 @@ namespace auth
 
 		const auto value_str = value.get<std::string>();
 		return auth_mode_map.contains(value_str);
+	}
+
+	std::string get_default_steam_public_key()
+	{
+		return "MIGdMA0GCSqGSIb3DQEBAQUAA4GLADCBhwKBgQDf7BrWLBBmLBc1OhSwfFkRf53T"
+			   "2Ct64+AVzRkeRuh7h3SiGEYxqQMUeYKO6UWiSRKpI2hzic9pobFhRr3Bvr/WARvY"
+			   "gdTckPv+T1JzZsuVcNfFjrocejN1oWI0Rrtgt4Bo+hOneoo3S57G9F1fOpn5nsQ6"
+			   "6WOiu4gZKODnFMBCiQIBEQ==";
 	}
 }

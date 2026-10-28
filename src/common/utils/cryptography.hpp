@@ -54,6 +54,11 @@ namespace utils::cryptography
 		bool decrypt(const key& key, std::string& data);
 	}
 
+	namespace rsa
+	{
+		bool verify(const std::string& data, const std::string& signature, const std::string& key);
+	}
+
 	namespace des3
 	{
 		std::string encrypt(const std::string& data, const std::string& iv, const std::string& key);

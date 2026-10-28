@@ -30,7 +30,9 @@ namespace auth
 		auth_offline = 0,
 		auth_konami = 1,
 		auth_custom = 2,
-		auth_hybrid = 3
+		auth_hybrid = 3,
+		auth_nosteam = 4,
+		auth_hybrid_offline = 5
 	};
 
 	void initialize_lists();
@@ -40,4 +42,5 @@ namespace auth
 	std::optional<auth_response> authenticate_user(const std::string& account_id, const std::string& password);
 	std::string generate_data(const size_t len, bool base64);
 	bool validate_auth_mode(const nlohmann::json& value);
+	std::string get_default_steam_public_key();
 }

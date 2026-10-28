@@ -342,6 +342,41 @@ namespace utils::cryptography
 		return true;
 	}
 
+
+	bool rsa::verify(const std::string& data, const std::string& signature, const std::string& key_data)
+	{
+		rsa_key key{};
+		if (rsa_import(cs(key_data.data()), ul(key_data.size()), &key) != CRYPT_OK)
+		{
+			return false;
+		}
+
+		const auto _0 = gsl::finally([&]
+		{
+			rsa_free(&key);
+		});
+
+		const int hash_idx = register_hash(&sha1_desc);
+		if (hash_idx < 0)
+		{
+			return false;
+		}
+
+		std::uint8_t hash[20]{};
+		hash_state md;
+		sha1_init(&md);
+		sha1_process(&md, cs(data.data()), ul(data.size()));
+		sha1_done(&md, hash);
+
+		const std::uint32_t saltlen{};
+		std::int32_t stat{};
+
+		const auto err = rsa_verify_hash_ex(cs(signature.data()), ul(signature.size()),
+			hash, sizeof(hash), LTC_PKCS_1_V1_5, hash_idx, saltlen, &stat, &key);
+
+		return err == CRYPT_OK && stat != 0;
+	}
+
 	std::string des3::encrypt(const std::string& data, const std::string& iv, const std::string& key)
 	{
 		std::string enc_data;

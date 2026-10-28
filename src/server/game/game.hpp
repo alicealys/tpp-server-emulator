@@ -113,6 +113,20 @@ namespace game
 
 	std::uint32_t calculate_mb_coins(const std::uint32_t seconds, float factor);
 
+	struct raw_steam_id
+	{
+		unsigned int account_id : 32;
+		unsigned int account_instance : 20;
+		unsigned int account_type : 4;
+		int universe : 8;
+	};
+
+	typedef union
+	{
+		raw_steam_id raw;
+		unsigned long long bits;
+	} steam_id;
+
 	// resources
 
 	enum resource_array_types_t

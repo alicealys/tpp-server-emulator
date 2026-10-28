@@ -41,6 +41,7 @@ namespace config
 			{define_field("use_lua_scripts", field_type::boolean, true)},
 			{define_field("http_client_ip_header", field_type::string, "")},
 			{define_field("enable_web_api", field_type::boolean, true)},
+			{define_field("steam_public_key", field_type::string, auth::get_default_steam_public_key())},
 		};
 
 		std::string get_config_file_path()
