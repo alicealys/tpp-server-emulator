@@ -35,5 +35,6 @@ namespace database
 		vars.no_fob_damage = config::get_or<bool>("vars.no_fob_damage", vars.no_fob_damage);
 		vars.pvp_mode = config::get_or<bool>("vars.pvp_mode", vars.pvp_mode);
 		vars.run_pf_league = config::get_or<bool>("vars.run_pf_league", vars.run_pf_league);
+		vars.run_database_tasks = config::get_or<bool>("vars.run_database_tasks", vars.run_database_tasks);
 	}
 }
