@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "http_server.hpp"
+#include "database/database.hpp"
 
 #include "component/console.hpp"
 #include "utils/config.hpp"
@@ -103,6 +104,23 @@ namespace utils
 				c->mgr->pipe.fd = MG_INVALID_SOCKET;
 			}
 		}
+
+		std::size_t get_max_worker_threads()
+		{
+			const auto max_db_conns = database::get_database_def().max_connections;
+			if (max_db_conns == 1)
+			{
+				return 1;
+			}
+
+			const auto max_worker_threads = config::get<std::size_t>("max_worker_threads");
+			if (max_worker_threads > max_db_conns)
+			{
+				console::warning("[config] max_worker_threads is larger than max_database_connections, this is not recommended\n");
+			}
+
+			return max_worker_threads;
+		}
 	}
 
 	std::optional<std::string> request_query::get(const std::string& key) const
@@ -153,7 +171,7 @@ namespace utils
 	}
 
 	http_server::http_server()
-		: thread_pool_(100)
+		: thread_pool_(get_max_worker_threads())
 	{
 		this->set_ports(80, 443);
 	}

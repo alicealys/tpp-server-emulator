@@ -13,9 +13,8 @@ namespace database
 	namespace
 	{
 		database_def_t database_def{};
-		constexpr const auto max_connections = 150;
 		constexpr const auto connection_lifetime = 60s * 10;
-		std::array<connection, max_connections> connection_pool;
+		std::array<connection, 256> connection_pool;
 	}
 
 	database_type_t get_database_type()
@@ -232,14 +231,14 @@ namespace database
 		}
 	}
 
+	void connection::stop()
+	{
+		std::lock_guard lock(this->mutex);
+		this->db.reset();
+	}
+
 	connection* get_connection(std::unique_lock<database_mutex_t>& lock)
 	{
-		if (!get_database_def().use_multi_connection)
-		{
-			static connection single_connection;
-			return &single_connection;
-		}
-
 		static thread_local connection* last_connection{};
 		if (last_connection != nullptr)
 		{
@@ -250,7 +249,7 @@ namespace database
 			}
 		}
 
-		for (auto i = 0ull; i < connection_pool.size(); i++)
+		for (auto i = 0ull; i < database_def.max_connections; i++)
 		{
 			auto connection = &connection_pool[i];
 			if (connection == last_connection)
@@ -268,12 +267,13 @@ namespace database
 			return connection;
 		}
 
+		lock = {};
 		return nullptr;
 	}
 
 	void cleanup_connections()
 	{
-		if (!get_database_def().use_multi_connection)
+		if (!database_def.use_multi_connection)
 		{
 			return;
 		}
@@ -344,12 +344,31 @@ namespace database
 
 	void initialize()
 	{
+		get_config();
+
+		if (!database_def.use_multi_connection)
+		{
+			database_def.max_connections = 1;
+		}
+		else
+		{
+			database_def.max_connections = config::get<std::size_t>("max_database_connections");
+		}
+
+		if (database_def.max_connections > connection_pool.size())
+		{
+			throw std::runtime_error(std::format("[config] max_database_connections must not be larger than {}", connection_pool.size()));
+		}
+
 		initialize_vars();
 		create_tables();
 	}
 
 	void stop()
 	{
-
+		for (auto& connection : connection_pool)
+		{
+			connection.stop();
+		}
 	}
 }

@@ -281,11 +281,14 @@ workspace "tpp-server-emulator"
 			defines {"CI"}
 		end
 
-		flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
-
+		incrementallink "Off"
+		minimalrebuild "Off"
+		multiprocessorcompile "On"
+		
 		filter "configurations:Release"
-			optimize "Size"
+			optimize "Full"
 			defines {"NDEBUG"}
+			linktimeoptimization "On"
 			fatalwarnings {"all"}
 		filter {}
 
@@ -296,7 +299,6 @@ workspace "tpp-server-emulator"
 
 		filter { "configurations:Release", "toolset:msc*" }
 			buildoptions {"/GL"}
-			linkoptions {"/IGNORE:4702", "/LTCG"}
 		filter {}
 
 		filter { "configurations:Debug", "toolset:msc*" }
