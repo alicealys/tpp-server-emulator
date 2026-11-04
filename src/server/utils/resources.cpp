@@ -41,6 +41,7 @@ namespace utils::resources
 			{RESOURCE_SECURITY_PRODUCT_LIST, "resources/data/security_product_list.json"},
 			{RESOURCE_PF_POINTS_TABLE, "resources/data/pf_points_table.json"},
 			{RESOURCE_PF_POINTS_EXCHANGE_LIST, "resources/data/pf_points_exchange_list.json"},
+			{RESOURCE_ONLINE_CHALLENGE_TASKS, "resources/data/online_challenge_tasks.json"},
 
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},

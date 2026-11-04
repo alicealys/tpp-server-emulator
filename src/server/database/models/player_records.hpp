@@ -8,14 +8,8 @@ namespace database::player_records
 {
 	constexpr const auto lowest_grade = 0u;
 	constexpr const auto highest_grade = 11u;
-	constexpr const auto challenge_tasks_count = 32u;
 	constexpr const auto min_league_grade = 0u;
 	constexpr const auto max_league_grade = 28u;
-
-	struct challenge_tasks_t
-	{
-		std::uint32_t status[challenge_tasks_count];
-	};
 
 	class player_record
 	{
@@ -44,7 +38,6 @@ namespace database::player_records
 		DEFINE_FIELD(fob_sneak_lose, sqlpp::integer_unsigned);
 		DEFINE_FIELD(shield_date, sqlpp::time_point);
 		DEFINE_FIELD(has_fob, sqlpp::boolean);
-		DEFINE_FIELD(challenge_tasks, sqlpp::binary);
 		DEFINE_FIELD(daily_last, sqlpp::time_point);
 		DEFINE_FIELD(daily_last_ack, sqlpp::time_point);
 		DEFINE_FIELD(daily_total, sqlpp::integer_unsigned);
@@ -54,7 +47,7 @@ namespace database::player_records
 			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, 
 			league_point_field_t, pf_point_field_t, pf_point_add_field_t, event_point_field_t,
 			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
-			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, challenge_tasks_field_t, 
+			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, 
 			daily_last_field_t, daily_last_ack_field_t, daily_total_field_t, league_last_ack_field_t);
 
 		inline static table_t table;
@@ -84,13 +77,6 @@ namespace database::player_records
 			this->fob_sneak_win_ = static_cast<std::uint32_t>(row.fob_sneak_win);
 			this->fob_sneak_lose_ = static_cast<std::uint32_t>(row.fob_sneak_lose);
 			this->has_fob_ = static_cast<bool>(row.has_fob);
-
-			const auto challenge_tasks_str = row.challenge_tasks.value();
-			if (challenge_tasks_str.size() == sizeof(challenge_tasks_t))
-			{
-				std::memcpy(&this->challenge_tasks_, challenge_tasks_str.data(), sizeof(challenge_tasks_t));
-			}
-
 			this->daily_last_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last.value().time_since_epoch());
 			this->daily_last_ack_ = std::chrono::duration_cast<std::chrono::seconds>(row.daily_last_ack.value().time_since_epoch());
 			this->daily_total_ = static_cast<std::uint32_t>(row.daily_total);
@@ -227,16 +213,6 @@ namespace database::player_records
 			return this->has_fob_;
 		}
 
-		challenge_tasks_t& get_challenge_tasks()
-		{
-			return this->challenge_tasks_;
-		}
-
-		const challenge_tasks_t& get_challenge_tasks() const
-		{
-			return this->challenge_tasks_;
-		}
-
 		std::chrono::seconds get_daily_last() const
 		{
 			return this->daily_last_;
@@ -280,7 +256,6 @@ namespace database::player_records
 		std::uint32_t fob_defense_lose_{};
 		std::uint32_t fob_sneak_win_{};
 		std::uint32_t fob_sneak_lose_{};
-		challenge_tasks_t challenge_tasks_{};
 		bool has_fob_{};
 		std::chrono::seconds daily_last_{};
 		std::chrono::seconds daily_last_ack_{};
@@ -308,8 +283,6 @@ namespace database::player_records
 
 	void set_fob_point(const std::uint64_t player_id, const std::uint32_t value);
 	void set_has_fob(const std::uint64_t player_id, const bool has_fob);
-
-	bool set_challenge_tasks(const std::uint64_t player_id, const challenge_tasks_t& tasks);
 
 	void set_daily_login(const std::uint64_t player_id);
 	void set_daily_reward(const std::uint64_t player_id);

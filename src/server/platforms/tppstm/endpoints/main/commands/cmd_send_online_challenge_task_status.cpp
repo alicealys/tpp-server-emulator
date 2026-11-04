@@ -1,8 +1,10 @@
 #include <std_include.hpp>
 
 #include "cmd_send_online_challenge_task_status.hpp"
+#include "cmd_get_daily_reward.hpp"
 
 #include "database/models/player_records.hpp"
+#include "database/models/challenge_tasks.hpp"
 
 namespace emulator::tpp
 {
@@ -10,40 +12,66 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
+		auto& version_j = data["version"];
 		auto& status_list_j = data["status_list"];
-		if (!status_list_j.is_array())
+		if (!version_j.is_number_unsigned() || !status_list_j.is_array())
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		auto record = database::player_records::find(player->get_id());
-		if (!record.has_value())
-		{
-			return error(ERR_DATABASE);
-		}
+		const auto version = version_j.get<std::uint32_t>();
+		const auto current_version = database::challenge_tasks::get_current_version();
 
-		auto& challenge_tasks = record->get_challenge_tasks();
+		std::chrono::seconds start{};
+		std::chrono::seconds end{};
 
-		const auto count = std::min(static_cast<std::uint32_t>(status_list_j.size()), database::player_records::challenge_tasks_count);
+		const auto current_tasks = database::challenge_tasks::get_current_challenge_tasks(start, end);
+		const auto orders = database::challenge_tasks::get_order_list(player->get_id());
+
+		auto& result_status_list_j = result["result_status_list"];
+		result_status_list_j = nlohmann::json::array();
+
+		const auto count = std::min(status_list_j.size(), current_tasks.size());
 		for (auto i = 0u; i < count; i++)
 		{
-			if (status_list_j[i].is_number_unsigned())
+			auto status = 0u;
+
+			if (version == current_version)
 			{
-				const auto flags = status_list_j[i].get<std::uint32_t>();
-				if ((flags & 2) != 0)
+				status = status_list_j[i].get<std::uint32_t>() & 0b11;
+
+				const auto& task = current_tasks[i];
+				const auto iter = std::ranges::find_if(orders.begin(), orders.end(),
+					[&](const database::challenge_tasks::challenge_task_order& order)
+					{
+						return current_tasks[i].id == order.get_task_id();
+					}
+				);
+
+				if ((status & 2) != 0)
 				{
-					challenge_tasks.status[i] |= 2;
-					challenge_tasks.status[i] |= 1;
+					status |= 1;
+				}
+
+				auto prev_status = 0u;
+				if (iter == orders.end())
+				{
+					prev_status = 0u;
+					database::challenge_tasks::create_order(player->get_id(), task.id, status, end);
+				}
+				else
+				{
+					prev_status = iter->get_status();
+					database::challenge_tasks::set_order_status(iter->get_order_id(), status);
+				}
+
+				if (prev_status == 0 && (status & 2) != 0)
+				{
+					cmd_get_daily_reward::give_reward(player->get_id(), task.reward.type, task.reward.value);
 				}
 			}
-		}
 
-		database::player_records::set_challenge_tasks(player->get_id(), challenge_tasks);
-
-		result["result_status_list"] = nlohmann::json::array();
-		for (auto i = 0u; i < database::player_records::challenge_tasks_count; i++)
-		{
-			result["result_status_list"][i] = challenge_tasks.status[i];
+			result_status_list_j[i] = status;
 		}
 
 		return result;

@@ -463,3 +463,14 @@ create table if not exists `steam_users`
 	expire_date				datetime not null,
 	primary key (`id`)
 )
+-- query:mgstpp.challenge_task_orders.create
+create table if not exists `challenge_task_orders`
+(
+	order_id				bigint unsigned	not null	auto_increment,
+	player_id				bigint unsigned	not null,
+	task_id					int unsigned not null,
+	status					int unsigned not null default 0,
+	expire_date				datetime default current_timestamp not null,
+	primary key (`order_id`),
+	foreign key (`player_id`) references players(`id`)
+)

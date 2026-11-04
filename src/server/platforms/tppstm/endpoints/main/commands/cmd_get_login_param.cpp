@@ -4,8 +4,10 @@
 
 #include "database/models/items.hpp"
 #include "database/models/fob_events.hpp"
+#include "database/models/challenge_tasks.hpp"
 
 #include "component/motd.hpp"
+#include "utils/time.hpp"
 
 namespace emulator::tpp
 {
@@ -23,6 +25,42 @@ namespace emulator::tpp
 
 		result["server_product_params"] = database::items::get_static_list_json();
 
+		{
+			auto& online_challenge_task_j = result["online_challenge_task"];
+			auto& task_list_j = online_challenge_task_j["task_list"];
+
+			task_list_j = nlohmann::json::array();
+
+			std::chrono::seconds start{};
+			std::chrono::seconds end{};
+
+			const auto current_tasks = database::challenge_tasks::get_current_challenge_tasks(start, end);
+			const auto orders = database::challenge_tasks::get_order_list(player->get_id());
+
+			for (auto i = 0ull; i < current_tasks.size(); i++)
+			{
+				const auto iter = std::ranges::find_if(orders.begin(), orders.end(), 
+					[&](const database::challenge_tasks::challenge_task_order& order)
+					{
+						return current_tasks[i].id == order.get_task_id();
+					}
+				);
+
+				current_tasks[i].to_json(task_list_j[i]);
+				auto& status_j = task_list_j[i]["status"];
+				status_j = 0;
+
+				if (iter != orders.end())
+				{
+					status_j = iter->get_status();
+				}
+			}
+
+			online_challenge_task_j["start_date"] = start.count();
+			online_challenge_task_j["end_date"] = end.count();
+			online_challenge_task_j["version"] = database::challenge_tasks::get_current_version();
+		}
+
 		const auto current_event = database::fob_events::get_current_event();
 		if (current_event.has_value())
 		{
@@ -33,14 +71,7 @@ namespace emulator::tpp
 			const std::chrono::year_month_day ymd_end{std::chrono::floor<std::chrono::days>(end)};
 
 			result["fob_event_task_list"]["one_event_task"] = current_event->one_event_task;
-			result["online_challenge_task"]["end_date"] = current_event->date_range.end.count();
-
-			auto version = 
-				static_cast<std::uint32_t>(static_cast<std::int32_t>(ymd_end.year())) * 10000u +
-				static_cast<std::uint32_t>(ymd_end.month()) * 100u +
-				static_cast<std::uint32_t>(ymd_end.day());
-
-			result["online_challenge_task"]["version"] = version;
+			result["fob_event_task_list"]["version"] = utils::time::version(current_event->date_range.end);
 
 			const auto fmt_date = [](const std::chrono::year_month_day& date, const bool rev)
 			{
@@ -83,11 +114,6 @@ namespace emulator::tpp
 
 				text_j = text;
 			}
-		}
-		else
-		{
-			result["online_challenge_task"]["end_date"] = 0;
-			result["online_challenge_task"]["version"] = 0;
 		}
 
 		auto begin = result["server_texts"].size();

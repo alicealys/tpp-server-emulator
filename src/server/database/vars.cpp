@@ -10,6 +10,7 @@ namespace database
 	{
 		vars.session_heartbeat = 1s * config::get_or<std::uint64_t>("vars.session_heartbeat", vars.session_heartbeat.count());
 		vars.session_timeout = 1s * config::get_or<std::uint64_t>("vars.session_timeout", vars.session_timeout.count());
+		vars.reference_time = 1s * config::get_or<std::uint64_t>("vars.reference_time", vars.reference_time.count());
 
 		vars.nuclear_find_probability = std::clamp(config::get_or<float>("vars.nuclear_find_probability", vars.nuclear_find_probability), 0.f, 1.f);
 		vars.wormhole_duration = 24h * config::get_or<std::uint64_t>("vars.wormhole_duration_days", 31);

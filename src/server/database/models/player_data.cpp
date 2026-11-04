@@ -893,12 +893,8 @@ namespace database::player_data
 		}
 
 		auto add_amount = static_cast<std::int32_t>(count);
-
-		const auto free_server_gmp = database::vars.max_server_gmp - player_data->get_server_gmp();
-		const auto free_local_gmp = database::vars.max_local_gmp - player_data->get_local_gmp();
-
 		auto new_server_gmp = player_data->get_server_gmp();
-		auto new_local_gmp = player_data->get_local_gmp();
+		const auto free_server_gmp = database::vars.max_server_gmp - player_data->get_server_gmp();
 
 		if (free_server_gmp > 0)
 		{
@@ -907,14 +903,7 @@ namespace database::player_data
 			add_amount -= add;
 		}
 
-		if (free_local_gmp > 0)
-		{
-			const auto add = std::min(add_amount, free_local_gmp);
-			new_local_gmp += add;
-			add_amount -= add;
-		}
-
-		database::player_data::set_gmp(player_id, new_local_gmp, new_server_gmp);
+		database::player_data::set_gmp(player_id, player_data->get_local_gmp(), new_server_gmp);
 	}
 
 	void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade)
