@@ -19,7 +19,7 @@ namespace emulator::tpp
 
 		create_nuclear(player);
 
-		const auto& version_j = data["version"];
+		[[ maybe_unused ]] const auto& version_j = data["version"];
 		const auto& diff_resource_1 = data["diff_resource1"];
 		const auto& diff_resource_2 = data["diff_resource2"];
 		const auto& gmp_j = data["gmp"];
@@ -49,6 +49,12 @@ namespace emulator::tpp
 			bool sync)
 		{
 			const auto id = local_type == game::unprocessed_local ? "2"s : "1"s;
+			const auto local_key = std::format("diff_resource{}", id);
+			const auto server_key = std::format("fix_resource{}", id);
+
+			auto& local_j = result[local_key];
+			auto& server_j = result[server_key];
+
 			for (auto i = 0; i < static_cast<std::int32_t>(resources.size()); i++)
 			{
 				if (sync)
@@ -86,8 +92,8 @@ namespace emulator::tpp
 					resource_arrays[server_type][i] = server_value;
 				}
 
-				result["diff_resource" + id][i] = resource_arrays[local_type][i];
-				result["fix_resource" + id][i] = resource_arrays[server_type][i];
+				local_j[i] = resource_arrays[local_type][i];
+				server_j[i] = resource_arrays[server_type][i];
 			}
 
 			return true;
@@ -95,12 +101,9 @@ namespace emulator::tpp
 
 		auto server_gmp = player_data->get_server_gmp();
 		auto local_gmp = std::min(database::vars.max_local_gmp, gmp_j.get<std::int32_t>());
-
-		const auto local_version = version_j.get<std::uint64_t>();
-		const auto client_version = player_data->get_client_resource_version();
 		auto server_version = player_data->get_server_resource_version();
 
-		const auto update_server = client_version == server_version && local_version != client_version - 1;
+		constexpr auto update_server = true;
 
 		if (!sync_resources(diff_resource_1, game::processed_local, game::processed_server, update_server) ||
 			!sync_resources(diff_resource_2, game::unprocessed_local, game::unprocessed_server, update_server))

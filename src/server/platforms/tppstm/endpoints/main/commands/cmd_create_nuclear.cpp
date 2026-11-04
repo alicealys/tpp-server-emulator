@@ -39,7 +39,7 @@ namespace emulator::tpp
 		const auto capped = game::cap_resource_value(game::processed_server, game::NUCLEAR_WEAPON, inc);
 		resources[game::processed_server][game::NUCLEAR_WEAPON] = capped;
 
-		database::player_data::set_resources(player->get_id(), resources, player_data->get_local_gmp(), player_data->get_server_gmp());
+		database::player_data::set_resources_gmp(player->get_id(), resources, player_data->get_local_gmp(), player_data->get_server_gmp());
 
 		const auto nuke_count = database::player_data::get_nuke_count();
 		database::variables::access_with_lock("abolition_lock", [&]()

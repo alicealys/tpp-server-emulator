@@ -77,6 +77,11 @@ namespace emulator::tpp
 
 				soldier_ids.erase(iter);
 
+				if (staff->fields.status_sync.direct_contract)
+				{
+					continue;
+				}
+
 				switch (action)
 				{
 				case soldier_injure:

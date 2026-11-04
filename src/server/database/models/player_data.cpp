@@ -237,16 +237,17 @@ namespace database::player_data
 
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays)),
-							 player_data::table.local_gmp = local_gmp,
-							 player_data::table.server_gmp = server_gmp,
-							 player_data::table.nuke_count = nuke_count,
-							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
-								.where(player_data::table.player_id == player_id
-					));
+				const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
+
+				auto update = sqlpp::update(player_data::table).set(
+					player_data::table.player_id = player_id,
+					player_data::table.resource_arrays = resource_arrays,
+					player_data::table.local_gmp = local_gmp,
+					player_data::table.server_gmp = server_gmp,
+					player_data::table.nuke_count = nuke_count)
+						.where(player_data::table.player_id == player_id);
+
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 		
@@ -259,8 +260,7 @@ namespace database::player_data
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
 							 player_data::table.local_gmp = local_gmp,
-							 player_data::table.server_gmp = server_gmp,
-							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
+							 player_data::table.server_gmp = server_gmp)
 								.where(player_data::table.player_id == player_id
 					));
 			});
@@ -273,14 +273,15 @@ namespace database::player_data
 
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays)),
-							 player_data::table.nuke_count = nuke_count,
-							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
-								.where(player_data::table.player_id == player_id
-					));
+				const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
+
+				auto update = sqlpp::update(player_data::table).set(
+					player_data::table.player_id = player_id,
+					player_data::table.resource_arrays = resource_arrays,
+					player_data::table.nuke_count = nuke_count)
+						.where(player_data::table.player_id == player_id);
+
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
@@ -769,7 +770,7 @@ namespace database::player_data
 		RUN_IMPL(impl::set_soldier_diff, player_id, levels, counts);
 	}
 
-	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
+	void set_resources_gmp(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 	{
 		RUN_IMPL(impl::set_resources, player_id, arrays, local_gmp, server_gmp);
 	}

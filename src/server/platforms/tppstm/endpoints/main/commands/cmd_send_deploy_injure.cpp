@@ -148,7 +148,7 @@ namespace emulator::tpp
 			}
 		}
 
-		database::player_data::set_resources(player->get_id(), new_resources, player_data->get_local_gmp(), player_data->get_server_gmp());
+		database::player_data::set_resources_gmp(player->get_id(), new_resources, player_data->get_local_gmp(), player_data->get_server_gmp());
 
 		return result;
 	}

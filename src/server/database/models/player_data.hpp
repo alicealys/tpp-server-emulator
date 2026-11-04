@@ -366,7 +366,7 @@ namespace database::player_data
 
 	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
 
-	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
+	void set_resources_gmp(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays);
 	void set_gmp(const std::uint64_t player_id, const std::int32_t local_gmp, const std::int32_t server_gmp);
 	void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);

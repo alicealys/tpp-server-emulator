@@ -76,8 +76,9 @@ namespace database::items
 			this->valid_ = false;
 		}
 
-		void set_data(const item_t& item_data, const std::optional<player_data::player_data>& player_data,
-			const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array);
+		bool can_develop(const std::optional<player_data::player_data>& player_data,
+			const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array) const;
+		void initialize(const item_t& item_data);
 
 		int is_open() const
 		{
@@ -157,6 +158,8 @@ namespace database::items
 		std::uint32_t max_second_{};
 		std::uint32_t resource_ids_[2]{};
 		std::uint32_t resource_values_[2]{};
+		std::uint32_t skill_{};
+		std::uint32_t platform_levels_[7]{};
 		std::chrono::system_clock::time_point create_date_{};
 
 	};

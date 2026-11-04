@@ -105,13 +105,60 @@ namespace database::items
 		return iter->second;
 	}
 
-	void item_status::set_data(const item_t& item_data, const std::optional<player_data::player_data>& player_data,
-		const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array)
+	bool item_status::can_develop(const std::optional<player_data::player_data>& player_data,
+		const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array) const
+	{
+		const auto count_1 = resource_arrays[game::processed_server][this->resource_ids_[0]];
+		const auto count_2 = resource_arrays[game::processed_server][this->resource_ids_[1]];
+		const auto gmp = player_data->get_server_gmp();
+
+		auto should_be_open = false;
+		if (gmp >= this->gmp_ &&
+			count_1 >= this->resource_values_[0] &&
+			count_2 >= this->resource_values_[1])
+		{
+			should_be_open = true;
+
+			for (auto i = 0; i < game::unit_count; i++)
+			{
+				if (player_data->get_unit_level(i) < this->platform_levels_[i])
+				{
+					should_be_open = false;
+					break;
+				}
+			}
+
+			auto has_skill = this->skill_ == 0;
+			if (should_be_open && this->skill_ != 0)
+			{
+				for (auto i = 0u; i < player_data->get_staff_count(); i++)
+				{
+					const auto& staff = staff_array[i];
+					if (staff.fields.header.skill == this->skill_)
+					{
+						has_skill = true;
+						break;
+					}
+				}
+			}
+
+			if (!has_skill)
+			{
+				should_be_open = false;
+			}
+		}
+
+		return should_be_open;
+	}
+
+	void item_status::initialize(const item_t& item_data)
 	{
 		const auto now = std::chrono::system_clock::now();
 
 		this->max_second_ = item_data.dev_time * 60;
 		this->gmp_ = item_data.dev_gmp;
+		this->skill_ = item_data.dev_skill;
+		std::memcpy(&this->platform_levels_, item_data.dev_platform_levels, sizeof(item_data.dev_platform_levels));
 
 		this->resource_ids_[0] = item_data.dev_resource_ids[0];
 		this->resource_ids_[1] = item_data.dev_resource_ids[1];
@@ -142,58 +189,13 @@ namespace database::items
 
 		this->mb_coin_ = game::calculate_mb_coins(this->left_second_, database::vars.cost_factor_item_dev);
 
-		this->open_ = this->left_second_ == 0;
+		this->open_ = 1;
 
 		if (vars.unlock_all_items && this->id_ != item_id::nuclear)
 		{
 			this->develop_ = 2;
 			this->open_ = 1;
 			this->left_second_ = 0;
-		}
-
-		if (!this->open_)
-		{
-			const auto count_1 = resource_arrays[game::processed_server][item_data.dev_resource_ids[0]];
-			const auto count_2 = resource_arrays[game::processed_server][item_data.dev_resource_ids[1]];
-			const auto gmp = player_data->get_server_gmp();
-
-			auto should_be_open = false;
-			if (gmp >= item_data.dev_gmp && 
-				count_1 >= item_data.dev_resource_values[0] && 
-				count_2 >= item_data.dev_resource_values[1])
-			{
-				should_be_open = true;
-
-				for (auto i = 0; i < game::unit_count; i++)
-				{
-					if (player_data->get_unit_level(i) < item_data.dev_platform_levels[i])
-					{
-						should_be_open = false;
-						break;
-					}
-				}
-
-				auto has_skill = item_data.dev_skill == 0;
-				if (should_be_open && item_data.dev_skill != 0)
-				{
-					for (auto i = 0u; i < player_data->get_staff_count(); i++)
-					{
-						const auto& staff = staff_array[i];
-						if (staff.fields.header.skill == item_data.dev_skill)
-						{
-							has_skill = true;
-							break;
-						}
-					}
-				}
-
-				if (!has_skill)
-				{
-					should_be_open = false;
-				}
-			}
-
-			this->open_ = should_be_open;
 		}
 	}
 
@@ -202,7 +204,9 @@ namespace database::items
 		template <database_type_t Type>
 		std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
 		{
-			return database::access<std::unordered_map<std::uint32_t, item_status>>([&](database::database_t& db)
+			// todo: handle server blueprints from events
+
+			auto list = database::access<std::unordered_map<std::uint32_t, item_status>>([&](database::database_t& db)
 				-> std::unordered_map<std::uint32_t, item_status>
 			{
 				auto results = db.get_database<Type>()->operator()(
@@ -219,42 +223,32 @@ namespace database::items
 					list.insert(std::make_pair(status.get_id(), status));
 				}
 
-				const auto player_data = player_data::find(player_id);
-				if (!player_data.has_value())
-				{
-					return list;
-				}
-
-				database::player_data::resource_arrays_t resource_arrays{};
-				database::player_data::staff_array_container staff_array{};
-
-				player_data->get_resource_arrays(resource_arrays);
-				player_data->get_staff_array(staff_array);
-
-				const auto& static_list = get_static_list();
-				for (const auto& item : static_list)
-				{
-					const auto iter = list.find(item.id);
-					if (iter == list.end())
-					{
-						item_status status(item.id, player_id);
-						status.set_data(item, player_data, resource_arrays, staff_array);
-						list.insert(std::make_pair(item.id, status));
-					}
-					else
-					{
-						iter->second.set_data(item, player_data, resource_arrays, staff_array);
-					}
-				}
-
 				return list;
 			});
+
+			const auto& static_list = get_static_list();
+			for (const auto& item : static_list)
+			{
+				const auto iter = list.find(item.id);
+				if (iter == list.end())
+				{
+					item_status status(item.id, player_id);
+					status.initialize(item);
+					list.insert(std::make_pair(item.id, status));
+				}
+				else
+				{
+					iter->second.initialize(item);
+				}
+			}
+
+			return list;
 		}
 
 		template <database_type_t Type>
 		item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id)
 		{
-			return database::access<item_status>([&](database::database_t& db)
+			auto status = database::access<item_status>([&](database::database_t& db)
 				-> item_status
 			{
 				auto results = db.get_database<Type>()->operator()(
@@ -264,36 +258,25 @@ namespace database::items
 								.where(item_status::table.player_id == player_id &&
 									   item_status::table.item_id == item_id));
 
-				const auto& static_map = get_static_map();
-				auto iter = static_map.find(item_id);
-				if (iter == static_map.end())
-				{
-					return {};
-				}
-
-				const auto player_data = player_data::find(player_id);
-				if (!player_data.has_value())
-				{
-					return {};
-				}
-
-				database::player_data::resource_arrays_t resource_arrays{};
-				database::player_data::staff_array_container staff_array{};
-
-				player_data->get_resource_arrays(resource_arrays);
-				player_data->get_staff_array(staff_array);
-
 				if (results.empty())
 				{
 					item_status status(item_id, player_id);
-					status.set_data(iter->second, player_data, resource_arrays, staff_array);
 					return status;
 				}
 
 				item_status status(results.front());
-				status.set_data(iter->second, player_data, resource_arrays, staff_array);
 				return status;
 			});
+
+			const auto& static_map = get_static_map();
+			auto iter = static_map.find(item_id);
+			if (iter == static_map.end())
+			{
+				return {};
+			}
+
+			status.initialize(iter->second);
+			return status;
 		}
 
 		template <database_type_t Type>
