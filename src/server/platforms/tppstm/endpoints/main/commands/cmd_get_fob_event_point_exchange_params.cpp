@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "database/models/fob_events.hpp"
+#include "database/models/items.hpp"
 
 #include "cmd_get_fob_event_point_exchange_params.hpp"
 
@@ -31,20 +32,36 @@ namespace emulator::tpp
 			return {};
 		}
 
+		const auto items = database::items::get_item_list(player->get_id(), false);
+		const auto is_open = [&](const std::uint32_t id)
+		{
+			const auto iter = items.find(id);
+			return iter != items.end() && iter->second.is_open();
+		};
+
+		auto count = 0u;
 		for (auto i = 0ull; i < fob_event->point_exchange_params.size(); i++)
 		{
-			result["param_list"][i]["common_value"] = fob_event->point_exchange_params[i].common_value;
-			result["param_list"][i]["count"] = fob_event->point_exchange_params[i].count;
-			result["param_list"][i]["exchange_limit"] = fob_event->point_exchange_params[i].exchange_limit;
-			result["param_list"][i]["info_lang_id"] = fob_event->point_exchange_params[i].info_lang_id;
-			result["param_list"][i]["limited_count"] = fob_event->point_exchange_params[i].limited_count;
-			result["param_list"][i]["name_lang_id"] = fob_event->point_exchange_params[i].name_lang_id;
-			result["param_list"][i]["point"] = fob_event->point_exchange_params[i].point;
-			result["param_list"][i]["type"] = fob_event->point_exchange_params[i].type;
-			result["param_list"][i]["unique_id"] = fob_event->point_exchange_params[i].unique_id;
+			auto limit = fob_event->point_exchange_params[i].exchange_limit;
+			if ((fob_event->point_exchange_params[i].type == 3 || fob_event->point_exchange_params[i].type == 4) && 
+				is_open(fob_event->point_exchange_params[i].unique_id))
+			{
+				limit = 0;
+			}
+
+			auto& entry = result["param_list"][count++];
+			entry["common_value"] = fob_event->point_exchange_params[i].common_value;
+			entry["count"] = fob_event->point_exchange_params[i].count;
+			entry["exchange_limit"] = limit;
+			entry["info_lang_id"] = fob_event->point_exchange_params[i].info_lang_id;
+			entry["limited_count"] = fob_event->point_exchange_params[i].limited_count;
+			entry["name_lang_id"] = fob_event->point_exchange_params[i].name_lang_id;
+			entry["point"] = fob_event->point_exchange_params[i].point;
+			entry["type"] = fob_event->point_exchange_params[i].type;
+			entry["unique_id"] = fob_event->point_exchange_params[i].unique_id;
 		}
 
-		result["param_num"] = fob_event->point_exchange_params.size();
+		result["param_num"] = count;
 
 		return result;
 	}

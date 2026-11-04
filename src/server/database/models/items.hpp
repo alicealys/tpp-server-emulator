@@ -21,6 +21,7 @@ namespace database::items
 		std::uint32_t id;
 		std::uint32_t type;
 		std::uint32_t use_gmp;
+		std::uint32_t open;
 		std::uint32_t use_resource_values[2];
 		std::uint32_t use_resource_ids[2];
 	};
@@ -37,6 +38,13 @@ namespace database::items
 		developed = 2
 	};
 
+	enum item_state_t
+	{
+		item_state_none = 0,
+		item_state_open = 1,
+		item_state_develop = 2,
+	};
+
 	nlohmann::json get_static_list_json();
 	std::vector<item_t>& get_static_list();
 	std::unordered_map<std::uint32_t, item_t>& get_static_map();
@@ -48,8 +56,9 @@ namespace database::items
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(item_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(item_state, sqlpp::integer_unsigned);
 		DEFINE_FIELD(create_date, sqlpp::time_point);
-		DEFINE_TABLE(items, id_field_t, player_id_field_t, item_id_field_t, create_date_field_t);
+		DEFINE_TABLE(items, id_field_t, player_id_field_t, item_id_field_t, item_state_field_t, create_date_field_t);
 
 		inline static table_t table;
 
@@ -59,7 +68,8 @@ namespace database::items
 			this->id_ = static_cast<std::uint32_t>(row.item_id);
 			this->player_id_ = row.player_id;
 			this->create_date_ = std::chrono::time_point<std::chrono::system_clock>(row.create_date.value().time_since_epoch());
-			this->created_ = true;
+			this->state_ = static_cast<std::uint32_t>(row.item_state);
+			this->created_ = this->state_ == item_state_develop;
 			this->valid_ = true;
 		}
 
@@ -160,13 +170,14 @@ namespace database::items
 		std::uint32_t resource_values_[2]{};
 		std::uint32_t skill_{};
 		std::uint32_t platform_levels_[7]{};
+		std::uint32_t state_{};
 		std::chrono::system_clock::time_point create_date_{};
 
 	};
 
-	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id);
+	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id, bool merge_list = true);
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id);
-	bool create(const std::uint64_t player_id, const std::uint32_t item_id);
+	bool create(const std::uint64_t player_id, const std::uint32_t item_id, const std::uint32_t item_state);
 	bool remove(const std::uint64_t player_id, const std::uint32_t item_id);
 	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id);
 	void delete_player_data(const std::uint64_t player_id);

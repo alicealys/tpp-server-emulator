@@ -864,37 +864,20 @@ namespace database::player_data
 		}
 
 		auto add_amount = count;
+		auto free_server = 0u;
 
 		const auto server_cap = game::resource_caps[game::processed_server][type];
-		const auto local_cap = game::resource_caps[game::processed_local][type];
-
-		auto free_server = 0u;
-		auto free_local = 0u;
-
 		const auto current_server = resource_arrays[game::processed_server][type];
-		const auto current_local = resource_arrays[game::processed_local][type];
 
 		if (current_server < server_cap)
 		{
 			free_server = server_cap - current_server;
 		}
 
-		if (current_local < local_cap)
-		{
-			free_local = local_cap - current_local;
-		}
-
 		if (free_server > 0)
 		{
 			const auto add = std::min(add_amount, free_server);
 			resource_arrays[game::processed_server][type] += add;
-			add_amount -= add;
-		}
-
-		if (free_local > 0)
-		{
-			const auto add = std::min(add_amount, free_local);
-			resource_arrays[game::processed_local][type] += add;
 			add_amount -= add;
 		}
 

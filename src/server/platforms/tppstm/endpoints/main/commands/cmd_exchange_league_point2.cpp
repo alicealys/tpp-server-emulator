@@ -3,6 +3,7 @@
 #include "database/models/fob_events.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/pf_league.hpp"
+#include "database/models/items.hpp"
 
 #include "cmd_exchange_league_point2.hpp"
 
@@ -67,9 +68,19 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		if (iter->type == 2)
+		switch (iter->type)
+		{
+		case 2:
 		{
 			database::player_data::give_resource(player->get_id(), iter->unique_id, iter->count);
+			break;
+		}
+		case 3:
+		case 4:
+		{
+			database::items::create(player->get_id(), iter->unique_id, database::items::item_state_open);
+			break;
+		}
 		}
 
 		const auto stats = database::player_records::find(player->get_id());

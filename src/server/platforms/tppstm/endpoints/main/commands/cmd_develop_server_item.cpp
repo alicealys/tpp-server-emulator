@@ -94,7 +94,7 @@ namespace emulator::tpp
 		auto server_gmp = player_data->get_server_gmp();
 		server_gmp -= std::min(server_gmp, static_cast<std::int32_t>(item.get_gmp()));
 
-		database::items::create(player->get_id(), item_id);
+		database::items::create(player->get_id(), item_id, database::items::item_state_develop);
 		database::player_data::set_resources_gmp(player->get_id(), resource_arrays, player_data->get_local_gmp(), server_gmp);
 
 		return result;

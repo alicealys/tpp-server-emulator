@@ -131,6 +131,7 @@ create table if not exists `items`
 	id                  bigint unsigned	not null	auto_increment,
 	player_id           bigint unsigned	not null,
 	item_id				bigint unsigned	not null,
+	item_state			int unsigned	not null default 0,
 	create_date			datetime        default current_timestamp not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)

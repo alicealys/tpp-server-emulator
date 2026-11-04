@@ -46,6 +46,7 @@ namespace database::items
 
 				item.id = entry["id"].get<std::uint32_t>();
 				item.type = entry["type"].get<std::uint32_t>();
+				item.open = entry["open"].get<std::uint32_t>();
 
 				item.use_gmp = entry["use_gmp"].get<std::uint32_t>();
 
@@ -113,7 +114,7 @@ namespace database::items
 		const auto gmp = player_data->get_server_gmp();
 
 		auto should_be_open = false;
-		if (gmp >= this->gmp_ &&
+		if (gmp >= static_cast<std::int32_t>(this->gmp_) &&
 			count_1 >= this->resource_values_[0] &&
 			count_2 >= this->resource_values_[1])
 		{
@@ -188,8 +189,7 @@ namespace database::items
 		}
 
 		this->mb_coin_ = game::calculate_mb_coins(this->left_second_, database::vars.cost_factor_item_dev);
-
-		this->open_ = 1;
+		this->open_ = item_data.open != 0 || this->state_ == item_state_develop || this->state_ == item_state_open;
 
 		if (vars.unlock_all_items && this->id_ != item_id::nuclear)
 		{
@@ -202,10 +202,8 @@ namespace database::items
 	namespace impl
 	{
 		template <database_type_t Type>
-		std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
+		std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id, bool merge_list)
 		{
-			// todo: handle server blueprints from events
-
 			auto list = database::access<std::unordered_map<std::uint32_t, item_status>>([&](database::database_t& db)
 				-> std::unordered_map<std::uint32_t, item_status>
 			{
@@ -232,9 +230,12 @@ namespace database::items
 				const auto iter = list.find(item.id);
 				if (iter == list.end())
 				{
-					item_status status(item.id, player_id);
-					status.initialize(item);
-					list.insert(std::make_pair(item.id, status));
+					if (merge_list)
+					{
+						item_status status(item.id, player_id);
+						status.initialize(item);
+						list.insert(std::make_pair(item.id, status));
+					}
 				}
 				else
 				{
@@ -280,7 +281,7 @@ namespace database::items
 		}
 
 		template <database_type_t Type>
-		bool create(const std::uint64_t player_id, const std::uint32_t item_id)
+		bool create(const std::uint64_t player_id, const std::uint32_t item_id, const std::uint32_t item_state)
 		{
 			return database::access<bool>([&](database::database_t& db)
 			{
@@ -288,6 +289,7 @@ namespace database::items
 					sqlpp::insert_into(item_status::table)
 						.set(item_status::table.player_id = player_id,
 							 item_status::table.item_id = item_id,
+							 item_status::table.item_state = item_state,
 							 item_status::table.create_date = std::chrono::system_clock::now()
 					));
 
@@ -338,9 +340,9 @@ namespace database::items
 		}
 	}
 
-	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id)
+	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id, bool merge_list)
 	{
-		RUN_IMPL(impl::get_item_list, player_id);
+		RUN_IMPL(impl::get_item_list, player_id, merge_list);
 	}
 
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id)
@@ -348,9 +350,9 @@ namespace database::items
 		RUN_IMPL(impl::get_item, player_id, item_id);
 	}
 
-	bool create(const std::uint64_t player_id, const std::uint32_t item_id)
+	bool create(const std::uint64_t player_id, const std::uint32_t item_id, const std::uint32_t item_state)
 	{
-		RUN_IMPL(impl::create, player_id, item_id);
+		RUN_IMPL(impl::create, player_id, item_id, item_state);
 	}
 
 	bool remove(const std::uint64_t player_id, const std::uint32_t item_id)
