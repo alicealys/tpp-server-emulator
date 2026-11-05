@@ -38,9 +38,9 @@ namespace emulator::tpp
 			result["session"] = auth_result.session_id;
 			result["smart_device_id"] = auth_result.smart_device_id;
 			result["user_id"] = auth_result.player_id;
-			result["result"] = "NOERR";
 
 			database::players::abort_mother_base(auth_result.player_id);
+			database::event_rankings::create_entries(auth_result.player_id);
 		}
 		else
 		{
@@ -62,8 +62,9 @@ namespace emulator::tpp
 			result["session"] = session_key;
 			result["smart_device_id"] = player_found->get_smart_device_id();
 			result["user_id"] = player_found->get_id();
+			database::event_rankings::create_entries(player_found->get_id());
 		}
-
+		
 		return result;
 	}
 }

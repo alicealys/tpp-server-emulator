@@ -5,6 +5,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/player_follows.hpp"
 #include "database/models/pf_league.hpp"
+#include "database/models/event_rankings.hpp"
 
 namespace emulator::tpp
 {
@@ -19,10 +20,12 @@ namespace emulator::tpp
 		}
 
 		const auto follows = database::player_follows::get_follows(player->get_id());
+		const auto deploy_to_supporters_count = 
+			database::event_rankings::get_entry_value(player->get_id(), database::event_rankings::defense_deployments_support);
 
 		result["espionage_rating_grade"] = record->get_fob_point();
 		result["fob_defense_success_count"] = record->get_defense_win();
-		result["fob_deploy_to_supporters_emergency_count"] = 0;
+		result["fob_deploy_to_supporters_emergency_count"] = deploy_to_supporters_count;
 		result["fob_sneak_count"] = record->get_sneak_win() + record->get_sneak_lose();
 		result["fob_sneak_success_count"] = record->get_sneak_win();
 		result["fob_supporting_user_count"] = follows.size();

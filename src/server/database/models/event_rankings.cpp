@@ -45,6 +45,71 @@ namespace database::event_rankings
 
 			return list;
 		}
+
+		bool is_periodic_event(const std::uint32_t event_id)
+		{
+			switch (event_id)
+			{
+				case most_ep_in_mission:
+				case cores_reached_defender:
+				case cores_reached_no_defender:
+				case damage_defender:
+				case materials_stolen:
+				case total_stealth:
+				case unknown:
+				case defense_deployments:
+				case defense_deployments_support:
+				case defense_deployments_support_received:
+				case defender_neutralized_intruder:
+				case successful_defenses:
+				case times_neutralized_by_intruder:
+				case fob_event_ranking:
+				case league_offsensive_boost:
+				case league_defensive_boost:
+				case league_grade_boost:
+				case league_security_boost:
+				case league_vehicles:
+				case league_fight_vehicles:
+				case league_walker_gears:
+				case league_emplacements:
+				case league_wins:
+				case league_pf_points_exchange:
+					return true;
+			}
+
+			return false;
+		}
+
+		std::uint32_t get_event_total(const std::uint32_t event_id)
+		{
+			switch (event_id)
+			{
+				case cores_reached_defender:
+					return cores_reached_defender_total;
+				case cores_reached_no_defender:
+					return cores_reached_no_defender_total;
+				case damage_defender:
+					return damage_defender_total;
+				case materials_stolen:
+					return materials_stolen_total;
+				case total_stealth:
+					return total_stealth_total;
+				case defense_deployments:
+					return defense_deployments_total;
+				case defense_deployments_support:
+					return defense_deployments_support_total;
+				case defense_deployments_support_received:
+					return defense_deployments_support_received_total;
+				case defender_neutralized_intruder:
+					return defender_neutralized_intruder_total;
+				case successful_defenses:
+					return successful_defenses_total;
+				case times_neutralized_by_intruder:
+					return times_neutralized_by_intruder_total;
+			}
+
+			return event_invalid;
+		}
 	}
 
 	std::optional<event_type> get_event_type_from_id(const std::uint32_t id, const std::string& type)
@@ -118,8 +183,28 @@ namespace database::event_rankings
 		{
 			database::access([&](database_t& db)
 			{
+				std::array<bool, event_count> valid{};
+
+				auto list = db.get_database<Type>()->operator()(
+					sqlpp::select(event_ranking::table.event_id)
+						.from(event_ranking::table)
+							.where(event_ranking::table.player_id == player_id));
+
+				for (auto& row : list)
+				{
+					if (row.event_id < valid.size())
+					{
+						valid[row.event_id] = true;
+					}
+				}
+
 				for (auto i = 0; i < event_count; i++)
 				{
+					if (valid[i])
+					{
+						continue;
+					}
+
 					db.get_database<Type>()->operator()(
 						sqlpp::insert_into(event_ranking::table)
 							.set(event_ranking::table.player_id = player_id,
@@ -147,21 +232,39 @@ namespace database::event_rankings
 		template <database_type_t Type>
 		bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count)
 		{
+			const auto total_event = get_event_total(event_id);
+
 			return database::access<bool>([&](database_t& db)
 			{
-				const auto result = db.get_database<Type>()->operator()(
-					sqlpp::update(event_ranking::table)
-						.set(event_ranking::table.value = event_ranking::table.value + count)
-							.where(event_ranking::table.player_id == player_id && event_ranking::table.event_id == static_cast<std::uint32_t>(event_id))
-				);
+				auto update = sqlpp::update(event_ranking::table)
+					.set(event_ranking::table.value = event_ranking::table.value + count);
 
-				return result != 0;
+				if (total_event == event_invalid)
+				{
+					const auto query = update.where(event_ranking::table.player_id == player_id && 
+						event_ranking::table.event_id == static_cast<std::uint32_t>(event_id));
+
+					const auto result = db.get_database<Type>()->operator()(query);
+					return result != 0;
+				}
+				else
+				{
+					const auto query = update.where(event_ranking::table.player_id == player_id && 
+						(event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) ||
+						event_ranking::table.event_id == static_cast<std::uint32_t>(total_event)));
+
+					const auto result = db.get_database<Type>()->operator()(query);
+					return result != 0;
+				}
+
 			});
 		}
 
 		template <database_type_t Type>
 		bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
 		{
+			const auto total_event = get_event_total(event_id);
+
 			return database::access<bool>([&](database_t& db)
 			{
 				const auto result = db.get_database<Type>()->operator()(
@@ -170,6 +273,16 @@ namespace database::event_rankings
 							.where(event_ranking::table.player_id == player_id && 
 								   event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && event_ranking::table.value < value)
 				);
+
+				if (total_event != event_invalid)
+				{
+					db.get_database<Type>()->operator()(
+						sqlpp::update(event_ranking::table)
+							.set(event_ranking::table.value = value)
+								.where(event_ranking::table.player_id == player_id && 
+									   event_ranking::table.event_id == static_cast<std::uint32_t>(total_event) && event_ranking::table.value < value)
+					);
+				}
 
 				return result != 0;
 			});
@@ -184,7 +297,8 @@ namespace database::event_rankings
 					sqlpp::update(event_ranking::table)
 						.set(event_ranking::table.value = 0, event_ranking::table.player_rank = 0, event_ranking::table.player_rank_number = 0)
 							.where(event_ranking::table.event_id != static_cast<std::uint32_t>(ep_earned) &&
-								   event_ranking::table.event_id != static_cast<std::uint32_t>(league_point_total))
+								   event_ranking::table.event_id != static_cast<std::uint32_t>(league_point_total) &&
+								   event_ranking::table.event_id < static_cast<std::uint32_t>(event_total_start))
 					);
 			});
 		}
@@ -224,6 +338,28 @@ namespace database::event_rankings
 			});
 		}
 		
+		template <database_type_t Type>
+		std::int32_t get_entry_value(const std::uint64_t player_id, const event_type event_id)
+		{
+			return database::access<std::int32_t>([&](database_t& db)
+				-> std::int32_t
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(event_ranking::table.value)
+						.from(event_ranking::table)
+							.where(event_ranking::table.event_id == static_cast<std::uint32_t>(event_id) && 
+								   event_ranking::table.player_id == player_id)
+					);
+
+				if (results.empty())
+				{
+					return 0;
+				}
+
+				return static_cast<std::int32_t>(results.front().value);
+			});
+		}
+
 		template <database_type_t Type>
 		std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id)
 		{
@@ -444,6 +580,11 @@ namespace database::event_rankings
 		RUN_IMPL(impl::get_player_rank, player_id, event_id);
 	}
 
+	std::int32_t get_entry_value(const std::uint64_t player_id, const event_type event_id)
+	{
+		RUN_IMPL(impl::get_entry_value, player_id, event_id);
+	}
+
 	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id)
 	{
 		RUN_IMPL(impl::get_player_entry, player_id, event_id);
@@ -511,7 +652,7 @@ namespace database::event_rankings
 				continue;
 			}
 
-			if (info.target.event == fob_event_ranking && !is_event_intermission)
+			if (is_periodic_event(info.target.event) && !is_event_intermission)
 			{
 				continue;
 			}
