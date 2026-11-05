@@ -198,7 +198,7 @@ namespace database::event_rankings
 					}
 				}
 
-				for (auto i = 0; i < event_count; i++)
+				for (auto i = 0u; i < event_count; i++)
 				{
 					if (valid[i])
 					{
