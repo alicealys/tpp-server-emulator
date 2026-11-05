@@ -345,6 +345,14 @@ namespace database::fob_events
 		return event;
 	}
 
+	bool is_intermission()
+	{
+		std::chrono::system_clock::time_point event_start{};
+		std::chrono::system_clock::time_point event_end{};
+		get_maintenance_range(event_start, event_end);
+		return std::chrono::system_clock::now() < event_end - event_intermission_duration;
+	}
+
 	class table final : public table_interface
 	{
 	public:

@@ -114,7 +114,7 @@ namespace emulator
 		auto data_dump = data.dump();
 		const auto original_size = data_dump.size();
 
-		data_dump = utils::compression::zlib::compress(data_dump);
+		data_dump = utils::compression::zlib::compress(data_dump, Z_BEST_SPEED, true);
 		data_dump = utils::cryptography::base64::encode(data_dump);
 
 		nlohmann::json response;

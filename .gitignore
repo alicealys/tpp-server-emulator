@@ -145,9 +145,13 @@ UpgradeLog*.htm
 ### Custom user files
 # User scripts
 user*.bat
+user*.sh
 
 # Premake binary
 #premake5.exe
 
 deps/mysql
 deps/sqlite3
+
+*.js
+

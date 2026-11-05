@@ -152,8 +152,7 @@ namespace emulator
 		auto data_dump = data.dump();
 		const auto original_size = data_dump.size();
 
-		data_dump = utils::compression::zlib::compress(data_dump, 1u);
-		data_dump.push_back('\0');
+		data_dump = utils::compression::zlib::compress(data_dump, Z_BEST_SPEED, true);
 
 		if (!session_crypto)
 		{

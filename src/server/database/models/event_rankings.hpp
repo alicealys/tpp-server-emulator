@@ -67,6 +67,36 @@ namespace database::event_rankings
 	std::optional<event_ranking_lookup_type> get_lookup_type_from_name(const std::string& name);
 	std::optional<event_type> get_event_type_from_id(const std::uint32_t id, const std::string& type);
 
+	enum nameplate_target_type_t
+	{
+		nameplate_target_value = 0,
+		nameplate_target_rank = 1,
+		nameplate_target_rank_number = 2,
+	};
+
+	struct nameplate_info_t
+	{
+		struct target_t
+		{
+			std::uint8_t type;
+			std::uint8_t event;
+			std::int32_t min;
+			std::int32_t max;
+		};
+
+		std::uint32_t id;
+		target_t target;
+	};
+
+	const std::vector<nameplate_info_t>& get_nameplate_info_list();
+
+	class nameplate_entitlement_list : public std::vector<bool>
+	{
+	public:
+		nameplate_entitlement_list();
+		bool has_nameplate(const std::uint32_t id) const;
+	};
+
 	class event_ranking
 	{
 	public:
@@ -138,4 +168,6 @@ namespace database::event_rankings
 	void update_league(database_t& db);
 
 	void delete_player_data(const std::uint64_t player_id);
+
+	nameplate_entitlement_list get_nameplate_entitlement_list(const std::uint64_t player_id);
 }

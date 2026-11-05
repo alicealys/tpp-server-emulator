@@ -1,0 +1,522 @@
+[
+    {
+        "id": 1,
+        "name": "snake_normal",
+        "target": {
+            "event": 14,
+            "type": 2,
+            "min": 501,
+            "max": 1000
+        }
+    },
+    {
+        "id": 2,
+        "name": "snake_bronze",
+        "target": {
+            "event": 14,
+            "type": 2,
+            "min": 101,
+            "max": 500
+        }
+    },
+    {
+        "id": 3,
+        "name": "snake_silver",
+        "target": {
+            "event": 14,
+            "type": 2,
+            "min": 11,
+            "max": 100
+        }
+    },
+    {
+        "id": 4,
+        "name": "snake_gold",
+        "target": {
+            "event": 14,
+            "type": 2,
+            "min": 1,
+            "max": 10
+        }
+    },
+    {
+        "id": 5,
+        "name": "miller_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 6,
+        "name": "miller_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 7,
+        "name": "miller_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 8,
+        "name": "miller_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 9,
+        "name": "huey_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 10,
+        "name": "huey_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 11,
+        "name": "huey_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 12,
+        "name": "huey_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 13,
+        "name": "ocelot_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 14,
+        "name": "ocelot_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 15,
+        "name": "ocelot_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 16,
+        "name": "ocelot_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 17,
+        "name": "quiet_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 18,
+        "name": "quiet_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 19,
+        "name": "quiet_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 20,
+        "name": "quiet_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 21,
+        "name": "skullface_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 22,
+        "name": "skullface_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 23,
+        "name": "skullface_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 24,
+        "name": "skullface_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 25,
+        "name": "codetalker_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 26,
+        "name": "codetalker_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 27,
+        "name": "codetalker_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 28,
+        "name": "codetalker_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 29,
+        "name": "volgin_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 30,
+        "name": "volgin_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 31,
+        "name": "volgin_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 32,
+        "name": "volgin_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 33,
+        "name": "mantis_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 34,
+        "name": "mantis_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 35,
+        "name": "mantis_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 36,
+        "name": "mantis_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 37,
+        "name": "eli_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 38,
+        "name": "eli_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 39,
+        "name": "eli_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 40,
+        "name": "eli_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 41,
+        "name": "ishmael_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 42,
+        "name": "ishmael_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 43,
+        "name": "ishmael_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 44,
+        "name": "ishmael_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 45,
+        "name": "ddog_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 46,
+        "name": "ddog_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 47,
+        "name": "ddog_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 48,
+        "name": "ddog_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    },
+    {
+        "id": 49,
+        "name": "dhorse_normal",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 1,
+            "max": -1
+        }
+    },
+    {
+        "id": 50,
+        "name": "dhorse_bronze",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 10,
+            "max": -1
+        }
+    },
+    {
+        "id": 51,
+        "name": "dhorse_silver",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 30,
+            "max": -1
+        }
+    },
+    {
+        "id": 52,
+        "name": "dhorse_gold",
+        "target": {
+            "event": 2,
+            "type": 0,
+            "min": 100,
+            "max": -1
+        }
+    }
+]

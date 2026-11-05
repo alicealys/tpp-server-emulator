@@ -9,6 +9,8 @@
 
 namespace database::fob_events
 {
+	constexpr const auto event_intermission_duration = 12h;
+
 	struct point_exchange_param_t
 	{
 		std::uint32_t common_value;
@@ -83,4 +85,6 @@ namespace database::fob_events
 	std::optional<fob_event_player_t> get_player(const std::uint64_t id);
 	bool is_event_player(const std::uint64_t id);
 	std::optional<fob_event_t> get_current_event();
+
+	bool is_intermission();
 }

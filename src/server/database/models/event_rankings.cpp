@@ -3,6 +3,7 @@
 #include "event_rankings.hpp"
 #include "player_records.hpp"
 #include "players.hpp"
+#include "fob_events.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -25,6 +26,25 @@ namespace database::event_rankings
 			{"LEAGUE", class_league},
 			{"LEAGUE_EVENT", class_league_event},
 		};
+
+		std::vector<nameplate_info_t> load_nameplate_info_list()
+		{
+			std::vector<nameplate_info_t> list;
+
+			auto data = utils::resources::load_json(RESOURCE_NAMEPLATES);
+			for (auto i = 0ull; i < data.size(); i++)
+			{
+				nameplate_info_t entry{};
+				entry.id = data[i]["id"].get<std::uint32_t>();
+				entry.target.type = data[i]["target"]["type"].get<std::uint8_t>();
+				entry.target.event = data[i]["target"]["event"].get<std::uint8_t>();
+				entry.target.min = data[i]["target"]["min"].get<std::uint32_t>();
+				entry.target.max = data[i]["target"]["max"].get<std::uint32_t>();
+				list.emplace_back(entry);
+			}
+
+			return list;
+		}
 	}
 
 	std::optional<event_type> get_event_type_from_id(const std::uint32_t id, const std::string& type)
@@ -58,6 +78,27 @@ namespace database::event_rankings
 		}
 
 		return {iter->second};
+	}
+
+	const std::vector<nameplate_info_t>& get_nameplate_info_list()
+	{
+		static const auto list = load_nameplate_info_list();
+		return list;
+	}
+
+	nameplate_entitlement_list::nameplate_entitlement_list()
+	{
+		this->resize(0x100);
+	}
+
+	bool nameplate_entitlement_list::has_nameplate(const std::uint32_t id) const
+	{
+		if (id >= this->size())
+		{
+			return false;
+		}
+
+		return this->operator[](id);
 	}
 
 	GET_FIELD_C(event_ranking, std::uint64_t, id);
@@ -454,11 +495,105 @@ namespace database::event_rankings
 		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
+	nameplate_entitlement_list get_nameplate_entitlement_list(const std::uint64_t player_id)
+	{
+		nameplate_entitlement_list list;
+
+		std::array<std::optional<event_ranking>, event_count> rankings;
+		std::array<bool, event_count> loaded_ranking{};
+
+		const auto is_event_intermission = database::fob_events::is_intermission();
+		const auto& nameplates = get_nameplate_info_list();
+		for (auto& info : nameplates)
+		{
+			if (info.target.event >= event_count || info.id > list.size())
+			{
+				continue;
+			}
+
+			if (info.target.event == fob_event_ranking && !is_event_intermission)
+			{
+				continue;
+			}
+
+			auto& ranking = rankings[info.target.event];
+			if (!ranking.has_value() && !loaded_ranking[info.target.event])
+			{
+				ranking = get_player_entry(player_id, database::event_rankings::event_type(info.target.event));
+				loaded_ranking[info.target.event] = true;
+			}
+
+			if (!ranking.has_value())
+			{
+				continue;
+			}
+
+			switch (info.target.type)
+			{
+			case nameplate_target_value:
+			{
+				if (info.target.max != -1)
+				{
+					list[info.id] = ranking->get_value() >= info.target.min && ranking->get_value() <= info.target.max;
+				}
+				else
+				{
+					list[info.id] = ranking->get_value() >= info.target.min;
+				}
+
+				break;
+			}
+			case nameplate_target_rank:
+			{
+				if (ranking->get_value() <= 0)
+				{
+					continue;
+				}
+
+				if (info.target.max != -1)
+				{
+					list[info.id] = ranking->get_rank() >= static_cast<std::uint64_t>(info.target.min) &&
+						ranking->get_rank() <= static_cast<std::uint64_t>(info.target.max);
+				}
+				else
+				{
+					list[info.id] = ranking->get_rank() >= static_cast<std::uint64_t>(info.target.min);
+				}
+
+				break;
+			}
+			case nameplate_target_rank_number:
+			{
+				if (ranking->get_value() <= 0)
+				{
+					continue;
+				}
+
+				if (info.target.max != -1)
+				{
+					list[info.id] = ranking->get_rank_number() >= static_cast<std::uint64_t>(info.target.min) &&
+						ranking->get_rank_number() <= static_cast<std::uint64_t>(info.target.max);
+				}
+				else
+				{
+					list[info.id] = ranking->get_rank_number() >= static_cast<std::uint64_t>(info.target.min);
+				}
+
+				break;
+			}
+			}
+		}
+
+		return list;
+	}
+
 	class table final : public table_interface
 	{
 	public:
 		void create(database_t& database) override
 		{
+			get_nameplate_info_list();
+
 			database.run_query("mgstpp.event_rankings.create");
 		}
 
