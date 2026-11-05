@@ -1,3 +1,95 @@
 {
-    "break_time": 2100
+    "break_time": 2100,
+    "processing_time": 900,
+    "mining_time": 4320,
+    "max_processing": 0.3,
+    "processing_factors": {
+        "biotic_resource": [300, 750],
+        "common_metal": [300, 750],
+        "fuel_resource": [300, 750],
+        "minor_metal": [150, 375],
+        "precious_metal": [30, 75]
+    },
+    "area_mining_factors": [
+        {
+            "area_id": 0,
+            "value": {
+                "biotic_resource": 0,
+                "common_metal": 0,
+                "fuel_resource": 0,
+                "minor_metal": 0,
+                "precious_metal": 0
+            }
+        },
+        {
+            "area_id": 10,
+            "value": {
+                "biotic_resource": 500,
+                "common_metal": 300,
+                "fuel_resource": 300,
+                "minor_metal": 200,
+                "precious_metal": 100
+            }
+        },
+        {
+            "area_id": 20,
+            "value": {
+                "biotic_resource": 300,
+                "common_metal": 500,
+                "fuel_resource": 300,
+                "minor_metal": 200,
+                "precious_metal": 100
+            }
+        },
+        {
+            "area_id": 30,
+            "value": {
+                "biotic_resource": 300,
+                "common_metal": 300,
+                "fuel_resource": 300,
+                "minor_metal": 300,
+                "precious_metal": 200
+            }
+        },
+        {
+            "area_id": 40,
+            "value": {
+                "biotic_resource": 500,
+                "common_metal": 500,
+                "fuel_resource": 500,
+                "minor_metal": 0,
+                "precious_metal": 0
+            }
+        },
+        {
+            "area_id": 50,
+            "value": {
+                "biotic_resource": 200,
+                "common_metal": 200,
+                "fuel_resource": 200,
+                "minor_metal": 300,
+                "precious_metal": 400
+            }
+        },
+        {
+            "area_id": 60,
+            "value": {
+                "biotic_resource": 200,
+                "common_metal": 200,
+                "fuel_resource": 200,
+                "minor_metal": 400,
+                "precious_metal": 300
+            }
+        },
+        {
+            "area_id": 70,
+            "value": {
+                "biotic_resource": 200,
+                "common_metal": 200,
+                "fuel_resource": 200,
+                "minor_metal": 300,
+                "precious_metal": 300
+            }
+        }
+    ]
 }

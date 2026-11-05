@@ -74,6 +74,9 @@ namespace database::player_data
 		return now - prisoner.time_captured < database::player_data::prisoner_hold_time.count();
 	}
 
+	GET_FIELD_C(player_data, std::chrono::seconds, last_resource_processing);
+	GET_FIELD_C(player_data, std::chrono::seconds, last_resource_mining);
+
 	namespace impl
 	{
 		template <database_type_t Type>
@@ -118,6 +121,8 @@ namespace database::player_data
 								  player_data::table.league_attack_item,
 								  player_data::table.league_defense_item,
 								  player_data::table.last_sync,
+								  player_data::table.last_resource_processing,
+								  player_data::table.last_resource_mining,
 								  player_data::table.client_resource_version,
 								  player_data::table.client_staff_version,
 								  player_data::table.server_resource_version,
@@ -186,6 +191,20 @@ namespace database::player_data
 						.set(player_data::table.client_resource_version = player_data::table.server_resource_version)
 								.where(player_data::table.player_id == player_id
 					));
+			});
+		}
+		
+		template <database_type_t Type>
+		void set_resource_mining(const std::uint64_t player_id, const std::chrono::seconds last_processing, const std::chrono::seconds last_mining)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player_data::table)
+						.set(player_data::table.last_resource_processing = std::chrono::system_clock::time_point(last_processing),
+							 player_data::table.last_resource_mining = std::chrono::system_clock::time_point(last_mining))
+								.where(player_data::table.player_id == player_id)
+					);
 			});
 		}
 
@@ -848,6 +867,11 @@ namespace database::player_data
 	void sync_client_staff_version(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::sync_client_staff_version, player_id);
+	}
+
+	void set_resource_mining(const std::uint64_t player_id, const std::chrono::seconds last_processing, const std::chrono::seconds last_mining)
+	{
+		RUN_IMPL(impl::set_resource_mining, player_id, last_processing, last_mining);
 	}
 
 	bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& resource_arrays)

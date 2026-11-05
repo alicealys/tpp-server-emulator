@@ -99,20 +99,43 @@ namespace database::player_data
 		DEFINE_FIELD(league_defense_item, sqlpp::integer_unsigned);
 		DEFINE_FIELD(mb_coin, sqlpp::integer_unsigned);
 		DEFINE_FIELD(last_sync, sqlpp::time_point);
+		DEFINE_FIELD(last_resource_processing, sqlpp::time_point);
+		DEFINE_FIELD(last_resource_mining, sqlpp::time_point);
 		DEFINE_FIELD(client_resource_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(client_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(server_resource_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(server_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
-		DEFINE_TABLE(player_data, id_field_t, player_id_field_t, unit_counts_field_t, unit_levels_field_t,
-			resource_arrays_field_t, nuke_count_field_t, nuke_destruct_count_field_t, staff_count_field_t, staff_counts_field_t,
-			staff_bin_field_t, prison_bin_field_t,
-			local_gmp_field_t, server_gmp_field_t, motherbase_field_t, emblem_field_t, loadout_gmp_field_t,
-			insurance_gmp_field_t, injury_gmp_field_t, cumulative_grade_field_t,
-			league_attack_item_field_t, league_defense_item_field_t,
-			mb_coin_field_t, last_sync_field_t, 
-			client_resource_version_field_t, client_staff_version_field_t,
-			server_resource_version_field_t, server_staff_version_field_t,
+		DEFINE_TABLE(player_data, 
+			id_field_t, 
+			player_id_field_t, 
+			unit_counts_field_t, 
+			unit_levels_field_t,
+			resource_arrays_field_t, 
+			nuke_count_field_t, 
+			nuke_destruct_count_field_t, 
+			staff_count_field_t, 
+			staff_counts_field_t,
+			staff_bin_field_t, 
+			prison_bin_field_t,
+			local_gmp_field_t, 
+			server_gmp_field_t,
+			motherbase_field_t, 
+			emblem_field_t, 
+			loadout_gmp_field_t,
+			insurance_gmp_field_t, 
+			injury_gmp_field_t, 
+			cumulative_grade_field_t,
+			league_attack_item_field_t, 
+			league_defense_item_field_t,
+			mb_coin_field_t, 
+			last_sync_field_t,
+			last_resource_processing_field_t,
+			last_resource_mining_field_t,
+			client_resource_version_field_t, 
+			client_staff_version_field_t,
+			server_resource_version_field_t, 
+			server_staff_version_field_t,
 			fob_deploy_damage_param_field_t);
 
 		inline static table_t table;
@@ -152,7 +175,10 @@ namespace database::player_data
 			this->player_id_ = row.player_id;
 
 			this->mb_coin_ = static_cast<std::uint32_t>(row.mb_coin);
+
 			this->last_sync_ = row.last_sync.value().time_since_epoch();
+			this->last_resource_processing_ = std::chrono::duration_cast<std::chrono::seconds>(row.last_resource_processing.value().time_since_epoch());
+			this->last_resource_mining_ = std::chrono::duration_cast<std::chrono::seconds>(row.last_resource_mining.value().time_since_epoch());
 
 			this->client_resource_version_ = static_cast<std::uint32_t>(row.client_resource_version);
 			this->client_staff_version_ = static_cast<std::uint32_t>(row.client_staff_version);
@@ -321,6 +347,9 @@ namespace database::player_data
 		void get_staff_array(staff_array_container& staff_array) const;
 		void get_prisoner_array(prisoner_array_container& staff_array) const;
 
+		GET_FIELD_H(std::chrono::seconds, last_resource_processing);
+		GET_FIELD_H(std::chrono::seconds, last_resource_mining);
+
 	private:
 		std::uint64_t player_id_;
 
@@ -388,6 +417,8 @@ namespace database::player_data
 
 	void sync_client_resource_version(const std::uint64_t player_id);
 	void sync_client_staff_version(const std::uint64_t player_id);
+
+	void set_resource_mining(const std::uint64_t player_id, const std::chrono::seconds last_processing, const std::chrono::seconds last_mining);
 
 	bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& resource_arrays);
 
