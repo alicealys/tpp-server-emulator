@@ -41,10 +41,11 @@ namespace emulator::tpp
 			std::chrono::seconds break_time;
 			std::chrono::seconds processing_time;
 			std::chrono::seconds mining_time;
-			float max_processing_fob;
+			float max_processing_per_fob;
 			float scale_processing;
 			float scale_mining;
-			std::uint32_t max_time_blocks;
+			std::uint32_t max_processing_blocks;
+			std::uint32_t max_mining_blocks;
 			processing_factor_t processing_factors[5];
 			std::array<mining_factors_t, 100> area_mining_factors;
 		};
@@ -55,7 +56,8 @@ namespace emulator::tpp
 			database::player_data::resource_array_t& usable);
 
 		bool find_area_mining_factors(const std::uint32_t area_id, mining_settings_t::mining_factors_t& factors);
-		std::uint32_t calc_time_blocks(const std::chrono::seconds diff, const std::chrono::seconds block_size, bool force);
+		std::uint32_t calc_time_blocks(const std::chrono::seconds diff, const std::chrono::seconds block_size,
+			const std::uint32_t max_blocks, bool force);
 
 		mining_settings_t settings{};
 

@@ -92,7 +92,9 @@ namespace database::player_data
 							 player_data::table.server_gmp = 0,
 							 player_data::table.loadout_gmp = 0,
 							 player_data::table.insurance_gmp = 0,
-							 player_data::table.injury_gmp = 0
+							 player_data::table.injury_gmp = 0,
+							 player_data::table.last_resource_processing = std::chrono::system_clock::now(),
+							 player_data::table.last_resource_mining = std::chrono::system_clock::now()
 					));
 			});
 		}

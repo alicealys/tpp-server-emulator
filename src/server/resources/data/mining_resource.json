@@ -2,16 +2,17 @@
     "break_time": 2100,
     "processing_time": 900,
     "mining_time": 4320,
-    "max_time_blocks": 10,
-    "max_processing_fob": 0.1,
-    "scale_processing": 0.2,
-    "scale_mining": 0.4,
+    "max_processing_blocks": 288,
+    "max_mining_blocks": 60,
+    "max_processing_per_fob": 0.1,
+    "scale_processing": 1.0,
+    "scale_mining": 0.85,
     "processing_factors": {
-        "biotic_resource": [300, 750],
-        "common_metal": [300, 750],
-        "fuel_resource": [300, 750],
-        "minor_metal": [150, 375],
-        "precious_metal": [30, 75]
+        "biotic_resource": [100, 250],
+        "common_metal": [100, 250],
+        "fuel_resource": [100, 250],
+        "minor_metal": [50, 125],
+        "precious_metal": [10, 25]
     },
     "area_mining_factors": [
         {
@@ -31,7 +32,7 @@
                 "common_metal": 300,
                 "fuel_resource": 300,
                 "minor_metal": 200,
-                "precious_metal": 100
+                "precious_metal": 25
             }
         },
         {
@@ -41,7 +42,7 @@
                 "common_metal": 500,
                 "fuel_resource": 300,
                 "minor_metal": 200,
-                "precious_metal": 100
+                "precious_metal": 25
             }
         },
         {
@@ -51,7 +52,7 @@
                 "common_metal": 300,
                 "fuel_resource": 300,
                 "minor_metal": 300,
-                "precious_metal": 200
+                "precious_metal": 50
             }
         },
         {
@@ -71,7 +72,7 @@
                 "common_metal": 200,
                 "fuel_resource": 200,
                 "minor_metal": 300,
-                "precious_metal": 400
+                "precious_metal": 100
             }
         },
         {
@@ -81,7 +82,7 @@
                 "common_metal": 200,
                 "fuel_resource": 200,
                 "minor_metal": 400,
-                "precious_metal": 300
+                "precious_metal": 75
             }
         },
         {
@@ -91,7 +92,7 @@
                 "common_metal": 200,
                 "fuel_resource": 200,
                 "minor_metal": 300,
-                "precious_metal": 300
+                "precious_metal": 75
             }
         }
     ]
