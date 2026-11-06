@@ -22,6 +22,8 @@
 #include "steam_users.hpp"
 #include "variables.hpp"
 #include "wormholes.hpp"
+#include "challenge_tasks.hpp"
+#include "fob_deploy_assists.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -142,6 +144,8 @@ namespace database::steam_users
 		combat_deployments::delete_player_data(player->get_id());
 		event_rankings::delete_player_data(player->get_id());
 		items::delete_player_data(player->get_id());
+		challenge_tasks::delete_player_data(player->get_id());
+		fob_deploy_assists::delete_player_data(player->get_id());
 
 		players::delete_player_data(player->get_id());
 

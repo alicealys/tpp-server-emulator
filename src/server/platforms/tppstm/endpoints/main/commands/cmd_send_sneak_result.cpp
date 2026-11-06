@@ -3,6 +3,7 @@
 #include "cmd_send_sneak_result.hpp"
 
 #include "database/models/fobs.hpp"
+#include "database/models/fob_deploy_assists.hpp"
 #include "database/models/fob_events.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
@@ -499,15 +500,7 @@ namespace emulator::tpp
 						database::player_records::set_shield_date(active_sneak->get_owner_id(), is_win);
 					}
 
-					auto deploy_damage_opt = attacker_data->get_fob_deploy_damage_param();
-					if (deploy_damage_opt.has_value())
-					{
-						auto& deploy_damage = deploy_damage_opt.value();
-						if (deploy_damage["motherbase_id"] == fob->get_id())
-						{
-							database::player_data::set_fob_deploy_damage_param(player->get_id(), {});
-						}
-					}
+					database::fob_deploy_assists::delete_deployments(player->get_id());
 
 					if (is_win)
 					{

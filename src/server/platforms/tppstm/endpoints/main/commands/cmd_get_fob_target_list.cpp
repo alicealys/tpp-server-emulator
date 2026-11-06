@@ -6,6 +6,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/fobs.hpp"
 #include "database/models/fob_events.hpp"
+#include "database/models/fob_deploy_assists.hpp"
 
 #include "cmd_get_fob_target_list/target_list_challenge.hpp"
 #include "cmd_get_fob_target_list/target_list_deployed.hpp"
@@ -90,21 +91,15 @@ namespace emulator::tpp
 		result["esp_point"] = stats->get_fob_point();
 		result["event_point"] = stats->get_event_point();
 
-		const auto deploy_damage = player_data->get_fob_deploy_damage_param();
-		if (deploy_damage.has_value())
+		const auto current_deploy = database::fob_deploy_assists::get_current_deploy(player->get_id());
+		if (current_deploy.has_value())
 		{
-			result["fob_deploy_damage_param"] = deploy_damage.value();
+			current_deploy->to_json(result["fob_deploy_damage_param"]);
 		}
 		else
 		{
-			result["fob_deploy_damage_param"]["cluster_index"] = 0;
-			result["fob_deploy_damage_param"]["expiration_date"] = 0;
-			result["fob_deploy_damage_param"]["motherbase_id"] = 0;
-
-			for (auto i = 0; i < 16; i++)
-			{
-				result["fob_deploy_damage_param"]["damage_values"][i] = 0;
-			}
+			database::fob_deploy_assists::deploy_params_t empty_params{};
+			empty_params.to_json(result["fob_deploy_damage_param"]);
 		}
 
 		result["win"] = stats->get_sneak_win();

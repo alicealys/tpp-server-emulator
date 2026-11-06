@@ -3,6 +3,7 @@
 #include "target_list_deployed.hpp"
 
 #include "database/models/fobs.hpp"
+#include "database/models/fob_deploy_assists.hpp"
 
 namespace emulator::tpp
 {
@@ -10,29 +11,19 @@ namespace emulator::tpp
 	{
 		target_data_t target;
 
-		auto deploy_damage_opt = player_data->get_fob_deploy_damage_param();
-		if (!deploy_damage_opt.has_value())
+		const auto current_deploy = database::fob_deploy_assists::get_current_deploy(player.get_id());
+		if (!current_deploy.has_value())
 		{
 			return {};
 		}
 
-		auto& deploy_damage = deploy_damage_opt.value();
-		const auto& mother_base_id_j = deploy_damage["motherbase_id"];
-
-		if (!mother_base_id_j.is_number_unsigned())
-		{
-			return {};
-		}
-
-		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
-		const auto fob = database::fobs::get_fob(mother_base_id);
+		const auto fob = database::fobs::get_fob(current_deploy->get_fob_id());
 		if (!fob.has_value())
 		{
 			return {};
 		}
 
 		target.player_id = fob->get_player_id();
-
 		return {target};
 	}
 }

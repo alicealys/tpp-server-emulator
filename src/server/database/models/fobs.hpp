@@ -9,8 +9,6 @@ namespace database::fobs
 	nlohmann::json& get_area_list();
 	std::optional<nlohmann::json> get_area(const std::uint32_t area_id);
 
-	void apply_deploy_damage_params(const std::uint64_t fob_id, game::fob_cluster_param_t& cluster_param, std::optional<nlohmann::json>& deploy_damage);
-
 	constexpr auto fob_id_reserve_count = 1000ull;
 
 	class fob

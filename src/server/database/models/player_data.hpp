@@ -105,7 +105,6 @@ namespace database::player_data
 		DEFINE_FIELD(client_staff_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(server_resource_version, sqlpp::integer_unsigned);
 		DEFINE_FIELD(server_staff_version, sqlpp::integer_unsigned);
-		DEFINE_FIELD(fob_deploy_damage_param, sqlpp::text);
 		DEFINE_TABLE(player_data, 
 			id_field_t, 
 			player_id_field_t, 
@@ -135,8 +134,7 @@ namespace database::player_data
 			client_resource_version_field_t, 
 			client_staff_version_field_t,
 			server_resource_version_field_t, 
-			server_staff_version_field_t,
-			fob_deploy_damage_param_field_t);
+			server_staff_version_field_t);
 
 		inline static table_t table;
 
@@ -187,30 +185,6 @@ namespace database::player_data
 
 			this->nuke_count_ = static_cast<std::uint32_t>(row.nuke_count);
 			this->nuke_destruct_count_ = static_cast<std::uint32_t>(row.nuke_destruct_count);
-
-			if (!row.fob_deploy_damage_param.is_null())
-			{
-				this->fob_deploy_damage_param_.emplace(nlohmann::json::parse(row.fob_deploy_damage_param.value()));
-				if (!this->fob_deploy_damage_param_->is_object())
-				{
-					this->fob_deploy_damage_param_.reset();
-				}
-				else
-				{
-					auto& value = this->fob_deploy_damage_param_.value();
-					const auto& expire = value["expiration_date"];
-					if (!expire.is_number_unsigned())
-					{
-						this->fob_deploy_damage_param_.reset();
-					}
-
-					const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
-					if (now.count() > expire.get<std::uint32_t>())
-					{
-						this->fob_deploy_damage_param_.reset();
-					}
-				}
-			}
 		}
 
 		std::uint64_t get_player_id() const
@@ -335,11 +309,6 @@ namespace database::player_data
 			return this->nuke_destruct_count_;
 		}
 
-		std::optional<nlohmann::json> get_fob_deploy_damage_param() const
-		{
-			return this->fob_deploy_damage_param_;
-		}
-
 		void get_motherbase(game::motherbase_t& mother_base) const;
 		void get_emblem(game::emblem_t& emblem) const;
 
@@ -361,8 +330,6 @@ namespace database::player_data
 
 		staff_counts_t staff_counts_{};
 		std::uint32_t staff_count_{};
-
-		std::optional<nlohmann::json> fob_deploy_damage_param_{};
 
 		std::uint32_t mb_coin_{};
 
@@ -410,8 +377,6 @@ namespace database::player_data
 	std::uint32_t get_nuke_count();
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id);
 	bool inc_nuke_destruct_count(const std::uint64_t player_id, const std::uint32_t count);
-
-	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param);
 
 	std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit);
 

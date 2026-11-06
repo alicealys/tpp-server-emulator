@@ -3,10 +3,11 @@
 #include "cmd_get_fob_target_detail.hpp"
 
 #include "database/models/fobs.hpp"
+#include "database/models/fob_deploy_assists.hpp"
+#include "database/models/fob_events.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/wormholes.hpp"
-#include "database/models/fob_events.hpp"
 
 namespace emulator::tpp
 {
@@ -83,8 +84,12 @@ namespace emulator::tpp
 
 		auto& cluster_param = fob->get_cluster_param();
 
-		auto damage_params = player_data->get_fob_deploy_damage_param();
-		database::fobs::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
+		const auto current_deploy = database::fob_deploy_assists::get_current_deploy(player->get_id());
+		if (!database::players::is_system_player_id(fob->get_player_id()) && 
+			current_deploy.has_value() && fob->get_id() == current_deploy->get_fob_id())
+		{
+			current_deploy->apply(cluster_param);
+		}
 
 		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{

@@ -97,8 +97,7 @@ namespace utils::encoding
 
 	std::string encode_as_hex(const char* buffer, const size_t size)
 	{
-		std::string encoded;
-		encoded.resize(size * 2 + 3);
+		std::string encoded(size * 2 + 3, 0);
 
 		auto out_buffer = encoded.data();
 		out_buffer[0] = 'x';
@@ -107,10 +106,7 @@ namespace utils::encoding
 
 		for (auto i = 0u; i < size; i++)
 		{
-			char hex[3]{};
-			std::snprintf(hex, 3, "%02X", static_cast<std::uint8_t>(buffer[i]));
-			out_buffer[0] = hex[0];
-			out_buffer[1] = hex[1];
+			byte_to_hex(static_cast<std::uint8_t>(buffer[i]), out_buffer);
 			out_buffer += 2;
 		}
 
@@ -122,5 +118,11 @@ namespace utils::encoding
 	std::string encode_as_hex(const std::string& data)
 	{
 		return encode_as_hex(data.data(), data.size());
+	}
+
+	std::string validate_base64(const std::string& data)
+	{
+		const auto decoded = utils::cryptography::base64::decode(data);
+		return utils::cryptography::base64::encode(decoded);
 	}
 }

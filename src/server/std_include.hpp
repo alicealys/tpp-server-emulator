@@ -68,6 +68,7 @@
 #include <unordered_set>
 #include <variant>
 #include <future>
+#include <random>
 
 #include <gsl/gsl>
 
@@ -92,3 +93,13 @@
 static_assert(sizeof(size_t) == 8);
 
 using namespace std::literals;
+
+#ifndef ARRAYSIZE
+extern "C++"
+template <typename T, size_t N>
+char (*countof(T(&)[N]))[N]
+{
+	return N;
+}
+#define ARRAYSIZE(A) (sizeof(*countof(A)))
+#endif

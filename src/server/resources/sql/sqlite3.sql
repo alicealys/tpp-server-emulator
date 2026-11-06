@@ -480,3 +480,15 @@ create table if not exists `challenge_task_orders`
 	expire_date				datetime default current_timestamp not null,
 	foreign key (`player_id`) references players(`id`)
 )
+-- query:mgstpp.fob_deploy_assists.create
+create table if not exists `fob_deploy_assists`
+(
+	deploy_assist_id		integer	primary key autoincrement,
+	player_id				bigint unsigned	not null,
+	fob_id					bigint unsigned	not null,
+	cluster_index			int unsigned not null,
+	damage_values			varchar(64),
+	expire_date				datetime default current_timestamp not null,
+	foreign key (`player_id`) references players(`id`),
+	foreign key (`fob_id`) references fobs(`id`)
+)

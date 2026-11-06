@@ -32,7 +32,6 @@ namespace emulator::scripting
 		REGISTER_METHOD(get_mb_coin);
 		REGISTER_METHOD(get_last_sync);
 		REGISTER_METHOD(get_nuke_count);
-		REGISTER_METHOD(get_fob_deploy_damage_param);
 
 		this->state_["database"]["playerdata"] = sol::state::create_table(this->state_.lua_state());
 
@@ -56,7 +55,6 @@ namespace emulator::scripting
 		this->state_["database"]["playerdata"]["addcoins"] = database::player_data::add_mb_coins;
 		this->state_["database"]["playerdata"]["getnukecount"] = database::player_data::get_nuke_count;
 		this->state_["database"]["playerdata"]["getplayernukecount"] = database::player_data::get_player_nuke_count;
-		this->state_["database"]["playerdata"]["setfobdeploydamageparam"] = database::player_data::set_fob_deploy_damage_param;
 		this->state_["database"]["playerdata"]["findwithnukes"] = database::player_data::find_with_nukes;
 	}
 }

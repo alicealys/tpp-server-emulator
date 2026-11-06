@@ -128,8 +128,7 @@ namespace database::player_data
 								  player_data::table.client_resource_version,
 								  player_data::table.client_staff_version,
 								  player_data::table.server_resource_version,
-								  player_data::table.server_staff_version,
-								  player_data::table.fob_deploy_damage_param)
+								  player_data::table.server_staff_version)
 							.from(player_data::table)
 								.where(player_data::table.player_id == player_id));
 
@@ -466,18 +465,6 @@ namespace database::player_data
 						.set(player_data::table.nuke_destruct_count = player_data::table.nuke_destruct_count + count)
 							.where(player_data::table.player_id == player_id));
 				return result != 0;
-			});
-		}
-
-		template <database_type_t Type>
-		void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
-		{
-			database::access([&](database::database_t& db)
-			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.fob_deploy_damage_param = param.dump())	
-							.where(player_data::table.player_id == player_id));
 			});
 		}
 
@@ -849,11 +836,6 @@ namespace database::player_data
 	std::uint32_t get_player_nuke_count(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::get_player_nuke_count, player_id);
-	}
-
-	void set_fob_deploy_damage_param(const std::uint64_t player_id, const nlohmann::json& param)
-	{
-		RUN_IMPL(impl::set_fob_deploy_damage_param, player_id, param);
 	}
 
 	std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit)

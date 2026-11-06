@@ -1155,7 +1155,7 @@ namespace game
 		damage_param_anti_reflex_research = 8,
 		damage_param_reinforcements = 9,
 		damage_param_num_drones = 10,
-		damage_param_count
+		damage_param_count = 11
 	};
 
 	enum area_code_t
@@ -1292,8 +1292,8 @@ namespace game
 	bool parse_fob_param(nlohmann::json& param_j, game::fob_param_t& param);
 
 	extern std::array<fob_security_t, 2> fob_security_caps;
-	extern std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps;
-	extern std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map;
+	extern std::array<std::uint8_t, 16> deploy_damage_param_caps;
+	extern std::array<std::uint8_t, 7> cluster_index_map;
 
 	extern std::vector<std::string> unit_names;
 	extern std::vector<std::string> platform_keys;
@@ -1388,4 +1388,16 @@ namespace game
 
 	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase);
 	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem, bool validate_tags = true);
+
+	struct reward_t
+	{
+		std::uint8_t bottom_type;
+		std::uint8_t mecha_type;
+		std::uint32_t rate;
+		std::uint8_t section;
+		std::uint8_t type;
+		std::uint32_t value;
+
+		void to_json(nlohmann::json& data) const;
+	};
 }

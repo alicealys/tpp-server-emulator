@@ -3,6 +3,7 @@
 #include "cmd_sneak_mother_base.hpp"
 
 #include "database/models/fobs.hpp"
+#include "database/models/fob_deploy_assists.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 
@@ -120,21 +121,15 @@ namespace emulator::tpp
 		result["damage_param"] = nlohmann::json::array();
 		result["event_fob_params"] = {0, 0, 0, 0, 0};
 
-		auto damage_params = attacker_data->get_fob_deploy_damage_param();
-		if (damage_params.has_value())
+		const auto current_deploy = database::fob_deploy_assists::get_current_deploy(player->get_id());
+		if (current_deploy.has_value())
 		{
-			result["fob_deploy_damage_param"] = damage_params.value();
+			current_deploy->to_json(result["fob_deploy_damage_param"]);
 		}
 		else
 		{
-			result["fob_deploy_damage_param"]["cluster_index"] = 0;
-			result["fob_deploy_damage_param"]["expiration_date"] = 0;
-			result["fob_deploy_damage_param"]["motherbase_id"] = 0;
-
-			for (auto i = 0; i < 16; i++)
-			{
-				result["fob_deploy_damage_param"]["damage_values"][i] = 0;
-			}
+			database::fob_deploy_assists::deploy_params_t empty_params{};
+			empty_params.to_json(result["fob_deploy_damage_param"]);
 		}
 
 		result["is_event"] = is_event ? 1 : 0;
@@ -148,9 +143,9 @@ namespace emulator::tpp
 		result["recover_resource"]["minor_metal"] = 0;
 		result["recover_resource"]["precious_metal"] = 0;
 
-		if (owner->is_real_player())
+		if (owner->is_real_player() && current_deploy.has_value() && current_deploy->get_fob_id() == fob->get_id())
 		{
-			database::fobs::apply_deploy_damage_params(fob->get_id(), cluster_param, damage_params);
+			current_deploy->apply(cluster_param);
 		}
 
 		database::player_data::prisoner_array_container prison;

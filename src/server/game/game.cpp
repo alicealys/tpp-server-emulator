@@ -607,30 +607,35 @@ namespace game
 		"security"
 	};
 
-	std::unordered_map<std::uint32_t, std::uint32_t> deploy_damage_param_caps =
+	std::array<std::uint8_t, 16> deploy_damage_param_caps =
 	{
-		{damage_param_unknown, 0},
-		{damage_param_num_guards, 7},
-		{damage_param_num_grade, 5},
-		{damage_param_num_sensors, 4},
-		{damage_param_num_anti_theft_device, 8},
-		{damage_param_num_cameras, 6},
-		{damage_param_num_claymores, 8},
-		{damage_param_num_decoy, 8},
-		{damage_param_anti_reflex_research, 3},
-		{damage_param_reinforcements, 1},
-		{damage_param_num_drones, 2},
+		0, // damage_param_unknown
+		7, // damage_param_num_guards
+		5, // damage_param_num_grade
+		4, // damage_param_num_sensors
+		8, // damage_param_num_anti_theft_device
+		6, // damage_param_num_cameras
+		8, // damage_param_num_claymores
+		8, // damage_param_num_decoy
+		3, // damage_param_anti_reflex_research
+		1, // damage_param_reinforcements
+		2, // damage_param_num_drones
+		0,
+		0,
+		0,
+		0,
+		0,
 	};
 
-	std::unordered_map<std::uint32_t, std::uint32_t> cluster_index_map =
+	std::array<std::uint8_t, 7> cluster_index_map =
 	{
-		{0, 0},
-		{1, 1},
-		{2, 2},
-		{3, 4},
-		{4, 6},
-		{5, 5},
-		{6, 3},
+		0, // 0
+		1, // 1
+		2, // 2
+		4, // 3
+		6, // 4
+		5, // 5
+		3, // 6
 	};
 
 	std::vector<std::string> platform_keys =
@@ -1125,5 +1130,15 @@ namespace game
 		{
 			parse_part(i);
 		}
+	}
+
+	void reward_t::to_json(nlohmann::json& data) const
+	{
+		data["bottom_type"] = this->bottom_type;
+		data["mecha_type"] = this->mecha_type;
+		data["rate"] = this->rate;
+		data["section"] = this->section;
+		data["type"] = this->type;
+		data["value"] = this->value;
 	}
 }
