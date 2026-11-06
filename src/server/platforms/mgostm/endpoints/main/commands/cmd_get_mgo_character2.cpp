@@ -22,7 +22,7 @@ namespace emulator::mgo
 
 			const auto& avatar = characters[i].get_avatar();
 
-			char_json["avatar"] = avatar.to_json();
+			avatar.to_json(char_json["avatar"]);
 			char_json["last_loadout"] = characters[i].get_last_loadout();
 			char_json["name"] = characters[i].get_name();
 			char_json["player_class"] = characters[i].get_player_class();

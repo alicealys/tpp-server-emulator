@@ -115,7 +115,7 @@ namespace emulator::tpp
 			entry["planned_attack_item"] = 0;
 			entry["planned_defence_item"] = 0;
 
-			entry["player_detail_record"]["emblem"] = emblem.to_json();
+			emblem.to_json(entry["player_detail_record"]["emblem"]);
 			entry["player_detail_record"]["enemy"] = 0;
 			entry["player_detail_record"]["espionage"]["lose"] = competitor_record->get_sneak_lose();
 			entry["player_detail_record"]["espionage"]["score"] = competitor_record->get_fob_point();

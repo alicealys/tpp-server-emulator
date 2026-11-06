@@ -27,11 +27,11 @@ namespace emulator::mgo
 		if (target_player_opt.has_value())
 		{
 			const auto stats = database::mgo_stats::get_stats(target_player_opt->get_id());
-			result["stat"] = stats->to_json();
+			stats->to_json(result["stat"]);
 		}
 		else
 		{
-			result["stat"] = default_stats->to_json();
+			default_stats->to_json(result["stat"]);
 		}
 
 		return result;

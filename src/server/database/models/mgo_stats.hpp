@@ -159,7 +159,7 @@ namespace database::mgo_stats
         std::uint32_t stat_list[stat_base_count];
 
         bool parse(nlohmann::json& value);
-        nlohmann::json to_json() const;
+        void to_json(nlohmann::json& data) const;
 
         auto to_binary() const
         {

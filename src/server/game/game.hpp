@@ -1268,7 +1268,7 @@ namespace game
 		fob_cluster_security_t cluster_security;
 		fob_security_t unique_security;
 		fob_security_t common_security[3];
-		nlohmann::json to_json() const;
+		void to_json(nlohmann::json& data) const;
 	};
 
 	constexpr auto fob_clusters_count = 7;
@@ -1346,7 +1346,7 @@ namespace game
 	struct emblem_t
 	{
 		emblem_part_t parts[4];
-		nlohmann::json to_json() const;
+		void to_json(nlohmann::json& data) const;
 	};
 
 	struct pf_skill_staff_t

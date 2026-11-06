@@ -890,10 +890,8 @@ namespace game
 		return true;
 	}
 
-	nlohmann::json game::fob_cluster_param_single_t::to_json() const
+	void game::fob_cluster_param_single_t::to_json(nlohmann::json& data) const
 	{
-		nlohmann::json param_j;
-
 		const auto add_security = [&](nlohmann::json& security_j, const game::fob_security_t& security)
 		{
 			security_j["uav"] = security.uav;
@@ -947,36 +945,29 @@ namespace game
 			}
 		};
 
-		param_j["build"] = this->build.packed;
-		param_j["soldier_rank"] = this->soldier_rank;
-		param_j["cluster_security"] = this->cluster_security.packed;
+		data["build"] = this->build.packed;
+		data["soldier_rank"] = this->soldier_rank;
+		data["cluster_security"] = this->cluster_security.packed;
 
-		add_security(param_j["unique_security"], this->unique_security);
-		add_security(param_j["common1_security"], this->common_security[0]);
-		add_security(param_j["common2_security"], this->common_security[1]);
-		add_security(param_j["common3_security"], this->common_security[2]);
-
-		return param_j;
+		add_security(data["unique_security"], this->unique_security);
+		add_security(data["common1_security"], this->common_security[0]);
+		add_security(data["common2_security"], this->common_security[1]);
+		add_security(data["common3_security"], this->common_security[2]);
 	}
 
-	nlohmann::json game::emblem_t::to_json() const
+	void game::emblem_t::to_json(nlohmann::json& data) const
 	{
-		nlohmann::json emblem_j;
-
-		emblem_j["parts"] = nlohmann::json::array();
-		
+		auto& parts_j = data["parts"];
 		for (auto i = 0u; i < 4; i++)
 		{
-			emblem_j["parts"][i]["base_color"] = this->parts[i].base_color;
-			emblem_j["parts"][i]["frame_color"] = this->parts[i].frame_color;
-			emblem_j["parts"][i]["texture_tag"] = this->parts[i].texture_tag;
-			emblem_j["parts"][i]["position_x"] = this->parts[i].position_x;
-			emblem_j["parts"][i]["position_y"] = this->parts[i].position_y;
-			emblem_j["parts"][i]["rotate"] = this->parts[i].rotate;
-			emblem_j["parts"][i]["scale"] = this->parts[i].scale;
+			parts_j[i]["base_color"] = this->parts[i].base_color;
+			parts_j[i]["frame_color"] = this->parts[i].frame_color;
+			parts_j[i]["texture_tag"] = this->parts[i].texture_tag;
+			parts_j[i]["position_x"] = this->parts[i].position_x;
+			parts_j[i]["position_y"] = this->parts[i].position_y;
+			parts_j[i]["rotate"] = this->parts[i].rotate;
+			parts_j[i]["scale"] = this->parts[i].scale;
 		}
-
-		return emblem_j;
 	}
 
 	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase)

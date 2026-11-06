@@ -257,7 +257,7 @@ namespace emulator::tpp
 
 		result["reward_soldier_num"] = reward_soldier_index;
 
-		stage_param["cluster_param"] = mapped_cluster_param.to_json();
+		mapped_cluster_param.to_json(stage_param["cluster_param"]);
 		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
 
 		for (auto i = 0ull; i < game::fob_clusters_count; i++)

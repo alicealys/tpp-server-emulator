@@ -41,7 +41,7 @@ namespace emulator::mgo
 		{
 			database::mgo_characters::character_params params{};
 
-			if (!database::mgo_characters::character_avatar_t::parse(character_list[i]["avatar"], params.avatar))
+			if (!params.avatar.parse(character_list[i]["avatar"]))
 			{
 				continue;
 			}

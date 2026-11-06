@@ -94,7 +94,7 @@ namespace emulator::tpp
 		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{
 			const auto& param = cluster_param.param[i];
-			detail["mother_base_param"]["cluster_param"][i] = param.to_json();
+			param.to_json(detail["mother_base_param"]["cluster_param"][i]);
 		}
 
 		detail["mother_base_param"]["construct_param"] = fob->get_construct_param().packed;

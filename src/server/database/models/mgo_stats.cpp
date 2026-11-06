@@ -203,14 +203,16 @@ namespace database::mgo_stats
 		return true;
 	}
 
-	nlohmann::json stats_t::to_json() const
+	void stats_t::to_json(nlohmann::json& data) const
 	{
-		nlohmann::json result;
-
 		const auto& rule_map_rev = get_rule_map_rev();
 		const auto& stats_map_rev = get_stats_map_rev();
 
-		auto index = 0;
+		auto index = 0u;
+
+		auto& rule_stat_list_j = data["rule_stat_list"];
+		auto& stat_list_j = data["stat_list"];
+
 		for (auto o = 0; o < stat_rule_count; o++)
 		{
 			const auto stat_index = stat_rule_begin + o;
@@ -219,9 +221,10 @@ namespace database::mgo_stats
 			for (auto i = 0; i < rule_count; i++)
 			{
 				const auto rule_name = rule_map_rev.at(i);
-				result["rule_stat_list"][index]["id"] = stat_name;
-				result["rule_stat_list"][index]["rule_code"] = rule_name;
-				result["rule_stat_list"][index]["value"] = this->rule_stat_list[i][o];
+				auto& entry = rule_stat_list_j[index];
+				entry["id"] = stat_name;
+				entry["rule_code"] = rule_name;
+				entry["value"] = this->rule_stat_list[i][o];
 				index++;
 			}
 		}
@@ -230,12 +233,10 @@ namespace database::mgo_stats
 		{
 			const auto stat_index = stat_base_begin + i;
 			const auto stat_name = stats_map_rev.at(stat_index);
-
-			result["stat_list"][i]["id"] = stat_name;
-			result["stat_list"][i]["value"] = this->stat_list[i];
+			auto& entry = stat_list_j[i];
+			entry["id"] = stat_name;
+			entry["value"] = this->stat_list[i];
 		}
-
-		return result;
 	}
 
 	namespace impl

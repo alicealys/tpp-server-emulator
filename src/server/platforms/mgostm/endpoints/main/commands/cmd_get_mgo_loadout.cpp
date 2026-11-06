@@ -20,7 +20,7 @@ namespace emulator::mgo
 
 			for (auto o = 0u; o < loadout_count; o++)
 			{
-				result["loadout"]["character_list"][i]["loadout_list"][o] = loadouts->loadouts[o].to_json();
+				loadouts->loadouts[o].to_json(result["loadout"]["character_list"][i]["loadout_list"][o]);
 			}
 		}
 

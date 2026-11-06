@@ -34,8 +34,8 @@ namespace database::mgo_characters
 		std::uint8_t voice;
 		std::uint8_t motion_frame_list[60];
 
-		static bool parse(nlohmann::json& data, character_avatar_t& dest);
-		nlohmann::json to_json() const;
+		bool parse(nlohmann::json& data);
+		void to_json(nlohmann::json& data) const;
 
 		auto to_binary() const
 		{
@@ -85,8 +85,8 @@ namespace database::mgo_characters
 		character_loadout_support_weapon_t support_weapon_list[4];
 		character_loadout_weapon_t weapon_list[3];
 
-		static bool parse(nlohmann::json& data, character_loadout_t& loadout);
-		nlohmann::json to_json() const;
+		bool parse(nlohmann::json& data);
+		void to_json(nlohmann::json& data) const;
 	};
 
 	struct character_loadouts_t

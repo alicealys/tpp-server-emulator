@@ -44,7 +44,7 @@ namespace emulator::mgo
 			auto bad_loadout = false;
 			for (auto o = 0u; o < loadout_count; o++)
 			{
-				if (!database::mgo_characters::character_loadout_t::parse(loadout_list[o], loadouts->loadouts[o]))
+				if (!loadouts->loadouts[o].parse(loadout_list[o]))
 				{
 					bad_loadout = true;
 					break;

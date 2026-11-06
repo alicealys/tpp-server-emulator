@@ -179,7 +179,7 @@ namespace emulator::tpp
 			game::emblem_t target_emblem{};
 			target_entry.player_data->get_emblem(target_emblem);
 
-			target["owner_detail_record"]["emblem"] = target_emblem.to_json();
+			target_emblem.to_json(target["owner_detail_record"]["emblem"]);
 			target["owner_detail_record"]["enemy"] = 0;
 			target["owner_detail_record"]["espionage"]["win"] = target_entry.player_record->get_sneak_win();
 			target["owner_detail_record"]["espionage"]["lose"] = target_entry.player_record->get_sneak_lose();
