@@ -44,7 +44,7 @@ namespace emulator::tpp
 		return result;
 	}
 
-	bool cmd_check_server_item_correct::needs_player() const
+	bool cmd_check_server_item_correct::needs_player()
 	{
 		return true;
 	}

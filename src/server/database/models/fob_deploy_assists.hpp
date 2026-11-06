@@ -115,9 +115,10 @@ namespace database::fob_deploy_assists
 
 		GET_FIELD_H(std::uint64_t, deploy_assist_id);
 		GET_FIELD_H(std::uint64_t, player_id);
-		GET_FIELD_H(std::uint64_t, fob_id);
-		GET_FIELD_H(std::uint8_t, cluster_index);
-		GET_FIELD_H(std::chrono::seconds, expire_date);
+
+		std::uint64_t get_fob_id() const;
+		std::uint8_t get_cluster_index() const;
+		std::chrono::seconds get_expire_date() const;
 
 	private:
 		deploy_params_t params_{};

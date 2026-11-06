@@ -85,7 +85,7 @@ namespace emulator::tpp
 		return result;
 	}
 
-	bool cmd_deploy_fob_assist::needs_player() const
+	bool cmd_deploy_fob_assist::needs_player()
 	{
 		return true;
 	}
