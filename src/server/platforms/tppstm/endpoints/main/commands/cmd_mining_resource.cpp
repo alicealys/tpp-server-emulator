@@ -66,7 +66,7 @@ namespace emulator::tpp
 		database::player_data::resource_array_t& usable)
 	{
 		const auto blocks = this->calc_time_blocks(ctx.now - ctx.last_mining, this->settings.mining_time, 
-			this->settings.max_processing_blocks, ctx.force_mining);
+			this->settings.max_mining_blocks, ctx.force_mining);
 		if (blocks <= 0)
 		{
 			return;
