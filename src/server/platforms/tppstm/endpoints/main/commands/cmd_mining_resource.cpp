@@ -4,17 +4,21 @@
 
 namespace emulator::tpp
 {
-	namespace
+	std::uint32_t cmd_mining_resource::calc_time_blocks(const std::chrono::seconds diff, const std::chrono::seconds block_size, bool force)
 	{
-		std::uint32_t calc_time_blocks(const std::chrono::seconds diff, const std::chrono::seconds block_size, bool force)
+		auto blocks = static_cast<std::uint32_t>(diff / block_size);
+
+		if (blocks <= 0 && force)
 		{
-			auto blocks = static_cast<std::uint32_t>(diff / block_size);
-			if (blocks <= 0 && force)
-			{
-				blocks = 1u;
-			}
-			return blocks;
+			blocks = 1u;
 		}
+
+		if (blocks > this->settings.max_time_blocks)
+		{
+			blocks = this->settings.max_time_blocks;
+		}
+
+		return blocks;
 	}
 
 	void cmd_mining_resource::perform_processing(
@@ -22,12 +26,13 @@ namespace emulator::tpp
 		database::player_data::resource_array_t& processing,
 		database::player_data::resource_array_t& usable)
 	{
-		const auto blocks = calc_time_blocks(ctx.now - ctx.last_processing, this->settings.processing_time, ctx.force_processing);
+		const auto blocks = this->calc_time_blocks(ctx.now - ctx.last_processing, this->settings.processing_time, ctx.force_processing);
 		if (blocks <= 0)
 		{
 			return;
 		}
 
+		const auto max_processing_scalar = this->settings.max_processing_fob * static_cast<float>(std::min(std::size_t(4u), ctx.fobs.size()));
 		for (auto i = 0; i < 5; i++)
 		{
 			const auto cap = game::server_processed_resource_caps[i];
@@ -38,12 +43,12 @@ namespace emulator::tpp
 
 			const auto& factor = this->settings.processing_factors[i];
 
-			const auto available_processing = static_cast<std::uint32_t>(static_cast<float>(processing[i]) * 
-				this->settings.max_processing);
+			const auto available_processing = static_cast<std::uint32_t>(static_cast<float>(processing[i]) * max_processing_scalar);
 			const auto available = std::min(available_processing, cap - usable[i]);
 
 			const auto process_count = (factor.constant + factor.scalar * blocks);
-			const auto process_count_capped = std::min(available, process_count);
+			const auto scaled = static_cast<std::uint32_t>(static_cast<float>(process_count) * this->settings.scale_processing);
+			const auto process_count_capped = std::min(available, scaled);
 
 			usable[i] += process_count_capped;
 			processing[i] -= process_count_capped;
@@ -57,7 +62,7 @@ namespace emulator::tpp
 		database::player_data::resource_array_t& processing,
 		database::player_data::resource_array_t& usable)
 	{
-		const auto blocks = calc_time_blocks(ctx.now - ctx.last_mining, this->settings.mining_time, ctx.force_mining);
+		const auto blocks = this->calc_time_blocks(ctx.now - ctx.last_mining, this->settings.mining_time, ctx.force_mining);
 		if (blocks <= 0)
 		{
 			return;
@@ -85,7 +90,7 @@ namespace emulator::tpp
 
 				const auto scalar = static_cast<std::uint32_t>(static_cast<float>(area_factors.scalar[i]) * platform_scalar);
 				const auto available = cap - processing[i];
-				const auto mine_count = scalar * blocks;
+				const auto mine_count = static_cast<std::uint32_t>(static_cast<float>(scalar * blocks) * this->settings.scale_mining);
 				const auto mine_count_capped = std::min(available, mine_count);
 
 				processing[i] += mine_count_capped;
@@ -131,7 +136,10 @@ namespace emulator::tpp
 		this->settings.break_time = std::chrono::seconds(data["break_time"].get<std::uint32_t>());
 		this->settings.processing_time = std::chrono::seconds(data["processing_time"].get<std::uint32_t>());
 		this->settings.mining_time = std::chrono::seconds(data["mining_time"].get<std::uint32_t>());
-		this->settings.max_processing = data["max_processing"].get<float>();
+		this->settings.max_processing_fob = data["max_processing_fob"].get<float>();
+		this->settings.max_time_blocks = data["max_time_blocks"].get<std::uint32_t>();
+		this->settings.scale_processing = data["scale_processing"].get<float>();
+		this->settings.scale_mining = data["scale_mining"].get<float>();
 
 		const auto parse_processing_factor = [](mining_settings_t::processing_factor_t& factor, nlohmann::json& data)
 		{

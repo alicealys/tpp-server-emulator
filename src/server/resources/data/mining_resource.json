@@ -2,7 +2,10 @@
     "break_time": 2100,
     "processing_time": 900,
     "mining_time": 4320,
-    "max_processing": 0.3,
+    "max_time_blocks": 10,
+    "max_processing_fob": 0.1,
+    "scale_processing": 0.2,
+    "scale_mining": 0.4,
     "processing_factors": {
         "biotic_resource": [300, 750],
         "common_metal": [300, 750],
