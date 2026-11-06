@@ -25,6 +25,7 @@ namespace database
 		vars.item_dev_limit = config::get_or<std::uint32_t>("vars.item_dev_limit", vars.item_dev_limit);
 
 		vars.unlock_all_items = config::get_or<bool>("vars.unlock_all_items", vars.unlock_all_items);
+		vars.disable_item_check = config::get_or<bool>("vars.disable_item_check", vars.disable_item_check);
 
 		vars.cost_factor_generic = config::get_or<float>("vars.cost_factor_generic", vars.cost_factor_generic);
 		vars.cost_factor_item_dev = config::get_or<float>("vars.cost_factor_item_dev", vars.cost_factor_generic);

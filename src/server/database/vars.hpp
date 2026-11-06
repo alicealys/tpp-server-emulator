@@ -22,6 +22,7 @@ namespace database
 		float cost_factor_platform_construction = 1.f;
 		float cost_factor_troops_completion = 1.f;
 		bool unlock_all_items = false;
+		bool disable_item_check = false;
 		bool use_real_client_ip = false;
 		bool signup_bonus = false;
 		bool no_fob_damage = false;
