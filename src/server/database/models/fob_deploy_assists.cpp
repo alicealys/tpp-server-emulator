@@ -298,7 +298,7 @@ namespace database::fob_deploy_assists
 			add_cost(this->current_staff_counts[i], this->need_staff_counts[i], staff_value);
 		}
 
-		return static_cast<std::uint32_t>(std::ceilf(cost));
+		return static_cast<std::uint32_t>(ceilf(cost));
 	}
 
 	bool deploy_exec_info_t::parse(nlohmann::json& data)
@@ -365,6 +365,11 @@ namespace database::fob_deploy_assists
 			this->free_position_camera_count += security.voluntary_coord_camera_count;
 			this->free_position_mine_count += security.voluntary_coord_mine_count;
 		};
+
+		add_counts(cluster_param.common_security[0]);
+		add_counts(cluster_param.common_security[1]);
+		add_counts(cluster_param.common_security[2]);
+		add_counts(cluster_param.unique_security);
 
 		if (!settings.reward_sections.empty())
 		{
