@@ -570,7 +570,8 @@ namespace database::fob_deploy_assists
 		{
 			result.is_win = false;
 		}
-		else
+		
+		if (result.is_win)
 		{
 			player_data->give_rewards(deploy_info.primary_reward, &result.rewards);
 		}
