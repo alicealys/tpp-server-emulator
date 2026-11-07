@@ -337,9 +337,12 @@ namespace database::fob_deploy_assists
 		data["walker_gear_soviet"] = this->walker_gear_soviet;
 		data["walker_gear_soviet_support"] = this->walker_gear_soviet_support;
 
+		auto& rewards_j = data["rewards"];
+		rewards_j = nlohmann::json::array();
+
 		for (auto i = 0ull; i < this->rewards.size(); i++)
 		{
-			this->rewards[i].to_json(data["rewards"][i]);
+			this->rewards[i].to_json(rewards_j[i]);
 		}
 	}
 
@@ -440,12 +443,16 @@ namespace database::fob_deploy_assists
 		data["min_win_rate"] = this->min_win_rate;
 
 		auto& primary_reward_j = data["primary_reward"];
+		primary_reward_j = nlohmann::json::array();
+
 		for (auto i = 0ull; i < this->primary_reward.size(); i++)
 		{
 			this->primary_reward[i].to_json(primary_reward_j[i]);
 		}
 
 		auto& attack_params_j = data["attack_params"];
+		attack_params_j = nlohmann::json::array();
+
 		for (auto i = 0ull; i < this->attack_params.size(); i++)
 		{
 			auto& attack_param_j = attack_params_j[i];
