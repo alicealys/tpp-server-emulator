@@ -202,7 +202,7 @@ namespace game
 		RESOURCE_TYPE_COUNT = 59,
 	};
 	
-	enum mbm_consts_t
+	enum mbm_consts_t : std::uint32_t
 	{
 		SECURITY_SOLDIER_EQUIP_CLOSE_RANGE = 0,
 		SECURITY_SOLDIER_EQUIP_MIDDLE_RANGE = 1,
@@ -921,6 +921,9 @@ namespace game
 	std::uint32_t cap_resource_value(const game::resource_array_types_t type, const std::uint32_t index, const std::uint32_t value);
 
 	float get_local_resource_ratio(const game::resource_array_types_t local_type, const game::resource_array_types_t server_type, const std::uint32_t index);
+
+	std::uint32_t resource_to_reward(const std::uint32_t resource_type);
+	std::uint32_t reward_to_resource(const std::uint32_t reward_type);
 
 	// staff
 

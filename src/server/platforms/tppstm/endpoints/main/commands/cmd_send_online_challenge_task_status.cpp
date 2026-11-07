@@ -4,6 +4,7 @@
 #include "cmd_get_daily_reward.hpp"
 
 #include "database/models/player_records.hpp"
+#include "database/models/player_data.hpp"
 #include "database/models/challenge_tasks.hpp"
 
 namespace emulator::tpp
@@ -17,6 +18,12 @@ namespace emulator::tpp
 		if (!version_j.is_number_unsigned() || !status_list_j.is_array())
 		{
 			return error(ERR_INVALIDARG);
+		}
+
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.has_value())
+		{
+			return error(ERR_DATABASE);
 		}
 
 		const auto version = version_j.get<std::uint32_t>();
@@ -48,9 +55,9 @@ namespace emulator::tpp
 					}
 				);
 
-				if ((status & 2) != 0)
+				if (status == 2)
 				{
-					status |= 1;
+					status = 3;
 				}
 
 				auto prev_status = 0u;
@@ -65,9 +72,9 @@ namespace emulator::tpp
 					database::challenge_tasks::set_order_status(iter->get_order_id(), status);
 				}
 
-				if (prev_status == 0 && (status & 2) != 0)
+				if (prev_status != 3 && status == 3)
 				{
-					cmd_get_daily_reward::give_reward(player->get_id(), task.reward.type, task.reward.value);
+					player_data->give_reward(task.reward);
 				}
 			}
 

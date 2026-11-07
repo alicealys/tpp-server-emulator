@@ -78,6 +78,12 @@ namespace emulator::tpp
 		case 3:
 		case 4:
 		{
+			const auto item = database::items::get_item(player->get_id(), iter->unique_id);
+			if (item.is_open())
+			{
+				return error(ERR_DATABASE);
+			}
+
 			database::items::create(player->get_id(), iter->unique_id, database::items::item_state_open);
 			break;
 		}

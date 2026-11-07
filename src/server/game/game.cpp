@@ -507,6 +507,76 @@ namespace game
 		return static_cast<float>(local_max) / static_cast<float>(total);
 	}
 
+	std::uint32_t resource_to_reward(const std::uint32_t resource_type)
+	{
+		switch (resource_type)
+		{
+		case game::COMMON_METAL:
+			return game::POOL_REWARD_TYPE_COMMON_METAL;
+		case game::MINOR_METAL:
+			return game::POOL_REWARD_TYPE_MINOR_METAL;
+		case game::PRECIOUS_METAL:
+			return game::POOL_REWARD_TYPE_PRECIOUS_METAL;
+		case game::FUEL_RESOURCE:
+			return game::POOL_REWARD_TYPE_FUEL_RESOURCE;
+		case game::BIOTIC_RESOURCE:
+			return game::POOL_REWARD_TYPE_BIOTIC_RESOURCE;
+		case game::GOLDEN_CRESCENT:
+			return game::POOL_REWARD_TYPE_GOLDEN_CRESCENT;
+		case game::AFRICAN_PEACH:
+			return game::POOL_REWARD_TYPE_AFRICAN_PEACH;
+		case game::DIGITALIS_P:
+			return game::POOL_REWARD_TYPE_DIGITALIS_P;
+		case game::DIGITALIS_L:
+			return game::POOL_REWARD_TYPE_DIGITALIS_L;
+		case game::BLACK_CARROT:
+			return game::POOL_REWARD_TYPE_BLACK_CARROT;
+		case game::WORM_WOOD:
+			return game::POOL_REWARD_TYPE_WORM_WOOD;
+		case game::TARRAGON:
+			return game::POOL_REWARD_TYPE_TARRAGON;
+		case game::HAOMA:
+			return game::POOL_REWARD_TYPE_HAOMA;
+		}
+
+		return 0u;
+	}
+
+	std::uint32_t reward_to_resource(const std::uint32_t reward_type)
+	{
+		switch (reward_type)
+		{
+		case game::POOL_REWARD_TYPE_COMMON_METAL:
+			return game::COMMON_METAL;
+		case game::POOL_REWARD_TYPE_MINOR_METAL:
+			return game::MINOR_METAL;
+		case game::POOL_REWARD_TYPE_PRECIOUS_METAL:
+			return game::PRECIOUS_METAL;
+		case game::POOL_REWARD_TYPE_FUEL_RESOURCE:
+			return game::FUEL_RESOURCE;
+		case game::POOL_REWARD_TYPE_BIOTIC_RESOURCE:
+			return game::BIOTIC_RESOURCE;
+		case game::POOL_REWARD_TYPE_GOLDEN_CRESCENT:
+			return game::GOLDEN_CRESCENT;
+		case game::POOL_REWARD_TYPE_AFRICAN_PEACH:
+			return game::AFRICAN_PEACH;
+		case game::POOL_REWARD_TYPE_DIGITALIS_P:
+			return game::DIGITALIS_P;
+		case game::POOL_REWARD_TYPE_DIGITALIS_L:
+			return game::DIGITALIS_L;
+		case game::POOL_REWARD_TYPE_BLACK_CARROT:
+			return game::BLACK_CARROT;
+		case game::POOL_REWARD_TYPE_WORM_WOOD:
+			return game::WORM_WOOD;
+		case game::POOL_REWARD_TYPE_TARRAGON:
+			return game::TARRAGON;
+		case game::POOL_REWARD_TYPE_HAOMA:
+			return game::HAOMA;
+		}
+
+		return 0u;
+	}
+
 	// staff
 
 	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation)
@@ -1126,12 +1196,40 @@ namespace game
 
 	bool reward_t::parse(nlohmann::json& data)
 	{
-		data["bottom_type"].get_to(this->bottom_type);
-		data["mecha_type"].get_to(this->mecha_type);
-		data["rate"].get_to(this->rate);
-		data["section"].get_to(this->section);
-		data["type"].get_to(this->type);
-		data["value"].get_to(this->value);
+		if (!data.is_object())
+		{
+			return false;
+		}
+
+		auto& bottom_type_j = data["bottom_type"];
+		auto& mecha_type_j = data["mecha_type"];
+		auto& rate_j = data["rate"];
+		auto& section_j = data["section"];
+		auto& type_j = data["type"];
+		auto& value_j = data["value"];
+
+		if (!bottom_type_j.is_number_unsigned() || !rate_j.is_number_unsigned() || 
+			!section_j.is_number_unsigned() || !type_j.is_number_unsigned() ||
+			!value_j.is_number_unsigned())
+		{
+			return false;
+		}
+
+		if (mecha_type_j.is_number_unsigned())
+		{
+			this->mecha_type = mecha_type_j.get<std::uint8_t>();
+		}
+		else if (!mecha_type_j.is_null())
+		{
+			return false;
+		}
+
+		this->bottom_type = bottom_type_j.get<std::uint8_t>();
+		this->section = section_j.get<std::uint8_t>();
+		this->type = type_j.get<std::uint8_t>();
+		this->value = value_j.get<std::uint32_t>();
+		this->rate = rate_j.get<std::uint32_t>();
+
 		return true;
 	}
 

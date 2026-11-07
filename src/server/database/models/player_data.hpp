@@ -316,6 +316,9 @@ namespace database::player_data
 		void get_staff_array(staff_array_container& staff_array) const;
 		void get_prisoner_array(prisoner_array_container& staff_array) const;
 
+		void give_rewards(const std::vector<game::reward_t>& reward, std::vector<game::reward_t>* result_rewards = nullptr) const;
+		void give_reward(const game::reward_t& reward) const;
+
 		GET_FIELD_H(std::chrono::seconds, last_resource_processing);
 		GET_FIELD_H(std::chrono::seconds, last_resource_mining);
 

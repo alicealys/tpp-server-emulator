@@ -49,7 +49,7 @@ namespace emulator::tpp
 
 		database::fob_deploy_assists::deploy_result_t deploy_result{};
 
-		const auto is_win = database::fob_deploy_assists::perform_deploy(cluster_param_single, deploy_exec, deploy_result);
+		const auto is_win = database::fob_deploy_assists::perform_deploy(player.value(), cluster_param_single, deploy_exec, deploy_result);
 
 		deploy_result.to_json(result);
 

@@ -5,30 +5,7 @@
 
 namespace emulator::tpp
 {
-	void cmd_get_combat_deploy_result::give_reward(const std::uint64_t player_id, const database::combat_deployments::mission_reward_t& reward)
-	{
-		switch (reward.type)
-		{
-		case 31:
-		{
-			if (reward.mecha_type == 0)
-			{
-				database::player_data::use_league_item(player_id, reward.value, 0u, false);
-			}
-			else
-			{
-				database::player_data::use_league_item(player_id, 0u, reward.value, false);
-			}
-			break;
-		}
-		default:
-			cmd_get_daily_reward::give_reward(player_id, reward.type, reward.value);
-			break;
-		}
-	}
-
-	bool cmd_get_combat_deploy_result::can_give_reward(const database::player_data::player_data& player_data, 
-		const database::combat_deployments::mission_reward_t& reward)
+	bool cmd_get_combat_deploy_result::can_give_reward(const database::player_data::player_data& player_data, const game::reward_t& reward)
 	{
 		switch (reward.type)
 		{
@@ -55,6 +32,12 @@ namespace emulator::tpp
 		if (!player.has_value())
 		{
 			return error(ERR_INVALID_SESSION);
+		}
+
+		const auto player_data = database::player_data::find(player->get_id());
+		if (!player_data.has_value())
+		{
+			return error(ERR_DATABASE);
 		}
 
 		result["result_list"] = nlohmann::json::array();
@@ -95,16 +78,6 @@ namespace emulator::tpp
 			deployment_j["is_win"] = deployment.get_is_win() ? 1 : 0;
 			deployment_j["name_key"] = iter->name_key;
 
-			for (auto o = 0u; o < iter->rewards.size(); o++)
-			{
-				deployment_j["reward"][o]["bottom_type"] = iter->rewards[o].bottom_type;
-				deployment_j["reward"][o]["mecha_type"] = iter->rewards[o].mecha_type;
-				deployment_j["reward"][o]["rate"] = iter->rewards[o].rate;
-				deployment_j["reward"][o]["section"] = iter->section;
-				deployment_j["reward"][o]["type"] = iter->reward;
-				deployment_j["reward"][o]["value"] = iter->rewards[o].value;
-			}
-
 			deployment_j["staff_count"] = deployment_info.combat_count + deployment_info.sub_count;
 			deployment_j["tank_east"] = deployment_info.tank;
 			deployment_j["tank_west"] = 0;
@@ -117,9 +90,11 @@ namespace emulator::tpp
 			deployment_j["walker_gear_soviet"] = 0;
 			deployment_j["walker_gear_soviet_support"] = 0;
 
-			for (auto& reward : iter->rewards)
+			std::vector<game::reward_t> result_rewards;
+			player_data->give_rewards(iter->rewards, &result_rewards);
+			for (auto o = 0u; o < result_rewards.size(); o++)
 			{
-				cmd_get_combat_deploy_result::give_reward(player->get_id(), reward);
+				result_rewards[o].to_json(deployment_j["reward"][o]);
 			}
 
 			database::combat_deployments::delete_deployment(player->get_id(), deployment.get_mission_id());

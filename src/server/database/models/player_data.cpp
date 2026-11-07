@@ -2,6 +2,8 @@
 
 #include "player_data.hpp"
 
+#include "utils/random.hpp"
+
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
@@ -733,6 +735,196 @@ namespace database::player_data
 	void player_data::get_prisoner_array(prisoner_array_container& prison) const
 	{
 		RUN_IMPL(impl::get_prisoner_array, this->player_id_, prison);
+	}
+
+	void player_data::give_rewards(const std::vector<game::reward_t>& rewards, std::vector<game::reward_t>* result_rewards) const
+	{
+		resource_array_t new_resources{};
+		auto new_gmp = this->server_gmp_;
+		auto new_mb_coin = 0u;
+		auto has_new_resources = false;
+		auto new_attack_item = this->league_attack_item_;
+		auto new_defense_item = this->league_defense_item_;
+
+		for (const auto& reward : rewards)
+		{
+			const auto should_give = utils::random::chance(reward.rate);
+			if (!should_give)
+			{
+				continue;
+			}
+
+			switch (reward.type)
+			{
+				case game::POOL_REWARD_TYPE_GMP:
+				{
+					if (new_gmp < database::vars.max_server_gmp)
+					{
+						const auto left = database::vars.max_server_gmp - new_gmp;
+						const auto give_amount = std::min(left, static_cast<std::int32_t>(reward.value));
+						new_gmp += give_amount;
+					}
+
+					break;
+				}
+				case game::POOL_REWARD_TYPE_STAFF_SPP:
+				case game::POOL_REWARD_TYPE_STAFF_SP:
+				case game::POOL_REWARD_TYPE_STAFF_S:
+				case game::POOL_REWARD_TYPE_STAFF_A:
+				case game::POOL_REWARD_TYPE_STAFF_B:
+				case game::POOL_REWARD_TYPE_STAFF_C:
+				case game::POOL_REWARD_TYPE_STAFF_D:
+				case game::POOL_REWARD_TYPE_STAFF_E:
+				case game::POOL_REWARD_TYPE_STAFF_F:
+				case game::POOL_REWARD_TYPE_STAFF_G:
+				{
+					// clientsided
+					if (result_rewards != nullptr)
+					{
+						result_rewards->emplace_back(reward);
+					}
+
+					break;
+				}
+				case game::POOL_REWARD_TYPE_COMMON_METAL:
+				case game::POOL_REWARD_TYPE_MINOR_METAL:
+				case game::POOL_REWARD_TYPE_PRECIOUS_METAL:
+				case game::POOL_REWARD_TYPE_FUEL_RESOURCE:
+				case game::POOL_REWARD_TYPE_BIOTIC_RESOURCE:
+				case game::POOL_REWARD_TYPE_GOLDEN_CRESCENT:
+				case game::POOL_REWARD_TYPE_AFRICAN_PEACH:
+				case game::POOL_REWARD_TYPE_DIGITALIS_P:
+				case game::POOL_REWARD_TYPE_DIGITALIS_L:
+				case game::POOL_REWARD_TYPE_BLACK_CARROT:
+				case game::POOL_REWARD_TYPE_WORM_WOOD:
+				case game::POOL_REWARD_TYPE_TARRAGON:
+				case game::POOL_REWARD_TYPE_HAOMA:
+				{
+					const auto resource_type = game::reward_to_resource(reward.type);
+					new_resources[resource_type] += reward.value;
+					has_new_resources = true;
+					break;
+				}
+				case game::POOL_REWARD_TYPE_MB_COIN:
+				{
+					new_mb_coin += reward.value;
+					break;
+				}
+				case 31: // league item, unknown
+				{
+					if (new_attack_item >= league_item_cap)
+					{
+						break;
+					}
+
+					if (reward.mecha_type == 0)
+					{
+						const auto left = league_item_cap - new_attack_item;
+						new_attack_item += std::min(left, reward.value);
+					}
+					else if (reward.mecha_type == 1)
+					{
+						const auto left = league_item_cap - new_defense_item;
+						new_defense_item += std::min(left, reward.value);
+					}
+
+					break;
+				}
+			}
+		}
+
+		if (new_gmp > this->server_gmp_)
+		{
+			if (result_rewards != nullptr)
+			{
+				game::reward_t reward{};
+				reward.value = new_gmp - this->server_gmp_;
+				reward.type = game::POOL_REWARD_TYPE_GMP;
+				reward.rate = 100;
+				result_rewards->emplace_back(reward);
+			}
+
+			set_gmp(this->player_id_, this->local_gmp_, new_gmp);
+		}
+
+		if (new_mb_coin != 0)
+		{
+			if (result_rewards != nullptr)
+			{
+				game::reward_t reward{};
+				reward.value = new_mb_coin;
+				reward.type = game::POOL_REWARD_TYPE_MB_COIN;
+				reward.bottom_type = reward.type;
+				reward.rate = 100;
+				result_rewards->emplace_back(reward);
+			}
+
+			add_mb_coins(this->player_id_, new_mb_coin);
+		}
+
+		if (has_new_resources)
+		{
+			resource_arrays_t current_resources{};
+			this->get_resource_arrays(current_resources);
+
+			for (auto i = 0u; i < game::RESOURCE_TYPE_COUNT; i++)
+			{
+				if (new_resources[i] == 0)
+				{
+					continue;
+				}
+
+				const auto current = current_resources[game::processed_server][i];
+				const auto left = game::server_processed_resource_caps[i] - current;
+				const auto amount = std::min(left, new_resources[i]);
+
+				current_resources[game::processed_server][i] += amount;
+
+				if (result_rewards != nullptr)
+				{
+					game::reward_t reward{};
+					reward.value = amount;
+					reward.type = static_cast<std::uint8_t>(game::resource_to_reward(i));
+					reward.bottom_type = reward.type;
+					reward.rate = 100;
+					result_rewards->emplace_back(reward);
+				}
+			}
+
+			set_resources(this->player_id_, current_resources);
+		}
+
+		if (new_attack_item != this->league_attack_item_ || new_defense_item != this->league_defense_item_)
+		{
+			use_league_item(this->player_id_, new_attack_item, new_defense_item, false);
+
+			if (result_rewards != nullptr && new_attack_item != this->league_attack_item_)
+			{
+				game::reward_t reward{};
+				reward.value = new_attack_item;
+				reward.type = 31;
+				reward.bottom_type = 31;
+				reward.mecha_type = 0;
+				reward.rate = 100;
+				result_rewards->emplace_back(reward);
+			}
+
+			if (result_rewards != nullptr && new_defense_item != this->league_defense_item_)
+			{
+				game::reward_t reward{};
+				reward.value = new_defense_item;
+				reward.type = 31;
+				reward.bottom_type = 31;
+				reward.mecha_type = 1;
+				reward.rate = 100;
+				result_rewards->emplace_back(reward);
+			}
+		}
+	}
+
+	void player_data::give_reward(const game::reward_t& reward) const
+	{
+		this->give_rewards({reward});
 	}
 
 	void create(const std::uint64_t player_id)

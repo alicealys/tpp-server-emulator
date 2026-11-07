@@ -2,6 +2,7 @@
 
 #include "../database.hpp"
 #include "../utils.hpp"
+#include "players.hpp"
 #include "game/game.hpp"
 
 namespace database::fob_deploy_assists
@@ -196,7 +197,8 @@ namespace database::fob_deploy_assists
 		void to_json(nlohmann::json& data) const;
 	};
 
-	bool perform_deploy(const game::fob_cluster_param_single_t& cluster_param, const deploy_exec_info_t& exec_info, deploy_result_t& result);
+	bool perform_deploy(const players::player& player, const game::fob_cluster_param_single_t& cluster_param, 
+		const deploy_exec_info_t& exec_info, deploy_result_t& result);
 
 	class fob_deploy_assist
 	{

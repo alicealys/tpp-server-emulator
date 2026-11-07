@@ -1,19 +1,10 @@
 #pragma once
 
 #include "../database.hpp"
+#include "game/game.hpp"
 
 namespace database::combat_deployments
 {
-	struct mission_reward_t
-	{
-		std::uint8_t bottom_type;
-		std::uint8_t mecha_type;
-		std::uint8_t type;
-		std::uint8_t section;
-		std::uint32_t value;
-		std::uint32_t rate;
-	};
-
 	struct mission_t
 	{
 		std::uint8_t category;
@@ -34,7 +25,7 @@ namespace database::combat_deployments
 		std::uint32_t time;
 		std::int32_t latitude;
 		std::int32_t longitude;
-		std::vector<mission_reward_t> rewards;
+		std::vector<game::reward_t> rewards;
 	};
 
 	const std::vector<mission_t>& get_mission_list();

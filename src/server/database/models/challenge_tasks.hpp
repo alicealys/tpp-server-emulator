@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../database.hpp"
+#include "game/game.hpp"
 
 namespace database::challenge_tasks
 {
@@ -8,20 +9,11 @@ namespace database::challenge_tasks
 
 	struct challenge_task_t
 	{
-		struct reward_t
-		{
-			std::uint8_t bottom_type;
-			std::uint32_t rate;
-			std::uint8_t section;
-			std::uint8_t type;
-			std::uint32_t value;
-		};
-
 		std::uint32_t mission_id;
 		std::uint16_t task_type_id;
 		std::uint8_t threshold;
 		std::uint32_t id;
-		reward_t reward;
+		game::reward_t reward;
 
 		void to_json(nlohmann::json& data) const;
 	};

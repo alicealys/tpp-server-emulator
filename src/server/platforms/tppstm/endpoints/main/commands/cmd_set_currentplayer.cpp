@@ -13,18 +13,15 @@ namespace emulator::tpp
 	nlohmann::json cmd_set_currentplayer::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["xuid"] = {};
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
 
 		cmd_get_daily_reward::give_daily_reward(player.value());
-
 		result["player_id"] = player->get_id();
-		result["result"] = "NOERR";
 
 		return result;
+	}
+
+	bool cmd_set_currentplayer::needs_player()
+	{
+		return true;
 	}
 }

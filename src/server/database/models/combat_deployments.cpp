@@ -14,7 +14,7 @@ namespace database::combat_deployments
 		{
 			std::vector<mission_t> result;
 
-			const auto list = utils::resources::load_json(RESOURCE_COMBAT_DEPLOY_LIST);
+			auto list = utils::resources::load_json(RESOURCE_COMBAT_DEPLOY_LIST);
 
 			for (auto& entry : list)
 			{
@@ -43,13 +43,12 @@ namespace database::combat_deployments
 				{
 					for (auto i = 0u; i < rewards_list_j.size(); i++)
 					{
-						mission_reward_t reward{};
-						reward.bottom_type = rewards_list_j[i]["bottom_type"].get<std::uint8_t>();
-						reward.mecha_type = rewards_list_j[i]["mecha_type"].get<std::uint8_t>();
-						reward.type = rewards_list_j[i]["type"].get<std::uint8_t>();
-						reward.section = rewards_list_j[i]["section"].get<std::uint8_t>();
-						reward.rate = rewards_list_j[i]["rate"].get<std::uint32_t>();
-						reward.value = rewards_list_j[i]["value"].get<std::uint32_t>();
+						game::reward_t reward{};
+						auto& reward_j = rewards_list_j[i];
+						if (!reward.parse(reward_j))
+						{
+							throw std::runtime_error(std::format("[combat deployments] invalid reward \"{}\"", reward_j.dump()));
+						}
 
 						mission.rewards.emplace_back(reward);
 					}

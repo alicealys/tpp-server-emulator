@@ -1,34 +1,66 @@
 [
     {
-        "type": "POOL_REWARD_TYPE_BIOTIC_RESOURCE",
-        "count": 5000
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 16,
+        "value": 5000
     },
     {
-        "type": "POOL_REWARD_TYPE_MB_COIN",
-        "count": 15
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 26,
+        "value": 15
     },
     {
-        "type": "POOL_REWARD_TYPE_DIGITALIS_L",
-        "count": 16
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 20,
+        "value": 16
     },
     {
-        "type": "POOL_REWARD_TYPE_COMMON_METAL",
-        "count": 5000
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 12,
+        "value": 5000
     },
     {
-        "type": "POOL_REWARD_TYPE_MB_COIN",
-        "count": 35
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 26,
+        "value": 35
     },
     {
-        "type": "POOL_REWARD_TYPE_MB_COIN",
-        "count": 30
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 26,
+        "value": 30
     },
     {
-        "type": "POOL_REWARD_TYPE_GMP",
-        "count": 100000
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 1,
+        "value": 100000
     },
     {
-        "type": "POOL_REWARD_TYPE_BIOTIC_RESOURCE",
-        "count": 5000
+        "bottom_type": 0,
+        "mecha_type": 0,
+        "rate": 1000000,
+        "section": 0,
+        "type": 16,
+        "value": 5000
     }
 ]

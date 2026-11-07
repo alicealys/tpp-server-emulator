@@ -12,7 +12,7 @@ namespace database::challenge_tasks
 	{
 		std::vector<challenge_task_t> entries;
 
-		const auto list = utils::resources::load_json(RESOURCE_ONLINE_CHALLENGE_TASKS);
+		auto list = utils::resources::load_json(RESOURCE_ONLINE_CHALLENGE_TASKS);
 
 		for (auto i = 0ull; i < list.size(); i++)
 		{
@@ -21,11 +21,13 @@ namespace database::challenge_tasks
 			entry.task_type_id = list[i]["task_type_id"].get<std::uint16_t>();
 			entry.mission_id = list[i]["mission_id"].get<std::uint32_t>();
 			entry.threshold = list[i]["threshold"].get<std::uint8_t>();
-			entry.reward.bottom_type = list[i]["reward"]["bottom_type"].get<std::uint8_t>();
-			entry.reward.rate = list[i]["reward"]["rate"].get<std::uint32_t>();
-			entry.reward.section = list[i]["reward"]["section"].get<std::uint8_t>();
-			entry.reward.type = list[i]["reward"]["type"].get<std::uint8_t>();
-			entry.reward.value = list[i]["reward"]["value"].get<std::uint32_t>();
+
+			auto& reward_j = list[i]["reward"];
+			if (!entry.reward.parse(reward_j))
+			{
+				throw std::runtime_error(std::format("[challenge tasks] invalid reward \"{}\"", reward_j.dump()));
+			}
+
 			entries.emplace_back(entry);
 		}
 

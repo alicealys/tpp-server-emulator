@@ -24,6 +24,11 @@ namespace utils::random
 
 	bool chance(const std::uint32_t probability)
 	{
+		if (probability >= 100u)
+		{
+			return true;
+		}
+
 		std::bernoulli_distribution distribution(static_cast<float>(probability) / 100.f);
 		return distribution(get_engine());
 	}

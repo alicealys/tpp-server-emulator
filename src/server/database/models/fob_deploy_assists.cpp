@@ -477,14 +477,20 @@ namespace database::fob_deploy_assists
 		}
 	}
 
-	bool perform_deploy(const game::fob_cluster_param_single_t& cluster_param, const deploy_exec_info_t& exec_info, deploy_result_t& result)
+	bool perform_deploy(const players::player& player, const game::fob_cluster_param_single_t& cluster_param, 
+		const deploy_exec_info_t& exec_info, deploy_result_t& result)
 	{
 		result.is_win = utils::random::chance(exec_info.win_rate);
 
 		deploy_info_t deploy_info{};
 		deploy_info.generate(cluster_param, cluster_param.cluster_security.fields.level);
 
-		result.rewards = deploy_info.primary_reward;
+
+		const auto player_data = database::player_data::find(player.get_id());
+		if (player_data.has_value() && result.is_win)
+		{
+			player_data->give_rewards(deploy_info.primary_reward, &result.rewards);
+		}
 
 		// todo
 
