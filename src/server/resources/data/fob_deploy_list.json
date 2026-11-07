@@ -1,1611 +1,3317 @@
 {
-    "deploy_param": {
-        "attack_params": [
-            {
-                "attack_type": 0,
-                "grade_params": [
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 0,
-                        "is_valid": 1,
-                        "name_key_id": 0,
-                        "section": 1,
-                        "section_count": 4,
-                        "section_rank": 3,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 89
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            3,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 112,
-                        "info_key_id": 0,
-                        "is_valid": 1,
-                        "name_key_id": 0,
-                        "section": 1,
-                        "section_count": 6,
-                        "section_rank": 4,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 88
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            4,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 115,
-                        "info_key_id": 0,
-                        "is_valid": 1,
-                        "name_key_id": 0,
-                        "section": 1,
-                        "section_count": 8,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 87
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            5,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 120,
-                        "info_key_id": 0,
-                        "is_valid": 1,
-                        "name_key_id": 0,
-                        "section": 1,
-                        "section_count": 10,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 85
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            7,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 128,
-                        "info_key_id": 0,
-                        "is_valid": 1,
-                        "name_key_id": 0,
-                        "section": 1,
-                        "section_count": 12,
-                        "section_rank": 8,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 83
-                    }
-                ]
-            },
-            {
-                "attack_type": 1,
-                "grade_params": [
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 133,
-                        "info_key_id": 100,
-                        "is_valid": 1,
-                        "name_key_id": 100,
-                        "section": 4,
-                        "section_count": 4,
-                        "section_rank": 3,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 71
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 135,
-                        "info_key_id": 100,
-                        "is_valid": 1,
-                        "name_key_id": 100,
-                        "section": 4,
-                        "section_count": 6,
-                        "section_rank": 4,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 71
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            3,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 138,
-                        "info_key_id": 100,
-                        "is_valid": 1,
-                        "name_key_id": 100,
-                        "section": 4,
-                        "section_count": 8,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 69
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            4,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 144,
-                        "info_key_id": 100,
-                        "is_valid": 1,
-                        "name_key_id": 100,
-                        "section": 4,
-                        "section_count": 10,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 68
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            5,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 154,
-                        "info_key_id": 100,
-                        "is_valid": 1,
-                        "name_key_id": 100,
-                        "section": 4,
-                        "section_count": 12,
-                        "section_rank": 8,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 66
-                    }
-                ]
-            },
-            {
-                "attack_type": 2,
-                "grade_params": [
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            2,
-                            3,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 200,
-                        "is_valid": 1,
-                        "name_key_id": 200,
-                        "section": 5,
-                        "section_count": 4,
-                        "section_rank": 3,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 84
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            2,
-                            4,
-                            0,
-                            4,
-                            4,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 112,
-                        "info_key_id": 200,
-                        "is_valid": 1,
-                        "name_key_id": 200,
-                        "section": 5,
-                        "section_count": 6,
-                        "section_rank": 4,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 84
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            3,
-                            5,
-                            4,
-                            5,
-                            5,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 115,
-                        "info_key_id": 200,
-                        "is_valid": 1,
-                        "name_key_id": 200,
-                        "section": 5,
-                        "section_count": 8,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 82
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            3,
-                            6,
-                            5,
-                            6,
-                            6,
-                            0,
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 120,
-                        "info_key_id": 200,
-                        "is_valid": 1,
-                        "name_key_id": 200,
-                        "section": 5,
-                        "section_count": 10,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 81
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            4,
-                            8,
-                            6,
-                            8,
-                            8,
-                            0,
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 128,
-                        "info_key_id": 200,
-                        "is_valid": 1,
-                        "name_key_id": 200,
-                        "section": 5,
-                        "section_count": 12,
-                        "section_rank": 8,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 78
-                    }
-                ]
-            },
-            {
-                "attack_type": 3,
-                "grade_params": [
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 300,
-                        "is_valid": 1,
-                        "name_key_id": 300,
-                        "section": 6,
-                        "section_count": 4,
-                        "section_rank": 3,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 81
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 300,
-                        "is_valid": 1,
-                        "name_key_id": 300,
-                        "section": 6,
-                        "section_count": 6,
-                        "section_rank": 4,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 89
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 300,
-                        "is_valid": 1,
-                        "name_key_id": 300,
-                        "section": 6,
-                        "section_count": 8,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 96
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            2,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 300,
-                        "is_valid": 1,
-                        "name_key_id": 300,
-                        "section": 6,
-                        "section_count": 10,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 103
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            3,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 300,
-                        "is_valid": 1,
-                        "name_key_id": 300,
-                        "section": 6,
-                        "section_count": 12,
-                        "section_rank": 8,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 111
-                    }
-                ]
-            },
-            {
-                "attack_type": 4,
-                "grade_params": [
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 400,
-                        "is_valid": 1,
-                        "name_key_id": 400,
-                        "section": 3,
-                        "section_count": 4,
-                        "section_rank": 3,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 81
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 400,
-                        "is_valid": 1,
-                        "name_key_id": 400,
-                        "section": 3,
-                        "section_count": 6,
-                        "section_rank": 4,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 89
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 400,
-                        "is_valid": 1,
-                        "name_key_id": 400,
-                        "section": 3,
-                        "section_count": 8,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 96
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 400,
-                        "is_valid": 1,
-                        "name_key_id": 400,
-                        "section": 3,
-                        "section_count": 10,
-                        "section_rank": 7,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 103
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 0,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 111,
-                        "info_key_id": 400,
-                        "is_valid": 1,
-                        "name_key_id": 400,
-                        "section": 3,
-                        "section_count": 12,
-                        "section_rank": 8,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 111
-                    }
-                ]
-            },
-            {
-                "attack_type": 5,
-                "grade_params": [
-                    {
-                        "armored_count": 0,
-                        "car_count": 2,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 96,
-                        "info_key_id": 500,
-                        "is_valid": 1,
-                        "name_key_id": 500,
-                        "section": 0,
-                        "section_count": 0,
-                        "section_rank": 0,
-                        "tank_count": 0,
-                        "truck_count": 0,
-                        "walker_gear_count": 0,
-                        "win_rate": 112
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 2,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 92,
-                        "info_key_id": 500,
-                        "is_valid": 1,
-                        "name_key_id": 500,
-                        "section": 0,
-                        "section_count": 0,
-                        "section_rank": 0,
-                        "tank_count": 0,
-                        "truck_count": 2,
-                        "walker_gear_count": 0,
-                        "win_rate": 119
-                    },
-                    {
-                        "armored_count": 0,
-                        "car_count": 2,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 88,
-                        "info_key_id": 500,
-                        "is_valid": 1,
-                        "name_key_id": 500,
-                        "section": 0,
-                        "section_count": 0,
-                        "section_rank": 0,
-                        "tank_count": 0,
-                        "truck_count": 2,
-                        "walker_gear_count": 1,
-                        "win_rate": 130
-                    },
-                    {
-                        "armored_count": 1,
-                        "car_count": 2,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 84,
-                        "info_key_id": 500,
-                        "is_valid": 1,
-                        "name_key_id": 500,
-                        "section": 0,
-                        "section_count": 0,
-                        "section_rank": 0,
-                        "tank_count": 0,
-                        "truck_count": 2,
-                        "walker_gear_count": 2,
-                        "win_rate": 145
-                    },
-                    {
-                        "armored_count": 1,
-                        "car_count": 2,
-                        "damage_target": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "damage_value": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "dead_rate": 80,
-                        "info_key_id": 500,
-                        "is_valid": 1,
-                        "name_key_id": 500,
-                        "section": 0,
-                        "section_count": 0,
-                        "section_rank": 0,
-                        "tank_count": 1,
-                        "truck_count": 2,
-                        "walker_gear_count": 2,
-                        "win_rate": 165
-                    }
-                ]
-            }
+    "base_dead_rate": 22,
+    "base_win_rate": 100,
+    "max_dead_rate": 75,
+    "max_win_rate": 100,
+    "min_dead_rate": 5,
+    "min_grade": 4,
+    "min_guard_soldier_count": 0,
+    "min_security_device_count": 0,
+    "min_win_rate": 5,
+    "replace_costs": {
+        "armored": 40.5,
+        "car": 22.5,
+        "tank": 45,
+        "truck": 25.2,
+        "walker_gear": 33.75,
+        "staff_counts": [
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05
         ],
-        "base_dead_rate": 22,
-        "base_win_rate": 100,
-        "free_position_camera_count": 2,
-        "free_position_mine_count": 12,
-        "max_dead_rate": 75,
-        "max_win_rate": 100,
-        "min_dead_rate": 5,
-        "min_grade": 4,
-        "min_guard_soldier_count": 0,
-        "min_security_device_count": 0,
-        "min_win_rate": 5,
-        "primary_reward": [
-            {
-                "bottom_type": 1,
-                "mecha_type": 0,
-                "rate": 1000000,
-                "section": 0,
-                "type": 1,
-                "value": 73667
-            },
-            {
-                "bottom_type": 16,
-                "mecha_type": 0,
-                "rate": 1000000,
-                "section": 0,
-                "type": 16,
-                "value": 467
-            },
-            {
-                "bottom_type": 0,
-                "mecha_type": 0,
-                "rate": 0,
-                "section": 0,
-                "type": 0,
-                "value": 0
-            },
-            {
-                "bottom_type": 0,
-                "mecha_type": 0,
-                "rate": 0,
-                "section": 0,
-                "type": 0,
-                "value": 0
-            }
+        "staff_ranks": [
+            [1, 2, 3, 7, 10, 15, 20, 30, 450, 2000],
+            [1, 2, 3, 7, 10, 15, 20, 30, 450, 2000],
+            [1, 2, 3, 7, 10, 15, 20, 30, 450, 2000],
+            [1, 2, 3, 7, 10, 15, 20, 30, 450, 2000],
+            [1, 2, 3, 7, 10, 15, 20, 30, 450, 2000],
+            [1, 2, 3, 7, 10, 15, 20, 30, 450, 2000]
         ]
-    }
+    },
+    "reward_sections": [
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 28334
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 180
+                }
+            ],
+            "threshold": 10
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 45334
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 287
+                }
+            ],
+            "threshold": 20
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 45334
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 287
+                }
+            ],
+            "threshold": 30
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 45334
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 287
+                }
+            ],
+            "threshold": 40
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 73667
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 467
+                }
+            ],
+            "threshold": 50
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 73667
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 467
+                }
+            ],
+            "threshold": 60
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 73667
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 467
+                }
+            ],
+            "threshold": 70
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 90667
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 574
+                }
+            ],
+            "threshold": 80
+        },
+        {
+            "rewards": [
+                {
+                    "bottom_type": 1,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 1,
+                    "value": 90667
+                },
+                {
+                    "bottom_type": 12,
+                    "mecha_type": 0,
+                    "rate": 1000000,
+                    "section": 0,
+                    "type": 12,
+                    "value": 574
+                }
+            ],
+            "threshold": 90
+        }
+    ],
+    "attacks": [
+        {
+            "attack_type": 0,
+            "grade_params": [
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 0,
+                    "name_key_id": 0,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 97
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 92
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 89
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 85
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 1,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 75
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 0,
+                    "name_key_id": 0,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 98
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 96
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 107,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 94
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 109,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 112,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 116,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 84
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 120,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 80
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 124,
+                                "section": 1,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 75
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 0,
+                    "name_key_id": 0,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 97
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 106,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 96
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 107,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 109,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 93
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 112,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 90
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 115,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 87
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 119,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 83
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 79
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 1,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 74
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 0,
+                    "name_key_id": 0,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 109,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 110,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 94
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 112,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 93
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 117,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 120,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 85
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 124,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 77
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 133,
+                                "section": 1,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 72
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 0,
+                    "name_key_id": 0,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 116,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 92
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 119,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 90
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 122,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 125,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 86
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 83
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 132,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 79
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 137,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 142,
+                                "section": 1,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 70
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                }
+            ]
+        },
+        {
+            "attack_type": 1,
+            "grade_params": [
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 100,
+                    "name_key_id": 100,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 121,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 80
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 122,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 79
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 124,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 78
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 126,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 76
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 129,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 74
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 133,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 71
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 137,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 68
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 142,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 64
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 147,
+                                "section": 4,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 60
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 100,
+                    "name_key_id": 100,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 122,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 79
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 124,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 78
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 125,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 77
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 131,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 73
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 135,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 71
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 139,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 67
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 144,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 64
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 149,
+                                "section": 4,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 60
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 100,
+                    "name_key_id": 100,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 126,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 78
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 127,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 77
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 129,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 76
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 131,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 74
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 134,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 72
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 138,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 69
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 142,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 66
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 147,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 63
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 153,
+                                "section": 4,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 59
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 100,
+                    "name_key_id": 100,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 131,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 76
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 132,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 134,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 74
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 137,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 73
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 140,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 70
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 144,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 68
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 149,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 65
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 154,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 62
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 160,
+                                "section": 4,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 58
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 100,
+                    "name_key_id": 100,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 140,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 74
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 141,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 73
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 143,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 72
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 146,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 70
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 150,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 68
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 154,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 66
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 159,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 63
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 164,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 60
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 170,
+                                "section": 4,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 56
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                }
+            ]
+        },
+        {
+            "attack_type": 2,
+            "grade_params": [
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 200,
+                    "name_key_id": 200,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 94
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 94
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 92
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 90
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 84
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 77
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 5,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 72
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,2,4,0,4,4,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 200,
+                    "name_key_id": 200,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 94
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 93
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 107,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 89
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 109,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 87
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 112,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 84
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 116,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 80
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 120,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 76
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 124,
+                                "section": 5,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 71
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,3,5,4,5,5,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 200,
+                    "name_key_id": 200,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 92
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 106,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 107,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 90
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 109,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 112,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 86
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 115,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 82
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 119,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 79
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 5,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 70
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,3,6,5,6,6,0,0,2,0,0,0,0,0,0],
+                    "info_key_id": 200,
+                    "name_key_id": 200,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 109,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 90
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 110,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 89
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 112,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 86
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 117,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 84
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 120,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 124,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 77
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 73
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 133,
+                                "section": 5,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 68
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,4,8,6,8,8,0,0,2,0,0,0,0,0,0],
+                    "info_key_id": 200,
+                    "name_key_id": 200,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 116,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 87
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 119,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 86
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 122,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 84
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 125,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 128,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 78
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 132,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 137,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 71
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 142,
+                                "section": 5,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 67
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                }
+            ]
+        },
+        {
+            "attack_type": 3,
+            "grade_params": [
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],
+                    "info_key_id": 300,
+                    "name_key_id": 300,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 97
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 87
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 67
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 6,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 59
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],
+                    "info_key_id": 300,
+                    "name_key_id": 300,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 107
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 106
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 103
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 89
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 82
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 73
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 6,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 64
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],
+                    "info_key_id": 300,
+                    "name_key_id": 300,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 116
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 115
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 108
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 102
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 96
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 80
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 6,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 70
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],
+                    "info_key_id": 300,
+                    "name_key_id": 300,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 125
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 123
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 120
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 116
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 110
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 103
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 86
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 6,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 75
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0],
+                    "info_key_id": 300,
+                    "name_key_id": 300,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 134
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 132
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 129
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 124
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 118
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 111
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 102
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 92
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 6,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 80
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                }
+            ]
+        },
+        {
+            "attack_type": 4,
+            "grade_params": [
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+                    "info_key_id": 400,
+                    "name_key_id": 400,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 1,
+                                "win_rate": 97
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 2,
+                                "win_rate": 91
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 87
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 81
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 75
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 67
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 3,
+                                "section_count": 4,
+                                "section_rank": 3,
+                                "win_rate": 59
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+                    "info_key_id": 400,
+                    "name_key_id": 400,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 107
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 2,
+                                "win_rate": 106
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 103
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 3,
+                                "win_rate": 99
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 89
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 82
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 73
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 3,
+                                "section_count": 6,
+                                "section_rank": 4,
+                                "win_rate": 64
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+                    "info_key_id": 400,
+                    "name_key_id": 400,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 116
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 3,
+                                "win_rate": 115
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 4,
+                                "win_rate": 108
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 102
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 96
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 88
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 80
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 3,
+                                "section_count": 8,
+                                "section_rank": 7,
+                                "win_rate": 70
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+                    "info_key_id": 400,
+                    "name_key_id": 400,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 125
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 3,
+                                "win_rate": 123
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 120
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 4,
+                                "win_rate": 116
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 110
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 103
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 95
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 86
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 3,
+                                "section_count": 10,
+                                "section_rank": 7,
+                                "win_rate": 75
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 0,
+                    "damage_value": [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+                    "info_key_id": 400,
+                    "name_key_id": 400,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 101,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 134
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 102,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 4,
+                                "win_rate": 132
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 103,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 129
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 105,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 7,
+                                "win_rate": 124
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 108,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 118
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 111,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 111
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 114,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 102
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 118,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 92
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 123,
+                                "section": 3,
+                                "section_count": 12,
+                                "section_rank": 8,
+                                "win_rate": 80
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                }
+            ]
+        },
+        {
+            "attack_type": 5,
+            "grade_params": [
+                {
+                    "armored_count": 0,
+                    "car_count": 2,
+                    "damage_value": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 500,
+                    "name_key_id": 500,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 96,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 112
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 0,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 2,
+                    "damage_value": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 500,
+                    "name_key_id": 500,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 92,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 119
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 2,
+                    "walker_gear_count": 0
+                },
+                {
+                    "armored_count": 0,
+                    "car_count": 2,
+                    "damage_value": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 500,
+                    "name_key_id": 500,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 88,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 130
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 2,
+                    "walker_gear_count": 1
+                },
+                {
+                    "armored_count": 1,
+                    "car_count": 2,
+                    "damage_value": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 500,
+                    "name_key_id": 500,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 84,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 145
+                            }
+                        }
+                    ],
+                    "tank_count": 0,
+                    "truck_count": 2,
+                    "walker_gear_count": 2
+                },
+                {
+                    "armored_count": 1,
+                    "car_count": 2,
+                    "damage_value": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    "info_key_id": 500,
+                    "name_key_id": 500,
+                    "rates": [
+                        {
+                            "threshold": 10,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 20,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 30,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 40,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 50,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 60,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 70,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 80,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        },
+                        {
+                            "threshold": 90,
+                            "values": {
+                                "dead_rate": 80,
+                                "section": 0,
+                                "section_count": 0,
+                                "section_rank": 0,
+                                "win_rate": 165
+                            }
+                        }
+                    ],
+                    "tank_count": 1,
+                    "truck_count": 2,
+                    "walker_gear_count": 2
+                }
+            ]
+        }
+    ]
 }

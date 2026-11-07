@@ -13,11 +13,8 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		auto& use_mb_coin_j = data["use_mb_coin"];
-		auto& mb_coin_pay_j = data["mb_coin_pay"];
 		auto& deploy_exec_info_j = data["deploy_exec_info"];
-
-		if (!mb_coin_pay_j.is_number_unsigned() || !use_mb_coin_j.is_number_unsigned() || !deploy_exec_info_j.is_object())
+		if (!deploy_exec_info_j.is_object())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -36,27 +33,23 @@ namespace emulator::tpp
 			return error(ERR_DATABASE);
 		}
 
-		const auto use_mb_coin = use_mb_coin_j.get<std::uint8_t>() != 0;
-		const auto mb_coin_pay = mb_coin_pay_j.get<std::uint32_t>();
+		const auto& cluster_param = fob->get_cluster_param();
+		const auto& cluster_param_single = cluster_param.param[game::cluster_index_map[deploy_params.cluster_index]];
 
-		if (use_mb_coin && mb_coin_pay > 0)
+		const auto replace_cost = deploy_exec.team_info.calc_replace_cost();
+		if (replace_cost != 0)
 		{
-			if (mb_coin_pay > 100'000)
-			{
-				return error(ERR_INVALIDARG);
-			}
-
-			if (!database::player_data::spend_mb_coins(player->get_id(), mb_coin_pay))
+			if (!database::player_data::spend_mb_coins(player->get_id(), replace_cost))
 			{
 				return error(ERR_MBCOIN_SHORTAGE);
 			}
 
-			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::fob_unit_deployment, mb_coin_pay);
+			database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::fob_unit_deployment, replace_cost);
 		}
 
 		database::fob_deploy_assists::deploy_result_t deploy_result{};
 
-		const auto is_win = database::fob_deploy_assists::perform_deploy(deploy_exec, deploy_result);
+		const auto is_win = database::fob_deploy_assists::perform_deploy(cluster_param_single, deploy_exec, deploy_result);
 
 		deploy_result.to_json(result);
 

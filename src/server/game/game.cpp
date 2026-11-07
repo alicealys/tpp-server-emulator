@@ -3,6 +3,7 @@
 #include "game.hpp"
 
 #include "utils/resources.hpp"
+#include "utils/json_utils.hpp"
 
 namespace game
 {
@@ -1121,6 +1122,17 @@ namespace game
 		{
 			parse_part(i);
 		}
+	}
+
+	bool reward_t::parse(nlohmann::json& data)
+	{
+		data["bottom_type"].get_to(this->bottom_type);
+		data["mecha_type"].get_to(this->mecha_type);
+		data["rate"].get_to(this->rate);
+		data["section"].get_to(this->section);
+		data["type"].get_to(this->type);
+		data["value"].get_to(this->value);
+		return true;
 	}
 
 	void reward_t::to_json(nlohmann::json& data) const

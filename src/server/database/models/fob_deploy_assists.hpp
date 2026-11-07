@@ -29,25 +29,28 @@ namespace database::fob_deploy_assists
 		void apply(game::fob_cluster_param_t& cluster) const;
 	};
 
+	struct team_info_t
+	{
+		std::uint32_t current_4wd_count;
+		std::uint32_t current_armored_count;
+		std::uint32_t current_tank_count;
+		std::uint32_t current_truck_count;
+		std::uint32_t current_walkergear_count;
+		std::uint32_t need_4wd_count;
+		std::uint32_t need_armored_count;
+		std::uint32_t need_tank_count;
+		std::uint32_t need_truck_count;
+		std::uint32_t need_walkergear_count;
+		std::uint32_t current_staff_counts[6];
+		std::uint32_t need_staff_counts[6];
+		std::uint8_t staff_ranks[6];
+
+		bool parse(nlohmann::json& data);
+		std::uint32_t calc_replace_cost() const;
+	};
+
 	struct deploy_exec_info_t
 	{
-		struct team_info_t
-		{
-			std::uint8_t current_4wd_count;
-			std::uint8_t current_armored_count;
-			std::uint8_t current_tank_count;
-			std::uint8_t current_truck_count;
-			std::uint8_t current_walkergear_count;
-			std::uint8_t need_4wd_count;
-			std::uint8_t need_armored_count;
-			std::uint8_t need_tank_count;
-			std::uint8_t need_truck_count;
-			std::uint8_t need_walkergear_count;
-			std::uint8_t current_staff_counts[6];
-			std::uint8_t need_staff_counts[6];
-			std::uint8_t staff_ranks[6];
-		};
-
 		std::uint8_t win_rate;
 		team_info_t team_info;
 
@@ -57,27 +60,143 @@ namespace database::fob_deploy_assists
 	struct deploy_result_t
 	{
 		std::uint8_t is_win;
-		std::uint8_t armored_east;
-		std::uint8_t armored_east_rocket;
-		std::uint8_t armored_west;
-		std::uint8_t armored_west_wheeled;
-		std::uint8_t car_east;
-		std::uint8_t car_west;
-		std::uint8_t tank_east;
-		std::uint8_t tank_west;
-		std::uint8_t truck_east;
-		std::uint8_t truck_west;
-		std::uint8_t walker_gear_cfa;
-		std::uint8_t walker_gear_cfa_suppot;
-		std::uint8_t walker_gear_proto;
-		std::uint8_t walker_gear_soviet;
-		std::uint8_t walker_gear_soviet_support;
+		std::uint32_t armored_east;
+		std::uint32_t armored_east_rocket;
+		std::uint32_t armored_west;
+		std::uint32_t armored_west_wheeled;
+		std::uint32_t car_east;
+		std::uint32_t car_west;
+		std::uint32_t tank_east;
+		std::uint32_t tank_west;
+		std::uint32_t truck_east;
+		std::uint32_t truck_west;
+		std::uint32_t walker_gear_cfa;
+		std::uint32_t walker_gear_cfa_suppot;
+		std::uint32_t walker_gear_proto;
+		std::uint32_t walker_gear_soviet;
+		std::uint32_t walker_gear_soviet_support;
 		std::vector<game::reward_t> rewards;
 
 		void to_json(nlohmann::json& data) const;
 	};
 
-	bool perform_deploy(const deploy_exec_info_t& exec_info, deploy_result_t& result);
+	struct deploy_settings_t
+	{
+		struct reward_section_t
+		{
+			std::uint8_t threshold;
+			std::vector<game::reward_t> rewards;
+		};
+
+		struct attack_t
+		{
+			struct grade_param_t
+			{
+				struct rate_t
+				{
+					struct values_t
+					{
+						std::uint8_t win_rate;
+						std::uint8_t dead_rate;
+						std::uint8_t section;
+						std::uint32_t section_count;
+						std::uint8_t section_rank;
+					};
+
+					std::uint8_t threshold;
+					values_t values;
+				};
+
+				std::uint32_t armored_count;
+				std::uint32_t car_count;
+				std::uint32_t tank_count;
+				std::uint32_t truck_count;
+				std::uint32_t walker_gear_count;
+				std::uint32_t info_key_id;
+				std::uint32_t name_key_id;
+				std::array<std::uint8_t, 16> damage_value;
+				std::vector<rate_t> rates;
+
+				const rate_t& get_rate(const std::uint8_t security_level) const;
+			};
+
+			std::uint8_t attack_type;
+			std::vector<grade_param_t> grade_params;
+		};
+
+		struct replace_costs_t
+		{
+			float armored;
+			float car;
+			float tank;
+			float truck;
+			float walker_gear;
+			std::array<float, 6> staff_counts;
+			std::array<std::array<float, 10>, 6> staff_ranks;
+		};
+
+		std::uint8_t base_dead_rate;
+		std::uint8_t base_win_rate;
+		std::uint8_t max_dead_rate;
+		std::uint8_t max_win_rate;
+		std::uint8_t min_dead_rate;
+		std::uint8_t min_grade;
+		std::uint8_t min_guard_soldier_count;
+		std::uint8_t min_security_device_count;
+		std::uint8_t min_win_rate;
+		replace_costs_t replace_costs;
+		std::vector<reward_section_t> reward_sections;
+		std::vector<attack_t> attacks;
+
+		const reward_section_t& get_reward_section(const std::uint8_t security_level) const;
+	};
+
+	struct deploy_info_t
+	{
+		struct attack_param_t
+		{
+			struct grade_param_t
+			{
+				std::uint32_t armored_count;
+				std::uint32_t car_count;
+				std::uint32_t tank_count;
+				std::uint32_t truck_count;
+				std::uint32_t walker_gear_count;
+				std::uint32_t info_key_id;
+				std::uint32_t name_key_id;
+				std::array<std::uint8_t, 16> damage_target;
+				std::array<std::uint8_t, 16> damage_value;
+				std::uint8_t win_rate;
+				std::uint8_t dead_rate;
+				std::uint8_t section;
+				std::uint32_t section_count;
+				std::uint8_t section_rank;
+				std::uint8_t is_valid;
+			};
+
+			std::uint8_t attack_type;
+			std::vector<grade_param_t> grade_params;
+		};
+
+		std::uint8_t base_dead_rate;
+		std::uint8_t base_win_rate;
+		std::uint8_t free_position_camera_count;
+		std::uint8_t free_position_mine_count;
+		std::uint8_t max_dead_rate;
+		std::uint8_t max_win_rate;
+		std::uint8_t min_dead_rate;
+		std::uint8_t min_grade;
+		std::uint8_t min_guard_soldier_count;
+		std::uint8_t min_security_device_count;
+		std::uint8_t min_win_rate;
+		std::vector<game::reward_t> primary_reward;
+		std::vector<attack_param_t> attack_params;
+
+		void generate(const game::fob_cluster_param_single_t& cluster_param, const std::uint8_t security_level);
+		void to_json(nlohmann::json& data) const;
+	};
+
+	bool perform_deploy(const game::fob_cluster_param_single_t& cluster_param, const deploy_exec_info_t& exec_info, deploy_result_t& result);
 
 	class fob_deploy_assist
 	{

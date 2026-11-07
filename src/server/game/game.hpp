@@ -1398,6 +1398,7 @@ namespace game
 		std::uint8_t type;
 		std::uint32_t value;
 
+		bool parse(nlohmann::json& data);
 		void to_json(nlohmann::json& data) const;
 	};
 }
