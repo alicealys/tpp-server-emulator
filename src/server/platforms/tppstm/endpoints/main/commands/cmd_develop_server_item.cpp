@@ -35,46 +35,44 @@ namespace emulator::tpp
 		player_data->get_staff_array(staff_array);
 
 		const auto item_id = item_id_j.get<std::uint32_t>();
-		auto item_list = database::items::get_item_list(player->get_id());
+		const auto items = database::items::get_item_list(player->get_id());
 		auto dev_count = 0u;
-		for (const auto& status : item_list)
+
+		const auto iter = items.find(item_id);
+		if (iter == items.end() || !iter->is_open())
 		{
-			if (status.second.get_develop() == database::items::indev && status.second.get_id() != database::items::nuclear)
+			return error(ERR_SERVERITEM_UNOPENFLAG);
+		}
+
+		const auto& item = *iter;
+		if (item.is_created())
+		{
+			return error(ERR_SERVERITEM_ALREADY_DEVELOPED);
+		}
+
+		if (!item.can_develop(player_data, resource_arrays, staff_array))
+		{
+			return error(ERR_SERVERITEM_RESOURCE_SHORTAGE);
+		}
+
+		for (const auto& status : items)
+		{
+			if (status.get_develop() == database::items::item_develop_indev && status.get_item_type() != database::items::nuclear)
 			{
 				++dev_count;
 			}
 
-			if (status.second.get_id() == item_id)
+			if (dev_count >= database::vars.item_dev_limit)
 			{
-				if (status.second.is_created())
-				{
-					return error(ERR_SERVERITEM_ALREADY_DEVELOPED);
-				}
-
-				if (!status.second.is_open())
-				{
-					return error(ERR_SERVERITEM_UNOPENFLAG);
-				}
-
-				if (!status.second.can_develop(player_data, resource_arrays, staff_array))
-				{
-					return error(ERR_SERVERITEM_RESOURCE_SHORTAGE);
-				}
+				return error("ERR_SERVERITEM_DEVLIMIT"); // made up error
 			}
 		}
-
-		if (dev_count >= database::vars.item_dev_limit)
-		{
-			return error("ERR_SERVERITEM_DEVLIMIT"); // made up error
-		}
-
-		const auto& item = item_list[item_id];
 
 		const auto id_0 = item.get_resource_id(0);
 		const auto id_1 = item.get_resource_id(1);
 
 		const auto value_0 = item.get_resource_value(0);
-		const auto value_1 = item.get_resource_value(0);
+		const auto value_1 = item.get_resource_value(1);
 
 		const auto sub_resource = [&](std::uint32_t id, std::uint32_t amount)
 		{
@@ -94,7 +92,15 @@ namespace emulator::tpp
 		auto server_gmp = player_data->get_server_gmp();
 		server_gmp -= std::min(server_gmp, static_cast<std::int32_t>(item.get_gmp()));
 
-		database::items::create(player->get_id(), item_id, database::items::item_state_develop);
+		if (item.get_item_develop_id() != 0)
+		{
+			database::items::create_existing(item.get_item_develop_id(), database::items::item_state_develop);
+		}
+		else
+		{
+			database::items::create(player->get_id(), item_id, database::items::item_state_develop);
+		}
+
 		database::player_data::set_resources_gmp(player->get_id(), resource_arrays, player_data->get_local_gmp(), server_gmp);
 
 		return result;

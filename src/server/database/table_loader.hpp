@@ -120,7 +120,7 @@ struct table_t : sqlpp::table_t<table_t, ##__VA_ARGS__>\
 public: \
 	__type__ get_##__name__() const; \
 private: \
-	__type__ __name__##_; \
+	__type__ __name__##_{}; \
 public: \
 
 #define GET_FIELD_C(__class__, __type__, __name__) \

@@ -22,7 +22,7 @@ namespace emulator::tpp
 		const auto is_open = [&](const std::uint32_t id)
 		{
 			const auto iter = items.find(id);
-			return iter != items.end() && iter->second.is_open();
+			return iter != items.end() && iter->is_open();
 		};
 
 		const auto serialize_list = [&](const database::fob_events::point_exchange_params_t& params)

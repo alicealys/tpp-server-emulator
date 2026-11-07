@@ -11,34 +11,20 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
+		const auto item_list = database::items::get_item_list(player->get_id());
+		for (auto i = 0ull; i < item_list.size(); i++)
 		{
-			return error(ERR_INVALID_SESSION);
+			item_list[i].to_json(result["item_list"][i]);
 		}
 
-		auto status_list = database::items::get_item_list(player->get_id());
-
-		auto index = 0;
-		for (const auto& item_status : status_list)
-		{
-			const auto i = index++;
-
-			result["item_list"][i]["create_date"] = item_status.second.get_create_time();
-			result["item_list"][i]["develop"] = item_status.second.get_develop();
-			result["item_list"][i]["gmp"] = item_status.second.get_gmp();
-			result["item_list"][i]["id"] = item_status.second.get_id();
-			result["item_list"][i]["left_second"] = item_status.second.get_left_second();
-			result["item_list"][i]["max_second"] = item_status.second.get_max_second();
-			result["item_list"][i]["mb_coin"] = game::calculate_mb_coins(item_status.second.get_max_second(), database::vars.cost_factor_item_dev);
-			result["item_list"][i]["open"] = item_status.second.is_open();
-		}
-
-		result["item_num"] = status_list.size();
+		result["item_num"] = item_list.size();
 		result["develop_limit"] = database::vars.item_dev_limit;
 
-		result["result"] = "NOERR";
-		result["xuid"] = {};
-
 		return result;
+	}
+
+	bool cmd_get_server_item_list::needs_player()
+	{
+		return true;
 	}
 }

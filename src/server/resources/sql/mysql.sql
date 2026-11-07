@@ -132,11 +132,12 @@ create table if not exists `items`
 (
 	id                  bigint unsigned	not null	auto_increment,
 	player_id           bigint unsigned	not null,
-	item_id				bigint unsigned	not null,
+	item_id				int unsigned	not null,
 	item_state			int unsigned	not null default 0,
 	create_date			datetime        default current_timestamp not null,
 	primary key (`id`),
-	foreign key (`player_id`) references players(`id`)
+	foreign key (`player_id`) references players(`id`),
+	unique key `unique_item_id` (`player_id`, `item_id`)
 )
 -- query:mgstpp.player_follows.create
 create table if not exists `player_follows`

@@ -21,7 +21,9 @@ namespace emulator::tpp
 
 		if (!database::vars.unlock_all_items && !database::vars.disable_item_check)
 		{
-			const auto server_item_list = database::items::get_item_list(player->get_id());
+			const auto server_item_list = database::items::get_item_list(player->get_id(), false);
+			const auto& static_map = database::items::get_static_map();
+
 			for (auto i = 0ull; i < item_list.size(); i++)
 			{
 				if (!item_list[i].is_number_unsigned())
@@ -30,8 +32,13 @@ namespace emulator::tpp
 				}
 
 				const auto item_id = item_list[i].get<std::uint32_t>();
+				if (!static_map.contains(item_id))
+				{
+					continue;
+				}
+
 				const auto& iter = server_item_list.find(item_id);
-				if (iter != server_item_list.end() && iter->second.get_develop() != database::items::developed)
+				if (iter == server_item_list.end() || iter->get_develop() != database::items::item_develop_developed)
 				{
 					check_result = 1;
 					break;
@@ -40,7 +47,6 @@ namespace emulator::tpp
 		}
 		
 		result["check_result"] = check_result;
-
 		return result;
 	}
 

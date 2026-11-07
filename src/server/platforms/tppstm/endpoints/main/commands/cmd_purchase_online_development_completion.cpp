@@ -23,28 +23,24 @@ namespace emulator::tpp
 		result["paid_coin"] = 0;
 
 		const auto item = database::items::get_item(player->get_id(), item_id);
-		if (item.get_develop() != database::items::indev)
+		if (item.get_develop() != database::items::item_develop_indev)
 		{
-			result["error"] = game::get_error(ERR_ALREADY_COMPLETED);
-			return result;
+			return error(ERR_ALREADY_COMPLETED);
 		}
 
-		if (database::player_data::spend_mb_coins(player->get_id(), item.get_mb_coin()))
-		{
-			if (!database::items::force_develop(player->get_id(), item.get_id()))
-			{
-				database::player_data::add_mb_coins(player->get_id(), item.get_mb_coin());
-				return error(ERR_DATABASE);
-			}
-			else
-			{
-				database::shop_purchases::add_spent_single(player->get_id(), database::shop_purchases::time_reduction_development, item.get_mb_coin(), item.get_id());
-			}
-		}
-		else
+		if (!database::player_data::spend_mb_coins(player->get_id(), item.get_mb_coin()))
 		{
 			return error(ERR_MBCOIN_SHORTAGE);
 		}
+
+		if (!database::items::force_develop(item.get_item_develop_id()))
+		{
+			database::player_data::add_mb_coins(player->get_id(), item.get_mb_coin());
+			return error(ERR_DATABASE);
+		}
+
+		database::shop_purchases::add_spent_single(player->get_id(),
+			database::shop_purchases::time_reduction_development, item.get_mb_coin(), item.get_item_type());
 
 		result["paid_coin"] = item.get_mb_coin();
 

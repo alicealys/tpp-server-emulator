@@ -31,11 +31,11 @@ namespace database::items
 		nuclear = 39001
 	};
 
-	enum develop_status
+	enum develop_status_t
 	{
-		undeveloped = 0,
-		indev = 1,
-		developed = 2
+		item_develop_undeveloped = 0,
+		item_develop_indev = 1,
+		item_develop_developed = 2
 	};
 
 	enum item_state_t
@@ -53,6 +53,8 @@ namespace database::items
 	class item_status
 	{
 	public:
+		friend class item_list;
+
 		DEFINE_FIELD(id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(item_id, sqlpp::integer_unsigned);
@@ -65,102 +67,48 @@ namespace database::items
 		template <typename ...Args>
 		item_status(const sqlpp::result_row_t<Args...>& row)
 		{
-			this->id_ = static_cast<std::uint32_t>(row.item_id);
+			this->item_develop_id_ = row.id;
+			this->item_type_ = static_cast<std::uint32_t>(row.item_id);
 			this->player_id_ = row.player_id;
-			this->create_date_ = std::chrono::time_point<std::chrono::system_clock>(row.create_date.value().time_since_epoch());
+			this->create_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.create_date.value().time_since_epoch());
 			this->state_ = static_cast<std::uint32_t>(row.item_state);
 			this->created_ = this->state_ == item_state_develop;
-			this->valid_ = true;
+			this->initialize();
 		}
 
-		item_status(const std::uint32_t item_id, const std::uint64_t player_id)
-		{
-			this->id_ = item_id;
-			this->player_id_ = player_id;
-			this->created_ = false;
-			this->valid_ = true;
-		}
-
-		item_status()
-		{
-			this->valid_ = false;
-		}
+		item_status();
+		item_status(const std::uint32_t item_type, const std::uint64_t player_id);
 
 		bool can_develop(const std::optional<player_data::player_data>& player_data,
-			const database::player_data::resource_arrays_t& resource_arrays, const database::player_data::staff_array_container& staff_array) const;
-		void initialize(const item_t& item_data);
+			const database::player_data::resource_arrays_t& resource_arrays, 
+			const database::player_data::staff_array_container& staff_array) const;
+		void initialize();
 
-		int is_open() const
-		{
-			return this->open_;
-		}
+		std::uint32_t get_gmp() const;
+		std::uint32_t get_develop() const;
+		std::uint32_t get_mb_coin() const;
 
-		std::uint32_t get_id() const
-		{
-			return this->id_;
-		}
+		std::uint32_t get_left_second() const;
+		std::uint32_t get_max_second() const;
 
-		std::uint32_t get_gmp() const
-		{
-			return this->gmp_;
-		}
+		std::uint32_t get_resource_id(const std::uint32_t index) const;
+		std::uint32_t get_resource_value(const std::uint32_t index) const;
 
-		std::uint32_t get_develop() const
-		{
-			return this->develop_;
-		}
+		bool is_open() const;
+		bool is_created() const;
 
-		std::uint32_t get_mb_coin() const
-		{
-			return this->mb_coin_;
-		}
+		void to_json(nlohmann::json& data) const;
 
-		std::uint32_t get_left_second() const
-		{
-			return this->left_second_;
-		}
-
-		std::uint32_t get_max_second() const
-		{
-			return this->max_second_;
-		}
-
-		std::chrono::system_clock::time_point get_create_date() const
-		{
-			return this->create_date_;
-		}
-
-		std::uint32_t get_create_time() const
-		{
-			if (!this->created_)
-			{
-				return 0;
-			}
-
-			return static_cast<std::uint32_t>(std::chrono::duration_cast<std::chrono::seconds>(this->create_date_.time_since_epoch()).count());
-		}
-
-		bool is_created() const
-		{
-			return this->created_;
-		}
-
-		std::uint32_t get_resource_id(const std::uint32_t index) const
-		{
-			return this->resource_ids_[index];
-		}
-
-		std::uint32_t get_resource_value(const std::uint32_t index) const
-		{
-			return this->resource_values_[index];
-		}
+		GET_FIELD_H(std::uint64_t, item_develop_id);
+		GET_FIELD_H(std::uint64_t, player_id);
+		GET_FIELD_H(std::uint32_t, item_type);
+		GET_FIELD_H(std::uint32_t, state);
+		GET_FIELD_H(std::chrono::seconds, create_date);
 
 	private:
 		bool open_{};
 		bool created_{};
-		bool valid_{};
-		std::uint64_t player_id_{};
-		std::uint32_t id_{};
+
 		std::uint32_t gmp_{};
 		std::uint32_t develop_{};
 		std::uint32_t mb_coin_{};
@@ -170,15 +118,23 @@ namespace database::items
 		std::uint32_t resource_values_[2]{};
 		std::uint32_t skill_{};
 		std::uint32_t platform_levels_[7]{};
-		std::uint32_t state_{};
-		std::chrono::system_clock::time_point create_date_{};
 
 	};
 
-	std::unordered_map<std::uint32_t, item_status> get_item_list(const std::uint64_t player_id, bool merge_list = true);
+	class item_list : public std::vector<item_status>
+	{
+	public:
+		std::vector<item_status>::iterator find(const std::uint32_t item_type);
+		const std::vector<item_status>::const_iterator find(const std::uint32_t item_type) const;
+	};
+
+	item_list get_item_list(const std::uint64_t player_id, bool merge_list = true);
 	item_status get_item(const std::uint64_t player_id, const std::uint32_t item_id);
+
 	bool create(const std::uint64_t player_id, const std::uint32_t item_id, const std::uint32_t item_state);
+	bool create_existing(const std::uint64_t item_develop_id, const std::uint32_t item_state);
 	bool remove(const std::uint64_t player_id, const std::uint32_t item_id);
-	bool force_develop(const std::uint64_t player_id, const std::uint32_t item_id);
+	bool force_develop(const std::uint64_t item_develop_id);
+
 	void delete_player_data(const std::uint64_t player_id);
 }

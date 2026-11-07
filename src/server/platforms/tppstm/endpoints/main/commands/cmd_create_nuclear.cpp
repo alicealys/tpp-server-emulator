@@ -22,7 +22,7 @@ namespace emulator::tpp
 		}
 
 		const auto item = database::items::get_item(player->get_id(), database::items::nuclear);
-		if (item.get_develop() != database::items::developed)
+		if (item.get_develop() != database::items::item_develop_developed)
 		{
 			return error(ERR_INVALIDARG);
 		}
