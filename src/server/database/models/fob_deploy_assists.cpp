@@ -485,14 +485,97 @@ namespace database::fob_deploy_assists
 		deploy_info_t deploy_info{};
 		deploy_info.generate(cluster_param, cluster_param.cluster_security.fields.level);
 
-
 		const auto player_data = database::player_data::find(player.get_id());
-		if (player_data.has_value() && result.is_win)
+		if (!player_data.has_value())
+		{
+			return result.is_win;
+		}
+
+		database::player_data::resource_arrays_t resource_arrays{};
+		player_data->get_resource_arrays(resource_arrays);
+
+		const auto consume_resource = [&](std::uint32_t count, const std::uint32_t resource_type_begin, const std::uint32_t resource_type_end)
+		{
+			auto resource_type = resource_type_begin;
+			while (count > 0)
+			{
+				switch (resource_type)
+				{
+				case game::CAR_EAST:
+					result.car_east++;
+					break;
+				case game::CAR_WEST:
+					result.car_west++;
+					break;
+				case game::ARMORED_VEHICLE_EAST:
+					result.armored_east++;
+					break;
+				case game::ARMORED_VEHICLE_WEST:
+					result.armored_west++;
+					break;
+				case game::ARMORED_VEHICLE_EAST_ROCKET:
+					result.armored_east_rocket++;
+					break;
+				case game::WHEELED_ARMORED_VEHICLE_WEST:
+					result.armored_west_wheeled++;
+					break;
+				case game::TANK_EAST:
+					result.tank_east++;
+					break;
+				case game::TANK_WEST:
+					result.tank_west++;
+					break;
+				case game::WALKER_GEAR_PROTO_HEUY:
+					result.walker_gear_proto++;
+					break;
+				case game::WALKER_GEAR_SOVIET_BATTLE:
+					result.walker_gear_soviet++;
+					break;
+				case game::WALKER_GEAR_SOVIET_SUPPORT:
+					result.walker_gear_soviet_support++;
+					break;
+				case game::WALKER_GEAR_CFA_BATTLE:
+					result.walker_gear_cfa++;
+					break;
+				case game::WALKER_GEAR_CFA_SUPPORT:
+					result.walker_gear_cfa_suppot++;
+					break;
+				default:
+					return false;
+				}
+
+				auto& resource_count = resource_arrays[game::processed_server][resource_type];
+				if (resource_count < 0)
+				{
+					return false;
+				}
+
+				resource_count -= 1;
+				resource_type++;
+				count--;
+
+				if (resource_type > resource_type_end)
+				{
+					resource_type = resource_type_begin;
+				}
+			}
+
+			return true;
+		};
+
+		if (!consume_resource(exec_info.team_info.need_4wd_count, game::CAR_EAST, game::CAR_WEST) ||
+			!consume_resource(exec_info.team_info.need_armored_count, game::ARMORED_VEHICLE_EAST, game::WHEELED_ARMORED_VEHICLE_WEST) ||
+			!consume_resource(exec_info.team_info.need_tank_count, game::TANK_EAST, game::TANK_WEST) ||
+			!consume_resource(exec_info.team_info.need_walkergear_count, game::WALKER_GEAR_PROTO_HEUY, game::WALKER_GEAR_CFA_SUPPORT))
+		{
+			result.is_win = false;
+		}
+		else
 		{
 			player_data->give_rewards(deploy_info.primary_reward, &result.rewards);
 		}
 
-		// todo
+		database::player_data::set_resources(player.get_id(), resource_arrays);
 
 		return result.is_win;
 	}
