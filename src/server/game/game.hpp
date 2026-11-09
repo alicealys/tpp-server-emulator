@@ -900,6 +900,9 @@ namespace game
 		std::uint32_t common_metal;
 		std::uint32_t minor_metal;
 		std::uint32_t precious_metal;
+
+		bool parse(nlohmann::json& data);
+		void to_json(nlohmann::json& data) const;
 	};
 
 	struct fob_placements_t
@@ -909,6 +912,9 @@ namespace game
 		std::uint32_t gatling_gun_east;
 		std::uint32_t gatling_gun_west;
 		std::uint32_t mortar_normal;
+
+		bool parse(nlohmann::json& data);
+		void to_json(nlohmann::json& data) const;
 	};
 
 	extern std::array<std::uint32_t, RESOURCE_TYPE_COUNT> local_processed_resource_caps;

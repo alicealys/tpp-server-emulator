@@ -8,6 +8,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/wormholes.hpp"
+#include "database/models/sneak_results.hpp"
 
 namespace emulator::tpp
 {
@@ -67,20 +68,20 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		auto& detail = result["detail"];
+		auto& detail_j = result["detail"];
 
-		detail["captured_rank_bottom"] = 0;
-		detail["captured_rank_top"] = 0;
-		detail["captured_staff"] = 0;
-		detail["captured_rank_bottom"] = 0;
+		detail_j["captured_rank_bottom"] = 0;
+		detail_j["captured_rank_top"] = 0;
+		detail_j["captured_staff"] = 0;
+		detail_j["captured_rank_bottom"] = 0;
 
-		detail["mother_base_param"]["area_id"] = 0;
-		detail["mother_base_param"]["fob_index"] = fob->get_index();
-		detail["mother_base_param"]["platform_count"] = 0;
-		detail["mother_base_param"]["price"] = 0;
-		detail["mother_base_param"]["security_rank"] = 0;
-
-		detail["mother_base_param"]["cluster_param"] = nlohmann::json::array();
+		auto& mother_base_param_j = detail_j["mother_base_param"];
+		mother_base_param_j["area_id"] = 0;
+		mother_base_param_j["fob_index"] = fob->get_index();
+		mother_base_param_j["platform_count"] = 0;
+		mother_base_param_j["price"] = 0;
+		mother_base_param_j["security_rank"] = 0;
+		mother_base_param_j["cluster_param"] = nlohmann::json::array();
 
 		auto& cluster_param = fob->get_cluster_param();
 
@@ -94,13 +95,13 @@ namespace emulator::tpp
 		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{
 			const auto& param = cluster_param.param[i];
-			param.to_json(detail["mother_base_param"]["cluster_param"][i]);
+			param.to_json(mother_base_param_j["cluster_param"][i]);
 		}
 
-		detail["mother_base_param"]["construct_param"] = fob->get_construct_param().packed;
-		detail["mother_base_param"]["mother_base_id"] = fob->get_id();
+		mother_base_param_j["construct_param"] = fob->get_construct_param().packed;
+		mother_base_param_j["mother_base_id"] = fob->get_id();
 
-		detail["owner_player_id"] = fob->get_player_id();
+		detail_j["owner_player_id"] = fob->get_player_id();
 
 		const auto owner = database::players::find(fob->get_player_id());
 		if (!owner.has_value())
@@ -117,32 +118,35 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		owner_data->get_resource_arrays(resource_arrays);
 
-		detail["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
-		detail["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
-		detail["placement"]["gatling_gun"] = 0;
-		detail["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
-		detail["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
-		detail["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
+		auto& placement_j = detail_j["placement"];
+		placement_j["emplacement_gun_east"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
+		placement_j["emplacement_gun_west"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
+		placement_j["gatling_gun"] = 0;
+		placement_j["gatling_gun_east"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
+		placement_j["gatling_gun_west"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
+		placement_j["mortar_normal"] = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
+
+		database::sneak_results::sneak_reward_previews_t primary_reward{};
+		database::sneak_results::generate_sneak_reward_previews(cluster_param, primary_reward);
+		primary_reward.to_json(detail_j["primary_reward"]);
 
 		const auto event_player = database::fob_events::get_player(owner->get_id());
 		if (is_event && event_player.has_value())
 		{
-			detail["primary_reward"] = event_player->reward["primary_reward"];
-			detail["reward_rate"] = event_player->reward["reward_rate"];
-			detail["platform"] = 255; // seems to be 255 for regular players
+			detail_j["reward_rate"] = 200;
+			detail_j["platform"] = 255;
 		}
 		else
 		{
-			detail["primary_reward"] = nlohmann::json::array();
-			detail["reward_rate"] = 0;
-			detail["platform"] = 0; // idk seems to be 0 for event players
+			detail_j["reward_rate"] = 0;
+			detail_j["platform"] = 0;
 		}
 
 		for (auto i = 0u; i < 10; i++)
 		{
 			for (const auto& name : game::unit_names)
 			{
-				detail["section_staff"][i][name] = 0;
+				detail_j["section_staff"][i][name] = 0;
 			}
 		}
 
@@ -164,51 +168,52 @@ namespace emulator::tpp
 			}
 
 			const auto& key = key_opt.value();
-			const auto& value = detail["section_staff"][staff.fields.header.peak_rank][key];
-			detail["section_staff"][staff.fields.header.peak_rank][key] = 1 + value.get<std::uint32_t>();
+			const auto& value = detail_j["section_staff"][staff.fields.header.peak_rank][key];
+			detail_j["section_staff"][staff.fields.header.peak_rank][key] = 1 + value.get<std::uint32_t>();
 		}
 
-		detail["security_section_rank"] = owner_data->get_unit_level(game::unit_security);
+		detail_j["security_section_rank"] = owner_data->get_unit_level(game::unit_security);
 
 		const auto is_actual = mode == database::players::mode_actual;
 
 		result["event_clear_bit"] = 0;
 		result["is_restrict"] = !is_actual ? 0 : stats->is_shield_active();
 
-		result["session"]["ip"] = "0.0.0.0";
-		result["session"]["is_invalid"] = 1;
-		result["session"]["npid"]["handler"]["data"] = "";
-		result["session"]["npid"]["handler"]["dummy"] = {0, 0, 0};
-		result["session"]["npid"]["handler"]["term"] = 0;
-		result["session"]["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
-		result["session"]["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
-		result["session"]["port"] = 0;
-		result["session"]["secure_device_address"] = "NotImplement";
-		result["session"]["steamid"] = 0;
-		result["session"]["xnaddr"] = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-		result["session"]["xnkey"] = {};
-		result["session"]["xnkid"] = {};
-		result["session"]["xuid"] = 0;
+		auto& session_j = result["session"];
+		session_j["ip"] = "0.0.0.0";
+		session_j["is_invalid"] = 1;
+		session_j["npid"]["handler"]["data"] = "";
+		session_j["npid"]["handler"]["dummy"] = {0, 0, 0};
+		session_j["npid"]["handler"]["term"] = 0;
+		session_j["npid"]["opt"] = {0, 0, 0, 0, 0, 0, 0, 0};
+		session_j["npid"]["reserved"] = {0, 0, 0, 0, 0, 0, 0, 0};
+		session_j["port"] = 0;
+		session_j["secure_device_address"] = "NotImplement";
+		session_j["steamid"] = 0;
+		session_j["xnaddr"] = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		session_j["xnkey"] = {};
+		session_j["xnkid"] = {};
+		session_j["xuid"] = 0;
 
 		if (owner->is_real_player())
 		{
 			if (is_actual)
 			{
 				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
-				if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
-				{
-					return error(ERR_SNEAK_RESTRICTION);
-				}
+				//if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
+				//{
+				//	return error(ERR_SNEAK_RESTRICTION);
+				//}
 			}
 
 			const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
 			if (is_sneak)
 			{
-				result["session"]["ip"] = player->get_ex_ip();
-				result["session"]["is_invalid"] = 0;
-				result["session"]["port"] = player->get_ex_port();
-				result["session"]["steamid"] = player->get_account_id();
-				result["session"]["xuid"] = player->get_account_id();
+				session_j["ip"] = player->get_ex_ip();
+				session_j["is_invalid"] = 0;
+				session_j["port"] = player->get_ex_port();
+				session_j["steamid"] = player->get_account_id();
+				session_j["xuid"] = player->get_account_id();
 
 				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
 					database::players::status_menu, true, owner->is_security_challenge_enabled()))
@@ -230,13 +235,13 @@ namespace emulator::tpp
 					return error(ERR_DATABASE);
 				}
 
-				detail["platform"] = active_sneak->get_platform();
+				detail_j["platform"] = active_sneak->get_platform();
 
-				result["session"]["ip"] = attacker->get_ex_ip();
-				result["session"]["is_invalid"] = 0;
-				result["session"]["port"] = attacker->get_ex_port();
-				result["session"]["steamid"] = attacker->get_account_id();
-				result["session"]["xuid"] = attacker->get_account_id();
+				session_j["ip"] = attacker->get_ex_ip();
+				session_j["is_invalid"] = 0;
+				session_j["port"] = attacker->get_ex_port();
+				session_j["steamid"] = attacker->get_account_id();
+				session_j["xuid"] = attacker->get_account_id();
 
 				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
 					database::players::status_menu, false, owner->is_security_challenge_enabled()))

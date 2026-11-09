@@ -700,13 +700,13 @@ namespace game
 
 	std::array<std::uint8_t, 7> cluster_index_map =
 	{
-		0, // 0
-		1, // 1
-		2, // 2
-		4, // 3
-		6, // 4
-		5, // 5
-		3, // 6
+		CLUSTER_CATEGORY_COMMAND,	// 0
+		CLUSTER_CATEGORY_COMBAT,	// 1
+		CLUSTER_CATEGORY_DEVELOP,	// 2
+		CLUSTER_CATEGORY_SUPPORT,	// 3
+		CLUSTER_CATEGORY_MEDICAL,	// 4
+		CLUSTER_CATEGORY_SPY,		// 5
+		CLUSTER_CATEGORY_BASE_DEV,  // 6
 	};
 
 	std::vector<std::string> platform_keys =
@@ -1241,5 +1241,85 @@ namespace game
 		data["section"] = this->section;
 		data["type"] = this->type;
 		data["value"] = this->value;
+	}
+
+	bool fob_resources_t::parse(nlohmann::json& data)
+	{
+		if (!data.is_object())
+		{
+			return false;
+		}
+
+		auto& fuel_resource_j = data["fuel_resource"];
+		auto& biotic_resource_j = data["biotic_resource"];
+		auto& common_metal_j = data["common_metal"];
+		auto& minor_metal_j = data["minor_metal"];
+		auto& precious_metal_j = data["precious_metal"];
+
+		if (!fuel_resource_j.is_number_unsigned() ||
+			!biotic_resource_j.is_number_unsigned() ||
+			!common_metal_j.is_number_unsigned() ||
+			!minor_metal_j.is_number_unsigned() || 
+			!precious_metal_j.is_number_unsigned())
+		{
+			return false;
+		}
+
+		this->fuel_resource = fuel_resource_j.get<std::uint32_t>();
+		this->biotic_resource = biotic_resource_j.get<std::uint32_t>();
+		this->common_metal = common_metal_j.get<std::uint32_t>();
+		this->minor_metal = minor_metal_j.get<std::uint32_t>();
+		this->precious_metal = precious_metal_j.get<std::uint32_t>();
+
+		return true;
+	}
+
+	void fob_resources_t::to_json(nlohmann::json& data) const
+	{
+		data["fuel_resource"] = this->fuel_resource;
+		data["biotic_resource"] = this->biotic_resource;
+		data["common_metal"] = this->common_metal;
+		data["minor_metal"] = this->minor_metal;
+		data["precious_metal"] = this->precious_metal;
+	}
+
+	bool fob_placements_t::parse(nlohmann::json& data)
+	{
+		if (!data.is_object())
+		{
+			return false;
+		}
+
+		auto& emplacement_gun_east_j = data["emplacement_gun_east"];
+		auto& emplacement_gun_west_j = data["emplacement_gun_west"];
+		auto& gatling_gun_east_j = data["gatling_gun_east"];
+		auto& gatling_gun_west_j = data["gatling_gun_west"];
+		auto& mortar_normal_j = data["mortar_normal"];
+
+		if (!emplacement_gun_east_j.is_number_unsigned() ||
+			!emplacement_gun_west_j.is_number_unsigned() ||
+			!gatling_gun_east_j.is_number_unsigned() ||
+			!gatling_gun_west_j.is_number_unsigned() ||
+			!mortar_normal_j.is_number_unsigned())
+		{
+			return false;
+		}
+
+		this->emplacement_gun_east = emplacement_gun_east_j.get<std::uint32_t>();
+		this->emplacement_gun_west = emplacement_gun_west_j.get<std::uint32_t>();
+		this->gatling_gun_east = gatling_gun_east_j.get<std::uint32_t>();
+		this->gatling_gun_west = gatling_gun_west_j.get<std::uint32_t>();
+		this->mortar_normal = mortar_normal_j.get<std::uint32_t>();
+
+		return true;
+	}
+
+	void fob_placements_t::to_json(nlohmann::json& data) const
+	{
+		data["emplacement_gun_east"] = this->emplacement_gun_east;
+		data["emplacement_gun_west"] = this->emplacement_gun_west;
+		data["gatling_gun_east"] = this->gatling_gun_east;
+		data["gatling_gun_west"] = this->gatling_gun_west;
+		data["mortar_normal"] = this->mortar_normal;
 	}
 }

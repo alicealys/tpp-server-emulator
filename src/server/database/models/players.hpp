@@ -7,7 +7,7 @@ namespace database::players
 	std::uint32_t get_nat_type_id(const std::string& nat_type);
 	std::string get_nat_type(const std::uint32_t nat_type_id);
 
-	enum sneak_mode
+	enum sneak_mode : std::uint32_t
 	{
 		mode_none = 0,
 		mode_visit = 1,
@@ -17,7 +17,7 @@ namespace database::players
 		mode_count
 	};
 
-	enum sneak_status
+	enum sneak_status : std::uint32_t
 	{
 		status_none = 0,
 		status_menu = 1,

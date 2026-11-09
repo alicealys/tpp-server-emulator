@@ -1,0 +1,1222 @@
+{
+    "resource_multiplier": 1.0,
+    "staff_multiplier": 1.0,
+    "tiers": [
+        {
+            "rate": 300,
+            "threshold": 5,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.25,
+                0.17,
+                0.30,
+                0.19,
+                0.09,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 400,
+            "threshold": 12,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.21,
+                0.16,
+                0.30,
+                0.21,
+                0.12,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 500,
+            "threshold": 19,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.26,
+                0.14,
+                0.30,
+                0.19,
+                0.11,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 600,
+            "threshold": 21,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.22,
+                0.16,
+                0.32,
+                0.18,
+                0.12,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 700,
+            "threshold": 25,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.17,
+                0.17,
+                0.33,
+                0.21,
+                0.12,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 800,
+            "threshold": 28,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.16,
+                0.19,
+                0.32,
+                0.22,
+                0.11,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 900,
+            "threshold": 36,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.20,
+                0.17,
+                0.33,
+                0.20,
+                0.10,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 1000,
+            "threshold": 39,
+            "min_build": 0,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.23,
+                0.17,
+                0.31,
+                0.21,
+                0.08,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 1100,
+            "threshold": 100,
+            "min_build": 0,
+            "max_build": 2,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.17,
+                0.18,
+                0.32,
+                0.21,
+                0.12,
+                0.00,
+                0.00
+            ]
+        },
+        {
+            "rate": 1200,
+            "threshold": 56,
+            "min_build": 3,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.15,
+                0.17,
+                0.28,
+                0.37,
+                0.02,
+                0.01
+            ]
+        },
+        {
+            "rate": 1400,
+            "threshold": 71,
+            "min_build": 3,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.09,
+                0.17,
+                0.29,
+                0.42,
+                0.02,
+                0.01
+            ]
+        },
+        {
+            "rate": 1600,
+            "threshold": 86,
+            "min_build": 3,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.18,
+                0.16,
+                0.27,
+                0.36,
+                0.02,
+                0.01
+            ]
+        },
+        {
+            "rate": 2000,
+            "threshold": 100,
+            "min_build": 3,
+            "max_build": 4,
+            "staff_ranks": [
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.12,
+                0.17,
+                0.27,
+                0.41,
+                0.02,
+                0.01
+            ]
+        }
+    ],
+    "clusters": [
+        {
+            "name": "CLUSTER_CATEGORY_COMMAND",
+            "highlight": ["gmp", "staff", "biotic", "tarragon"],
+            "staff": {
+                "sections": [1, 2, 3, 4, 5, 6],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [5, 40],
+                        "variance": [0.03, 15]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [2.7, -65],
+                        "variance": [0.03, 80]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [0.6, 10],
+                        "variance": [0.02, 30]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [5, -15],
+                        "variance": [0.05, 50]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [5, -45],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [0.8, 30],
+                        "variance": [0.05, 45]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [0.35, 50],
+                        "variance": [0.05, 50]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [0.4, 10],
+                        "variance": [0.04, 30]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [0.8, -10],
+                        "variance": [0.05, 45]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [0.8, 10],
+                        "variance": [0.06, 50]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [0.4, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CLUSTER_CATEGORY_COMBAT",
+            "highlight": [1, 2, 12, 24],
+            "staff": {
+                "sections": [1],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [12.7, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [4.3, 0],
+                        "variance": [0.04, 60]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [1.4, 0],
+                        "variance": [0.03, 30]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [5.2, 0],
+                        "variance": [0.04, 50]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [5.1, 0],
+                        "variance": [0.05, 75]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [1.5, 10],
+                        "variance": [0.05, 70]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [0.3, 0],
+                        "variance": [0, 0]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CLUSTER_CATEGORY_DEVELOP",
+            "highlight": [1, 2, 14, 21],
+            "staff": {
+                "sections": [2],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [4, 15],
+                        "variance": [0.03, 85]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [5, -45],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [5.3, 15],
+                        "variance": [0.02, 35]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [4.1, 10],
+                        "variance": [0.04, 65]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [4, -40],
+                        "variance": [0.05, 120]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [2.5, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [2.4, -20],
+                        "variance": [0.04, 110]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CLUSTER_CATEGORY_SUPPORT",
+            "highlight": [1, 2, 13, 15],
+            "staff": {
+                "sections": [4],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [4.4, -40],
+                        "variance": [0.02, 35]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [1.5, -25],
+                        "variance": [0.03, 30]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [0.3, 20],
+                        "variance": [0.01, 25]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [17.9, 5],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [4.4, 60],
+                        "variance": [0.05, 90]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [0.65, -55],
+                        "variance": [0.05, 55]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [0.3, 30],
+                        "variance": [0.04, 45]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [0.3, 10],
+                        "variance": [0.03, 30]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [0.6, -50],
+                        "variance": [0.03, 30]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [0.6, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [0.3, -10],
+                        "variance": [0.02, 25]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CLUSTER_CATEGORY_MEDICAL",
+            "highlight": [1, 2, 19, 20],
+            "staff": {
+                "sections": [6],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [0.6, -70],
+                        "variance": [0.05, 95]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [2.1, -140],
+                        "variance": [0.1, 220]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [2.15, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [1, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [0.6, -30],
+                        "variance": [0.02, 40]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [0.5, 30],
+                        "variance": [0.05, 70]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [2.1, -120],
+                        "variance": [0.05, 120]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [1, -30],
+                        "variance": [0.05, 45]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CLUSTER_CATEGORY_SPY",
+            "highlight": [1, 2, 17, 18],
+            "staff": {
+                "sections": [5],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [1.9, 10],
+                        "variance": [0.02, 35]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [0.75, -50],
+                        "variance": [0.02, 40]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [0.5, -10],
+                        "variance": [0.03, 30]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [2.1, 50],
+                        "variance": [0.05, 60]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [1.9, -50],
+                        "variance": [0.05, 75]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [2.8, -10],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [1.3, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [1.3, -80],
+                        "variance": [0.05, 110]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [0.15, -20],
+                        "variance": [0.02, 25]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CLUSTER_CATEGORY_BASE_DEV",
+            "highlight": [1, 2, 14, 21],
+            "staff": {
+                "sections": [3],
+                "count": {
+                    "step": 1,
+                    "base": [0.025, 0],
+                    "variance": [0, 0]
+                }
+            },
+            "resources": [
+                {
+                    "name": "gmp",
+                    "type": 1,
+                    "value": {
+                        "step": 1000,
+                        "base": [2150, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "common",
+                    "type": 12,
+                    "value": {
+                        "step": 5,
+                        "base": [7.5, -50],
+                        "variance": [0.01, 10]
+                    }
+                },
+                {
+                    "name": "minor",
+                    "type": 13,
+                    "value": {
+                        "step": 5,
+                        "base": [15.9, 45],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "precious",
+                    "type": 14,
+                    "value": {
+                        "step": 5,
+                        "base": [1.4, -40],
+                        "variance": [0.02, 55]
+                    }
+                },
+                {
+                    "name": "fuel",
+                    "type": 15,
+                    "value": {
+                        "step": 5,
+                        "base": [7.5, 65],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "biotic",
+                    "type": 16,
+                    "value": {
+                        "step": 5,
+                        "base": [7.6, -45],
+                        "variance": [0.05, 55]
+                    }
+                },
+                {
+                    "name": "golden_crescent",
+                    "type": 17,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "african_peach",
+                    "type": 18,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_p",
+                    "type": 19,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "digitalis_l",
+                    "type": 20,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "black_carrot",
+                    "type": 21,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "wormwood",
+                    "type": 22,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "tarragon",
+                    "type": 23,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                },
+                {
+                    "name": "haoma",
+                    "type": 24,
+                    "value": {
+                        "step": 10,
+                        "base": [0, 0],
+                        "variance": [0, 0]
+                    }
+                }
+            ]
+        }
+    ]
+}
