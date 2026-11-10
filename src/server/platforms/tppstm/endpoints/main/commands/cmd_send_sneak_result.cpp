@@ -393,7 +393,7 @@ namespace emulator::tpp
 	void cmd_send_sneak_result::handle_rewards(const database::players::player& player,
 		const param_t& param, cmd_send_sneak_result::context_t& context, nlohmann::json& rewards_j)
 	{
-		if (!context.active_sneak->is_sneak() || context.active_sneak->get_mode() != database::players::mode_actual)
+		if (!context.active_sneak->is_sneak() || context.active_sneak->get_mode() != database::players::mode_actual || !context.is_win)
 		{
 			return;
 		}
