@@ -246,22 +246,12 @@ namespace emulator::tpp
 			context.attacker_data->get_prisoner_array(attacker_prison);
 
 			auto modified_owner_staff = false;
-			if (!param.capture_soldier_id.empty())
-			{
-				auto capture_soldier_id = make_soldier_map(param.capture_soldier_id);
-				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
-					capture_soldier_id, soldier_capture, context.event_data.capture_staff_count);
-			}
 
 			if (!param.kill_soldier_id.empty())
 			{
 				auto kill_soldier_id = make_soldier_map(param.kill_soldier_id);
-				if (modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
-					kill_soldier_id, soldier_kill, context.event_data.kill_staff_count))
-				{
-					modified_owner_staff = true;
-					database::player_data::set_prison_bin(context.attacker_data->get_player_id(), attacker_prison);
-				}
+				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
+					kill_soldier_id, soldier_kill, context.event_data.kill_staff_count);
 			}
 
 			if (!param.injure_soldier_id.empty())
@@ -269,6 +259,17 @@ namespace emulator::tpp
 				auto injury_staff_count = make_soldier_map(param.injure_soldier_id);
 				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
 					injury_staff_count, soldier_injure, context.event_data.injury_staff_count);
+			}
+
+			if (!param.capture_soldier_id.empty())
+			{
+				auto capture_soldier_id = make_soldier_map(param.capture_soldier_id);
+				if (modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
+					capture_soldier_id, soldier_capture, context.event_data.capture_staff_count))
+				{
+					modified_owner_staff = true;
+					database::player_data::set_prison_bin(context.attacker_data->get_player_id(), attacker_prison);
+				}
 			}
 
 			if (context.is_win && recover_captured_soldiers(context.attacker_data->get_player_id(), attacker_staff, owner_prison))
