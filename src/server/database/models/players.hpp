@@ -274,6 +274,8 @@ namespace database::players
 			return this->is_security_challenge_;
 		}
 
+		std::int32_t get_game_sneak_mode() const;
+
 	private:
 		sneak_mode mode_;
 		sneak_status status_;
@@ -315,6 +317,7 @@ namespace database::players
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,
 		const std::uint32_t alt_mode = mode_invalid, bool is_sneak = true, bool in_game_only = false);
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, bool is_sneak = true, bool in_game_only = false);
+	std::optional<sneak_info> find_active_sneak_to_supporting(const std::uint64_t player_id, bool is_sneak = true, bool in_game_only = false);
 	std::optional<sneak_info> find_active_sneak_from_player(const std::uint64_t player_id);
 	std::optional<sneak_info> get_active_sneak(const std::uint64_t fob_id);
 

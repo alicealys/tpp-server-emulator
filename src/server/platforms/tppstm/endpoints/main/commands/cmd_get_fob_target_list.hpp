@@ -14,6 +14,7 @@ namespace emulator::tpp
 			const std::uint32_t limit);
 
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
+		bool needs_player() override;
 
 		template <typename T, typename... Args>
 		void register_handler(const std::string& name, Args&&... args)

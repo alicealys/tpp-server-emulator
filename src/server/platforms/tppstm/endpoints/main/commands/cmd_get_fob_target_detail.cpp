@@ -15,7 +15,6 @@ namespace emulator::tpp
 	nlohmann::json cmd_get_fob_target_detail::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "NOERR";
 
 		if (!player.has_value())
 		{
@@ -200,10 +199,10 @@ namespace emulator::tpp
 			if (is_actual)
 			{
 				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
-				//if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
-				//{
-				//	return error(ERR_SNEAK_RESTRICTION);
-				//}
+				if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
+				{
+					return error(ERR_SNEAK_RESTRICTION);
+				}
 			}
 
 			const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
@@ -223,8 +222,8 @@ namespace emulator::tpp
 			}
 			else
 			{
-				const auto active_sneak = database::players::get_active_sneak(mother_base_id);
-				if (!active_sneak.has_value())
+				const auto active_sneak = database::players::find_active_sneak(owner->get_id(), mode);
+				if (!active_sneak.has_value() || active_sneak->get_fob_id() != fob->get_id())
 				{
 					return error(ERR_DATABASE);
 				}

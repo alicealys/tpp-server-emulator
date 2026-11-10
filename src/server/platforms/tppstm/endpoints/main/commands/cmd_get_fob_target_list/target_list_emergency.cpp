@@ -12,7 +12,7 @@ namespace emulator::tpp
 	{
 		target_list_t targets;
 
-		const auto search_intruder = [&](const std::uint64_t owner_id)
+		const auto search_intruder = [&](const std::uint64_t owner_id, const bool follow)
 		{
 			const auto active_sneak = database::players::find_active_sneak(owner_id, true, true);
 			if (!active_sneak.has_value())
@@ -32,13 +32,14 @@ namespace emulator::tpp
 			for (auto i = 0ull; i < fob_list.size(); i++)
 			{
 				auto& fob = fob_list[i];
-				target.extra_data["mother_base_param"][i + 1]["area_id"] = 0;
-				target.extra_data["mother_base_param"][i + 1]["construct_param"] = fob.get_construct_param().packed;
-				target.extra_data["mother_base_param"][i + 1]["fob_index"] = fob.get_index();
-				target.extra_data["mother_base_param"][i + 1]["mother_base_id"] = fob.get_id();
-				target.extra_data["mother_base_param"][i + 1]["platform_count"] = fob.get_platform_count();
-				target.extra_data["mother_base_param"][i + 1]["price"] = 0;
-				target.extra_data["mother_base_param"][i + 1]["security_rank"] = fob.get_security_rank();
+				auto& param_j = target.extra_data["mother_base_param"][i + 1];
+				param_j["area_id"] = 0;
+				param_j["construct_param"] = fob.get_construct_param().packed;
+				param_j["fob_index"] = fob.get_index();
+				param_j["mother_base_id"] = fob.get_id();
+				param_j["platform_count"] = fob.get_platform_count();
+				param_j["price"] = 0;
+				param_j["security_rank"] = fob.get_security_rank();
 
 				if (i == 0)
 				{
@@ -55,26 +56,30 @@ namespace emulator::tpp
 			attacker_data->get_emblem(emblem);
 
 			emblem.to_json(target.extra_data["attacker_emblem"]);
-			target.extra_data["attacker_espionage"]["win"] = attacker_record->get_sneak_win();
-			target.extra_data["attacker_espionage"]["lose"] = attacker_record->get_sneak_lose();
-			target.extra_data["attacker_espionage"]["score"] = attacker_record->get_fob_point();
-			target.extra_data["attacker_espionage"]["section"] = 0;
+			auto& attacker_espionage_j = target.extra_data["attacker_espionage"];
+			attacker_espionage_j["win"] = attacker_record->get_sneak_win();
+			attacker_espionage_j["lose"] = attacker_record->get_sneak_lose();
+			attacker_espionage_j["score"] = attacker_record->get_fob_point();
+			attacker_espionage_j["section"] = 0;
 
-			target.extra_data["attacker_info"]["player_id"] = attacker->get_id();
-			target.extra_data["attacker_info"]["player_name"] = std::format("{}_player01", attacker->get_account_id());
-			target.extra_data["attacker_info"]["xuid"] = attacker->get_id();
+			auto& attacker_info_j = target.extra_data["attacker_info"];
+			attacker_info_j["player_id"] = attacker->get_id();
+			attacker_info_j["player_name"] = std::format("{}_player01", attacker->get_account_id());
+			attacker_info_j["xuid"] = attacker->get_id();
 
+			target.extra_data["follow"] = std::uint8_t(follow);
+			target.extra_data["sneak_mode"] = active_sneak->get_game_sneak_mode();
 			target.extra_data["attacker_sneak_rank_grade"] = attacker_record->get_fob_grade();
 
 			targets.emplace_back(target);
 		};
 
-		search_intruder(player.get_id());
+		search_intruder(player.get_id(), false);
 
 		const auto follows = database::player_follows::get_follows(player.get_id());
 		for (const auto& follow_id : follows)
 		{
-			search_intruder(follow_id);
+			search_intruder(follow_id, true);
 		}
 
 		return targets;

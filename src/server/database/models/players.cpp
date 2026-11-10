@@ -2,6 +2,7 @@
 
 #include "players.hpp"
 #include "player_records.hpp"
+#include "player_follows.hpp"
 #include "../auth.hpp"
 
 #include <utils/cryptography.hpp>
@@ -436,6 +437,12 @@ namespace database::players
 							 player::table.current_sneak_is_sneak = false)
 								.where(player::table.id == player_id)
 					);
+
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player::table)
+						.set(player::table.current_lock = 0)
+							.where(player::table.current_lock == player_id)
+					);
 			});
 		}
 
@@ -484,6 +491,40 @@ namespace database::players
 							.from(player::table)
 								.where((player::table.current_sneak_player == owner_id &&
 									   player::table.current_sneak_is_sneak == is_sneak) && IS_ACTIVE_EXPR)
+					);
+		
+				if (results.empty())
+				{
+					return {};
+				}
+
+				sneak_info info(results.front());
+
+				if (in_game_only && !is_sneak_in_game(info))
+				{
+					return {};
+				}
+
+				return {info};
+			});
+		}
+			
+		template <database_type_t Type>
+		std::optional<sneak_info> find_active_sneak_to_supporting(const std::uint64_t player_id, bool is_sneak, bool in_game_only)
+		{
+			return database::access<std::optional<sneak_info>>([&](database::database_t& db)
+				-> std::optional<sneak_info>
+			{
+				auto supporting = sqlpp::select(player_follows::player_follow::table.to_player_id)
+					.from(player_follows::player_follow::table)
+						.where(player_follows::player_follow::table.player_id == player_id);
+
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::all_of(player::table))
+							.from(player::table)
+								.where(player::table.current_sneak_player.in(supporting) &&
+									   player::table.current_sneak_is_sneak == is_sneak && IS_ACTIVE_EXPR)
 					);
 		
 				if (results.empty())
@@ -727,6 +768,23 @@ namespace database::players
 		}
 	}
 
+	std::int32_t sneak_info::get_game_sneak_mode() const
+	{
+		switch (this->mode_)
+		{
+		case mode_none:
+			return -1;
+		case mode_actual:
+			return 0;
+		case mode_sham:
+			return 1;
+		case mode_visit:
+			return 2;
+		}
+
+		return -1;
+	}
+
 	std::optional<player> find(const std::uint64_t id)
 	{
 		RUN_IMPL(impl::find, id);
@@ -809,6 +867,11 @@ namespace database::players
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, bool is_sneak, bool in_game_only)
 	{
 		RUN_IMPL(impl::find_active_sneak_any, owner_id, is_sneak, in_game_only);
+	}
+
+	std::optional<sneak_info> find_active_sneak_to_supporting(const std::uint64_t owner_id, bool is_sneak, bool in_game_only)
+	{
+		RUN_IMPL(impl::find_active_sneak_to_supporting, owner_id, is_sneak, in_game_only);
 	}
 
 	std::optional<sneak_info> find_active_sneak_from_player(const std::uint64_t player_id)
