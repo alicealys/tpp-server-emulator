@@ -537,9 +537,17 @@ namespace database::sneak_results
 		data["wormwood"] = this->wormwood;
 		data["rate"] = this->rate;
 		data["section"] = this->section;
-		data["staff_type"] = this->section + 1;
 		data["staff_rank"] = this->staff_rank;
 		data["staff_count"] = this->staff_rank.size();
+
+		if (this->section != 0)
+		{
+			data["staff_type"] = this->section + 1;
+		}
+		else
+		{
+			data["staff_type"] = 0;
+		}
 	}
 
 	void sneak_reward_previews_t::to_json(nlohmann::json& data) const
@@ -881,20 +889,6 @@ namespace database::sneak_results
 			load_sneak_reward_settings();
 
 			database.run_query("mgstpp.sneak_results.create");
-
-			game::fob_cluster_param_single_t cluster_param{};
-			sneak_result_rewards_t info{};
-			std::vector<game::reward_t> rewards;
-			cluster_param.build.fields.platform_count = 1;
-			cluster_param.cluster_security.fields.level = 1;
-			generate_sneak_rewards(cluster_param, 1, info, rewards);
-			info.set_rewards(rewards);
-
-			nlohmann::json data;
-			info.to_json(data);
-
-			const auto dump = data.dump(4);
-			printf("%s\n", dump.data());
 		}
 	};
 }

@@ -393,8 +393,12 @@ namespace emulator::tpp
 	void cmd_send_sneak_result::handle_rewards(const database::players::player& player,
 		const param_t& param, cmd_send_sneak_result::context_t& context, nlohmann::json& rewards_j)
 	{
-		if (!context.active_sneak->is_sneak() || context.active_sneak->get_mode() != database::players::mode_actual || !context.is_win)
+		database::sneak_results::sneak_result_rewards_t reward_info{};
+
+		if (!context.active_sneak->is_sneak() || context.active_sneak->get_mode() != database::players::mode_actual || 
+			!context.is_win || context.active_sneak->get_owner_id() == player.get_id())
 		{
+			reward_info.to_json(rewards_j);
 			return;
 		}
 
@@ -403,7 +407,6 @@ namespace emulator::tpp
 		const auto cluster_type = game::cluster_index_map[platform];
 		const auto cluster = clusters.param[cluster_type];
 
-		database::sneak_results::sneak_result_rewards_t reward_info{};
 		std::vector<game::reward_t> rewards;
 		std::vector<game::reward_t> result_rewards;
 		database::sneak_results::generate_sneak_rewards(cluster, cluster_type, reward_info, rewards);
@@ -417,17 +420,12 @@ namespace emulator::tpp
 		const param_t& param, cmd_send_sneak_result::context_t& context)
 	{
 		context.active_sneak = database::players::find_active_sneak_from_player(player.get_id());
-		if (!context.active_sneak.has_value())
+		if (!context.active_sneak.has_value() || context.active_sneak->get_mode() != context.mode)
 		{
 			return false;
 		}
 
-		if (context.active_sneak->get_mode() != context.mode)
-		{
-			return false;
-		}
-
-		if (context.active_sneak->get_mode() != database::players::mode_actual)
+		if (context.active_sneak->get_mode() != database::players::mode_actual || context.active_sneak->get_owner_id() == player.get_id())
 		{
 			return true;
 		}
