@@ -25,6 +25,15 @@ namespace emulator::tpp
 		result["kill_count"] = 0;
 		result["sneak_mode"] = -1;
 
+		auto& record_j = result["record"];
+		record_j["defense"]["win"] = stats->get_defense_win();
+		record_j["defense"]["lose"] = stats->get_defense_lose();
+		record_j["insurance"] = 0;
+		record_j["score"] = stats->get_fob_point();
+		record_j["shield_date"] = stats->get_shield_date();
+		record_j["sneak"]["win"] = stats->get_sneak_win();
+		record_j["sneak"]["lose"] = stats->get_sneak_lose();
+
 		const auto set_sneak = [&](const database::players::sneak_info& sneak, const bool is_support)
 		{
 			const auto fob = database::fobs::get_fob(sneak.get_fob_id());
@@ -46,17 +55,6 @@ namespace emulator::tpp
 			set_sneak(support_sneak.value(), false);
 			return result;
 		}
-
-		const auto active_sneak = database::players::find_active_sneak(player->get_id(), true, true);
-
-		auto& record_j = result["record"];
-		record_j["defense"]["win"] = stats->get_defense_win();
-		record_j["defense"]["lose"] = stats->get_defense_lose();
-		record_j["insurance"] = 0;
-		record_j["score"] = stats->get_fob_point();
-		record_j["shield_date"] = stats->get_shield_date();
-		record_j["sneak"]["win"] = stats->get_sneak_win();
-		record_j["sneak"]["lose"] = stats->get_sneak_lose();
 
 		return result;
 	}
