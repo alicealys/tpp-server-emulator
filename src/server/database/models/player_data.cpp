@@ -46,12 +46,12 @@ namespace database::player_data
 			}
 
 			++info.staff_count;
-			info.staff_counts[staff->fields.header.peak_rank]++;
+			info.staff_counts.value[staff->fields.header.peak_rank]++;
 
 			if (staff->fields.status_sync.designation >= game::des_units_start &&
 				staff->fields.status_sync.designation < game::des_units_end)
 			{
-				info.unit_counts[staff->fields.status_sync.designation - game::des_units_start]++;
+				info.unit_counts.value[staff->fields.status_sync.designation - game::des_units_start]++;
 			}
 
 			utils::encoding::encode_as_hex_single(&data[i], serialized_data);
@@ -110,6 +110,85 @@ namespace database::player_data
 		return {staff_array};
 	}
 
+	std::uint32_t player_data::get_unit_level(const std::uint32_t unit) const
+	{
+		if (unit >= game::unit_count)
+		{
+			return 0;
+		}
+
+		return this->unit_levels.value[unit];
+	}
+
+	std::uint32_t player_data::get_unit_count(const std::uint32_t unit) const
+	{
+		if (unit >= game::unit_count)
+		{
+			return 0;
+		}
+
+		return this->unit_counts.value[unit];
+	}
+
+	std::uint32_t player_data::get_staff_count() const
+	{
+		return std::min(this->staff_count_, game::max_staff_count);
+	}
+
+	std::uint32_t player_data::get_usable_staff_count() const
+	{
+		auto total = 0u;
+
+		for (auto i = 0u; i < game::rank_count; i++)
+		{
+			total += this->staff_counts.value[i];
+		}
+
+		return total;
+	}
+
+	std::uint32_t player_data::get_staff_count_of_rank(const std::uint32_t rank) const
+	{
+		return this->staff_counts.value[rank];
+	}
+
+	void player_data::get_unit_levels(unit_levels_t& out) const
+	{
+		std::memcpy(&out, &this->unit_levels, sizeof(unit_levels_t));
+	}
+
+	void player_data::get_unit_counts(unit_counts_t& out) const
+	{
+		std::memcpy(&out, &this->unit_counts, sizeof(unit_counts_t));
+	}
+
+	void player_data::get_motherbase(game::motherbase_t& out) const
+	{
+		std::memcpy(&out, &this->motherbase, sizeof(game::motherbase_t));
+	}
+
+	void player_data::get_emblem(game::emblem_t& out) const
+	{
+		std::memcpy(&out, &this->emblem, sizeof(game::emblem_t));
+	}
+
+	GET_FIELD_C(player_data, std::uint64_t, player_id);
+	GET_FIELD_C(player_data, std::uint32_t, nuke_count);
+	GET_FIELD_C(player_data, std::uint32_t, nuke_destruct_count);
+	GET_FIELD_C(player_data, std::uint32_t, mb_coin);
+	GET_FIELD_C(player_data, std::int32_t, local_gmp);
+	GET_FIELD_C(player_data, std::int32_t, server_gmp);
+	GET_FIELD_C(player_data, std::int32_t, loadout_gmp);
+	GET_FIELD_C(player_data, std::int32_t, insurance_gmp);
+	GET_FIELD_C(player_data, std::int32_t, injury_gmp);
+	GET_FIELD_C(player_data, std::uint32_t, cumulative_grade);
+	GET_FIELD_C(player_data, std::uint32_t, league_attack_item);
+	GET_FIELD_C(player_data, std::uint32_t, league_defense_item);
+	GET_FIELD_C(player_data, std::uint32_t, client_resource_version);
+	GET_FIELD_C(player_data, std::uint32_t, client_staff_version);
+	GET_FIELD_C(player_data, std::uint32_t, server_resource_version);
+	GET_FIELD_C(player_data, std::uint32_t, server_staff_version);
+	GET_FIELD_C(player_data, std::chrono::seconds, last_sync);
 	GET_FIELD_C(player_data, std::chrono::seconds, last_resource_processing);
 	GET_FIELD_C(player_data, std::chrono::seconds, last_resource_mining);
 
@@ -164,7 +243,9 @@ namespace database::player_data
 								  player_data::table.client_resource_version,
 								  player_data::table.client_staff_version,
 								  player_data::table.server_resource_version,
-								  player_data::table.server_staff_version)
+								  player_data::table.server_staff_version,
+								  player_data::table.emblem,
+								  player_data::table.motherbase)
 							.from(player_data::table)
 								.where(player_data::table.player_id == player_id));
 
@@ -181,8 +262,6 @@ namespace database::player_data
 		void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info)
 		{
 			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
-			const auto staff_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.staff_counts));
-			const auto unit_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.unit_counts));
 
 			database::access([&](database::database_t& db)
 			{
@@ -190,8 +269,8 @@ namespace database::player_data
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_bin = staff_bin, 
 							 player_data::table.staff_count = info.staff_count,
-							 player_data::table.staff_counts = staff_counts_bin,
-							 player_data::table.unit_counts = unit_counts_bin,
+							 player_data::table.staff_counts = info.staff_counts.serialize(),
+							 player_data::table.unit_counts = info.unit_counts.serialize(),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id)
 					);
@@ -202,9 +281,6 @@ namespace database::player_data
 		void set_staff2(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& unit_levels)
 		{
 			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
-			const auto staff_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.staff_counts));
-			const auto unit_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.unit_counts));
-			const auto unit_levels_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(unit_levels));
 
 			database::access([&](database::database_t& db)
 			{
@@ -212,9 +288,9 @@ namespace database::player_data
 					sqlpp::update(player_data::table)
 						.set(player_data::table.staff_bin = staff_bin, 
 							 player_data::table.staff_count = info.staff_count,
-							 player_data::table.staff_counts = staff_counts_bin,
-							 player_data::table.unit_counts = unit_counts_bin,
-							 player_data::table.unit_levels = unit_levels_bin,
+							 player_data::table.staff_counts = info.staff_counts.serialize(),
+							 player_data::table.unit_counts = info.unit_counts.serialize(),
+							 player_data::table.unit_levels = unit_levels.serialize(),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id)
 					);
@@ -268,8 +344,8 @@ namespace database::player_data
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(levels)),
-							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(counts)),
+						.set(player_data::table.unit_levels = levels.serialize(),
+							 player_data::table.unit_counts = counts.serialize(),
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
 								.where(player_data::table.player_id == player_id
 					));
@@ -357,7 +433,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.motherbase = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(motherbase)))
+							 player_data::table.motherbase = utils::encoding::encode_base64(motherbase))
 								.where(player_data::table.player_id == player_id)
 					);
 			});
@@ -371,7 +447,7 @@ namespace database::player_data
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
 						.set(player_data::table.player_id = player_id,
-							 player_data::table.emblem = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(emblem)))
+							 player_data::table.emblem = utils::encoding::encode_base64(emblem))
 								.where(player_data::table.player_id == player_id)
 					);
 			});
@@ -709,16 +785,6 @@ namespace database::player_data
 						.where(player_data::table.player_id == player_id));
 			});
 		}
-	}
-
-	void player_data::get_emblem(game::emblem_t& emblem) const
-	{
-		RUN_IMPL(impl::get_emblem, this->player_id_, emblem);
-	}
-
-	void player_data::get_motherbase(game::motherbase_t& motherbase) const
-	{
-		RUN_IMPL(impl::get_motherbase, this->player_id_, motherbase);
 	}
 
 	bool player_data::get_resource_arrays(resource_arrays_t& resource_arrays) const

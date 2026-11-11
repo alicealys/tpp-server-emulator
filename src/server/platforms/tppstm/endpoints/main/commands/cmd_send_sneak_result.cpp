@@ -147,7 +147,7 @@ namespace emulator::tpp
 				}
 			}
 
-			if (unit_counts[game::unit_security] < min_guards)
+			if (unit_counts.value[game::unit_security] < min_guards)
 			{
 				database::players::set_security_challenge(player_data.get_player_id(), false);
 			}

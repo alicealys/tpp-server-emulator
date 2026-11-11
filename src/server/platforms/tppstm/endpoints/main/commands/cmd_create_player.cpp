@@ -24,7 +24,7 @@ namespace emulator::tpp
 			{
 				for (auto o = 0; o < game::RESOURCE_TYPE_COUNT; o++)
 				{
-					if (o == game::NUCLEAR_WEAPON)
+					if (o == game::NUCLEAR_WEAPON || o == game::NUCLEAR_WASTE)
 					{
 						continue;
 					}

@@ -90,7 +90,7 @@ namespace database::pf_league
 					continue;
 				}
 
-				const auto value_f = static_cast<float>(in_data.unit_levels[i]);
+				const auto value_f = static_cast<float>(in_data.unit_levels.value[i]);
 				total += scalar * value_f;
 			}
 			return static_cast<std::uint32_t>(total);
@@ -203,7 +203,7 @@ namespace database::pf_league
 
 		/* offensive capability */
 
-		out_params.offensive_capability.elements[offensive_capability_combat] = exp_value(3.f, in_data.unit_levels[game::unit_combat]);
+		out_params.offensive_capability.elements[offensive_capability_combat] = exp_value(3.f, in_data.unit_levels.value[game::unit_combat]);
 		out_params.offensive_capability.elements[offensive_capability_grade] = linear_value(38.f, in_data.cumulative_grade);
 		out_params.offensive_capability.elements[offensive_capability_nuclear] = linear_value(30000.f, in_data.resources[game::processed_server][game::NUCLEAR_WEAPON]);
 		out_params.offensive_capability.elements[offensive_capability_total_units] = total_unit_levels(6.f, game::unit_combat, game::unit_combat);
@@ -239,11 +239,11 @@ namespace database::pf_league
 		/* defensive capability */
 
 		out_params.defensive_capability.elements[defensive_capability_total_defense] = linear_value(59.f, out_params.security_level);
-		out_params.defensive_capability.elements[defensive_capability_security] = exp_value(3.f, in_data.unit_levels[game::unit_security]);
+		out_params.defensive_capability.elements[defensive_capability_security] = exp_value(3.f, in_data.unit_levels.value[game::unit_security]);
 		out_params.defensive_capability.elements[defensive_capability_platforms] = linear_value(268.f, total_platforms);
 		out_params.defensive_capability.elements[defensive_capability_nuclear] = linear_value(15000.f, in_data.resources[game::processed_server][game::NUCLEAR_WEAPON]);
 		out_params.defensive_capability.elements[defensive_capability_total_units] = total_unit_levels(6.f, game::unit_security, game::unit_support);
-		out_params.defensive_capability.elements[defensive_capability_support] = exp_value(1.5f, in_data.unit_levels[game::des_support]);
+		out_params.defensive_capability.elements[defensive_capability_support] = exp_value(1.5f, in_data.unit_levels.value[game::des_support]);
 		out_params.defensive_capability.elements[defensive_capability_emplacements] = resource_capped_value(50.f, 51000u, game::ANTI_AIR_GATLING_GUN_EAST, game::ANTI_AIR_GATLING_GUN_WEST);
 		out_params.defensive_capability.elements[defensive_capability_mortars] = resource_capped_value(10.f, 19000u, game::MORTAR_NORMAL, game::MORTAR_NORMAL);
 		out_params.defensive_capability.elements[defensive_capability_machine_guns] = resource_capped_value(10.f, 19000u, game::EMPLACEMENT_GUN_EAST, game::EMPLACEMENT_GUN_WEST);
@@ -300,14 +300,14 @@ namespace database::pf_league
 		this->attacker_nuclear_ = attacker_data.resources[game::processed_server][game::NUCLEAR_WEAPON];
 		this->defender_nuclear_ = defender_data.resources[game::processed_server][game::NUCLEAR_WEAPON];
 
-		this->attacker_staff_ = attacker_data.unit_counts[game::unit_combat];
-		this->defender_staff_ = defender_data.unit_counts[game::unit_security];
+		this->attacker_staff_ = attacker_data.unit_counts.value[game::unit_combat];
+		this->defender_staff_ = defender_data.unit_counts.value[game::unit_security];
 
 		this->attacker_grade_ = attacker_data.cumulative_grade;
 		this->defender_security_ = defender_params.security_level;
 
-		this->attacker_level_ = attacker_data.unit_levels[game::unit_combat];
-		this->defender_level_ = defender_data.unit_levels[game::unit_security];
+		this->attacker_level_ = attacker_data.unit_levels.value[game::unit_combat];
+		this->defender_level_ = defender_data.unit_levels.value[game::unit_security];
 	}
 
 	bool calculate_pf_params(const std::uint64_t player_id, player_pf_data_t& pf_data, player_pf_params_t& out_params)

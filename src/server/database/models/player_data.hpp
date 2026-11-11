@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../database.hpp"
+#include "../utils.hpp"
 
 #include "game/game.hpp"
 
@@ -15,12 +16,28 @@
 
 namespace database::player_data
 {
+	struct unit_levels_internal_t
+	{
+		std::uint32_t value[game::unit_count];
+	};
+
+	struct unit_counts_internal_t
+	{
+		std::uint32_t value[game::unit_count];
+	};
+
+	struct staff_counts_internal_t
+	{
+		std::uint32_t value[game::rank_count];
+	};
+
 	using resource_array_t = std::uint32_t[game::RESOURCE_TYPE_COUNT];
 	using resource_arrays_t = resource_array_t[game::resource_array_types_t::count];
 	using staff_array_t = game::staff_t[game::max_staff_count];
-	using unit_levels_t = std::uint32_t[game::unit_count];
-	using unit_counts_t = std::uint32_t[game::unit_count];
-	using staff_counts_t = std::uint32_t[game::rank_count];
+
+	using unit_levels_t = database_struct<unit_levels_internal_t>;
+	using unit_counts_t = database_struct<unit_counts_internal_t>;
+	using staff_counts_t = database_struct<staff_counts_internal_t>;
 
 	constexpr const auto league_item_cap = 10u;
 
@@ -56,7 +73,6 @@ namespace database::player_data
 		DEFINE_FIELD(staff_count, sqlpp::integer_unsigned);
 		DEFINE_FIELD(staff_counts, sqlpp::binary);
 		DEFINE_FIELD(staff_bin, sqlpp::binary);
-		DEFINE_FIELD(prison_bin, sqlpp::binary);
 		DEFINE_FIELD(motherbase, sqlpp::binary);
 		DEFINE_FIELD(emblem, sqlpp::binary);
 		DEFINE_FIELD(local_gmp, sqlpp::integer);
@@ -86,7 +102,6 @@ namespace database::player_data
 			staff_count_field_t, 
 			staff_counts_field_t,
 			staff_bin_field_t, 
-			prison_bin_field_t,
 			local_gmp_field_t, 
 			server_gmp_field_t,
 			motherbase_field_t, 
@@ -111,24 +126,11 @@ namespace database::player_data
 		template <typename ...Args>
 		player_data(const sqlpp::result_row_t<Args...>& row)
 		{
-			const auto unit_counts_str = row.unit_counts.value();
-			const auto unit_levels_str = row.unit_levels.value();
-			const auto staff_counts_str = row.staff_counts.value();
-
-			if (unit_counts_str.size() == sizeof(unit_counts_t))
-			{
-				std::memcpy(this->unit_counts_, unit_counts_str.data(), sizeof(unit_counts_t));
-			}
-
-			if (unit_levels_str.size() == sizeof(unit_levels_t))
-			{
-				std::memcpy(this->unit_levels_, unit_levels_str.data(), sizeof(unit_levels_t));
-			}
-
-			if (staff_counts_str.size() == sizeof(staff_counts_t))
-			{
-				std::memcpy(this->staff_counts_, staff_counts_str.data(), sizeof(staff_counts_t));
-			}
+			this->unit_counts.deserialize(row.unit_counts.value());
+			this->unit_levels.deserialize(row.unit_levels.value());
+			this->staff_counts.deserialize(row.staff_counts.value());
+			this->motherbase.deserialize(row.motherbase.value());
+			this->emblem.deserialize(row.emblem.value());
 
 			this->staff_count_ = static_cast<std::uint32_t>(row.staff_count);
 			this->server_gmp_ = static_cast<std::int32_t>(row.server_gmp);
@@ -144,7 +146,7 @@ namespace database::player_data
 
 			this->mb_coin_ = static_cast<std::uint32_t>(row.mb_coin);
 
-			this->last_sync_ = row.last_sync.value().time_since_epoch();
+			this->last_sync_ = std::chrono::duration_cast<std::chrono::seconds>(row.last_sync.value().time_since_epoch());
 			this->last_resource_processing_ = std::chrono::duration_cast<std::chrono::seconds>(row.last_resource_processing.value().time_since_epoch());
 			this->last_resource_mining_ = std::chrono::duration_cast<std::chrono::seconds>(row.last_resource_mining.value().time_since_epoch());
 
@@ -157,128 +159,14 @@ namespace database::player_data
 			this->nuke_destruct_count_ = static_cast<std::uint32_t>(row.nuke_destruct_count);
 		}
 
-		std::uint64_t get_player_id() const
-		{
-			return this->player_id_;
-		}
+		std::uint32_t get_unit_level(const std::uint32_t unit) const;
+		std::uint32_t get_unit_count(const std::uint32_t unit) const;
+		std::uint32_t get_staff_count() const;
+		std::uint32_t get_usable_staff_count() const;
+		std::uint32_t get_staff_count_of_rank(const std::uint32_t rank) const;
 
-		std::uint32_t get_unit_level(const std::uint32_t unit) const
-		{
-			if (unit >= game::unit_count)
-			{
-				return 0;
-			}
-
-			return this->unit_levels_[unit];
-		}
-
-		void get_unit_levels(unit_levels_t& out) const
-		{
-			std::memcpy(&out, &this->unit_levels_, sizeof(unit_levels_t));
-		}
-
-		std::uint32_t get_unit_count(const std::uint32_t unit) const
-		{
-			if (unit >= game::unit_count)
-			{
-				return 0;
-			}
-
-			return this->unit_counts_[unit];
-		}
-
-		void get_unit_counts(unit_counts_t& out) const
-		{
-			std::memcpy(&out, &this->unit_counts_, sizeof(unit_levels_t));
-		}
-
-		std::uint32_t get_staff_count() const
-		{
-			return std::min(this->staff_count_, game::max_staff_count);
-		}
-
-		std::uint32_t get_usable_staff_count() const
-		{
-			auto total = 0u;
-
-			for (auto i = 0u; i < game::rank_count; i++)
-			{
-				total += this->staff_counts_[i];
-			}
-
-			return total;
-		}
-
-		std::uint32_t get_staff_count_of_rank(const std::uint32_t rank) const
-		{
-			return this->staff_counts_[rank];
-		}
-
-		std::int32_t get_server_gmp() const
-		{
-			return this->server_gmp_;
-		}
-
-		std::int32_t get_local_gmp() const
-		{
-			return this->local_gmp_;
-		}
-
-		std::uint32_t get_cumulative_grade() const
-		{
-			return this->cumulative_grade_;
-		}
-
-		std::uint32_t get_league_attack_item() const
-		{
-			return this->league_attack_item_;
-		}
-
-		std::uint32_t get_league_defense_item() const
-		{
-			return this->league_defense_item_;
-		}
-
-		std::uint32_t get_mb_coin() const
-		{
-			return this->mb_coin_;
-		}
-
-		std::uint32_t get_client_resource_version() const
-		{
-			return this->client_resource_version_;
-		}
-
-		std::uint32_t get_client_staff_version() const
-		{
-			return this->client_staff_version_;
-		}
-
-		std::uint32_t get_server_resource_version() const
-		{
-			return this->server_resource_version_;
-		}
-
-		std::uint32_t get_server_staff_version() const
-		{
-			return this->server_staff_version_;
-		}
-
-		std::chrono::microseconds get_last_sync() const
-		{
-			return this->last_sync_;
-		}
-
-		std::uint32_t get_nuke_count() const
-		{
-			return this->nuke_count_;
-		}
-
-		std::uint32_t get_nuke_destruct_count() const
-		{
-			return this->nuke_destruct_count_;
-		}
-
+		void get_unit_levels(unit_levels_t& out) const;
+		void get_unit_counts(unit_counts_t& out) const;
 		void get_motherbase(game::motherbase_t& mother_base) const;
 		void get_emblem(game::emblem_t& emblem) const;
 
@@ -288,38 +176,35 @@ namespace database::player_data
 		void give_rewards(const std::vector<game::reward_t>& reward, std::vector<game::reward_t>* result_rewards = nullptr) const;
 		void give_reward(const game::reward_t& reward) const;
 
+		GET_FIELD_H(std::uint64_t, player_id);
+		GET_FIELD_H(std::uint32_t, nuke_count);
+		GET_FIELD_H(std::uint32_t, nuke_destruct_count);
+		GET_FIELD_H(std::uint32_t, mb_coin);
+		GET_FIELD_H(std::int32_t, local_gmp);
+		GET_FIELD_H(std::int32_t, server_gmp);
+		GET_FIELD_H(std::int32_t, loadout_gmp);
+		GET_FIELD_H(std::int32_t, insurance_gmp);
+		GET_FIELD_H(std::int32_t, injury_gmp);
+		GET_FIELD_H(std::uint32_t, cumulative_grade);
+		GET_FIELD_H(std::uint32_t, league_attack_item);
+		GET_FIELD_H(std::uint32_t, league_defense_item);
+		GET_FIELD_H(std::uint32_t, client_resource_version);
+		GET_FIELD_H(std::uint32_t, client_staff_version);
+		GET_FIELD_H(std::uint32_t, server_resource_version);
+		GET_FIELD_H(std::uint32_t, server_staff_version);
+		GET_FIELD_H(std::chrono::seconds, last_sync);
 		GET_FIELD_H(std::chrono::seconds, last_resource_processing);
 		GET_FIELD_H(std::chrono::seconds, last_resource_mining);
 
+		unit_levels_t unit_levels{};
+		unit_counts_t unit_counts{};
+		staff_counts_t staff_counts{};
+		database_struct<game::motherbase_t> motherbase{};
+		database_struct<game::emblem_t> emblem{};
+
 	private:
-		std::uint64_t player_id_;
-
-		std::uint32_t nuke_count_;
-		std::uint32_t nuke_destruct_count_;
-
-		unit_levels_t unit_levels_{};
-		unit_counts_t unit_counts_{};
-
-		staff_counts_t staff_counts_{};
 		std::uint32_t staff_count_{};
 
-		std::uint32_t mb_coin_{};
-
-		std::int32_t local_gmp_{};
-		std::int32_t server_gmp_{};
-		std::int32_t loadout_gmp_{};
-		std::int32_t insurance_gmp_{};
-		std::int32_t injury_gmp_{};
-		std::uint32_t cumulative_grade_{};
-		std::uint32_t league_attack_item_{};
-		std::uint32_t league_defense_item_{};
-
-		std::chrono::microseconds last_sync_;
-
-		std::uint32_t client_resource_version_{};
-		std::uint32_t client_staff_version_{};
-		std::uint32_t server_resource_version_{};
-		std::uint32_t server_staff_version_{};
 	};
 
 	void create(const std::uint64_t player_id);

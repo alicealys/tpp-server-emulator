@@ -60,10 +60,6 @@ namespace emulator::tpp
 				return;
 			}
 
-			game::emblem_t emblem{};
-			competitor_data->get_emblem(emblem);
-			competitor_data->get_motherbase(competitor_params.motherbase);
-
 			competitor_params.local_gmp = competitor_data->get_local_gmp();
 			competitor_params.server_gmp = competitor_data->get_server_gmp();
 			competitor_params.cumulative_grade = competitor_data->get_cumulative_grade();
@@ -80,18 +76,18 @@ namespace emulator::tpp
 
 			entry["attack_durability"] = fake_battle.get_attacker_durability();
 			entry["attack_item"] = competitor_data->get_league_attack_item();
-			entry["attack_level"] = competitor_params.unit_levels[game::unit_combat];
+			entry["attack_level"] = competitor_params.unit_levels.value[game::unit_combat];
 			entry["attack_nuclear"] = competitor_data->get_nuke_count();
 			entry["attack_point"] = fake_battle.get_attacker_capability();
-			entry["attack_staff"] = competitor_params.unit_counts[game::unit_combat];
+			entry["attack_staff"] = competitor_params.unit_counts.value[game::unit_combat];
 			entry["conbat_point"] = 0;
 			entry["cumulative_grade"] = competitor_data->get_cumulative_grade();
 			entry["defence_durability"] = fake_battle.get_defender_durability();
 			entry["defence_item"] = competitor_data->get_league_defense_item();
-			entry["defence_level"] = competitor_params.unit_levels[game::unit_security];
+			entry["defence_level"] = competitor_params.unit_levels.value[game::unit_security];
 			entry["defence_nuclear"] = competitor_data->get_nuke_count();
 			entry["defence_point"] = fake_battle.get_defender_capability();
-			entry["defence_staff"] = competitor_params.unit_counts[game::unit_security];
+			entry["defence_staff"] = competitor_params.unit_counts.value[game::unit_security];
 
 			auto security_rank = 0u;
 			for (auto o = 0u; o < competitor_params.fobs.size(); o++)
@@ -115,7 +111,7 @@ namespace emulator::tpp
 			entry["planned_attack_item"] = 0;
 			entry["planned_defence_item"] = 0;
 
-			emblem.to_json(entry["player_detail_record"]["emblem"]);
+			competitor_data->emblem.to_json(entry["player_detail_record"]["emblem"]);
 			entry["player_detail_record"]["enemy"] = 0;
 			entry["player_detail_record"]["espionage"]["lose"] = competitor_record->get_sneak_lose();
 			entry["player_detail_record"]["espionage"]["score"] = competitor_record->get_fob_point();
@@ -130,7 +126,7 @@ namespace emulator::tpp
 			entry["player_detail_record"]["league_rank"]["grade"] = competitor_record->get_league_grade();
 			entry["player_detail_record"]["league_rank"]["rank"] = competitor_record->get_league_rank();
 			entry["player_detail_record"]["league_rank"]["score"] = competitor_record->get_league_point();
-			entry["player_detail_record"]["name_plate_id"] = competitor_params.motherbase.name_plate_id;
+			entry["player_detail_record"]["name_plate_id"] = competitor_data->motherbase.name_plate_id;
 			entry["player_detail_record"]["nuclear"] = competitor_data->get_nuke_count();
 			entry["player_detail_record"]["online"] = 0;
 			entry["player_detail_record"]["sneak_rank"]["grade"] = competitor_record->get_fob_grade();

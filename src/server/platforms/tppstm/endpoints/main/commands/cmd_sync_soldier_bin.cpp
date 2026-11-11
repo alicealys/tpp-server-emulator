@@ -62,12 +62,12 @@ namespace emulator::tpp
 				const auto& key = game::unit_names[i];
 				if (section[key].is_number_integer())
 				{
-					levels[i] = section[key].get<std::uint32_t>();
+					levels.value[i] = section[key].get<std::uint32_t>();
 				}
 
 				if (section_soldier[key].is_number_integer())
 				{
-					counts[i] = section_soldier[key].get<std::uint32_t>();
+					counts.value[i] = section_soldier[key].get<std::uint32_t>();
 				}
 			}
 
@@ -79,7 +79,8 @@ namespace emulator::tpp
 			}
 
 			database::player_data::staff_info_t staff_info{};
-			database::player_data::set_staff(player->get_id(), client_staff_array.value(), staff_info, levels);
+			database::player_data::set_staff(player->get_id(), client_staff_array.value(), staff_info);
+			database::player_data::set_staff_levels(player->get_id(), levels, counts);
 			database::player_data::sync_client_staff_version(player->get_id());
 
 			result["soldier_num"] = staff_info.staff_count;

@@ -89,7 +89,7 @@ namespace database::fob_events
 
 				for (auto i = 0; i < game::unit_count; i++)
 				{
-					unit_levels[i] = section_level[game::unit_names[i]].get<std::uint32_t>();
+					unit_levels.value[i] = section_level[game::unit_names[i]].get<std::uint32_t>();
 				}
 
 				auto total_staff = 0;
@@ -100,7 +100,7 @@ namespace database::fob_events
 					{
 						const auto& unit_name = game::unit_names[o];
 						const auto& staff_count = staff_of_rank_at_unit[unit_name].get<std::uint32_t>();
-						unit_counts[o] += staff_count;
+						unit_counts.value[o] += staff_count;
 						player.staff_resources.staff_count += staff_count;
 
 						for (auto l = 0u; l < staff_count; l++)
@@ -181,6 +181,7 @@ namespace database::fob_events
 
 			database::player_data::staff_info_t staff_info{};
 			database::player_data::set_staff(player.get_id(), event_player.staff_resources.staff_array, staff_info);
+			database::player_data::set_staff_levels(player.get_id(), event_player.staff_resources.unit_levels, event_player.staff_resources.unit_counts);
 
 			database::player_records::find_or_create(player.get_id());
 

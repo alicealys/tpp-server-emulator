@@ -132,9 +132,6 @@ namespace emulator::tpp
 				continue;
 			}
 
-			game::motherbase_t target_motherbase{};
-			target_entry.player_data->get_motherbase(target_motherbase);
-
 			auto& target = result["target_list"][index];
 
 			target["attacker_emblem"]["parts"] = nlohmann::json::array();
@@ -172,13 +169,10 @@ namespace emulator::tpp
 				param_j[idx]["platform_count"] = target_fobs[i].get_platform_count();
 				param_j[idx]["security_rank"] = target_fobs[i].get_security_rank();
 			}
-			
-			game::emblem_t target_emblem{};
-			target_entry.player_data->get_emblem(target_emblem);
 
 			auto& detail_record_j = target["owner_detail_record"];
 
-			target_emblem.to_json(detail_record_j["emblem"]);
+			target_entry.player_data->emblem.to_json(detail_record_j["emblem"]);
 
 			auto& espionage_j = detail_record_j["espionage"];
 			espionage_j["win"] = target_entry.player_record->get_sneak_win();
@@ -199,7 +193,7 @@ namespace emulator::tpp
 			league_rank_j["rank"] = target_entry.player_record->get_league_rank();
 			league_rank_j["score"] = target_entry.player_record->get_league_point();
 
-			detail_record_j["name_plate_id"] = target_motherbase.name_plate_id;
+			detail_record_j["name_plate_id"] = target_entry.player_data->motherbase.name_plate_id;
 			detail_record_j["nuclear"] = target_entry.player_data->get_nuke_count();
 			detail_record_j["online"] = 0;
 
@@ -244,7 +238,7 @@ namespace emulator::tpp
 			owner_fob_record_j["supported_count"] = 0;
 
 			owner_fob_record_j["left_hour"] = 0;
-			owner_fob_record_j["name_plate_id"] = target_motherbase.name_plate_id;
+			owner_fob_record_j["name_plate_id"] = target_entry.player_data->motherbase.name_plate_id;
 			owner_fob_record_j["nuclear"] = target_entry.player_data->get_nuke_count();
 
 			database::player_data::resource_arrays_t target_resources{};

@@ -120,34 +120,6 @@ namespace database::items
 			return false;
 		}
 
-		/*for (auto i = 0; i < game::unit_count; i++)
-		{
-			if (player_data->get_unit_level(i) < this->platform_levels_[i])
-			{
-				return false;
-			}
-		}
-
-		if (this->skill_ == 0)
-		{
-			return true;
-		}
-
-		auto has_skill = this->skill_ == 0;
-		if (!has_skill)
-		{
-			for (auto i = 0u; i < player_data->get_staff_count(); i++)
-			{
-				const auto& staff = staff_array[i];
-				if (staff.fields.header.skill == this->skill_)
-				{
-					has_skill = true;
-					break;
-				}
-			}
-		}
-
-		return has_skill;*/
 		return true;
 	}
 
