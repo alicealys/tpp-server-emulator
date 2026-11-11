@@ -158,6 +158,11 @@ namespace database::pf_league
 
 		for (auto i = 0u; i < game::max_staff_count; i++)
 		{
+			if (in_data.staff[i].fields.status_sync.combat_deployment_team != 0)
+			{
+				continue;
+			}
+
 			const auto top_rank = game::calc_staff_top_rank(in_data.staff[i]);
 			switch (in_data.staff[i].fields.status_sync.designation)
 			{

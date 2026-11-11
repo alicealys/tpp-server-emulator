@@ -5,6 +5,7 @@
 #include "database/models/fobs.hpp"
 #include "database/models/fob_deploy_assists.hpp"
 #include "database/models/fob_events.hpp"
+#include "database/models/fob_prisoners.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/sneak_results.hpp"
@@ -22,14 +23,25 @@ namespace emulator::tpp
 			soldier_capture = 2
 		};
 
-		struct soldier_param_t
+		struct soldier_param_fields_t
 		{
 			std::uint32_t header;
 			std::uint32_t seed;
-			bool valid;
 		};
 
-		using soldier_map_t = std::unordered_map<std::uint32_t, soldier_param_t>;
+		union soldier_param_t
+		{
+			std::uint64_t value;
+			soldier_param_fields_t fields;
+		};
+
+		struct soldier_t
+		{
+			soldier_param_t param;
+			std::uint32_t count;
+		};
+
+		using soldier_map_t = std::unordered_map<std::uint64_t, soldier_t>;
 
 		soldier_map_t make_soldier_map(const std::vector<cmd_send_sneak_result::param_t::soldier_param_t>& list)
 		{
@@ -37,29 +49,25 @@ namespace emulator::tpp
 
 			for (const auto& entry : list)
 			{
-				soldier_param_t param{};
-				param.header = entry.header;
-				param.seed = entry.seed & 0xFFFFF800;
-				param.valid = true;
-				map.insert(std::make_pair(param.seed, param));
+				soldier_t soldier{};
+				soldier.param.fields.header = entry.header;
+				soldier.param.fields.seed = entry.seed & 0xFFFFF800;
+
+				auto& map_entry = map[soldier.param.value];
+				map_entry.param = soldier.param;
+				++map_entry.count;
 			}
 
 			return map;
 		}
 
-		bool modify_staff_array(const std::uint64_t owner_id, database::player_data::staff_array_container& staff_array, 
-			database::player_data::prisoner_array_container& attacker_prison,
-			soldier_map_t& soldier_ids, const soldier_array_action action, std::uint32_t* counts)
+		bool modify_staff_array(const std::uint64_t owner_id, 
+			database::player_data::staff_array_container& staff_array, 
+			std::vector<game::staff_t>& prisoners,
+			soldier_map_t& soldier_ids, const std::size_t soldier_count, const soldier_array_action action, std::uint32_t* counts)
 		{
-			std::int64_t prison_first_free = -1;
-			if (action == soldier_capture)
-			{
-				prison_first_free = attacker_prison.get_first_free();
-			}
-
 			auto result = false;
-			const auto attack_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-			auto soldiers_left = soldier_ids.size();
+			auto soldiers_left = soldier_count;
 
 			for (auto i = 0u; i < game::max_staff_count; i++)
 			{
@@ -69,17 +77,21 @@ namespace emulator::tpp
 				}
 
 				auto staff = &staff_array[i];
-				const auto seed = staff->fields.seed.data & 0xFFFFF800;
-				auto iter = soldier_ids.find(seed);
-				if (iter == soldier_ids.end() || !iter->second.valid)
+
+				soldier_param_t identifier{};
+				identifier.fields.header = staff->fields.packed_header;
+				identifier.fields.seed = staff->fields.seed.data & 0xFFFFF800;
+
+				auto iter = soldier_ids.find(identifier.value);
+				if (iter == soldier_ids.end() || iter->second.count == 0)
 				{
 					continue;
 				}
 
 				soldiers_left--;
-				iter->second.valid = false;
+				iter->second.count--;
 
-				if (staff->fields.status_sync.direct_contract)
+				if (!game::is_usable_staff(*staff))
 				{
 					continue;
 				}
@@ -97,13 +109,7 @@ namespace emulator::tpp
 				case soldier_capture:
 				{
 					counts[staff->fields.header.peak_rank]++;
-					if (prison_first_free != -1 && prison_first_free < static_cast<std::int64_t>(attacker_prison.size()))
-					{
-						auto& prisoner = attacker_prison[prison_first_free++];
-						prisoner.owner_id = owner_id;
-						prisoner.time_captured = attack_time;
-						std::memcpy(&prisoner.data, staff, sizeof(game::staff_t));
-					}
+					prisoners.emplace_back(*staff);
 					std::memset(staff, 0, sizeof(game::staff_t));
 					result = true;
 					break;
@@ -121,54 +127,8 @@ namespace emulator::tpp
 			return result;
 		}
 
-		bool recover_captured_soldiers(
-			std::uint64_t attacker_id,
-			database::player_data::staff_array_container& attacker_staff, 
-			database::player_data::prisoner_array_container& owner_prison)
-		{
-			database::player_data::prisoner_array_container new_prison;
-			std::queue<game::staff_t> staff_recovered;
-
-			auto new_prison_size = 0;
-
-			for (auto i = 0u; i < owner_prison.size(); i++)
-			{
-				if (database::player_data::can_recover_prisoner(owner_prison[i]) && 
-					owner_prison[i].owner_id == attacker_id)
-				{
-					staff_recovered.push(owner_prison[i].data);
-				}
-				else
-				{
-					new_prison[new_prison_size++] = owner_prison[i];
-				}
-			}
-
-			if (staff_recovered.empty())
-			{
-				return false;
-			}
-
-			for (auto i = 0u; i < game::max_staff_count; i++)
-			{
-				if (staff_recovered.empty())
-				{
-					break;
-				}
-
-				if (attacker_staff[i].fields.packed_header == 0)
-				{
-					auto& staff = staff_recovered.back();
-					staff_recovered.pop();
-					std::memcpy(&attacker_staff[i], &staff, sizeof(game::staff_t));
-				}
-			}
-
-			owner_prison = new_prison;
-			return true;
-		}
-
-		void check_disable_security_challenge(const database::player_data::player_data& player_data, database::player_data::unit_counts_t& unit_counts)
+		void check_disable_security_challenge(const database::player_data::player_data& player_data, 
+			database::player_data::unit_counts_t& unit_counts)
 		{
 			const auto fob_list = database::fobs::get_fob_list(player_data.get_player_id());
 			auto min_guards = 0u;
@@ -193,41 +153,6 @@ namespace emulator::tpp
 			}
 		}
 
-		void write_staff(const database::player_data::player_data& player_data, 
-			const database::player_data::staff_array_container& staff_array, bool is_owner)
-		{
-			database::player_data::unit_counts_t counts{};
-			database::player_data::unit_levels_t levels{};
-
-			auto new_staff_count = 0;
-			for (auto i = 0u; i < game::max_staff_count; i++)
-			{
-				const auto staff = &staff_array[i];
-				if (staff->fields.status_sync.designation != 0)
-				{
-					new_staff_count++;
-
-					if (staff->fields.status_sync.designation >= game::des_units_start &&
-						staff->fields.status_sync.designation < game::des_units_end)
-					{
-						counts[staff->fields.status_sync.designation - game::des_units_start]++;
-					}
-				}
-			}
-
-			for (auto i = 0; i < game::unit_count; i++)
-			{
-				levels[i] = player_data.get_unit_level(i);
-			}
-
-			if (is_owner)
-			{
-				check_disable_security_challenge(player_data, counts);
-			}
-
-			database::player_data::set_soldier_data(player_data.get_player_id(), new_staff_count, staff_array, levels, counts);
-		}
-
 		void update_staff(
 			const cmd_send_sneak_result::param_t& param,
 			cmd_send_sneak_result::context_t& context,
@@ -236,51 +161,44 @@ namespace emulator::tpp
 			database::player_data::staff_array_container owner_staff;
 			context.owner_data->get_staff_array(owner_staff);
 
-			database::player_data::prisoner_array_container owner_prison;
-			context.owner_data->get_prisoner_array(owner_prison);
-
-			database::player_data::staff_array_container attacker_staff;
-			context.attacker_data->get_staff_array(attacker_staff);
-
-			database::player_data::prisoner_array_container attacker_prison;
-			context.attacker_data->get_prisoner_array(attacker_prison);
-
 			auto modified_owner_staff = false;
+
+			std::vector<game::staff_t> new_prisoners;
 
 			if (!param.kill_soldier_id.empty())
 			{
 				auto kill_soldier_id = make_soldier_map(param.kill_soldier_id);
-				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
-					kill_soldier_id, soldier_kill, context.event_data.kill_staff_count);
+				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, new_prisoners,
+					kill_soldier_id, param.kill_soldier_id.size(), soldier_kill, context.event_data.kill_staff_count);
 			}
 
 			if (!param.injure_soldier_id.empty())
 			{
-				auto injury_staff_count = make_soldier_map(param.injure_soldier_id);
-				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
-					injury_staff_count, soldier_injure, context.event_data.injury_staff_count);
+				auto injury_staff_id = make_soldier_map(param.injure_soldier_id);
+				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, new_prisoners,
+					injury_staff_id, param.injure_soldier_id.size(), soldier_injure, context.event_data.injury_staff_count);
 			}
 
 			if (!param.capture_soldier_id.empty())
 			{
 				auto capture_soldier_id = make_soldier_map(param.capture_soldier_id);
-				if (modify_staff_array(context.owner_data->get_player_id(), owner_staff, attacker_prison,
-					capture_soldier_id, soldier_capture, context.event_data.capture_staff_count))
-				{
-					modified_owner_staff = true;
-					database::player_data::set_prison_bin(context.attacker_data->get_player_id(), attacker_prison);
-				}
+				modified_owner_staff |= modify_staff_array(context.owner_data->get_player_id(), owner_staff, new_prisoners,
+					capture_soldier_id, param.capture_soldier_id.size(), soldier_capture, context.event_data.capture_staff_count);
 			}
 
-			if (context.is_win && recover_captured_soldiers(context.attacker_data->get_player_id(), attacker_staff, owner_prison))
+			database::fob_prisoners::add_prisoners(context.attacker_data->get_player_id(), context.owner->get_id(), new_prisoners);
+
+			if (context.is_win)
 			{
-				write_staff(context.attacker_data.value(), attacker_staff, false);
-				database::player_data::set_prison_bin(context.owner_data->get_player_id(), owner_prison);
+				database::fob_prisoners::direct_rescue(context.attacker_data->get_player_id());
+				database::fob_prisoners::indirect_rescue(context.attacker_data->get_player_id());
 			}
 
 			if (modified_owner_staff && !has_insurance)
 			{
-				write_staff(context.owner_data.value(), owner_staff, true);
+				database::player_data::staff_info_t staff_info{};
+				database::player_data::set_staff(context.owner->get_id(), owner_staff, staff_info);
+				check_disable_security_challenge(context.owner_data.value(), staff_info.unit_counts);
 			}
 		}
 
@@ -351,7 +269,15 @@ namespace emulator::tpp
 
 		bool parse_event_log(nlohmann::json& event, std::string& parsed)
 		{
-			if (!event.is_object() || !event["data"].is_string() || !event["size"].is_number_unsigned())
+			if (!event.is_object())
+			{
+				return false;
+			}
+
+			auto& data_j = event["data"];
+			auto& size_j = event["size"];
+
+			if (!data_j.is_string() || !size_j.is_number_unsigned())
 			{
 				return false;
 			}

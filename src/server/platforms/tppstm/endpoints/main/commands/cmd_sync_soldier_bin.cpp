@@ -11,14 +11,15 @@
 
 namespace emulator::tpp
 {
+	// this command actually does NOT sync the soldiers, it only syncs the REMOVED soldiers (from the server)
+	// modifying a soldier's values or adding soldiers from the server will NOT be pushed to the client
+	// if the client does not find an existing soldier (from the offline save) in the sync response -> it will be removed
+	// that is its entire function
+	// the only way to push new soldiers is rewards or prison list
+
 	nlohmann::json cmd_sync_soldier_bin::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
 
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.has_value())
@@ -77,10 +78,11 @@ namespace emulator::tpp
 				return;
 			}
 
-			database::player_data::set_soldier_data(player->get_id(), soldier_num, client_staff_array.value(), levels, counts);
+			database::player_data::staff_info_t staff_info{};
+			database::player_data::set_staff(player->get_id(), client_staff_array.value(), staff_info, levels);
 			database::player_data::sync_client_staff_version(player->get_id());
 
-			result["soldier_num"] = soldier_num;
+			result["soldier_num"] = staff_info.staff_count;
 			result["soldier_param"] = client_staff_array->encode_client();
 			result["version"] = server_version + 1;
 		};
@@ -107,5 +109,10 @@ namespace emulator::tpp
 		}
 
 		return result;
+	}
+
+	bool cmd_sync_soldier_bin::needs_player()
+	{
+		return true;
 	}
 }

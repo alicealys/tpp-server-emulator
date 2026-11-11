@@ -55,20 +55,16 @@ namespace emulator::tpp
 				return false;
 			};
 
-			database::player_data::staff_array_container new_staff_array;
-
-			auto idx = 0;
 			for (auto i = 0u; i < game::max_staff_count; i++)
 			{
-				if ((staff_array[i].fields.packed_header == 0 && staff_array[i].fields.packed_seed == 0) || should_delete(staff_array[i]))
+				if (should_delete(staff_array[i]))
 				{
-					continue;
+					std::memset(&staff_array[i], 0, sizeof(game::staff_t));
 				}
-
-				new_staff_array[idx++] = staff_array[i];
 			}
 
-			database::player_data::set_soldier_bin(player_data.get_player_id(), idx, new_staff_array);
+			database::player_data::staff_info_t staff_info{};
+			database::player_data::set_staff(player_data.get_player_id(), staff_array, staff_info);
 
 			return true;
 		}

@@ -22,56 +22,26 @@ namespace database::player_data
 	using unit_counts_t = std::uint32_t[game::unit_count];
 	using staff_counts_t = std::uint32_t[game::rank_count];
 
-	constexpr const std::chrono::seconds prisoner_hold_time = 24h * 3;
 	constexpr const auto league_item_cap = 10u;
 
-	struct prisoner_t
+	struct staff_info_t
 	{
-		std::uint64_t owner_id;
-		std::int64_t time_captured;
-		game::staff_t data;
+		std::uint32_t staff_count;
+		staff_counts_t staff_counts;
+		unit_counts_t unit_counts;
 	};
 
-	template <typename T, size_t MaxCount>
-	class db_array_container_base : public utils::static_vector<T, MaxCount>
+	class staff_array_container : public utils::static_vector<game::staff_t, game::max_staff_count>
 	{
 	public:
-		std::string encode_database() const
-		{
-			const auto ptr = reinterpret_cast<const std::uint8_t*>(this->data());
-			const auto data = std::string{ptr, ptr + this->data_size()};
-			const auto encoded = utils::encoding::encode_as_hex(data);
-			return encoded;
-		}
-
-		size_t get_raw_size() const
-		{
-			return sizeof(T) * MaxCount;
-		}
-	};
-
-	class staff_array_container : public db_array_container_base<game::staff_t, game::max_staff_count>
-	{
-	public:
+		std::string encode_database(staff_info_t& info) const;
 		std::string encode_client() const;
 		static std::optional<staff_array_container> decode_client_staff_array(const std::string& data);
+		size_t get_raw_size() const;
+
 	private:
 		void swap_bytes();
 	};
-
-	class prisoner_array_container : public db_array_container_base<prisoner_t, 300>
-	{
-	public:
-		std::int64_t get_first_free() const;
-	};
-
-	class resource_array_container : public db_array_container_base<std::uint32_t, game::RESOURCE_TYPE_COUNT>
-	{
-	};
-
-	using resource_arrays_container = resource_array_container[4];
-
-	bool can_recover_prisoner(const prisoner_t& prisoner);
 
 	class player_data
 	{
@@ -314,7 +284,6 @@ namespace database::player_data
 
 		bool get_resource_arrays(resource_arrays_t& arrays) const;
 		void get_staff_array(staff_array_container& staff_array) const;
-		void get_prisoner_array(prisoner_array_container& staff_array) const;
 
 		void give_rewards(const std::vector<game::reward_t>& reward, std::vector<game::reward_t>* result_rewards = nullptr) const;
 		void give_reward(const game::reward_t& reward) const;
@@ -357,13 +326,9 @@ namespace database::player_data
 	std::optional<player_data> find(const std::uint64_t player_id);
 	std::optional<player_data> find_or_create(const std::uint64_t player_id);
 
-	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array);
-	void set_prison_bin(const std::uint64_t player_id, const prisoner_array_container& prison);
-
-	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
-		unit_levels_t& levels, unit_counts_t& counts);
-
-	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
+	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info);
+	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& levels);
+	void set_staff_levels(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
 
 	void set_resources_gmp(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);
 	void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays);

@@ -3,13 +3,98 @@
 #include "cmd_get_online_prison_list.hpp"
 
 #include "database/models/player_data.hpp"
+#include "database/models/fob_prisoners.hpp"
 
 namespace emulator::tpp
 {
-	nlohmann::json cmd_get_online_prison_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
+	nlohmann::json cmd_get_online_prison_list::get_captive_list(const database::players::player& player, const std::uint32_t offset, const std::uint32_t num)
 	{
 		nlohmann::json result;
 
+		auto& prison_soldier_param_j = result["prison_soldier_param"];
+		auto& rescue_list_j = result["rescue_list"];
+
+		prison_soldier_param_j = nlohmann::json::array();
+		rescue_list_j = nlohmann::json::array();
+
+		auto total_count = 0u;
+		const auto soldiers = database::fob_prisoners::get_captive_list(player.get_id());
+
+		for (auto i = 0u; i < soldiers.size(); i++)
+		{
+			++total_count;
+
+			if (i >= offset && prison_soldier_param_j.size() < num)
+			{
+				soldiers[i].to_json(prison_soldier_param_j[prison_soldier_param_j.size()]);
+			}
+		}
+
+		result["rescue_num"] = 0;
+		result["soldier_num"] = prison_soldier_param_j.size();
+		result["total_count"] = total_count;
+
+		return result;
+	}
+
+	nlohmann::json cmd_get_online_prison_list::get_free_list(const database::players::player& player, const std::uint32_t offset, const std::uint32_t num)
+	{
+		nlohmann::json result;
+
+		std::vector<std::uint64_t> remove_list;
+		std::unordered_map<std::uint64_t, std::uint64_t> rescue_counts;
+
+		auto& prison_soldier_param_j = result["prison_soldier_param"];
+		auto& rescue_list_j = result["rescue_list"];
+
+		prison_soldier_param_j = nlohmann::json::array();
+		rescue_list_j = nlohmann::json::array();
+
+		auto total_count = 0u;
+		const auto soldiers = database::fob_prisoners::get_free_list(player.get_id());
+
+		for (auto i = 0u; i < soldiers.size(); i++)
+		{
+			if (i >= offset && prison_soldier_param_j.size() < num)
+			{
+				soldiers[i].to_json(prison_soldier_param_j[prison_soldier_param_j.size()]);
+				remove_list.emplace_back(soldiers[i].get_prisoner_id());
+			}
+
+			if (soldiers[i].get_state() == database::fob_prisoners::state_rescued)
+			{
+				const auto rescuer = soldiers[i].get_rescuer_id();
+				if (rescuer == 0ull)
+				{
+					continue;
+				}
+
+				++rescue_counts[rescuer];
+			}
+			else
+			{
+				++total_count;
+			}
+		}
+
+		for (const auto& [player_id, value] : rescue_counts)
+		{
+			auto& entry_j = rescue_list_j[rescue_list_j.size()];
+			entry_j["player_id"] = player_id;
+			entry_j["value"] = value;
+		}
+
+		result["rescue_num"] = rescue_counts.size();
+		result["soldier_num"] = prison_soldier_param_j.size();
+		result["total_count"] = total_count;
+
+		database::fob_prisoners::remove_prisoners(remove_list);
+
+		return result;
+	}
+
+	nlohmann::json cmd_get_online_prison_list::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
+	{
 		auto& is_persuade_j = data["is_persuade"];
 		auto& num_j = data["num"];
 		auto& offset_j = data["offset"];
@@ -19,76 +104,17 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto is_persuade = is_persuade_j.get<std::uint32_t>() == 1;
+		const auto is_persuade = is_persuade_j.get<std::uint8_t>() == 1;
 		const auto num = num_j.get<std::uint32_t>();
 		const auto offset = offset_j.get<std::uint32_t>();
 
-		const auto player_data = database::player_data::find(player->get_id());
-
-		result["prison_soldier_param"] = nlohmann::json::array();
-		result["rescue_list"] = nlohmann::json::array();
-		result["rescue_num"] = 0;
-		result["soldier_num"] = 0;
-		result["total_num"] = 0;
-
-		if (!player_data.has_value())
-		{
-			return result;
-		}
-
-		database::player_data::prisoner_array_container prison;
-		player_data->get_prisoner_array(prison);
-
-		std::optional<database::player_data::prisoner_array_container> new_prison;
 		if (is_persuade)
 		{
-			new_prison.emplace(database::player_data::prisoner_array_container{});
+			return this->get_free_list(player.value(), offset, num);
 		}
-
-		auto idx = 0u;
-		auto total_count = 0u;
-		auto new_prison_idx = 0u;
-
-		for (auto i = 0u; i < prison.size(); i++)
+		else
 		{
-			if (prison[i].owner_id == 0)
-			{
-				continue;
-			}
-
-			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-			const auto percent = static_cast<float>(now - prison[i].time_captured) / static_cast<float>(database::player_data::prisoner_hold_time.count());
-			const auto is_persuaded = percent >= 1.f;
-
-			if (!is_persuaded)
-			{
-				++total_count;
-			}
-
-			if (i >= offset && idx < num && is_persuaded == is_persuade)
-			{
-				auto& prisoner_j = result["prison_soldier_param"][idx++];
-				prisoner_j["param"][0] = prison[i].data.fields.packed_header;
-				prisoner_j["param"][1] = prison[i].data.fields.packed_seed;
-				prisoner_j["param"][2] = prison[i].data.fields.packed_status_no_sync;
-				prisoner_j["param"][3] = prison[i].data.fields.packed_status_sync;
-				prisoner_j["param"][4] = 15 - static_cast<int>(percent * 15);
-			}
-
-			if (new_prison.has_value() && !is_persuaded)
-			{
-				new_prison->operator[](new_prison_idx++) = prison[i];
-			}
+			return this->get_captive_list(player.value(), offset, num);
 		}
-
-		if (new_prison.has_value())
-		{
-			database::player_data::set_prison_bin(player->get_id(), new_prison.value());
-		}
-
-		result["soldier_num"] = idx;
-		result["total_num"] = total_count;
-
-		return result;
 	}
 }

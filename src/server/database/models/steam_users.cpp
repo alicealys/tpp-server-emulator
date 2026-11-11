@@ -24,6 +24,7 @@
 #include "wormholes.hpp"
 #include "challenge_tasks.hpp"
 #include "fob_deploy_assists.hpp"
+#include "fob_prisoners.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -146,6 +147,7 @@ namespace database::steam_users
 		items::delete_player_data(player->get_id());
 		challenge_tasks::delete_player_data(player->get_id());
 		fob_deploy_assists::delete_player_data(player->get_id());
+		fob_prisoners::delete_player_data(player->get_id());
 
 		players::delete_player_data(player->get_id());
 

@@ -148,7 +148,8 @@ namespace emulator::tpp
 
 				const auto iter = std::find_if(staff_diffs.begin(), staff_diffs.end(), [&](staff_diff_t& diff)
 				{
-					return old_staff.fields.packed_header == diff.staff.fields.packed_header && old_staff.fields.packed_seed == diff.staff.fields.packed_seed;
+					return old_staff.fields.packed_header == diff.staff.fields.packed_header && 
+						old_staff.fields.packed_seed == diff.staff.fields.packed_seed;
 				});
 
 				if (iter == staff_diffs.end())
@@ -167,16 +168,16 @@ namespace emulator::tpp
 				staff_diffs.erase(iter);
 			}
 
-			database::player_data::set_soldier_data(player->get_id(), staff_index, new_staff_array, levels, counts);
+			database::player_data::staff_info_t info{};
+			database::player_data::set_staff(player->get_id(), new_staff_array, info, levels);
 		}
 		else
 		{
-			database::player_data::set_soldier_diff(player->get_id(), levels, counts);
+			database::player_data::set_staff_levels(player->get_id(), levels, counts);
 		}
 		
 		database::player_data::sync_client_staff_version(player->get_id());
 
-		result["result"] = "NOERR";
 		result["version"] = player_data->get_server_staff_version() + 1;
 
 		return result;

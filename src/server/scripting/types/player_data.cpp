@@ -44,9 +44,6 @@ namespace emulator::scripting
 		this->state_["database"]["playerdata"]["create"] = database::player_data::create;
 		this->state_["database"]["playerdata"]["find"] = database::player_data::find;
 		this->state_["database"]["playerdata"]["findorcreate"] = database::player_data::find_or_create;
-		this->state_["database"]["playerdata"]["setsoldierbin"] = database::player_data::set_soldier_bin;
-		this->state_["database"]["playerdata"]["setsoldierdata"] = database::player_data::set_soldier_data;
-		this->state_["database"]["playerdata"]["setsoldierdiff"] = database::player_data::set_soldier_diff;
 		//this->state_["database"]["playerdata"]["setresources"] = database::player_data::set_resources;
 		this->state_["database"]["playerdata"]["setresourcesassync"] = database::player_data::set_resources_as_sync;
 		this->state_["database"]["playerdata"]["syncmotherbase"] = database::player_data::sync_motherbase;

@@ -352,8 +352,11 @@ namespace database::mgo_characters
 			{
 				auto result = db.get_database<Type>()->operator()(
 					sqlpp::insert_into(mgo_character::table)
-						.set(mgo_character::table.player_id = player_id, mgo_character::table.character_index = character_index,
-							 mgo_character::table.avatar = base_avatar.to_binary(), mgo_character::table.loadouts = base_loadouts->to_binary()));
+						.set(mgo_character::table.player_id = player_id, 
+							 mgo_character::table.character_index = character_index,
+							 mgo_character::table.create_date = std::chrono::system_clock::now(),
+							 mgo_character::table.avatar = base_avatar.to_binary(), 
+							 mgo_character::table.loadouts = base_loadouts->to_binary()));
 
 				return result != 0ull;
 			});

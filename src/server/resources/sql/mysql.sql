@@ -103,7 +103,6 @@ create table if not exists `player_data`
 	staff_count					int unsigned not null,
 	staff_counts				blob default null,
 	staff_bin					mediumblob default null,
-	prison_bin					mediumblob default null,
 	motherbase					blob default null,
 	emblem						blob default null,
 	local_gmp					int default 0,
@@ -122,7 +121,6 @@ create table if not exists `player_data`
 	client_staff_version 		bigint unsigned default 0,
 	server_resource_version 	bigint unsigned default 0,
 	server_staff_version 		bigint unsigned default 0,
-	fob_deploy_damage_param 	json,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
 	unique (`player_id`)
@@ -134,7 +132,7 @@ create table if not exists `items`
 	player_id           bigint unsigned	not null,
 	item_id				int unsigned	not null,
 	item_state			int unsigned	not null default 0,
-	create_date			datetime        default current_timestamp not null,
+	create_date			datetime        not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
 	unique key `unique_item_id` (`player_id`, `item_id`)
@@ -162,7 +160,7 @@ create table if not exists `fobs`
 	area_id	            int unsigned	not null default 0,
 	cluster_param		blob					 default null,
 	construct_param		int unsigned	not null default 0,
-	create_date			datetime        default current_timestamp not null,
+	create_date			datetime        not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
 )
@@ -257,7 +255,7 @@ create table if not exists `mgo_characters`
 	prestige				int unsigned  not null default 0,
 	xp						int unsigned  not null default 0,
 	permanent_unlock_list   int unsigned  not null default 0,
-	create_date				datetime		default current_timestamp not null,
+	create_date				datetime	  not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`)
 )
@@ -338,8 +336,8 @@ create table if not exists `shop_purchases`
 (
 	id						bigint unsigned	not null	auto_increment,
 	player_id				bigint unsigned	not null,
-	date					datetime default current_timestamp not null,
-	expire_date				datetime default current_timestamp not null,
+	date					datetime not null,
+	expire_date				datetime not null,
 	event_type				int unsigned not null default 0,
 	item_quantity			int unsigned not null default 0,
 	item_type				int unsigned not null default 0,
@@ -407,7 +405,7 @@ create table if not exists `pf_competitors`
 	lose					int unsigned not null default 0,
 	narrow_lose				int unsigned not null default 0,
 	attack_lose				int unsigned not null default 0,
-	defense_lose				int unsigned not null default 0,
+	defense_lose			int unsigned not null default 0,
 	primary key (`id`),
 	foreign key (`league_id`) references pf_leagues(`id`),
 	foreign key (`bracket_id`) references pf_brackets(`id`),
@@ -473,7 +471,7 @@ create table if not exists `challenge_task_orders`
 	player_id				bigint unsigned	not null,
 	task_id					int unsigned not null,
 	status					int unsigned not null default 0,
-	expire_date				datetime default current_timestamp not null,
+	expire_date				datetime not null,
 	primary key (`order_id`),
 	foreign key (`player_id`) references players(`id`)
 )
@@ -485,8 +483,23 @@ create table if not exists `fob_deploy_assists`
 	fob_id					bigint unsigned	not null,
 	cluster_index			int unsigned not null,
 	damage_values			varchar(64),
-	expire_date				datetime default current_timestamp not null,
+	expire_date				datetime not null,
 	primary key (`deploy_assist_id`),
 	foreign key (`player_id`) references players(`id`),
 	foreign key (`fob_id`) references fobs(`id`)
+)
+-- query:mgstpp.fob_prisoners.create
+create table if not exists `fob_prisoners`
+(
+	prisoner_id				bigint unsigned	not null	auto_increment,
+	attacker_id				bigint unsigned	not null,
+	owner_id				bigint unsigned,
+	rescuer_id				bigint unsigned	default null,
+	prisoner_state			int unsigned not null,
+	staff_param				varchar(64) not null,
+	capture_date			datetime not null,
+	primary key (`prisoner_id`),
+	foreign key (`attacker_id`) references players(`id`),
+	foreign key (`owner_id`) references players(`id`),
+	foreign key (`rescuer_id`) references players(`id`)
 )

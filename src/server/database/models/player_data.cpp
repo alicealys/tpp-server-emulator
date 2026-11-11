@@ -20,6 +20,59 @@ namespace database::player_data
 		}
 	}
 
+	size_t staff_array_container::get_raw_size() const
+	{
+		return sizeof(game::staff_t) * this->size();
+	}
+
+	std::string staff_array_container::encode_database(staff_info_t& info) const
+	{
+		std::string buffer;
+		buffer.resize(this->size() * sizeof(game::staff_t) * 2 + 3);
+
+		auto serialized_data = buffer.data();
+		const auto data = this->data();
+
+		serialized_data[0] = 'x';
+		serialized_data[1] = '\'';
+		serialized_data += 2;
+
+		for (auto i = 0u; i < game::max_staff_count; i++)
+		{
+			const auto staff = &this->operator[](i);
+			if (staff->fields.packed_header == 0 && staff->fields.packed_seed == 0)
+			{
+				continue;
+			}
+
+			++info.staff_count;
+			info.staff_counts[staff->fields.header.peak_rank]++;
+
+			if (staff->fields.status_sync.designation >= game::des_units_start &&
+				staff->fields.status_sync.designation < game::des_units_end)
+			{
+				info.unit_counts[staff->fields.status_sync.designation - game::des_units_start]++;
+			}
+
+			utils::encoding::encode_as_hex_single(&data[i], serialized_data);
+			serialized_data += sizeof(game::staff_t) * 2;
+		}
+
+		for (auto i = info.staff_count; i < game::max_staff_count; i++)
+		{
+			game::staff_t empty{};
+			utils::encoding::encode_as_hex_single(&empty, serialized_data);
+			serialized_data += sizeof(game::staff_t) * 2;
+		}
+
+		*serialized_data = '\'';
+
+		auto end_size = (serialized_data + 1) - buffer.data();
+		buffer.resize(end_size);
+
+		return buffer;
+	}
+
 	std::string staff_array_container::encode_client() const
 	{
 		std::string buffer;
@@ -55,25 +108,6 @@ namespace database::player_data
 		staff_array.swap_bytes();
 
 		return {staff_array};
-	}
-
-	std::int64_t prisoner_array_container::get_first_free() const
-	{
-		for (auto i = 0u; i < this->size(); i++)
-		{
-			if (this->operator[](i).owner_id == 0)
-			{
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	bool can_recover_prisoner(const prisoner_t& prisoner)
-	{
-		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		return now - prisoner.time_captured < database::player_data::prisoner_hold_time.count();
 	}
 
 	GET_FIELD_C(player_data, std::chrono::seconds, last_resource_processing);
@@ -144,30 +178,46 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array)
+		void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info)
 		{
+			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
+			const auto staff_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.staff_counts));
+			const auto unit_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.unit_counts));
+
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
+						.set(player_data::table.staff_bin = staff_bin, 
+							 player_data::table.staff_count = info.staff_count,
+							 player_data::table.staff_counts = staff_counts_bin,
+							 player_data::table.unit_counts = unit_counts_bin,
 							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-								.where(player_data::table.player_id == player_id
-					));
+								.where(player_data::table.player_id == player_id)
+					);
 			});
 		}
 		
 		template <database_type_t Type>
-		void set_prison_bin(const std::uint64_t player_id, const prisoner_array_container& prison)
+		void set_staff2(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& unit_levels)
 		{
+			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
+			const auto staff_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.staff_counts));
+			const auto unit_counts_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(info.unit_counts));
+			const auto unit_levels_bin = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(unit_levels));
+
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_data::table)
-						.set(player_data::table.prison_bin = sqlpp::verbatim<sqlpp::binary>(prison.encode_database()))
-								.where(player_data::table.player_id == player_id
-					));
+						.set(player_data::table.staff_bin = staff_bin, 
+							 player_data::table.staff_count = info.staff_count,
+							 player_data::table.staff_counts = staff_counts_bin,
+							 player_data::table.unit_counts = unit_counts_bin,
+							 player_data::table.unit_levels = unit_levels_bin,
+							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+								.where(player_data::table.player_id == player_id)
+					);
 			});
 		}
 
@@ -212,33 +262,7 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
-			unit_levels_t& levels, unit_counts_t& counts)
-		{
-			staff_counts_t staff_counts{};
-
-			for (auto i = 0u; i < staff_count; i++)
-			{
-				staff_counts[staff_array[i].fields.header.peak_rank]++;
-			}
-
-			database::access([&](database::database_t& db)
-			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.staff_count = staff_count,
-							 player_data::table.staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database()),
-							 player_data::table.unit_levels = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(levels)),
-							 player_data::table.unit_counts = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(counts)),
-							 player_data::table.staff_counts = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(staff_counts)),
-							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-								.where(player_data::table.player_id == player_id
-					));
-			});
-		}
-
-		template <database_type_t Type>
-		void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
+		void set_staff_levels(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
 		{
 			database::access([&](database::database_t& db)
 			{
@@ -604,31 +628,6 @@ namespace database::player_data
 				std::memcpy(out_staff.data(), staff_bin.data(), out_staff.get_raw_size());
 			});
 		}
-						
-		template <database_type_t Type>
-		void get_prisoner_array(const std::uint64_t player_id, prisoner_array_container& out_prison)
-		{
-			return database::access([&](database::database_t& db)
-			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(player_data::table.prison_bin)
-							.from(player_data::table)
-								.where(player_data::table.player_id == player_id));
-
-				if (results.empty())
-				{
-					return;
-				}
-
-				const auto prison_bin = results.front().prison_bin.value();
-				if (prison_bin.size() != out_prison.get_raw_size())
-				{
-					return;
-				}
-
-				std::memcpy(out_prison.data(), prison_bin.data(), out_prison.get_raw_size());
-			});
-		}
 
 		template <database_type_t Type>
 		void set_cumulative_grade(const std::uint64_t player_id, const std::uint32_t grade)
@@ -730,11 +729,6 @@ namespace database::player_data
 	void player_data::get_staff_array(staff_array_container& staff_array) const
 	{
 		RUN_IMPL(impl::get_staff_array, this->player_id_, staff_array);
-	}
-
-	void player_data::get_prisoner_array(prisoner_array_container& prison) const
-	{
-		RUN_IMPL(impl::get_prisoner_array, this->player_id_, prison);
 	}
 
 	void player_data::give_rewards(const std::vector<game::reward_t>& rewards, std::vector<game::reward_t>* result_rewards) const
@@ -949,25 +943,19 @@ namespace database::player_data
 		return find(player_id);
 	}
 
-	void set_soldier_bin(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array)
+	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info)
 	{
-		RUN_IMPL(impl::set_soldier_bin, player_id, staff_count, staff_array);
+		RUN_IMPL(impl::set_staff, player_id, staff_array, info);
 	}
 
-	void set_prison_bin(const std::uint64_t player_id, const prisoner_array_container& prison)
+	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& levels)
 	{
-		RUN_IMPL(impl::set_prison_bin, player_id, prison);
+		RUN_IMPL(impl::set_staff2, player_id, staff_array, info, levels);
 	}
 
-	void set_soldier_data(const std::uint64_t player_id, const std::uint32_t staff_count, const staff_array_container& staff_array,
-		unit_levels_t& levels, unit_counts_t& counts)
+	void set_staff_levels(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
 	{
-		RUN_IMPL(impl::set_soldier_data, player_id, staff_count, staff_array, levels, counts);
-	}
-
-	void set_soldier_diff(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
-	{
-		RUN_IMPL(impl::set_soldier_diff, player_id, levels, counts);
+		RUN_IMPL(impl::set_staff_levels, player_id, levels, counts);
 	}
 
 	void set_resources_gmp(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)

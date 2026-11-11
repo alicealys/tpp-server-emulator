@@ -606,7 +606,7 @@ namespace game
 	{
 		return staff.header.stat_distribution != stat_dist_special_character &&
 			staff.status_sync.designation >= des_combat && staff.status_sync.designation <= des_security &&
-			staff.status_sync.direct_contract == 0;
+			staff.status_sync.direct_contract == 0 && staff.status_sync.combat_deployment_team == 0 && staff.status_no_sync.locked == 0;
 	}
 
 	bool is_usable_staff(const staff_t& staff)

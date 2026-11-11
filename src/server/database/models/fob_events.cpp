@@ -179,8 +179,8 @@ namespace database::fob_events
 			database::player_data::sync_motherbase(player.get_id(), event_player.motherbase);
 			database::player_data::set_resources_gmp(player.get_id(), event_player.staff_resources.resource_arrays, 0, 0);
 
-			database::player_data::set_soldier_data(player.get_id(), event_player.staff_resources.staff_count, event_player.staff_resources.staff_array,
-				event_player.staff_resources.unit_levels, event_player.staff_resources.unit_counts);
+			database::player_data::staff_info_t staff_info{};
+			database::player_data::set_staff(player.get_id(), event_player.staff_resources.staff_array, staff_info);
 
 			database::player_records::find_or_create(player.get_id());
 

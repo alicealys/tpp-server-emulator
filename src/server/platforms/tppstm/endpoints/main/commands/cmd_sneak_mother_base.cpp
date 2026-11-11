@@ -4,6 +4,7 @@
 
 #include "database/models/fobs.hpp"
 #include "database/models/fob_deploy_assists.hpp"
+#include "database/models/fob_prisoners.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 
@@ -12,7 +13,6 @@ namespace emulator::tpp
 	nlohmann::json cmd_sneak_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "NOERR";
 
 		if (!player.has_value())
 		{
@@ -148,32 +148,28 @@ namespace emulator::tpp
 			current_deploy->apply(cluster_param);
 		}
 
-		database::player_data::prisoner_array_container prison;
-		owner_data->get_prisoner_array(prison);
-
-		result["recover_soldier"] = nlohmann::json::array();
-		result["recover_soldier_count"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		result["recover_soldier_num"] = 0;
-
-		auto recover_soldier_index = 0;
-		for (auto i = 0u; i < prison.size(); i++)
 		{
-			if (can_recover_prisoner(prison[i]) && prison[i].owner_id == player->get_id())
+			auto& recover_soldier_j = result["recover_soldier"];
+			recover_soldier_j = nlohmann::json::array();
+			std::array<std::uint32_t, 10> recover_soldier_count{};
+
+			const auto rescuable_list = database::fob_prisoners::get_rescueable_list(player->get_id(), owner->get_id());
+			for (auto i = 0ull; i < rescuable_list.size(); i++)
 			{
-				result["recover_soldier"][recover_soldier_index]["header"] = prison[i].data.fields.packed_header;
-				result["recover_soldier"][recover_soldier_index]["seed"] = prison[i].data.fields.packed_seed;
-				result["recover_soldier"][recover_soldier_index]["status_no_sync"] = prison[i].data.fields.packed_status_no_sync;
-				result["recover_soldier"][recover_soldier_index]["status_sync"] = prison[i].data.fields.packed_status_sync;
+				const auto param = rescuable_list[i].get_staff_param();
+				auto& entry_j = recover_soldier_j[i];
+				entry_j["header"] = param.packed_header;
+				entry_j["seed"] = param.packed_seed;
+				entry_j["status_no_sync"] = param.packed_status_no_sync;
+				entry_j["status_sync"] = param.packed_status_sync;
 
-				const auto peak_rank = prison[i].data.fields.header.peak_rank;
-				auto& count_j = result["recover_soldier_count"][peak_rank];
-				const auto count = count_j.get<std::uint32_t>();
-				count_j = count + 1;
-				++recover_soldier_index;
+				const auto peak_rank = param.header.peak_rank;
+				recover_soldier_count[peak_rank]++;
 			}
-		}
 
-		result["recover_soldier_num"] = recover_soldier_index;
+			result["recover_soldier_count"] = recover_soldier_count;
+			result["recover_soldier_num"] = rescuable_list.size();
+		}
 
 		database::player_data::staff_array_container staff_array;
 		owner_data->get_staff_array(staff_array);
@@ -190,17 +186,28 @@ namespace emulator::tpp
 		result["security_soldier_num"] = 0;
 		result["security_soldier_rank"] = 0;
 
-		const auto mapped_index = game::cluster_index_map[platform];
-		const auto& mapped_cluster_param = cluster_param.param[mapped_index];
+		const auto cluster_type = game::cluster_index_map[platform];
+		const auto& mapped_cluster_param = cluster_param.param[cluster_type];
 
 		const auto matches_current_platform = [&](const game::staff_t& staff)
 		{
-			if (platform == 0)
+			switch (staff.fields.status_sync.designation)
 			{
-				return true;
+			case game::des_combat:
+				return cluster_type == game::CLUSTER_CATEGORY_COMBAT || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
+			case game::des_rnd:
+				return cluster_type == game::CLUSTER_CATEGORY_DEVELOP || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
+			case game::des_base_dev:
+				return cluster_type == game::CLUSTER_CATEGORY_BASE_DEV || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
+			case game::des_support:
+				return cluster_type == game::CLUSTER_CATEGORY_SUPPORT || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
+			case game::des_intel:
+				return cluster_type == game::CLUSTER_CATEGORY_SPY || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
+			case game::des_medical:
+				return cluster_type == game::CLUSTER_CATEGORY_MEDICAL || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
 			}
 
-			return platform == staff.fields.status_sync.designation;
+			return false;
 		};
 
 		if (is_event)
