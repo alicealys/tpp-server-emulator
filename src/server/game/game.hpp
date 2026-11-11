@@ -1038,9 +1038,6 @@ namespace game
 		unit_security = 6,
 	};
 
-	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation);
-	std::uint32_t designation_from_unit_name(const std::string unit_name);
-
 	bool is_usable_staff(const staff_t& staff);
 	bool is_usable_staff(const staff_fields_t& staff);
 	std::int8_t calc_staff_top_rank(const staff_fields_t& staff);
@@ -1058,29 +1055,6 @@ namespace game
 		rank_s = 7,
 		rank_sp = 8,
 		rank_spp = 9,
-	};
-
-	enum designation_t
-	{
-		des_none = 0,
-		des_units_start = 1,
-		des_combat = 1,
-		des_rnd = 2,
-		des_base_dev = 3,
-		des_support = 4,
-		des_intel = 5,
-		des_medical = 6,
-		des_security = 7,
-		des_sickbay = 8,
-		des_units_end = 8,
-		des_brig = 9,
-		des_quarantine = 10,
-		des_waiting_room_1 = 11,
-		des_waiting_room_2 = 12,
-		des_waiting_room_3 = 13,
-		des_waiting_room_4 = 14,
-		des_waiting_room_5 = 15,
-		des_count,
 	};
 
 	enum stat_distribution_t

@@ -579,34 +579,14 @@ namespace game
 
 	// staff
 
-	std::optional<std::string> unit_name_from_designation(const std::uint32_t designation)
-	{
-		if (designation < des_combat || designation > des_security)
-		{
-			return {};
-		}
-
-		return {unit_names[designation - 1]};
-	}
-
-	std::uint32_t designation_from_unit_name(const std::string unit_name)
-	{
-		for (auto i = 0ull; i < unit_names.size(); i++)
-		{
-			if (unit_names[i] == unit_name)
-			{
-				return des_units_start + static_cast<std::uint32_t>(i);
-			}
-		}
-
-		return des_none;
-	}
-
 	bool is_usable_staff(const staff_fields_t& staff)
 	{
 		return staff.header.stat_distribution != stat_dist_special_character &&
-			staff.status_sync.designation >= des_combat && staff.status_sync.designation <= des_security &&
-			staff.status_sync.direct_contract == 0 && staff.status_sync.combat_deployment_team == 0 && staff.status_no_sync.locked == 0;
+			staff.status_sync.designation >= SECTION_COMBAT && 
+			staff.status_sync.designation <= SECTION_SECURITY &&
+			staff.status_sync.direct_contract == 0 && 
+			staff.status_sync.combat_deployment_team == 0 && 
+			staff.status_no_sync.locked == 0;
 	}
 
 	bool is_usable_staff(const staff_t& staff)
@@ -1318,6 +1298,7 @@ namespace game
 	{
 		data["emplacement_gun_east"] = this->emplacement_gun_east;
 		data["emplacement_gun_west"] = this->emplacement_gun_west;
+		data["gatling_gun"] = 0;
 		data["gatling_gun_east"] = this->gatling_gun_east;
 		data["gatling_gun_west"] = this->gatling_gun_west;
 		data["mortar_normal"] = this->mortar_normal;

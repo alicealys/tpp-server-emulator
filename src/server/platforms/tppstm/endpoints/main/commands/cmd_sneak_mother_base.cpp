@@ -14,29 +14,24 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-		
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto& is_sneak_j = data["is_sneak"];
-		const auto& is_event_j = data["is_event"];
-		const auto& is_plus_j = data["is_plus"];
-		const auto& mode_j = data["mode"];
-		const auto& mother_base_id_j = data["mother_base_id"];
-		const auto& platform_j = data["platform"];
-		const auto& player_id_j = data["player_id"];
-		const auto& wormhole_player_id_j = data["wormhole_player_id"];
+		auto& is_sneak_j = data["is_sneak"];
+		auto& is_event_j = data["is_event"];
+		auto& is_plus_j = data["is_plus"];
+		auto& mode_j = data["mode"];
+		auto& mother_base_id_j = data["mother_base_id"];
+		auto& platform_j = data["platform"];
+		auto& player_id_j = data["player_id"];
+		auto& wormhole_player_id_j = data["wormhole_player_id"];
 
-		if (!is_sneak_j.is_number_integer() || !is_event_j.is_number_integer() || !is_plus_j.is_number_integer()
-			|| !mode_j.is_string() || !mother_base_id_j.is_number_integer() || !platform_j.is_number_unsigned()
-			|| !player_id_j.is_number_unsigned() || !wormhole_player_id_j.is_number_unsigned())
+		if (!is_sneak_j.is_number_integer() || !is_event_j.is_number_integer() || !is_plus_j.is_number_integer() || 
+			!mode_j.is_string() || !mother_base_id_j.is_number_integer() || !platform_j.is_number_unsigned() || 
+			!player_id_j.is_number_unsigned() || !wormhole_player_id_j.is_number_unsigned())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -132,16 +127,12 @@ namespace emulator::tpp
 			empty_params.to_json(result["fob_deploy_damage_param"]);
 		}
 
-		result["is_event"] = is_event ? 1 : 0;
+		result["is_event"] = std::uint8_t(is_event);
 		result["is_security_contract"] = 0;
-
 		result["owner_gmp"] = owner_data->get_server_gmp();
 
-		result["recover_resource"]["biotic_resource"] = 0;
-		result["recover_resource"]["common_metal"] = 0;
-		result["recover_resource"]["fuel_resource"] = 0;
-		result["recover_resource"]["minor_metal"] = 0;
-		result["recover_resource"]["precious_metal"] = 0;
+		game::fob_resources_t recover_resource{};
+		recover_resource.to_json(result["recover_resource"]);
 
 		if (owner->is_real_player() && current_deploy.has_value() && current_deploy->get_fob_id() == fob->get_id())
 		{
@@ -193,17 +184,17 @@ namespace emulator::tpp
 		{
 			switch (staff.fields.status_sync.designation)
 			{
-			case game::des_combat:
+			case game::SECTION_COMBAT:
 				return cluster_type == game::CLUSTER_CATEGORY_COMBAT || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
-			case game::des_rnd:
+			case game::SECTION_DEVELOP:
 				return cluster_type == game::CLUSTER_CATEGORY_DEVELOP || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
-			case game::des_base_dev:
+			case game::SECTION_BASE_DEV:
 				return cluster_type == game::CLUSTER_CATEGORY_BASE_DEV || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
-			case game::des_support:
+			case game::SECTION_SUPPORT:
 				return cluster_type == game::CLUSTER_CATEGORY_SUPPORT || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
-			case game::des_intel:
+			case game::SECTION_SPY:
 				return cluster_type == game::CLUSTER_CATEGORY_SPY || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
-			case game::des_medical:
+			case game::SECTION_MEDICAL:
 				return cluster_type == game::CLUSTER_CATEGORY_MEDICAL || cluster_type == game::CLUSTER_CATEGORY_COMMAND;
 			}
 
@@ -239,7 +230,7 @@ namespace emulator::tpp
 				staff.fields.packed_status_no_sync = 4096; // fix broken staff
 			}
 
-			if (!is_event && staff.fields.status_sync.designation == game::des_security)
+			if (!is_event && staff.fields.status_sync.designation == game::SECTION_SECURITY)
 			{
 				result["security_soldier"][security_soldier_index]["header"] = staff.fields.packed_header;
 				result["security_soldier"][security_soldier_index]["seed"] = staff.fields.packed_seed;
@@ -265,7 +256,6 @@ namespace emulator::tpp
 		result["reward_soldier_num"] = reward_soldier_index;
 
 		mapped_cluster_param.to_json(stage_param["cluster_param"]);
-		stage_param["build"] = {0, 0, 0, 0, 0, 0, 0};
 
 		for (auto i = 0ull; i < game::fob_clusters_count; i++)
 		{
@@ -273,49 +263,49 @@ namespace emulator::tpp
 		}
 
 		stage_param["construct_param"] = fob->get_construct_param().packed;
-
 		stage_param["fob_index"] = fob->get_index();
 		stage_param["mother_base_id"] = fob->get_id();
 		stage_param["nuclear"] = owner_data->get_nuke_count();
 		stage_param["owner_player_id"] = fob->get_player_id();
-
-		database::player_data::resource_arrays_t resource_arrays{};
-		owner_data->get_resource_arrays(resource_arrays);
-
-		stage_param["placement"]["emplacement_gun_east"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
-		stage_param["placement"]["emplacement_gun_west"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
-		stage_param["placement"]["gatling_gun"] = 0;
-		stage_param["placement"]["gatling_gun_east"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
-		stage_param["placement"]["gatling_gun_west"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
-		stage_param["placement"]["mortar_normal"] = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
-
 		stage_param["platform"] = platform_j;
 		stage_param["equip_grade"] = motherbase.equip_grade;
 		stage_param["security_level"] = motherbase.security_level;
 
-		static std::vector<std::string> material_resource_names =
-		{
-			"fuel_resource",
-			"biotic_resource" ,
-			"common_metal",
-			"minor_metal",
-			"precious_metal"
-		};
+		database::player_data::resource_arrays_t resource_arrays{};
+		owner_data->get_resource_arrays(resource_arrays);
 
-		for (auto i = 0; i < 5; i++)
-		{
-			stage_param["processing_resource"][material_resource_names[i]] = resource_arrays[game::unprocessed_server][i];
-		}
+		game::fob_placements_t emplacements{};
+		emplacements.emplacement_gun_east = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
+		emplacements.emplacement_gun_west = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
+		emplacements.gatling_gun_east = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
+		emplacements.gatling_gun_west = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
+		emplacements.mortar_normal = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
+		emplacements.to_json(stage_param["placement"]);
 
-		for (auto i = 0; i < game::unit_count; i++)
-		{
-			stage_param["section_level"][game::unit_names[i]] = owner_data->get_unit_level(i);
-		}
+		game::fob_resources_t processing_resource{};
+		processing_resource.biotic_resource = resource_arrays[game::unprocessed_server][game::BIOTIC_RESOURCE];
+		processing_resource.common_metal = resource_arrays[game::unprocessed_server][game::COMMON_METAL];
+		processing_resource.minor_metal = resource_arrays[game::unprocessed_server][game::MINOR_METAL];
+		processing_resource.fuel_resource = resource_arrays[game::unprocessed_server][game::FUEL_RESOURCE];
+		processing_resource.precious_metal = resource_arrays[game::unprocessed_server][game::PRECIOUS_METAL];
+		processing_resource.to_json(stage_param["processing_resource"]);
 
-		for (auto i = 0; i < 5; i++)
-		{
-			stage_param["usable_resource"][material_resource_names[i]] = resource_arrays[game::processed_server][i];
-		}
+		game::fob_resources_t usable_resource{};
+		processing_resource.biotic_resource = resource_arrays[game::processed_server][game::BIOTIC_RESOURCE];
+		processing_resource.common_metal = resource_arrays[game::processed_server][game::COMMON_METAL];
+		processing_resource.minor_metal = resource_arrays[game::processed_server][game::MINOR_METAL];
+		processing_resource.fuel_resource = resource_arrays[game::processed_server][game::FUEL_RESOURCE];
+		processing_resource.precious_metal = resource_arrays[game::processed_server][game::PRECIOUS_METAL];
+		usable_resource.to_json(stage_param["usable_resource"]);
+
+		auto& section_level_j = stage_param["section_level"];
+		section_level_j["combat"] = owner_data->unit_levels.value[game::unit_combat];
+		section_level_j["base"] = owner_data->unit_levels.value[game::unit_base_dev];
+		section_level_j["develop"] = owner_data->unit_levels.value[game::unit_rnd];
+		section_level_j["spy"] = owner_data->unit_levels.value[game::unit_intel];
+		section_level_j["suport"] = owner_data->unit_levels.value[game::unit_support];
+		section_level_j["medical"] = owner_data->unit_levels.value[game::unit_medical];
+		section_level_j["security"] = owner_data->unit_levels.value[game::unit_security];
 
 		result["wormhole_player_id"] = wormhole_player_id_j;
 
@@ -349,5 +339,10 @@ namespace emulator::tpp
 		}
 
 		return result;
+	}
+
+	bool cmd_sneak_mother_base::needs_player()
+	{
+		return true;
 	}
 }

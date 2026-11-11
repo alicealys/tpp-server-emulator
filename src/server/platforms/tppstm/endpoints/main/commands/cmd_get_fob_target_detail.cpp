@@ -16,28 +16,23 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.has_value())
 		{
-			return error(ERR_INVALIDARG);
+			return error(ERR_DATABASE);
 		}
 		
 		const auto stats = database::player_records::find(player->get_id());
 		if (!stats.has_value())
 		{
-			return error(ERR_INVALIDARG);
+			return error(ERR_DATABASE);
 		}
 
-		const auto& is_sneak_j = data["is_sneak"];
-		const auto& is_event_j = data["is_event"];
-		const auto& is_plus_j = data["is_plus"];
-		const auto& mode_j = data["mode"];
-		const auto& mother_base_id_j = data["mother_base_id"];
+		auto& is_sneak_j = data["is_sneak"];
+		auto& is_event_j = data["is_event"];
+		auto& is_plus_j = data["is_plus"];
+		auto& mode_j = data["mode"];
+		auto& mother_base_id_j = data["mother_base_id"];
 
 		if (!is_sneak_j.is_number_integer() || !is_event_j.is_number_integer() || !is_plus_j.is_number_integer() ||
 			!mode_j.is_string() || !mother_base_id_j.is_number_integer())
@@ -51,7 +46,7 @@ namespace emulator::tpp
 		auto fob = database::fobs::get_fob(mother_base_id);
 		if (!fob.has_value())
 		{
-			return error(ERR_INVALIDARG);
+			return error(ERR_MOTHER_BASE_NOTFOUND);
 		}
 
 		const auto owner_data = database::player_data::find(fob->get_player_id());
@@ -117,13 +112,13 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		owner_data->get_resource_arrays(resource_arrays);
 
-		auto& placement_j = detail_j["placement"];
-		placement_j["emplacement_gun_east"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
-		placement_j["emplacement_gun_west"] = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
-		placement_j["gatling_gun"] = 0;
-		placement_j["gatling_gun_east"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
-		placement_j["gatling_gun_west"] = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
-		placement_j["mortar_normal"] = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
+		game::fob_placements_t placements{};
+		placements.emplacement_gun_east = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_EAST];
+		placements.emplacement_gun_west = resource_arrays[game::processed_server][game::EMPLACEMENT_GUN_WEST];
+		placements.gatling_gun_east = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_EAST];
+		placements.gatling_gun_west = resource_arrays[game::processed_server][game::ANTI_AIR_GATLING_GUN_WEST];
+		placements.mortar_normal = resource_arrays[game::processed_server][game::MORTAR_NORMAL];
+		placements.to_json(detail_j["placement"]);
 
 		database::sneak_results::sneak_reward_previews_t primary_reward{};
 		database::sneak_results::generate_sneak_reward_previews(cluster_param, primary_reward);
@@ -141,42 +136,64 @@ namespace emulator::tpp
 			detail_j["platform"] = 0;
 		}
 
-		for (auto i = 0u; i < 10; i++)
-		{
-			for (const auto& name : game::unit_names)
-			{
-				detail_j["section_staff"][i][name] = 0;
-			}
-		}
-
 		database::player_data::staff_array_container staff_array;
 		owner_data->get_staff_array(staff_array);
+		std::array<std::array<std::uint16_t, 7>, 10> section_staff{};
 
 		for (auto i = 0u; i < owner_data->get_staff_count(); i++)
 		{
 			const auto& staff = staff_array[i];
-			const auto key_opt = game::unit_name_from_designation(staff.fields.status_sync.designation);
-			if (!key_opt.has_value())
-			{
-				continue;
-			}
-
 			if (!game::is_usable_staff(staff))
 			{
 				continue;
 			}
 
-			const auto& key = key_opt.value();
-			const auto& value = detail_j["section_staff"][staff.fields.header.peak_rank][key];
-			detail_j["section_staff"][staff.fields.header.peak_rank][key] = 1 + value.get<std::uint32_t>();
+			const auto peak_rank = game::calc_staff_top_rank(staff);
+			switch (staff.fields.status_sync.designation)
+			{
+			case game::SECTION_COMBAT:
+				++section_staff[peak_rank][0];
+				break;
+			case game::SECTION_DEVELOP:
+				++section_staff[peak_rank][1];
+				break;
+			case game::SECTION_BASE_DEV:
+				++section_staff[peak_rank][2];
+				break;
+			case game::SECTION_SUPPORT:
+				++section_staff[peak_rank][3];
+				break;
+			case game::SECTION_SPY:
+				++section_staff[peak_rank][4];
+				break;
+			case game::SECTION_MEDICAL:
+				++section_staff[peak_rank][5];
+				break;
+			case game::SECTION_SECURITY:
+				++section_staff[peak_rank][6];
+				break;
+			}
 		}
 
-		detail_j["security_section_rank"] = owner_data->get_unit_level(game::unit_security);
+		auto& section_staff_j = detail_j["section_staff"];
+		for (auto i = 0ull; i < section_staff.size(); i++)
+		{
+			auto& staff = section_staff_j[i];
+			staff["combat"] = section_staff[i][0];
+			staff["develop"] = section_staff[i][1];
+			staff["base"] = section_staff[i][2];
+			staff["suport"] = section_staff[i][3];
+			staff["medical"] = section_staff[i][4];
+			staff["spy"] = section_staff[i][5];
+			staff["security"] = section_staff[i][6];
+		}
+
+		detail_j["security_section_rank"] = owner_data->unit_levels.value[game::unit_security];
 
 		const auto is_actual = mode == database::players::mode_actual;
 
 		result["event_clear_bit"] = 0;
-		result["is_restrict"] = !is_actual ? 0 : stats->is_shield_active();
+		result["is_restrict"] = is_actual ? stats->is_shield_active() : 0;
 
 		auto& session_j = result["session"];
 		session_j["ip"] = "0.0.0.0";
@@ -251,5 +268,10 @@ namespace emulator::tpp
 		}
 
 		return result;
+	}
+
+	bool cmd_get_fob_target_detail::needs_player()
+	{
+		return true;
 	}
 }

@@ -162,6 +162,30 @@ namespace database::fob_prisoners
 		}
 
 		template <database_type_t Type>
+		std::size_t get_captive_count(const std::uint64_t player_id)
+		{
+			return database::access<std::size_t>([&](database::database_t& db)
+				-> std::size_t
+			{
+				auto result = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::count(1))
+							.from(fob_prisoner::table)
+								.where(fob_prisoner::table.attacker_id == player_id &&
+									   fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_captured) &&
+									   fob_prisoner::table.capture_date > std::chrono::system_clock::now() - prisoner_hold_time)
+					);
+
+				if (result.empty())
+				{
+					return 0ull;
+				}
+
+				return result.front().count.value();
+			});
+		}
+
+		template <database_type_t Type>
 		std::vector<rescue_t> get_rescued_counts(const std::uint64_t owner_id)
 		{
 			std::vector<rescue_t> list;
@@ -376,6 +400,11 @@ namespace database::fob_prisoners
 	std::vector<fob_prisoner> get_rescueable_list(const std::uint64_t owner_id, const std::uint64_t attacker_id)
 	{
 		RUN_IMPL(impl::get_rescueable_list, owner_id, attacker_id);
+	}
+
+	std::size_t get_captive_count(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::get_captive_count, player_id);
 	}
 
 	std::vector<rescue_t> get_rescued_counts(const std::uint64_t owner_id)

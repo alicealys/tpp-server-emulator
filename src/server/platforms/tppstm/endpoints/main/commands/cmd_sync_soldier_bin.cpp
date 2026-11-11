@@ -100,7 +100,7 @@ namespace emulator::tpp
 			result["version"] = server_version;
 		};
 
-		if (client_version != server_version || local_version == client_version - 1)
+		if (client_version != server_version)
 		{
 			read_from_database();
 		}

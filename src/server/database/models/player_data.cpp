@@ -13,10 +13,12 @@ namespace database::player_data
 	{
 		for (auto i = 0ull; i < this->size(); i++)
 		{
-			for (auto o = 0; o < 6; o++)
-			{
-				this->operator[](i).packed[o] = BSWAP32(this->operator[](i).packed[o]);
-			}
+			this->operator[](i).packed[0] = BSWAP32(this->operator[](i).packed[0]);
+			this->operator[](i).packed[1] = BSWAP32(this->operator[](i).packed[1]);
+			this->operator[](i).packed[2] = BSWAP32(this->operator[](i).packed[2]);
+			this->operator[](i).packed[3] = BSWAP32(this->operator[](i).packed[3]);
+			this->operator[](i).packed[4] = BSWAP32(this->operator[](i).packed[4]);
+			this->operator[](i).packed[5] = BSWAP32(this->operator[](i).packed[5]);
 		}
 	}
 
@@ -28,7 +30,7 @@ namespace database::player_data
 	std::string staff_array_container::encode_database(staff_info_t& info) const
 	{
 		std::string buffer;
-		buffer.resize(this->size() * sizeof(game::staff_t) * 2 + 3);
+		buffer.resize(this->get_raw_size() * 2 + 3);
 
 		auto serialized_data = buffer.data();
 		const auto data = this->data();
@@ -48,10 +50,29 @@ namespace database::player_data
 			++info.staff_count;
 			info.staff_counts.value[staff->fields.header.peak_rank]++;
 
-			if (staff->fields.status_sync.designation >= game::des_units_start &&
-				staff->fields.status_sync.designation < game::des_units_end)
+			switch (staff->fields.status_sync.designation)
 			{
-				info.unit_counts.value[staff->fields.status_sync.designation - game::des_units_start]++;
+			case game::SECTION_COMBAT:
+				++info.unit_counts.value[game::unit_combat];
+				break;
+			case game::SECTION_DEVELOP:
+				++info.unit_counts.value[game::unit_rnd];
+				break;
+			case game::SECTION_BASE_DEV:
+				++info.unit_counts.value[game::unit_base_dev];
+				break;
+			case game::SECTION_SUPPORT:
+				++info.unit_counts.value[game::unit_support];
+				break;
+			case game::SECTION_SPY:
+				++info.unit_counts.value[game::unit_intel];
+				break;
+			case game::SECTION_MEDICAL:
+				++info.unit_counts.value[game::unit_medical];
+				break;
+			case game::SECTION_SECURITY:
+				++info.unit_counts.value[game::unit_security];
+				break;
 			}
 
 			utils::encoding::encode_as_hex_single(&data[i], serialized_data);
@@ -67,28 +88,25 @@ namespace database::player_data
 
 		*serialized_data = '\'';
 
-		auto end_size = (serialized_data + 1) - buffer.data();
-		buffer.resize(end_size);
-
 		return buffer;
 	}
 
 	std::string staff_array_container::encode_client() const
 	{
 		std::string buffer;
-		buffer.reserve(game::max_staff_count * 16ull);
+		buffer.resize(this->size() * 16ull);
 
-		for (auto i = 0u; i < game::max_staff_count; i++)
+		for (auto i = 0ull; i < this->size(); i++)
 		{
 			std::uint32_t values[4]{};
 
 			const auto& staff = this->operator[](i);
-			for (auto o = 0; o < 4; o++)
-			{
-				values[o] = BSWAP32(staff.packed[o + 2]);
-			}
+			values[0] = BSWAP32(staff.packed[2]);
+			values[1] = BSWAP32(staff.packed[3]);
+			values[2] = BSWAP32(staff.packed[4]);
+			values[3] = BSWAP32(staff.packed[5]);
 
-			buffer.append(reinterpret_cast<const char*>(values), 16);
+			std::memcpy(&buffer[i << 4], &values, sizeof(values));
 		}
 
 		return utils::cryptography::base64::encode(buffer);
@@ -197,83 +215,85 @@ namespace database::player_data
 		template <database_type_t Type>
 		void create(const std::uint64_t player_id)
 		{
+			const auto insert = sqlpp::insert_into(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.staff_count = 0,
+					 player_data::table.local_gmp = 0,
+					 player_data::table.server_gmp = 0,
+					 player_data::table.loadout_gmp = 0,
+					 player_data::table.insurance_gmp = 0,
+					 player_data::table.injury_gmp = 0,
+					 player_data::table.last_sync = std::chrono::system_clock::now(),
+					 player_data::table.last_resource_processing = std::chrono::system_clock::now(),
+					 player_data::table.last_resource_mining = std::chrono::system_clock::now());
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::insert_into(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.staff_count = 0,
-							 player_data::table.local_gmp = 0,
-							 player_data::table.server_gmp = 0,
-							 player_data::table.loadout_gmp = 0,
-							 player_data::table.insurance_gmp = 0,
-							 player_data::table.injury_gmp = 0,
-							 player_data::table.last_resource_processing = std::chrono::system_clock::now(),
-							 player_data::table.last_resource_mining = std::chrono::system_clock::now()
-					));
+				db.get_database<Type>()->operator()(insert);
 			});
 		}
 
 		template <database_type_t Type>
 		std::optional<player_data> find(const std::uint64_t player_id)
 		{
-			return database::access<std::optional<player_data>>([&](database::database_t& db)
-				-> std::optional<player_data>
+			const auto select = 
+				sqlpp::select(player_data::table.player_id,
+							  player_data::table.unit_counts,
+							  player_data::table.unit_levels,
+							  player_data::table.nuke_count,
+							  player_data::table.nuke_destruct_count,
+							  player_data::table.staff_count,
+							  player_data::table.staff_counts,
+							  player_data::table.local_gmp,
+							  player_data::table.server_gmp,
+							  player_data::table.loadout_gmp,
+							  player_data::table.insurance_gmp,
+							  player_data::table.injury_gmp,
+							  player_data::table.mb_coin,
+							  player_data::table.cumulative_grade,
+							  player_data::table.league_attack_item,
+							  player_data::table.league_defense_item,
+							  player_data::table.last_sync,
+							  player_data::table.last_resource_processing,
+							  player_data::table.last_resource_mining,
+							  player_data::table.client_resource_version,
+							  player_data::table.client_staff_version,
+							  player_data::table.server_resource_version,
+							  player_data::table.server_staff_version,
+							  player_data::table.emblem,
+							  player_data::table.motherbase)
+						.from(player_data::table)
+							.where(player_data::table.player_id == player_id);
+
+			std::optional<player_data> result;
+
+			database::access([&](database::database_t& db)
 			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(player_data::table.player_id,
-								  player_data::table.unit_counts,
-								  player_data::table.unit_levels,
-								  player_data::table.nuke_count,
-								  player_data::table.nuke_destruct_count,
-								  player_data::table.staff_count,
-								  player_data::table.staff_counts,
-								  player_data::table.local_gmp,
-								  player_data::table.server_gmp,
-								  player_data::table.loadout_gmp,
-								  player_data::table.insurance_gmp,
-								  player_data::table.injury_gmp,
-								  player_data::table.mb_coin,
-								  player_data::table.cumulative_grade,
-								  player_data::table.league_attack_item,
-								  player_data::table.league_defense_item,
-								  player_data::table.last_sync,
-								  player_data::table.last_resource_processing,
-								  player_data::table.last_resource_mining,
-								  player_data::table.client_resource_version,
-								  player_data::table.client_staff_version,
-								  player_data::table.server_resource_version,
-								  player_data::table.server_staff_version,
-								  player_data::table.emblem,
-								  player_data::table.motherbase)
-							.from(player_data::table)
-								.where(player_data::table.player_id == player_id));
-
-				if (results.empty())
+				auto results = db.get_database<Type>()->operator()(select);
+				if (!results.empty())
 				{
-					return {};
+					result.emplace(results.front());
 				}
-
-				return {results.front()};
 			});
+
+			return result;
 		}
 
 		template <database_type_t Type>
 		void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info)
 		{
 			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.staff_bin = staff_bin,
+					 player_data::table.staff_count = info.staff_count,
+					 player_data::table.staff_counts = info.staff_counts.serialize(),
+					 player_data::table.unit_counts = info.unit_counts.serialize(),
+					 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+					.where(player_data::table.player_id == player_id);
 
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.staff_bin = staff_bin, 
-							 player_data::table.staff_count = info.staff_count,
-							 player_data::table.staff_counts = info.staff_counts.serialize(),
-							 player_data::table.unit_counts = info.unit_counts.serialize(),
-							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-								.where(player_data::table.player_id == player_id)
-					);
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 		
@@ -281,74 +301,73 @@ namespace database::player_data
 		void set_staff2(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& unit_levels)
 		{
 			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.staff_bin = staff_bin,
+					 player_data::table.staff_count = info.staff_count,
+					 player_data::table.staff_counts = info.staff_counts.serialize(),
+					 player_data::table.unit_counts = info.unit_counts.serialize(),
+					 player_data::table.unit_levels = unit_levels.serialize(),
+					 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+					.where(player_data::table.player_id == player_id);
 
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.staff_bin = staff_bin, 
-							 player_data::table.staff_count = info.staff_count,
-							 player_data::table.staff_counts = info.staff_counts.serialize(),
-							 player_data::table.unit_counts = info.unit_counts.serialize(),
-							 player_data::table.unit_levels = unit_levels.serialize(),
-							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-								.where(player_data::table.player_id == player_id)
-					);
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
 		template <database_type_t Type>
 		void sync_client_staff_version(const std::uint64_t player_id)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.client_staff_version = player_data::table.server_staff_version)
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.client_staff_version = player_data::table.server_staff_version)
-								.where(player_data::table.player_id == player_id
-					));
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
 		template <database_type_t Type>
 		void sync_client_resource_version(const std::uint64_t player_id)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.client_resource_version = player_data::table.server_resource_version)
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.client_resource_version = player_data::table.server_resource_version)
-								.where(player_data::table.player_id == player_id
-					));
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 		
 		template <database_type_t Type>
 		void set_resource_mining(const std::uint64_t player_id, const std::chrono::seconds last_processing, const std::chrono::seconds last_mining)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.last_resource_processing = std::chrono::system_clock::time_point(last_processing),
+					 player_data::table.last_resource_mining = std::chrono::system_clock::time_point(last_mining))
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.last_resource_processing = std::chrono::system_clock::time_point(last_processing),
-							 player_data::table.last_resource_mining = std::chrono::system_clock::time_point(last_mining))
-								.where(player_data::table.player_id == player_id)
-					);
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
 		template <database_type_t Type>
 		void set_staff_levels(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.unit_levels = levels.serialize(),
+					 player_data::table.unit_counts = counts.serialize(),
+					 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.unit_levels = levels.serialize(),
-							 player_data::table.unit_counts = counts.serialize(),
-							 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-								.where(player_data::table.player_id == player_id
-					));
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
@@ -356,19 +375,17 @@ namespace database::player_data
 		void set_resources(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
 			const auto nuke_count = arrays[game::processed_server][game::NUCLEAR_WEAPON];
+			const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.resource_arrays = resource_arrays,
+					 player_data::table.local_gmp = local_gmp,
+					 player_data::table.server_gmp = server_gmp,
+					 player_data::table.nuke_count = nuke_count)
+					.where(player_data::table.player_id == player_id);
 
 			database::access([&](database::database_t& db)
 			{
-				const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
-
-				auto update = sqlpp::update(player_data::table).set(
-					player_data::table.player_id = player_id,
-					player_data::table.resource_arrays = resource_arrays,
-					player_data::table.local_gmp = local_gmp,
-					player_data::table.server_gmp = server_gmp,
-					player_data::table.nuke_count = nuke_count)
-						.where(player_data::table.player_id == player_id);
-
 				db.get_database<Type>()->operator()(update);
 			});
 		}
@@ -376,15 +393,15 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_gmp(const std::uint64_t player_id, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.local_gmp = local_gmp,
+					 player_data::table.server_gmp = server_gmp)
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.local_gmp = local_gmp,
-							 player_data::table.server_gmp = server_gmp)
-								.where(player_data::table.player_id == player_id
-					));
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 		
@@ -392,17 +409,16 @@ namespace database::player_data
 		void set_resources2(const std::uint64_t player_id, resource_arrays_t& arrays)
 		{
 			const auto nuke_count = arrays[game::processed_local][game::NUCLEAR_WEAPON] + arrays[game::processed_server][game::NUCLEAR_WEAPON];
+			const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
+
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.resource_arrays = resource_arrays,
+					 player_data::table.nuke_count = nuke_count)
+					.where(player_data::table.player_id == player_id);
 
 			database::access([&](database::database_t& db)
 			{
-				const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
-
-				auto update = sqlpp::update(player_data::table).set(
-					player_data::table.player_id = player_id,
-					player_data::table.resource_arrays = resource_arrays,
-					player_data::table.nuke_count = nuke_count)
-						.where(player_data::table.player_id == player_id);
-
 				db.get_database<Type>()->operator()(update);
 			});
 		}
@@ -410,46 +426,47 @@ namespace database::player_data
 		template <database_type_t Type>
 		void set_resources_as_sync(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp)
 		{
+			const auto resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays));
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.resource_arrays = resource_arrays,
+					 player_data::table.local_gmp = local_gmp,
+					 player_data::table.server_gmp = server_gmp,
+					 player_data::table.last_sync = std::chrono::system_clock::now(),
+					 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.resource_arrays = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(arrays)),
-							 player_data::table.local_gmp = local_gmp,
-							 player_data::table.server_gmp = server_gmp,
-							 player_data::table.last_sync = std::chrono::system_clock::now(),
-							 player_data::table.server_resource_version = player_data::table.server_resource_version + 1)
-								.where(player_data::table.player_id == player_id
-					));
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
 		template <database_type_t Type>
 		void sync_motherbase(const std::uint64_t player_id, const game::motherbase_t& motherbase)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.motherbase = utils::encoding::encode_base64(motherbase))
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.motherbase = utils::encoding::encode_base64(motherbase))
-								.where(player_data::table.player_id == player_id)
-					);
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
 		template <database_type_t Type>
 		void sync_emblem(const std::uint64_t player_id, const game::emblem_t& emblem)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.player_id = player_id,
+					 player_data::table.emblem = utils::encoding::encode_base64(emblem))
+					.where(player_data::table.player_id == player_id);
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.player_id = player_id,
-							 player_data::table.emblem = utils::encoding::encode_base64(emblem))
-								.where(player_data::table.player_id == player_id)
-					);
+				db.get_database<Type>()->operator()(update);
 			});
 		}
 
@@ -560,12 +577,13 @@ namespace database::player_data
 		template <database_type_t Type>
 		bool inc_nuke_destruct_count(const std::uint64_t player_id, const std::uint32_t count)
 		{
+			const auto update = sqlpp::update(player_data::table)
+				.set(player_data::table.nuke_destruct_count = player_data::table.nuke_destruct_count + count)
+					.where(player_data::table.player_id == player_id);
+
 			return database::access<bool>([&](database::database_t& db)
 			{
-				const auto result = db.get_database<Type>()->operator()(
-					sqlpp::update(player_data::table)
-						.set(player_data::table.nuke_destruct_count = player_data::table.nuke_destruct_count + count)
-							.where(player_data::table.player_id == player_id));
+				const auto result = db.get_database<Type>()->operator()(update);
 				return result != 0;
 			});
 		}
@@ -573,16 +591,16 @@ namespace database::player_data
 		template <database_type_t Type>
 		std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit)
 		{
-			return database::access<std::vector<std::uint64_t>>([&](database::database_t& db)
-				-> std::vector<std::uint64_t>
+			std::vector<std::uint64_t> list;
+
+			database::access([&](database::database_t& db)
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(player_data::table.player_id)
-							.from(player_data::table)
-								.where(player_data::table.nuke_count > 0 && player_data::table.player_id != player_id)
+						.from(player_data::table)
+							.where(player_data::table.nuke_count > 0 && 
+								   player_data::table.player_id != player_id)
 					);
-
-				std::vector<std::uint64_t> list;
 
 				const auto should_add = []()
 				{
@@ -599,59 +617,9 @@ namespace database::player_data
 						list.emplace_back(row.player_id);
 					}
 				}
-
-				return list;
 			});
-		}
 
-		template <database_type_t Type>
-		void get_emblem(const std::uint64_t player_id, game::emblem_t& emblem)
-		{
-			return database::access([&](database::database_t& db)
-			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(player_data::table.emblem)
-							.from(player_data::table)
-								.where(player_data::table.player_id == player_id));
-
-				if (results.empty())
-				{
-					return;
-				}
-
-				const auto emblem_str = results.front().emblem.value();
-				if (emblem_str.size() != sizeof(game::emblem_t))
-				{
-					return;
-				}
-
-				std::memcpy(&emblem, emblem_str.data(), sizeof(game::emblem_t));
-			});
-		}
-
-		template <database_type_t Type>
-		void get_motherbase(const std::uint64_t player_id, game::motherbase_t& motherbase)
-		{
-			return database::access([&](database::database_t& db)
-			{
-				auto results = db.get_database<Type>()->operator()(
-					sqlpp::select(player_data::table.motherbase)
-							.from(player_data::table)
-								.where(player_data::table.player_id == player_id));
-
-				if (results.empty())
-				{
-					return;
-				}
-
-				const auto motherbase_str = results.front().motherbase.value();
-				if (motherbase_str.size() != sizeof(game::motherbase_t))
-				{
-					return;
-				}
-
-				std::memcpy(&motherbase, motherbase_str.data(), sizeof(game::motherbase_t));
-			});
+			return list;
 		}
 
 		template <database_type_t Type>
@@ -754,25 +722,24 @@ namespace database::player_data
 		template <database_type_t Type>
 		std::vector<players::player> get_nuclear_abolition_contributors(const std::uint32_t limit)
 		{
-			return database::access<std::vector<players::player>>([&](database::database_t& db)
-				-> std::vector<players::player>
+			std::vector<players::player> list;
+
+			database::access([&](database::database_t& db)
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(sqlpp::all_of(players::player::table))
-							.from(players::player::table.join(player_data::table).on(player_data::table.player_id == players::player::table.id))
-								.where(player_data::table.nuke_destruct_count > 0)
-									.order_by(player_data::table.nuke_destruct_count.desc()).limit(limit)
+						.from(players::player::table.join(player_data::table).on(player_data::table.player_id == players::player::table.id))
+							.where(player_data::table.nuke_destruct_count > 0)
+								.order_by(player_data::table.nuke_destruct_count.desc()).limit(limit)
 					);
-
-				std::vector<players::player> list;
 
 				for (auto& row : results)
 				{
 					list.emplace_back(row);
 				}
-
-				return list;
 			});
+
+			return list;
 		}
 
 		template <database_type_t Type>

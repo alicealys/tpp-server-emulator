@@ -166,10 +166,10 @@ namespace database::pf_league
 			const auto top_rank = game::calc_staff_top_rank(in_data.staff[i]);
 			switch (in_data.staff[i].fields.status_sync.designation)
 			{
-			case game::des_combat:
+			case game::SECTION_COMBAT:
 				out_params.offensive_durability.elements[top_rank + 1] += staff_rank_scores[top_rank];
 				break;
-			case game::des_security:
+			case game::SECTION_SECURITY:
 				out_params.defensive_durability.elements[top_rank + 3] += staff_rank_scores[top_rank];
 				break;
 			}
@@ -243,7 +243,7 @@ namespace database::pf_league
 		out_params.defensive_capability.elements[defensive_capability_platforms] = linear_value(268.f, total_platforms);
 		out_params.defensive_capability.elements[defensive_capability_nuclear] = linear_value(15000.f, in_data.resources[game::processed_server][game::NUCLEAR_WEAPON]);
 		out_params.defensive_capability.elements[defensive_capability_total_units] = total_unit_levels(6.f, game::unit_security, game::unit_support);
-		out_params.defensive_capability.elements[defensive_capability_support] = exp_value(1.5f, in_data.unit_levels.value[game::des_support]);
+		out_params.defensive_capability.elements[defensive_capability_support] = exp_value(1.5f, in_data.unit_levels.value[game::SECTION_SUPPORT]);
 		out_params.defensive_capability.elements[defensive_capability_emplacements] = resource_capped_value(50.f, 51000u, game::ANTI_AIR_GATLING_GUN_EAST, game::ANTI_AIR_GATLING_GUN_WEST);
 		out_params.defensive_capability.elements[defensive_capability_mortars] = resource_capped_value(10.f, 19000u, game::MORTAR_NORMAL, game::MORTAR_NORMAL);
 		out_params.defensive_capability.elements[defensive_capability_machine_guns] = resource_capped_value(10.f, 19000u, game::EMPLACEMENT_GUN_EAST, game::EMPLACEMENT_GUN_WEST);

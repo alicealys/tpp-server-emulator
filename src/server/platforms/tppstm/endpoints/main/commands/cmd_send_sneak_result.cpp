@@ -23,25 +23,31 @@ namespace emulator::tpp
 			soldier_capture = 2
 		};
 
-		struct soldier_param_fields_t
-		{
-			std::uint32_t header;
-			std::uint32_t seed;
-		};
-
-		union soldier_param_t
-		{
-			std::uint64_t value;
-			soldier_param_fields_t fields;
-		};
-
 		struct soldier_t
 		{
-			soldier_param_t param;
+			std::uint64_t identifier;
 			std::uint32_t count;
 		};
 
-		using soldier_map_t = std::unordered_map<std::uint64_t, soldier_t>;
+		using soldier_map_t = std::unordered_map<std::uint64_t, std::uint32_t>;
+
+		std::uint64_t make_soldier_identifier(const std::uint32_t header, const std::uint32_t seed)
+		{
+			std::uint32_t value[2]{};
+
+			// ignore last 2 bits of header
+			// ignore first 12 bits of seed
+
+			value[0] |= header & 0x3FFFFFFF;
+			value[1] |= seed & 0xFFFFF800;
+
+			return *reinterpret_cast<std::uint64_t*>(&value);
+		}
+
+		std::uint64_t make_soldier_identifier(const game::staff_t& staff)
+		{
+			return make_soldier_identifier(staff.fields.packed_header, staff.fields.packed_seed);
+		}
 
 		soldier_map_t make_soldier_map(const std::vector<cmd_send_sneak_result::param_t::soldier_param_t>& list)
 		{
@@ -50,12 +56,8 @@ namespace emulator::tpp
 			for (const auto& entry : list)
 			{
 				soldier_t soldier{};
-				soldier.param.fields.header = entry.header;
-				soldier.param.fields.seed = entry.seed & 0xFFFFF800;
-
-				auto& map_entry = map[soldier.param.value];
-				map_entry.param = soldier.param;
-				++map_entry.count;
+				soldier.identifier = make_soldier_identifier(entry.header, entry.seed);
+				++map[soldier.identifier];
 			}
 
 			return map;
@@ -78,18 +80,15 @@ namespace emulator::tpp
 
 				auto staff = &staff_array[i];
 
-				soldier_param_t identifier{};
-				identifier.fields.header = staff->fields.packed_header;
-				identifier.fields.seed = staff->fields.seed.data & 0xFFFFF800;
-
-				auto iter = soldier_ids.find(identifier.value);
-				if (iter == soldier_ids.end() || iter->second.count == 0)
+				const auto identifier = make_soldier_identifier(*staff);
+				auto iter = soldier_ids.find(identifier);
+				if (iter == soldier_ids.end() || iter->second == 0)
 				{
 					continue;
 				}
 
-				soldiers_left--;
-				iter->second.count--;
+				--soldiers_left;
+				--iter->second;
 
 				if (!game::is_usable_staff(*staff))
 				{
@@ -101,8 +100,7 @@ namespace emulator::tpp
 				case soldier_injure:
 				{
 					counts[staff->fields.header.peak_rank]++;
-					staff->fields.status_sync.health_state = 1;
-					staff->fields.status_sync.designation = game::des_sickbay;
+					staff->fields.status_sync.designation = game::SECTION_HOSPITAL;
 					result = true;
 					break;
 				}

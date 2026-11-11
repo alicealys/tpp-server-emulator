@@ -82,6 +82,8 @@ namespace database::fob_prisoners
 	std::vector<rescue_t> get_rescued_counts(const std::uint64_t owner_id);
 	std::vector<fob_prisoner> get_rescueable_list(const std::uint64_t owner_id, const std::uint64_t attacker_id);
 
+	std::size_t get_captive_count(const std::uint64_t player_id);
+
 	void set_prisoner_states(const std::vector<std::uint64_t>& list, const std::uint32_t state);
 	void remove_prisoners(const std::vector<std::uint64_t>& list);
 	void clear_rescues(const std::uint64_t owner_id);

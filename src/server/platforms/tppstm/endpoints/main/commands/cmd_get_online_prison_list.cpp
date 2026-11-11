@@ -17,13 +17,10 @@ namespace emulator::tpp
 		prison_soldier_param_j = nlohmann::json::array();
 		rescue_list_j = nlohmann::json::array();
 
-		auto total_count = 0u;
 		const auto soldiers = database::fob_prisoners::get_captive_list(player.get_id());
 
 		for (auto i = 0u; i < soldiers.size(); i++)
 		{
-			++total_count;
-
 			if (i >= offset && prison_soldier_param_j.size() < num)
 			{
 				soldiers[i].to_json(prison_soldier_param_j[prison_soldier_param_j.size()]);
@@ -32,7 +29,7 @@ namespace emulator::tpp
 
 		result["rescue_num"] = 0;
 		result["soldier_num"] = prison_soldier_param_j.size();
-		result["total_count"] = total_count;
+		result["total_num"] = soldiers.size();
 
 		return result;
 	}
@@ -50,7 +47,6 @@ namespace emulator::tpp
 		prison_soldier_param_j = nlohmann::json::array();
 		rescue_list_j = nlohmann::json::array();
 
-		auto total_count = 0u;
 		const auto soldiers = database::fob_prisoners::get_free_list(player.get_id());
 
 		for (auto i = 0u; i < soldiers.size(); i++)
@@ -71,10 +67,6 @@ namespace emulator::tpp
 
 				++rescue_counts[rescuer];
 			}
-			else
-			{
-				++total_count;
-			}
 		}
 
 		for (const auto& [player_id, value] : rescue_counts)
@@ -86,7 +78,7 @@ namespace emulator::tpp
 
 		result["rescue_num"] = rescue_counts.size();
 		result["soldier_num"] = prison_soldier_param_j.size();
-		result["total_count"] = total_count;
+		result["total_num"] = database::fob_prisoners::get_captive_count(player.get_id());
 
 		database::fob_prisoners::remove_prisoners(remove_list);
 

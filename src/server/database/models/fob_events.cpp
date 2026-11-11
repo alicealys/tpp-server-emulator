@@ -107,7 +107,7 @@ namespace database::fob_events
 						{
 							auto staff_index = total_staff++;
 							player.staff_resources.staff_array[staff_index].fields.header.peak_rank = i;
-							player.staff_resources.staff_array[staff_index].fields.status_sync.designation = game::des_units_start + o;
+							player.staff_resources.staff_array[staff_index].fields.status_sync.designation = game::SECTION_COMBAT + o;
 						}
 					}
 				}
