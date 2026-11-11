@@ -4,6 +4,7 @@
 #include "player_records.hpp"
 #include "player_follows.hpp"
 #include "../auth.hpp"
+#include "game/game.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -839,6 +840,16 @@ namespace database::players
 		const std::string& in_ip, const std::uint16_t in_port, const std::string& nat_type)
 	{
 		RUN_IMPL(impl::set_ip_and_port, player_id, ex_ip, ex_port, in_ip, in_port, nat_type);
+	}
+
+	std::uint32_t sneak_info::get_cluster() const
+	{
+		if (this->platform_ >= game::fob_clusters_count)
+		{
+			return 0u;
+		}
+
+		return game::cluster_index_map[this->platform_];
 	}
 
 	std::vector<player> get_player_list(const std::uint32_t limit)

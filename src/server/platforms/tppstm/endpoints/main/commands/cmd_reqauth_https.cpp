@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "cmd_reqauth_https.hpp"
+#include "cmd_abort_mother_base.hpp"
 
 #include "database/auth.hpp"
 #include "database/models/players.hpp"
@@ -39,8 +40,10 @@ namespace emulator::tpp
 			result["smart_device_id"] = auth_result.smart_device_id;
 			result["user_id"] = auth_result.player_id;
 
-			database::players::abort_mother_base(auth_result.player_id);
+			const auto found_player = database::players::find(auth_result.player_id);
+
 			database::event_rankings::create_entries(auth_result.player_id);
+			cmd_abort_mother_base::send_abort(found_player.value());
 		}
 		else
 		{

@@ -259,6 +259,8 @@ namespace database::players
 			return this->platform_;
 		}
 
+		std::uint32_t get_cluster() const;
+
 		bool is_sneak() const
 		{
 			return this->is_sneak_;
