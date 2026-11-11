@@ -280,7 +280,7 @@ namespace database::player_data
 		}
 
 		template <database_type_t Type>
-		void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info)
+		bool set_staff(const std::uint64_t player_id, const std::uint32_t current_version, const staff_array_container& staff_array, staff_info_t& info)
 		{
 			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
 			const auto update = sqlpp::update(player_data::table)
@@ -289,16 +289,16 @@ namespace database::player_data
 					 player_data::table.staff_counts = info.staff_counts.serialize(),
 					 player_data::table.unit_counts = info.unit_counts.serialize(),
 					 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-					.where(player_data::table.player_id == player_id);
+					.where(player_data::table.player_id == player_id && player_data::table.server_staff_version == current_version);
 
-			database::access([&](database::database_t& db)
+			return database::access<bool>([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(update);
+				return db.get_database<Type>()->operator()(update) != 0ull;
 			});
 		}
 		
 		template <database_type_t Type>
-		void set_staff2(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& unit_levels)
+		bool set_staff2(const std::uint64_t player_id, const std::uint32_t current_version, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& unit_levels)
 		{
 			const auto staff_bin = sqlpp::verbatim<sqlpp::binary>(staff_array.encode_database(info));
 			const auto update = sqlpp::update(player_data::table)
@@ -308,11 +308,11 @@ namespace database::player_data
 					 player_data::table.unit_counts = info.unit_counts.serialize(),
 					 player_data::table.unit_levels = unit_levels.serialize(),
 					 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
-					.where(player_data::table.player_id == player_id);
+					.where(player_data::table.player_id == player_id && player_data::table.server_staff_version == current_version);
 
-			database::access([&](database::database_t& db)
+			return database::access<bool>([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(update);
+				return db.get_database<Type>()->operator()(update) != 0ull;
 			});
 		}
 
@@ -361,8 +361,7 @@ namespace database::player_data
 		{
 			const auto update = sqlpp::update(player_data::table)
 				.set(player_data::table.unit_levels = levels.serialize(),
-					 player_data::table.unit_counts = counts.serialize(),
-					 player_data::table.server_staff_version = player_data::table.server_staff_version + 1)
+					 player_data::table.unit_counts = counts.serialize())
 					.where(player_data::table.player_id == player_id);
 
 			database::access([&](database::database_t& db)
@@ -976,14 +975,14 @@ namespace database::player_data
 		return find(player_id);
 	}
 
-	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info)
+	bool set_staff(const std::uint64_t player_id, const std::uint32_t current_version, const staff_array_container& staff_array, staff_info_t& info)
 	{
-		RUN_IMPL(impl::set_staff, player_id, staff_array, info);
+		RUN_IMPL(impl::set_staff, player_id, current_version, staff_array, info);
 	}
 
-	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& levels)
+	bool set_staff(const std::uint64_t player_id, const std::uint32_t current_version, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& levels)
 	{
-		RUN_IMPL(impl::set_staff2, player_id, staff_array, info, levels);
+		RUN_IMPL(impl::set_staff2, player_id, current_version, staff_array, info, levels);
 	}
 
 	void set_staff_levels(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts)

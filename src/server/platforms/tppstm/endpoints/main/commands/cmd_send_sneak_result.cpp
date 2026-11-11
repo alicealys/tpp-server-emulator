@@ -151,7 +151,7 @@ namespace emulator::tpp
 			}
 		}
 
-		void update_staff(
+		bool update_staff(
 			const cmd_send_sneak_result::param_t& param,
 			cmd_send_sneak_result::context_t& context,
 			const bool has_insurance)
@@ -192,12 +192,20 @@ namespace emulator::tpp
 				database::fob_prisoners::indirect_rescue(context.attacker_data->get_player_id());
 			}
 
-			if (modified_owner_staff && !has_insurance)
+			if (!modified_owner_staff || has_insurance)
 			{
-				database::player_data::staff_info_t staff_info{};
-				database::player_data::set_staff(context.owner->get_id(), owner_staff, staff_info);
-				check_disable_security_challenge(context.owner_data.value(), staff_info.unit_counts);
+				return true;
 			}
+
+			database::player_data::staff_info_t staff_info{};
+			if (!database::player_data::set_staff(context.owner->get_id(), context.owner_data->get_server_staff_version(),
+				owner_staff, staff_info))
+			{
+				return false;
+			}
+
+			check_disable_security_challenge(context.owner_data.value(), staff_info.unit_counts);
+			return true;
 		}
 
 		void update_resources(
@@ -355,17 +363,30 @@ namespace emulator::tpp
 		}
 
 		const auto is_sneak = context.active_sneak->is_sneak();
-		database::player_records::add_sneak_result(player.get_id(), context.fob->get_player_id(),
-			param.sneak_point, context.is_win, is_sneak);
-
-		if (param.sneak_point > 0)
-		{
-			database::event_rankings::set_value_if_bigger(player.get_id(),
-				database::event_rankings::most_ep_in_mission, param.sneak_point);
-		}
 
 		if (is_sneak) // attack
 		{
+			auto owner_data = database::player_data::find(context.owner->get_id());
+			const auto owner_record = database::player_records::find(context.owner->get_id());
+			const auto owner_has_insurance = owner_record.has_value() && owner_record->get_is_insurance();
+
+			if (!database::vars.pvp_mode && !database::vars.no_fob_damage && owner_data.has_value() && context.attacker_data.has_value())
+			{
+				if (!update_staff(param, context, owner_has_insurance))
+				{
+					return false;
+				}
+
+				update_resources(param, context, owner_has_insurance);
+			}
+
+			auto& active_sneak_val = context.active_sneak.value();
+			if (!database::sneak_results::add_sneak_result(player, context.fob.value(),
+				active_sneak_val, context.is_win, context.event_data, context.event_log))
+			{
+				return false;
+			}
+
 			if (!context.active_sneak->is_security_challenge())
 			{
 				database::player_records::set_shield_date(context.active_sneak->get_owner_id(), context.is_win);
@@ -385,23 +406,6 @@ namespace emulator::tpp
 					? database::event_rankings::cores_reached_defender
 					: database::event_rankings::cores_reached_no_defender;
 				database::event_rankings::increment_event_value(player.get_id(), event_id, 1);
-			}
-
-			auto owner_data = database::player_data::find(context.owner->get_id());
-			const auto owner_record = database::player_records::find(context.owner->get_id());
-			const auto owner_has_insurance = owner_record.has_value() && owner_record->get_is_insurance();
-
-			if (!database::vars.pvp_mode && !database::vars.no_fob_damage && owner_data.has_value() && context.attacker_data.has_value())
-			{
-				update_staff(param, context, owner_has_insurance);
-				update_resources(param, context, owner_has_insurance);
-			}
-
-			auto& active_sneak_val = context.active_sneak.value();
-			if (!database::sneak_results::add_sneak_result(player, context.fob.value(),
-				active_sneak_val, context.is_win, context.event_data, context.event_log))
-			{
-				return false;
 			}
 		}
 		else // defense
@@ -439,6 +443,15 @@ namespace emulator::tpp
 				database::event_rankings::increment_event_value(context.active_sneak->get_owner_id(),
 					database::event_rankings::defense_deployments_support_received, 1);
 			}
+		}
+
+		database::player_records::add_sneak_result(player.get_id(), context.fob->get_player_id(),
+			param.sneak_point, context.is_win, is_sneak);
+
+		if (param.sneak_point > 0)
+		{
+			database::event_rankings::set_value_if_bigger(player.get_id(),
+				database::event_rankings::most_ep_in_mission, param.sneak_point);
 		}
 
 		return true;

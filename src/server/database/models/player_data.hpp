@@ -211,8 +211,8 @@ namespace database::player_data
 	std::optional<player_data> find(const std::uint64_t player_id);
 	std::optional<player_data> find_or_create(const std::uint64_t player_id);
 
-	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info);
-	void set_staff(const std::uint64_t player_id, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& levels);
+	bool set_staff(const std::uint64_t player_id, const std::uint32_t current_version, const staff_array_container& staff_array, staff_info_t& info);
+	bool set_staff(const std::uint64_t player_id, const std::uint32_t current_version, const staff_array_container& staff_array, staff_info_t& info, unit_levels_t& levels);
 	void set_staff_levels(const std::uint64_t player_id, unit_levels_t& levels, unit_counts_t& counts);
 
 	void set_resources_gmp(const std::uint64_t player_id, resource_arrays_t& arrays, const std::int32_t local_gmp, const std::int32_t server_gmp);

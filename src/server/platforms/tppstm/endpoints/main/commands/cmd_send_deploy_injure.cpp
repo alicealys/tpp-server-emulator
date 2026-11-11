@@ -64,7 +64,7 @@ namespace emulator::tpp
 			}
 
 			database::player_data::staff_info_t staff_info{};
-			database::player_data::set_staff(player_data.get_player_id(), staff_array, staff_info);
+			database::player_data::set_staff(player_data.get_player_id(), player_data.get_server_staff_version(), staff_array, staff_info);
 
 			return true;
 		}

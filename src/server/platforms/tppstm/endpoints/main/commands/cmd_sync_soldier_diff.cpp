@@ -24,11 +24,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.has_value())
 		{
@@ -169,7 +164,11 @@ namespace emulator::tpp
 			}
 
 			database::player_data::staff_info_t info{};
-			database::player_data::set_staff(player->get_id(), new_staff_array, info, levels);
+			if (!database::player_data::set_staff(player->get_id(), player_data->get_server_staff_version(), 
+				new_staff_array, info, levels))
+			{
+				return error(ERR_DATABASE);
+			}
 		}
 		else
 		{
@@ -181,5 +180,10 @@ namespace emulator::tpp
 		result["version"] = player_data->get_server_staff_version() + 1;
 
 		return result;
+	}
+
+	bool cmd_sync_soldier_diff::needs_player()
+	{
+		return true;
 	}
 }

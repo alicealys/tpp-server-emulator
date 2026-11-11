@@ -174,14 +174,18 @@ namespace database::fob_events
 		{
 			const auto player = database::players::create_system_player(event_player.player_id);
 
-			database::player_data::find_or_create(player.get_id());
+			const auto player_data = database::player_data::find_or_create(player.get_id());
 			database::player_data::sync_emblem(player.get_id(), event_player.emblem);
 			database::player_data::sync_motherbase(player.get_id(), event_player.motherbase);
 			database::player_data::set_resources_gmp(player.get_id(), event_player.staff_resources.resource_arrays, 0, 0);
 
 			database::player_data::staff_info_t staff_info{};
-			database::player_data::set_staff(player.get_id(), event_player.staff_resources.staff_array, staff_info);
-			database::player_data::set_staff_levels(player.get_id(), event_player.staff_resources.unit_levels, event_player.staff_resources.unit_counts);
+			database::player_data::set_staff(player.get_id(), player_data->get_server_staff_version(), 
+				event_player.staff_resources.staff_array, staff_info);
+
+			database::player_data::set_staff_levels(player.get_id(), event_player.staff_resources.unit_levels, 
+				event_player.staff_resources.unit_counts);
+
 
 			database::player_records::find_or_create(player.get_id());
 

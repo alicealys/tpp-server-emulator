@@ -48,7 +48,7 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto local_version = version_j.get<std::uint32_t>();
+		[[ maybe_unused ]] const auto local_version = version_j.get<std::uint32_t>();
 		const auto client_version = player_data->get_client_staff_version();
 		auto server_version = player_data->get_server_staff_version();
 
@@ -79,7 +79,13 @@ namespace emulator::tpp
 			}
 
 			database::player_data::staff_info_t staff_info{};
-			database::player_data::set_staff(player->get_id(), client_staff_array.value(), staff_info);
+			if (!database::player_data::set_staff(player->get_id(), player_data->get_server_staff_version(), 
+				client_staff_array.value(), staff_info))
+			{
+				result["error"] = game::get_error(ERR_DATABASE);
+				return;
+			}
+
 			database::player_data::set_staff_levels(player->get_id(), levels, counts);
 			database::player_data::sync_client_staff_version(player->get_id());
 
