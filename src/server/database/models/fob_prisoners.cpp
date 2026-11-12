@@ -447,8 +447,6 @@ namespace database::fob_prisoners
 	public:
 		void create(database_t& database) override
 		{
-			indirect_rescue(1001);
-
 			database.run_query("mgstpp.fob_prisoners.create");
 		}
 	};
