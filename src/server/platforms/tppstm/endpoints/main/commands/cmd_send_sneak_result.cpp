@@ -151,10 +151,7 @@ namespace emulator::tpp
 			}
 		}
 
-		bool update_staff(
-			const cmd_send_sneak_result::param_t& param,
-			cmd_send_sneak_result::context_t& context,
-			const bool has_insurance)
+		bool update_staff(const cmd_send_sneak_result::param_t& param, cmd_send_sneak_result::context_t& context)
 		{
 			database::player_data::staff_array_container owner_staff;
 			context.owner_data->get_staff_array(owner_staff);
@@ -192,7 +189,7 @@ namespace emulator::tpp
 				database::fob_prisoners::indirect_rescue(context.attacker_data->get_player_id());
 			}
 
-			if (!modified_owner_staff || has_insurance)
+			if (!modified_owner_staff || context.owner_record->get_is_insurance())
 			{
 				return true;
 			}
@@ -208,10 +205,7 @@ namespace emulator::tpp
 			return true;
 		}
 
-		void update_resources(
-			const cmd_send_sneak_result::param_t& param,
-			cmd_send_sneak_result::context_t& context,
-			const bool has_insurance)
+		void update_resources(const cmd_send_sneak_result::param_t& param, cmd_send_sneak_result::context_t& context)
 		{
 			database::player_data::resource_arrays_t owner_resources{};
 			database::player_data::resource_arrays_t attacker_resources{};
@@ -234,7 +228,7 @@ namespace emulator::tpp
 					add_value = std::min(sub_value, max_count - attacker_count);
 				}
 				
-				if (!has_insurance || resource_id == game::NUCLEAR_WEAPON)
+				if (!context.owner_record->get_is_insurance() || resource_id == game::NUCLEAR_WEAPON)
 				{
 					owner_resources[resource_type][resource_id] -= sub_value;
 				}
@@ -351,33 +345,22 @@ namespace emulator::tpp
 	bool cmd_send_sneak_result::handle_result(const database::players::player& player,
 		const param_t& param, cmd_send_sneak_result::context_t& context)
 	{
-		context.active_sneak = database::players::find_active_sneak_from_player(player.get_id());
-		if (!context.active_sneak.has_value() || context.active_sneak->get_mode() != context.mode)
-		{
-			return false;
-		}
-
-		if (context.active_sneak->get_mode() != database::players::mode_actual || context.active_sneak->get_owner_id() == player.get_id())
+		if (context.active_sneak->get_mode() != database::players::mode_actual || 
+			context.active_sneak->get_owner_id() == player.get_id())
 		{
 			return true;
 		}
 
-		const auto is_sneak = context.active_sneak->is_sneak();
-
-		if (is_sneak) // attack
+		if (context.active_sneak->is_sneak()) // attack
 		{
-			auto owner_data = database::player_data::find(context.owner->get_id());
-			const auto owner_record = database::player_records::find(context.owner->get_id());
-			const auto owner_has_insurance = owner_record.has_value() && owner_record->get_is_insurance();
-
-			if (!database::vars.pvp_mode && !database::vars.no_fob_damage && owner_data.has_value() && context.attacker_data.has_value())
+			if (!database::vars.pvp_mode && !database::vars.no_fob_damage)
 			{
-				if (!update_staff(param, context, owner_has_insurance))
+				if (!update_staff(param, context))
 				{
 					return false;
 				}
 
-				update_resources(param, context, owner_has_insurance);
+				update_resources(param, context);
 			}
 
 			auto& active_sneak_val = context.active_sneak.value();
@@ -391,8 +374,6 @@ namespace emulator::tpp
 			{
 				database::player_records::set_shield_date(context.active_sneak->get_owner_id(), context.is_win);
 			}
-
-			database::fob_deploy_assists::delete_deployments(player.get_id());
 
 			if (context.is_win)
 			{
@@ -446,7 +427,7 @@ namespace emulator::tpp
 		}
 
 		database::player_records::add_sneak_result(player.get_id(), context.fob->get_player_id(),
-			param.sneak_point, context.is_win, is_sneak);
+			param.sneak_point, context.is_win, context.active_sneak->is_sneak());
 
 		if (param.sneak_point > 0)
 		{
@@ -455,6 +436,20 @@ namespace emulator::tpp
 		}
 
 		return true;
+	}
+
+	void cmd_send_sneak_result::handle_result_event(const database::players::player& player, const param_t& param, context_t& context)
+	{
+		if (!param.is_event || context.active_sneak->get_mode() != database::players::mode_actual)
+		{
+			return;
+		}
+
+		database::player_records::add_event_points(player.get_id(), param.event_point);
+		database::event_rankings::set_value_if_bigger(player.get_id(), database::event_rankings::most_ep_in_mission, param.sneak_point);
+		database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::fob_event_ranking, param.event_point);
+		database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::cores_reached_no_defender, 1);
+		database::player_records::add_sneak_result(player.get_id(), context.fob->get_player_id(), param.sneak_point, context.is_win, true);
 	}
 
 	bool cmd_send_sneak_result::param_t::parse(nlohmann::json& data)
@@ -621,24 +616,13 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		context.attacker_data = database::player_data::find(player->get_id());
-		if (!context.attacker_data.has_value())
-		{
-			return error(ERR_DATABASE);
-		}
-
 		const auto _0 = gsl::finally([&]
 		{
 			database::players::abort_mother_base(player->get_id());
 		});
 
 		auto& event_j = data["event"];
-		if (!parse_event_log(event_j, context.event_log))
-		{
-			return error(ERR_INVALIDARG);
-		}
-
-		if (!parse_event_data(event_j, context.event_data))
+		if (!parse_event_log(event_j, context.event_log) || !parse_event_data(event_j, context.event_data))
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -647,40 +631,36 @@ namespace emulator::tpp
 		param.event_point = std::clamp(param.event_point, 0, 500000);
 		context.is_win = param.sneak_result == "WIN";
 
-		context.fob = database::fobs::get_fob(param.mother_base_id);
-		if (!context.fob.has_value())
-		{
-			return error(ERR_DATABASE);
-		}
-
-		context.owner = database::players::find(context.fob->get_player_id());
-		if (!context.owner.has_value())
-		{
-			return error(ERR_DATABASE);
-		}
-
-		context.owner_data = database::player_data::find(context.owner->get_id());
-		if (!context.owner_data.has_value())
-		{
-			return error(ERR_DATABASE);
-		}
-
 		context.mode = database::players::get_sneak_mode_id(param.mode);
 		if (context.mode == database::players::mode_invalid)
 		{
 			return error(ERR_INVALIDARG);
 		}
 
+		context.active_sneak = database::players::find_active_sneak_from_player(player->get_id());
+		if (!context.active_sneak.has_value() || context.active_sneak->get_status() < database::players::status_pre_game ||
+			context.active_sneak->get_fob_id() != param.mother_base_id || context.active_sneak->get_mode() != context.mode)
+		{
+			return error(ERR_DATABASE);
+		}
+
+		context.attacker_data = database::player_data::find(player->get_id());
+		context.fob = database::fobs::get_fob(context.active_sneak->get_fob_id());
+		context.owner = database::players::find(context.fob->get_player_id());
+		context.owner_data = database::player_data::find(context.owner->get_id());
+		context.owner_record = database::player_records::find(context.owner->get_id());
+
+		if (!context.attacker_data.has_value() || !context.fob.has_value() || 
+			!context.owner.has_value() || !context.owner_data.has_value() || 
+			!context.owner_record.has_value())
+		{
+			return error(ERR_DATABASE);
+		}
+
 		if (!context.owner->is_real_player())
 		{
-			if (param.is_event)
-			{
-				database::player_records::add_event_points(player->get_id(), param.event_point);
-				database::event_rankings::set_value_if_bigger(player->get_id(), database::event_rankings::most_ep_in_mission, param.sneak_point);
-				database::event_rankings::increment_event_value(player->get_id(), database::event_rankings::fob_event_ranking, param.event_point);
-				database::event_rankings::increment_event_value(player->get_id(), database::event_rankings::cores_reached_no_defender, 1);
-				database::player_records::add_sneak_result(player->get_id(), context.fob->get_player_id(), param.sneak_point, context.is_win, true);
-			}
+			this->handle_result_event(player.value(), param, context);
+			result["is_wormhole_open"] = 0;
 		}
 		else
 		{
@@ -689,8 +669,11 @@ namespace emulator::tpp
 				return error(ERR_DATABASE);
 			}
 
-			this->handle_rewards(player.value(), param, context, result["result_reward"]);
+			const auto wormhole = database::wormholes::get_wormhole_status(context.owner->get_id(), player->get_id());
+			result["is_wormhole_open"] = std::uint8_t(wormhole.open);
 		}
+
+		this->handle_rewards(player.value(), param, context, result["result_reward"]);
 
 		const auto new_stats = database::player_records::find(player->get_id());
 		if (!new_stats.has_value())
@@ -698,11 +681,8 @@ namespace emulator::tpp
 			return error(ERR_DATABASE);
 		}
 
-		const auto wormhole = database::wormholes::get_wormhole_status(context.owner->get_id(), player->get_id());
-
 		result["sneak_point"] = new_stats->get_fob_point();
 		result["is_security_challenge"] = context.owner->is_security_challenge_enabled();
-		result["is_wormhole_open"] = std::uint8_t(wormhole.open);
 		result["event_point"] = new_stats->get_event_point();
 
 		database::event_rankings::set_event_value(player->get_id(), database::event_rankings::ep_earned, new_stats->get_fob_point());

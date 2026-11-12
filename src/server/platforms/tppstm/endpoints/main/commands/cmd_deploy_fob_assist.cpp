@@ -28,7 +28,7 @@ namespace emulator::tpp
 		}
 
 		const auto fob = database::fobs::get_fob(deploy_params.fob_id);
-		if (!fob.has_value())
+		if (!fob.has_value() || database::players::is_system_player_id(fob->get_player_id()))
 		{
 			return error(ERR_DATABASE);
 		}

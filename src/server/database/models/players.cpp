@@ -577,38 +577,41 @@ namespace database::players
 
 		template <database_type_t Type>
 		bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
-			const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak, bool is_security_challenge)
+			const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak, bool is_security_challenge, const bool with_lock)
 		{
 			if (mode == mode_invalid)
 			{
 				return false;
 			}
 
-			const auto _0 = gsl::finally([=]
+			if (with_lock)
 			{
-				release_lock<Type>(player_id, owner_id);
-			});
+				const auto _0 = gsl::finally([=]
+				{
+					release_lock<Type>(player_id, owner_id);
+				});
 
-			if (!try_acquire_lock<Type>(player_id, owner_id))
-			{
-				return false;
-			}
-
-			const auto alt_mode = get_alt_sneak_mode(static_cast<sneak_mode>(mode));
-			const auto active_sneak = find_active_sneak(owner_id, mode, alt_mode, is_sneak, false);
-
-			if (active_sneak.has_value())
-			{
-				if (status < static_cast<std::uint32_t>(active_sneak->get_status()) || active_sneak->get_player_id() != player_id)
+				if (!try_acquire_lock<Type>(player_id, owner_id))
 				{
 					return false;
 				}
-			}
-			else
-			{
-				if (status != status_menu)
+
+				const auto alt_mode = get_alt_sneak_mode(static_cast<sneak_mode>(mode));
+				const auto active_sneak = find_active_sneak(owner_id, mode, alt_mode, is_sneak, false);
+
+				if (active_sneak.has_value())
 				{
-					return false;
+					if (status < static_cast<std::uint32_t>(active_sneak->get_status()) || active_sneak->get_player_id() != player_id)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if (status != status_menu)
+					{
+						return false;
+					}
 				}
 			}
 
@@ -624,7 +627,7 @@ namespace database::players
 								 player::table.current_sneak_status = status,
 								 player::table.current_sneak_mode = mode,
 								 player::table.current_sneak_is_sneak = is_sneak,
-								 player::table.current_sneak_security_challenge = active_sneak->is_security_challenge(),
+								 player::table.current_sneak_security_challenge = is_security_challenge,
 								 player::table.current_sneak_start = std::chrono::system_clock::now())
 									.where(player::table.id == player_id)
 						);
@@ -864,9 +867,9 @@ namespace database::players
 
 	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
 		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak,
-		bool is_security_challenge)
+		bool is_security_challenge, const bool with_lock)
 	{
-		RUN_IMPL(impl::set_active_sneak, player_id, fob_id, owner_id, platform, mode, status, is_sneak, is_security_challenge);
+		RUN_IMPL(impl::set_active_sneak, player_id, fob_id, owner_id, platform, mode, status, is_sneak, is_security_challenge, with_lock);
 	}
 
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,

@@ -139,44 +139,28 @@ namespace emulator::tpp
 			current_deploy->apply(cluster_param);
 		}
 
-		{
-			auto& recover_soldier_j = result["recover_soldier"];
-			recover_soldier_j = nlohmann::json::array();
-			std::array<std::uint32_t, 10> recover_soldier_count{};
-
-			const auto rescuable_list = database::fob_prisoners::get_rescueable_list(player->get_id(), owner->get_id());
-			for (auto i = 0ull; i < rescuable_list.size(); i++)
-			{
-				const auto param = rescuable_list[i].get_staff_param();
-				auto& entry_j = recover_soldier_j[i];
-				entry_j["header"] = param.packed_header;
-				entry_j["seed"] = param.packed_seed;
-				entry_j["status_no_sync"] = param.packed_status_no_sync;
-				entry_j["status_sync"] = param.packed_status_sync;
-
-				const auto peak_rank = param.header.peak_rank;
-				recover_soldier_count[peak_rank]++;
-			}
-
-			result["recover_soldier_count"] = recover_soldier_count;
-			result["recover_soldier_num"] = rescuable_list.size();
-		}
-
 		database::player_data::staff_array_container staff_array;
 		owner_data->get_staff_array(staff_array);
 
 		result["reward_id"] = 0;
-		result["reward_soldier"] = nlohmann::json::array();
+
+		auto& reward_soldier_j = result["reward_soldier"];
+		reward_soldier_j = nlohmann::json::array();
 		result["reward_soldier_num"] = 0;
 		result["reward_soldier_rank"] = 0;
 		result["reward_soldier_type"] = 0;
 
-		auto& stage_param = result["stage_param"];
-
-		result["security_soldier"] = nlohmann::json::array();
+		auto& security_soldier_j = result["security_soldier"];
+		security_soldier_j = nlohmann::json::array();
 		result["security_soldier_num"] = 0;
 		result["security_soldier_rank"] = 0;
 
+		auto& recover_soldier_j = result["recover_soldier"];
+		recover_soldier_j = nlohmann::json::array();
+		result["recover_soldier_count"] = 0;
+		result["recover_soldier_num"] = 0;
+
+		auto& stage_param = result["stage_param"];
 		const auto cluster_type = game::cluster_index_map[platform];
 		const auto& mapped_cluster_param = cluster_param.param[cluster_type];
 
@@ -201,9 +185,65 @@ namespace emulator::tpp
 			return false;
 		};
 
-		if (is_event)
+		if (!is_event)
 		{
-			result["security_soldier_rank"] = mapped_cluster_param.soldier_rank;
+			auto security_soldier_index = 0;
+			auto reward_soldier_index = 0;
+
+			for (auto i = 0u; i < owner_data->get_staff_count(); i++)
+			{
+				auto& staff = staff_array[i];
+				if (!game::is_usable_staff(staff))
+				{
+					continue;
+				}
+
+				if (staff.fields.packed_status_no_sync == 0)
+				{
+					staff.fields.packed_status_no_sync = 4096; // fix broken staff
+				}
+
+				if (!is_event && staff.fields.status_sync.designation == game::SECTION_SECURITY)
+				{
+					result["security_soldier"][security_soldier_index]["header"] = staff.fields.packed_header;
+					result["security_soldier"][security_soldier_index]["seed"] = staff.fields.packed_seed;
+					result["security_soldier"][security_soldier_index]["status_no_sync"] = staff.fields.packed_status_no_sync;
+					result["security_soldier"][security_soldier_index]["status_sync"] = staff.fields.packed_status_sync;
+					++security_soldier_index;
+				}
+				else if (matches_current_platform(staff) && reward_soldier_index < 10)
+				{
+					result["reward_soldier"][reward_soldier_index]["header"] = staff.fields.packed_header;
+					result["reward_soldier"][reward_soldier_index]["seed"] = staff.fields.packed_seed;
+					result["reward_soldier"][reward_soldier_index]["status_no_sync"] = staff.fields.packed_status_no_sync;
+					result["reward_soldier"][reward_soldier_index]["status_sync"] = staff.fields.packed_status_sync;
+					++reward_soldier_index;
+				}
+			}
+
+			std::array<std::uint32_t, 10> recover_soldier_count{};
+
+			const auto rescuable_list = database::fob_prisoners::get_rescueable_list(player->get_id(), owner->get_id());
+			for (auto i = 0ull; i < rescuable_list.size(); i++)
+			{
+				const auto param = rescuable_list[i].get_staff_param();
+				auto& entry_j = recover_soldier_j[i];
+				entry_j["header"] = param.packed_header;
+				entry_j["seed"] = param.packed_seed;
+				entry_j["status_no_sync"] = param.packed_status_no_sync;
+				entry_j["status_sync"] = param.packed_status_sync;
+
+				const auto peak_rank = param.header.peak_rank;
+				recover_soldier_count[peak_rank]++;
+			}
+
+			result["recover_soldier_count"] = recover_soldier_count;
+			result["recover_soldier_num"] = rescuable_list.size();
+			result["security_soldier_num"] = security_soldier_index;
+			result["reward_soldier_num"] = reward_soldier_index;
+		}
+		else
+		{
 			auto security_soldier_num = 0u;
 
 			security_soldier_num += mapped_cluster_param.unique_security.soldier;
@@ -211,49 +251,9 @@ namespace emulator::tpp
 			security_soldier_num += mapped_cluster_param.common_security[1].soldier;
 			security_soldier_num += mapped_cluster_param.common_security[2].soldier;
 
+			result["security_soldier_rank"] = mapped_cluster_param.soldier_rank;
 			result["security_soldier_num"] = security_soldier_num;
 		}
-
-		auto security_soldier_index = 0;
-		auto reward_soldier_index = 0;
-
-		for (auto i = 0u; i < owner_data->get_staff_count(); i++)
-		{
-			auto& staff = staff_array[i];
-			if (!game::is_usable_staff(staff))
-			{
-				continue;
-			}
-
-			if (staff.fields.packed_status_no_sync == 0)
-			{
-				staff.fields.packed_status_no_sync = 4096; // fix broken staff
-			}
-
-			if (!is_event && staff.fields.status_sync.designation == game::SECTION_SECURITY)
-			{
-				result["security_soldier"][security_soldier_index]["header"] = staff.fields.packed_header;
-				result["security_soldier"][security_soldier_index]["seed"] = staff.fields.packed_seed;
-				result["security_soldier"][security_soldier_index]["status_no_sync"] = staff.fields.packed_status_no_sync;
-				result["security_soldier"][security_soldier_index]["status_sync"] = staff.fields.packed_status_sync;
-				++security_soldier_index;
-			}
-			else if (matches_current_platform(staff) && reward_soldier_index < 10)
-			{
-				result["reward_soldier"][reward_soldier_index]["header"] = staff.fields.packed_header;
-				result["reward_soldier"][reward_soldier_index]["seed"] = staff.fields.packed_seed;
-				result["reward_soldier"][reward_soldier_index]["status_no_sync"] = staff.fields.packed_status_no_sync;
-				result["reward_soldier"][reward_soldier_index]["status_sync"] = staff.fields.packed_status_sync;
-				++reward_soldier_index;
-			}
-		}
-
-		if (!is_event)
-		{
-			result["security_soldier_num"] = security_soldier_index;
-		}
-
-		result["reward_soldier_num"] = reward_soldier_index;
 
 		mapped_cluster_param.to_json(stage_param["cluster_param"]);
 
@@ -309,32 +309,30 @@ namespace emulator::tpp
 
 		result["wormhole_player_id"] = wormhole_player_id_j;
 
-		if (owner->is_real_player())
+		if (!is_sneak)
 		{
-			if (!is_sneak)
+			if (!active_sneak.has_value() || owner->is_real_player())
 			{
-				if (!active_sneak.has_value())
-				{
-					return error(ERR_DATABASE);
-				}
-
-				stage_param["platform"] = active_sneak->get_platform();
-
-				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-					database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
-				{
-					return error(ERR_DATABASE);
-				}
+				return error(ERR_DATABASE);
 			}
-			else
-			{
-				database::player_records::clear_shield_date(player->get_id());
 
-				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
-					database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
-				{
-					return error(ERR_DATABASE);
-				}
+			stage_param["platform"] = active_sneak->get_platform();
+
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
+				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
+			{
+				return error(ERR_DATABASE);
+			}
+		}
+		else
+		{
+			database::player_records::clear_shield_date(player->get_id());
+			database::fob_deploy_assists::delete_deploy_to_fob(player->get_id(), fob->get_id());
+
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
+				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled(), owner->is_real_player()))
+			{
+				return error(ERR_DATABASE);
 			}
 		}
 

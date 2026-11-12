@@ -211,59 +211,61 @@ namespace emulator::tpp
 		session_j["xnkid"] = {};
 		session_j["xuid"] = 0;
 
-		if (owner->is_real_player())
+		if (!owner->is_real_player() && is_actual)
 		{
-			if (is_actual)
+			const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
+			if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
 			{
-				const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
-				if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
-				{
-					return error(ERR_SNEAK_RESTRICTION);
-				}
+				return error(ERR_SNEAK_RESTRICTION);
+			}
+		}
+
+		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
+		if (is_sneak)
+		{
+			session_j["ip"] = player->get_ex_ip();
+			session_j["is_invalid"] = 0;
+			session_j["port"] = player->get_ex_port();
+			session_j["steamid"] = player->get_account_id();
+			session_j["xuid"] = player->get_account_id();
+
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
+				database::players::status_menu, true, owner->is_security_challenge_enabled(), owner->is_real_player()))
+			{
+				return error(ERR_ALREADY_SNEAK);
+			}
+		}
+		else
+		{
+			if (!owner->is_real_player())
+			{
+				return error(ERR_DATABASE);
 			}
 
-			const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
-			if (is_sneak)
+			const auto active_sneak = database::players::find_active_sneak(owner->get_id(), mode);
+			if (!active_sneak.has_value() || active_sneak->get_fob_id() != fob->get_id())
 			{
-				session_j["ip"] = player->get_ex_ip();
-				session_j["is_invalid"] = 0;
-				session_j["port"] = player->get_ex_port();
-				session_j["steamid"] = player->get_account_id();
-				session_j["xuid"] = player->get_account_id();
-
-				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
-					database::players::status_menu, true, owner->is_security_challenge_enabled()))
-				{
-					return error(ERR_ALREADY_SNEAK);
-				}
+				return error(ERR_DATABASE);
 			}
-			else
+
+			const auto attacker = database::players::find(active_sneak->get_player_id());
+			if (!attacker.has_value())
 			{
-				const auto active_sneak = database::players::find_active_sneak(owner->get_id(), mode);
-				if (!active_sneak.has_value() || active_sneak->get_fob_id() != fob->get_id())
-				{
-					return error(ERR_DATABASE);
-				}
+				return error(ERR_DATABASE);
+			}
 
-				const auto attacker = database::players::find(active_sneak->get_player_id());
-				if (!attacker.has_value())
-				{
-					return error(ERR_DATABASE);
-				}
+			detail_j["platform"] = active_sneak->get_platform();
 
-				detail_j["platform"] = active_sneak->get_platform();
+			session_j["ip"] = attacker->get_ex_ip();
+			session_j["is_invalid"] = 0;
+			session_j["port"] = attacker->get_ex_port();
+			session_j["steamid"] = attacker->get_account_id();
+			session_j["xuid"] = attacker->get_account_id();
 
-				session_j["ip"] = attacker->get_ex_ip();
-				session_j["is_invalid"] = 0;
-				session_j["port"] = attacker->get_ex_port();
-				session_j["steamid"] = attacker->get_account_id();
-				session_j["xuid"] = attacker->get_account_id();
-
-				if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-					database::players::status_menu, false, owner->is_security_challenge_enabled()))
-				{
-					return error(ERR_ALREADY_SNEAK);
-				}
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
+				database::players::status_menu, false, owner->is_security_challenge_enabled()))
+			{
+				return error(ERR_ALREADY_SNEAK);
 			}
 		}
 

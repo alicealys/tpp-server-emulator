@@ -314,7 +314,7 @@ namespace database::players
 
 	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
 		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak,
-		bool is_security_challenge);
+		bool is_security_challenge, const bool with_lock = true);
 
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,
 		const std::uint32_t alt_mode = mode_invalid, bool is_sneak = true, bool in_game_only = false);

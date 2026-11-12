@@ -2,6 +2,7 @@
 
 #include "types/command_handler.hpp"
 #include "database/models/player_data.hpp"
+#include "database/models/player_records.hpp"
 #include "database/models/fobs.hpp"
 #include "database/models/sneak_results.hpp"
 
@@ -69,6 +70,7 @@ namespace emulator::tpp
 			std::optional<database::fobs::fob> fob;
 			std::optional<database::players::player> owner;
 			std::optional<database::player_data::player_data> owner_data;
+			std::optional<database::player_records::player_record> owner_record;
 			std::optional<database::player_data::player_data> attacker_data;
 			std::optional<database::players::sneak_info> active_sneak;
 			database::sneak_results::sneak_result_data_t event_data;
@@ -81,6 +83,7 @@ namespace emulator::tpp
 		bool needs_player() override;
 
 	private:
+		void handle_result_event(const database::players::player& player, const param_t& param, context_t& context);
 		bool handle_result(const database::players::player& player, const param_t& param, context_t& context);
 		void handle_rewards(const database::players::player& player, const param_t& param, context_t& context, nlohmann::json& result);
 	};
