@@ -6,7 +6,8 @@
 
 namespace database::wormholes
 {
-	constexpr const auto max_retaliate_score = 1000u;
+	constexpr const auto mid_retaliate_score = 300u;
+	constexpr const auto max_retaliate_score = 720u;
 
 	enum wormhole_flag
 	{
@@ -121,6 +122,7 @@ namespace database::wormholes
 
 	void add_wormhole(const std::uint64_t player_id, const std::uint64_t to_player_id, const std::uint64_t follower_id,
 		const wormhole_flag flag, const bool is_open, const std::uint32_t retaliate_point);
+	void remove_wormholes(const std::uint64_t player_id, const std::uint64_t to_player_id);
 
 	std::vector<wormhole_status_t> get_wormhole_list(const std::uint64_t to_player_id, const std::uint32_t flag = wormhole_flag_invalid, const std::uint64_t follower_id = 0u);
 	wormhole_status_t get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id, 

@@ -84,6 +84,7 @@ namespace emulator::tpp
 
 	private:
 		void handle_result_event(const database::players::player& player, const param_t& param, context_t& context);
+		bool open_wormhole(const database::players::player& player, const param_t& param, context_t& context);
 		bool handle_result(const database::players::player& player, const param_t& param, context_t& context);
 		void handle_rewards(const database::players::player& player, const param_t& param, context_t& context, nlohmann::json& result);
 	};

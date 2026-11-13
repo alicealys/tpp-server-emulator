@@ -17,9 +17,7 @@ namespace database::wormholes
 				return 0h;
 			}
 
-			const auto scalar = static_cast<std::uint32_t>((static_cast<float>(score) * 2.4f));
-			const auto duration = 1h * scalar;
-
+			const auto duration = 1h * score;
 			if (duration > vars.wormhole_duration)
 			{
 				return vars.wormhole_duration;
@@ -55,8 +53,7 @@ namespace database::wormholes
 
 	bool wormhole_status_t::is_expired() const
 	{
-		const auto now = std::chrono::system_clock::now();
-		return now.time_since_epoch() >= this->expire_date;
+		return this->get_left_hour() <= 0;
 	}
 
 	bool wormhole_status_t::is_open(const bool from_follower) const
@@ -68,7 +65,7 @@ namespace database::wormholes
 
 		if (from_follower)
 		{
-			return this->score + this->follower_score > 0;
+			return this->follower_score > 0;
 		}
 		else
 		{
@@ -78,13 +75,13 @@ namespace database::wormholes
 
 	std::uint64_t wormhole_status_t::get_left_hour() const
 	{
-		if (this->is_expired())
+		const auto now = std::chrono::system_clock::now().time_since_epoch();
+		if (this->expire_date <= now)
 		{
 			return 0u;
 		}
 
-		const auto now = std::chrono::system_clock::now();
-		const auto diff = this->expire_date - now.time_since_epoch();
+		const auto diff = this->expire_date - now;
 		return std::chrono::duration_cast<std::chrono::hours>(diff).count();
 	}
 
@@ -110,23 +107,46 @@ namespace database::wormholes
 		}
 
 		template <database_type_t Type>
-		std::vector<wormhole_status_t> get_wormhole_list(const std::uint64_t to_id, const std::uint64_t from_id, const std::uint32_t flag, const std::uint64_t follower_id)
+		void remove_wormholes(const std::uint64_t player_id, const std::uint64_t to_player_id)
+		{
+			database::access([&](database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::remove_from(wormhole::table)
+						.where(wormhole::table.player_id == player_id &&
+							   wormhole::table.to_player_id == to_player_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
+		std::vector<wormhole_status_t> get_wormhole_list(const std::uint64_t from_player_id, const std::uint64_t to_player_id, const std::uint32_t flag, const std::uint64_t follower_id)
 		{
 			std::vector<wormhole_status_t> list;
 
 			auto opponent = 
-				sqlpp::case_when(wormhole::table.to_player_id == to_id)
+				sqlpp::case_when(wormhole::table.to_player_id == from_player_id)
 					.then(wormhole::table.player_id)
 					.else_(wormhole::table.to_player_id);
 
 			auto sign = 
-				sqlpp::case_when(wormhole::table.player_id == to_id)
+				sqlpp::case_when(wormhole::table.player_id == from_player_id)
 					.then(1)
-					.else_(-1);
+					.else_(0);
+
+			auto sign_opponent = 
+				sqlpp::case_when(wormhole::table.player_id == from_player_id)
+					.then(0)
+					.else_(1);
 
 			auto score =
 				sqlpp::case_when(wormhole::table.follower_player_id.is_null())
 					.then(wormhole::table.retaliate_score * sign)
+					.else_(0);
+
+			auto opponent_score =
+				sqlpp::case_when(wormhole::table.follower_player_id.is_null())
+					.then(wormhole::table.retaliate_score * sign_opponent)
 					.else_(0);
 
 			auto follower_score =
@@ -135,22 +155,22 @@ namespace database::wormholes
 					.else_(0);
 
 			auto is_open = 
-				sqlpp::case_when(wormhole::table.player_id == to_id)
+				sqlpp::case_when(wormhole::table.player_id == from_player_id)
 					.then(wormhole::table.is_open)
 					.else_(false);
 
 			auto date =
-				sqlpp::case_when(wormhole::table.player_id == to_id)
+				sqlpp::case_when(wormhole::table.player_id == from_player_id)
 					.then(wormhole::table.create_date)
 					.else_(std::chrono::system_clock::time_point{});
 
-			auto retaliate_count =
-				sqlpp::case_when(wormhole::table.player_id == to_id)
-					.then(0)
-					.else_(1);
-
 			auto attack_count =
-				sqlpp::case_when(wormhole::table.to_player_id == to_id)
+				sqlpp::case_when(wormhole::table.player_id == from_player_id)
+					.then(1)
+					.else_(0);
+
+			auto retaliate_count =
+				sqlpp::case_when(wormhole::table.to_player_id == from_player_id)
 					.then(1)
 					.else_(0);
 
@@ -161,25 +181,26 @@ namespace database::wormholes
 				auto query = sqlpp::dynamic_select(db_inst,
 						opponent.as(sqlpp::alias::a),
 						sqlpp::sum(score).as(sqlpp::alias::b),
+						sqlpp::sum(opponent_score).as(sqlpp::alias::l),
 						sqlpp::sum(follower_score).as(sqlpp::alias::i),
 						sqlpp::max(is_open).as(sqlpp::alias::d),
 						sqlpp::max(date).as(sqlpp::alias::e),
 						sqlpp::min(wormhole::table.create_date).as(sqlpp::alias::f),
-						sqlpp::max(retaliate_count).as(sqlpp::alias::g),
-						sqlpp::max(attack_count).as(sqlpp::alias::h))
+						sqlpp::sum(retaliate_count).as(sqlpp::alias::g),
+						sqlpp::sum(attack_count).as(sqlpp::alias::h))
 							.from(wormhole::table).dynamic_where().group_by(opponent);
 
 				const auto now = std::chrono::system_clock::now();
 				query.where.add(wormhole::table.create_date >= now - vars.wormhole_duration);
 
-				if (from_id != 0u)
+				if (to_player_id != 0u)
 				{
-					query.where.add((wormhole::table.player_id == to_id && wormhole::table.to_player_id == to_id) ||
-						(wormhole::table.to_player_id == to_id && wormhole::table.to_player_id == to_id));
+					query.where.add((wormhole::table.to_player_id == from_player_id && wormhole::table.player_id == to_player_id) ||
+						(wormhole::table.to_player_id == to_player_id && wormhole::table.player_id == from_player_id));
 				}
 				else
 				{
-					query.where.add(wormhole::table.player_id == to_id || wormhole::table.to_player_id == to_id);
+					query.where.add(wormhole::table.player_id == from_player_id || wormhole::table.to_player_id == from_player_id);
 				}
 
 				if (follower_id == 0u)
@@ -197,7 +218,7 @@ namespace database::wormholes
 					wormhole_status_t status{};
 					status.opponent_id = row.a;
 					status.score = static_cast<std::int32_t>(row.b);
-					status.opponent_score = status.score * -1;
+					status.opponent_score = static_cast<std::int32_t>(row.l);
 					status.follower_score = static_cast<std::int32_t>(row.i);
 					status.retaliate_count = static_cast<std::uint32_t>(row.g);
 					status.attack_count = static_cast<std::uint32_t>(row.h);
@@ -231,16 +252,21 @@ namespace database::wormholes
 		RUN_IMPL(impl::add_wormhole, player_id, to_player_id, follower_id, flag, is_open, retaliate_point);
 	}
 
-	std::vector<wormhole_status_t> get_wormhole_list(const std::uint64_t to_player_id, const std::uint32_t flag, const std::uint64_t follower_id)
+	void remove_wormholes(const std::uint64_t player_id, const std::uint64_t to_player_id)
 	{
-		RUN_IMPL(impl::get_wormhole_list, to_player_id, 0u, flag, follower_id);
+		RUN_IMPL(impl::remove_wormholes, player_id, to_player_id);
+	}
+
+	std::vector<wormhole_status_t> get_wormhole_list(const std::uint64_t from_player_id, const std::uint32_t flag, const std::uint64_t follower_id)
+	{
+		RUN_IMPL(impl::get_wormhole_list, from_player_id, 0u, flag, follower_id);
 	}
 
 	wormhole_status_t get_wormhole_status(const std::uint64_t from_player_id, const std::uint64_t to_player_id, const std::uint32_t flag)
 	{
 		const auto list = [&]()
 		{
-			RUN_IMPL(impl::get_wormhole_list, to_player_id, from_player_id, 0u, flag);
+			RUN_IMPL(impl::get_wormhole_list, from_player_id, to_player_id, 0u, flag);
 		}();
 
 		if (list.empty())

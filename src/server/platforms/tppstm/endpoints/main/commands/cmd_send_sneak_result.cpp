@@ -465,6 +465,46 @@ namespace emulator::tpp
 		database::player_records::add_sneak_result(player.get_id(), context.fob->get_player_id(), param.sneak_point, context.is_win, true);
 	}
 
+	bool cmd_send_sneak_result::open_wormhole(const database::players::player& player, const param_t& param, context_t& context)
+	{
+		auto has_captured_staff = false;
+		for (auto i = 0ull; i < ARRAYSIZE(context.event_data.capture_staff_count); i++)
+		{
+			if (context.event_data.capture_staff_count[i] > 0)
+			{
+				has_captured_staff = true;
+			}
+		}
+
+		// observed behavior from konami server:
+		// 
+		// cmd_open_wormhole:	  "contributes" to the current wormhole by retaliate_point and is_open
+		//						  current wormhole duration = sum(retaliate_point) in HOURS, is_open = max(is_open) of all contributions
+		//						  left_hour on each side is equal to how much damage the opponent has done
+		// 
+		// cmd_send_sneak_result: if [result == WIN OR capture_staff_count > 0] => clear all of the attackers wormholes to the victim
+		// 
+		//						  if
+		//							| capture_staff_count == 0 => opens wormhole with retaliate point 300 
+		//							| capture_staff_count  > 0 => opens wormhole with retaliate point 720
+		// 
+		//						  if open_wormole == 1 => wormhole is flagged as open, it is created regardless
+		// 
+
+		auto revenge_point = database::wormholes::mid_retaliate_score;
+		if (context.is_win || has_captured_staff)
+		{
+			database::wormholes::remove_wormholes(player.get_id(), context.owner->get_id());
+			revenge_point = database::wormholes::max_retaliate_score;
+		}
+
+		database::wormholes::add_wormhole(context.owner->get_id(), player.get_id(), 0ull,
+			database::wormholes::wormhole_flag_black, param.open_wormhole, revenge_point);
+
+		const auto status = database::wormholes::get_wormhole_status(context.owner->get_id(), player.get_id());
+		return status.is_open();
+	}
+
 	bool cmd_send_sneak_result::param_t::parse(nlohmann::json& data)
 	{
 		auto& is_event_j = data["is_event"];
@@ -682,8 +722,8 @@ namespace emulator::tpp
 				return error(ERR_DATABASE);
 			}
 
-			const auto wormhole = database::wormholes::get_wormhole_status(context.owner->get_id(), player->get_id());
-			result["is_wormhole_open"] = std::uint8_t(wormhole.open);
+			const auto wormhole = this->open_wormhole(player.value(), param, context);
+			result["is_wormhole_open"] = std::uint8_t(wormhole);
 		}
 
 		this->handle_rewards(player.value(), param, context, result["result_reward"]);
