@@ -214,7 +214,7 @@ namespace emulator::tpp
 		if (!owner->is_real_player() && is_actual)
 		{
 			const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
-			if ((!wormhole.open || !wormhole.first) && owner_record->is_shield_active())
+			if ((!wormhole.is_open() || !wormhole.first) && owner_record->is_shield_active())
 			{
 				return error(ERR_SNEAK_RESTRICTION);
 			}
@@ -229,7 +229,7 @@ namespace emulator::tpp
 			session_j["steamid"] = player->get_account_id();
 			session_j["xuid"] = player->get_account_id();
 
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0, mode,
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0u, 0u, mode, 
 				database::players::status_menu, true, owner->is_security_challenge_enabled(), owner->is_real_player()))
 			{
 				return error(ERR_ALREADY_SNEAK);
@@ -262,8 +262,9 @@ namespace emulator::tpp
 			session_j["steamid"] = attacker->get_account_id();
 			session_j["xuid"] = attacker->get_account_id();
 
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_menu, false, owner->is_security_challenge_enabled()))
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0u, 
+				active_sneak->get_platform(), mode, database::players::status_menu, false, 
+				owner->is_security_challenge_enabled()))
 			{
 				return error(ERR_ALREADY_SNEAK);
 			}

@@ -1,10 +1,13 @@
 #include <std_include.hpp>
 
+#include "game/game.hpp"
+
 #include "players.hpp"
 #include "player_records.hpp"
 #include "player_follows.hpp"
+
 #include "../auth.hpp"
-#include "game/game.hpp"
+#include "../utils.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -105,6 +108,25 @@ namespace database::players
 		}
 
 		return true;
+	}
+
+	GET_FIELD_C(sneak_info, std::uint32_t, mode);
+	GET_FIELD_C(sneak_info, std::uint32_t, status);
+	GET_FIELD_C(sneak_info, std::uint64_t, player_id);
+	GET_FIELD_C(sneak_info, std::uint64_t, owner_id);
+	GET_FIELD_C(sneak_info, std::uint64_t, fob_id);
+	GET_FIELD_C(sneak_info, std::uint64_t, wormhole_player_id);
+	GET_FIELD_C(sneak_info, std::uint32_t, platform);
+	GET_FIELD_C(sneak_info, std::chrono::seconds, start_time);
+
+	bool sneak_info::is_sneak() const
+	{
+		return this->is_sneak_;
+	}
+
+	bool sneak_info::is_security_challenge() const
+	{
+		return this->is_security_challenge_;
 	}
 
 	namespace impl
@@ -576,7 +598,7 @@ namespace database::players
 		}
 
 		template <database_type_t Type>
-		bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
+		bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id, const std::uint64_t wormhole_player_id, 
 			const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak, bool is_security_challenge, const bool with_lock)
 		{
 			if (mode == mode_invalid)
@@ -623,6 +645,7 @@ namespace database::players
 						sqlpp::update(player::table)
 							.set(player::table.current_sneak_fob = fob_id,
 								 player::table.current_sneak_player = owner_id,
+								 player::table.current_sneak_wormhole_player_id = nullable_integer(wormhole_player_id),
 								 player::table.current_sneak_platform = platform,
 								 player::table.current_sneak_status = status,
 								 player::table.current_sneak_mode = mode,
@@ -638,6 +661,7 @@ namespace database::players
 						sqlpp::update(player::table)
 							.set(player::table.current_sneak_fob = fob_id,
 								 player::table.current_sneak_player = owner_id,
+								 player::table.current_sneak_wormhole_player_id = nullable_integer(wormhole_player_id),
 								 player::table.current_sneak_platform = platform,
 								 player::table.current_sneak_status = status,
 								 player::table.current_sneak_mode = mode,
@@ -865,11 +889,11 @@ namespace database::players
 		RUN_IMPL(impl::abort_mother_base, player_id)
 	}
 
-	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
+	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id, const std::uint64_t wormhole_player_id, 
 		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak,
 		bool is_security_challenge, const bool with_lock)
 	{
-		RUN_IMPL(impl::set_active_sneak, player_id, fob_id, owner_id, platform, mode, status, is_sneak, is_security_challenge, with_lock);
+		RUN_IMPL(impl::set_active_sneak, player_id, fob_id, owner_id, wormhole_player_id, platform, mode, status, is_sneak, is_security_challenge, with_lock);
 	}
 
 	std::optional<sneak_info> find_active_sneak(const std::uint64_t owner_id, const std::uint32_t mode,

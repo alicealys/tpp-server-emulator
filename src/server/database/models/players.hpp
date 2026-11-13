@@ -57,21 +57,39 @@ namespace database::players
 		DEFINE_FIELD(current_sneak_mode, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_fob, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_player, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_wormhole_player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_platform, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_status, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_is_sneak, sqlpp::boolean);
 		DEFINE_FIELD(current_sneak_start, sqlpp::time_point);
 		DEFINE_FIELD(current_sneak_security_challenge, sqlpp::boolean);
-		DEFINE_TABLE(players, id_field_t, account_id_field_t, session_id_field_t,
-			login_password_field_t, crypto_key_field_t, smart_device_id_field_t,
-			currency_field_t, last_update_field_t, ex_ip_field_t, ex_port_field_t,
-			in_ip_field_t, in_port_field_t, nat_field_t, creation_time_field_t,
+		DEFINE_TABLE(players, 
+			id_field_t, 
+			account_id_field_t, 
+			session_id_field_t,
+			login_password_field_t, 
+			crypto_key_field_t, 
+			smart_device_id_field_t,
+			currency_field_t, 
+			last_update_field_t, 
+			ex_ip_field_t, 
+			ex_port_field_t,
+			in_ip_field_t, 
+			in_port_field_t, 
+			nat_field_t, 
+			creation_time_field_t,
 			current_lock_field_t,
 			security_challenge_field_t,
-			current_sneak_mode_field_t, current_sneak_fob_field_t,
-			current_sneak_player_field_t, current_sneak_platform_field_t,
-			current_sneak_status_field_t, current_sneak_is_sneak_field_t,
-			current_sneak_start_field_t, current_sneak_security_challenge_field_t);
+			current_sneak_mode_field_t, 
+			current_sneak_fob_field_t,
+			current_sneak_player_field_t,
+			current_sneak_wormhole_player_id_field_t,
+			current_sneak_platform_field_t,
+			current_sneak_status_field_t, 
+			current_sneak_is_sneak_field_t,
+			current_sneak_start_field_t, 
+			current_sneak_security_challenge_field_t
+		);
 
 		inline static table_t table;
 
@@ -218,76 +236,35 @@ namespace database::players
 		template <typename ...Args>
 		sneak_info(const sqlpp::result_row_t<Args...>& row)
 		{
-			this->mode_ = static_cast<sneak_mode>(static_cast<std::uint32_t>(row.current_sneak_mode));
-			this->status_ = static_cast<sneak_status>(static_cast<std::uint32_t>(row.current_sneak_status));
+			this->mode_ = static_cast<std::uint32_t>(row.current_sneak_mode);
+			this->status_ = static_cast<std::uint32_t>(row.current_sneak_status);
 			this->player_id_ = row.id;
 			this->fob_id_ = row.current_sneak_fob;
 			this->owner_id_ = row.current_sneak_player;
+			this->wormhole_player_id_ = row.current_sneak_wormhole_player_id;;
 			this->platform_ = static_cast<std::uint32_t>(row.current_sneak_platform);
 			this->is_sneak_ = row.current_sneak_is_sneak;
-			this->start_time_ = row.current_sneak_start.value().time_since_epoch();
+			this->start_time_ = std::chrono::duration_cast<std::chrono::seconds>(row.current_sneak_start.value().time_since_epoch());
 			this->is_security_challenge_ = row.current_sneak_security_challenge;
 		}
 
-		sneak_mode get_mode() const
-		{
-			return this->mode_;
-		}
-
-		sneak_status get_status() const
-		{
-			return this->status_;
-		}
-
-		std::uint64_t get_player_id() const
-		{
-			return this->player_id_;
-		}
-
-		std::uint64_t get_owner_id() const
-		{
-			return this->owner_id_;
-		}
-
-		std::uint64_t get_fob_id() const
-		{
-			return this->fob_id_;
-		}
-
-		std::uint32_t get_platform() const
-		{
-			return this->platform_;
-		}
-
 		std::uint32_t get_cluster() const;
-
-		bool is_sneak() const
-		{
-			return this->is_sneak_;
-		}
-
-		std::chrono::microseconds get_start_time() const
-		{
-			return this->start_time_;
-		}
-
-		bool is_security_challenge() const
-		{
-			return this->is_security_challenge_;
-		}
-
+		bool is_sneak() const;
+		bool is_security_challenge() const;
 		std::int32_t get_game_sneak_mode() const;
 
+		GET_FIELD_H(std::uint32_t, mode);
+		GET_FIELD_H(std::uint32_t, status);
+		GET_FIELD_H(std::uint64_t, player_id);
+		GET_FIELD_H(std::uint64_t, fob_id);
+		GET_FIELD_H(std::uint64_t, owner_id);
+		GET_FIELD_H(std::uint64_t, wormhole_player_id);
+		GET_FIELD_H(std::uint32_t, platform);
+		GET_FIELD_H(std::chrono::seconds, start_time);
+
 	private:
-		sneak_mode mode_;
-		sneak_status status_;
-		std::uint64_t player_id_;
-		std::uint64_t fob_id_;
-		std::uint64_t owner_id_;
-		std::uint32_t platform_;
-		bool is_security_challenge_;
-		bool is_sneak_;
-		std::chrono::microseconds start_time_;
+		bool is_security_challenge_{};
+		bool is_sneak_{};
 
 	};
 
@@ -312,7 +289,7 @@ namespace database::players
 
 	void abort_mother_base(const std::uint64_t player_id);
 
-	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id,
+	bool set_active_sneak(const std::uint64_t player_id, const std::uint64_t fob_id, const std::uint64_t owner_id, const std::uint64_t wormhole_player_id,
 		const std::uint32_t platform, const std::uint32_t mode, const std::uint32_t status, bool is_sneak,
 		bool is_security_challenge, const bool with_lock = true);
 

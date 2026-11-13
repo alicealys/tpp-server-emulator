@@ -32,8 +32,8 @@ namespace emulator::tpp
 
 		if (!active_sneak->is_security_challenge())
 		{
-			database::wormholes::add_wormhole(active_sneak->get_owner_id(), player.get_id(),
-				database::wormholes::wormhole_flag_black, true, 10);
+			database::wormholes::add_wormhole(active_sneak->get_owner_id(), player.get_id(), 0u,
+				database::wormholes::wormhole_flag_black, true, 30);
 		}
 	}
 

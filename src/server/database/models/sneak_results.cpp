@@ -860,6 +860,16 @@ namespace database::sneak_results
 		return utils::cryptography::base64::encode(encoded);
 	}
 
+	std::uint32_t sneak_result::get_cluster() const
+	{
+		if (this->platform_ >= game::fob_clusters_count)
+		{
+			return 0u;
+		}
+
+		return game::cluster_index_map[this->platform_];
+	}
+
 	bool add_sneak_result(const players::player& player, const fobs::fob& fob, const players::sneak_info& sneak,
 		const bool is_win, const sneak_result_data_t& event_data, const std::string& event_log)
 	{

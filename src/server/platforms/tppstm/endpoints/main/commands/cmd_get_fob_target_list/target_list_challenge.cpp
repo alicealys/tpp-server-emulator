@@ -21,13 +21,13 @@ namespace emulator::tpp
 			targets.emplace_back(target);
 		}
 
-		for (auto& row : list)
+		for (const auto& entry : list)
 		{
-			if (row.get_id() != player.get_id() && !follows.contains(row.get_id()))
+			if (entry.get_id() != player.get_id() && !follows.contains(entry.get_id()))
 			{
 				target_data_t target{};
-				target.player_id = row.get_id();
-				target.player.emplace(row);
+				target.player_id = entry.get_id();
+				target.player.emplace(entry);
 				targets.emplace_back(target);
 			}
 		}

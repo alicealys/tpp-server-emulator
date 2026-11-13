@@ -20,6 +20,7 @@ create table if not exists `players`
 	current_sneak_mode					int unsigned	not null		default 0,
 	current_sneak_fob					bigint unsigned not null		default 0,
 	current_sneak_player				bigint unsigned not null		default 0,
+	current_sneak_wormhole_player_id 	bigint unsigned	not null		default 0,
 	current_sneak_platform				int unsigned	not null		default 0,
 	current_sneak_status				int unsigned	not null		default 0,
 	current_sneak_is_sneak				tinyint			not null		default 0,
@@ -192,12 +193,14 @@ create table if not exists `wormholes`
 	id                  integer	primary key autoincrement,
 	player_id	        bigint unsigned	not null,
 	to_player_id	    bigint unsigned	not null,
-	retaliate_score	    int unsigned	not null	default 0,
+	follower_player_id	bigint unsigned	default null,
+	retaliate_score	    int				not null	default 0,
 	flag				int unsigned	not null	default 0,
 	is_open				boolean			not null	default false,
 	create_date			datetime		not null,
 	foreign key (`player_id`) references players(`id`),
-	foreign key (`to_player_id`) references players(`id`)
+	foreign key (`to_player_id`) references players(`id`),
+	foreign key (`follower_player_id`) references players(`id`)
 )
 -- query:mgstpp.event_rankings.create
 create table if not exists `event_rankings`

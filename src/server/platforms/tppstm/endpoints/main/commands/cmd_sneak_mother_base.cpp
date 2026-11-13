@@ -39,6 +39,7 @@ namespace emulator::tpp
 		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
 		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
 		const auto mode_str = mode_j.get<std::string>();
+		auto wormhole_player_id = wormhole_player_id_j.get<std::uint64_t>();
 
 		const auto mode = database::players::get_sneak_mode_id(mode_str);
 		const auto alt_mode = database::players::get_alt_sneak_mode(mode);
@@ -307,7 +308,16 @@ namespace emulator::tpp
 		section_level_j["medical"] = owner_data->unit_levels.value[game::unit_medical];
 		section_level_j["security"] = owner_data->unit_levels.value[game::unit_security];
 
-		result["wormhole_player_id"] = wormhole_player_id_j;
+		if (wormhole_player_id != 0u)
+		{
+			const auto wormhole_player = database::players::find(wormhole_player_id);
+			if (!wormhole_player.has_value())
+			{
+				return error(ERR_DATABASE);
+			}
+		}
+
+		result["wormhole_player_id"] = wormhole_player_id;
 
 		if (!is_sneak)
 		{
@@ -318,8 +328,8 @@ namespace emulator::tpp
 
 			stage_param["platform"] = active_sneak->get_platform();
 
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), active_sneak->get_platform(), mode,
-				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0u, 
+				active_sneak->get_platform(), mode, database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
 			{
 				return error(ERR_DATABASE);
 			}
@@ -329,7 +339,7 @@ namespace emulator::tpp
 			database::player_records::clear_shield_date(player->get_id());
 			database::fob_deploy_assists::delete_deploy_to_fob(player->get_id(), fob->get_id());
 
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), platform, mode,
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), wormhole_player_id, platform, mode,
 				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled(), owner->is_real_player()))
 			{
 				return error(ERR_DATABASE);

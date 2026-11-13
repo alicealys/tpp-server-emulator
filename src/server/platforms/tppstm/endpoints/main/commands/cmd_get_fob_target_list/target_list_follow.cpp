@@ -10,14 +10,16 @@ namespace emulator::tpp
 	{
 		target_list_t targets;
 
-		const auto players = database::player_follows::get_follows(player.get_id());
+		const auto follows = database::player_follows::get_follows(player.get_id());
 		const auto followers = database::player_follows::get_followers(player.get_id());
 
-		for (const auto& id : players)
+		for (const auto& follow : follows)
 		{
 			target_data_t data{};
-			data.player_id = id;
-			data.extra_data["owner_detail_record"]["follower"] = followers.contains(id);
+			data.player_id = follow.get_player_id();
+			data.player = follow.player;
+			data.player_record = follow.record;
+			data.extra_data["owner_detail_record"]["follower"] = followers.contains(follow.get_player_id());
 			data.extra_data["owner_detail_record"]["follow"] = 1;
 			targets.emplace_back(data);
 		}

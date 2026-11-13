@@ -77,9 +77,9 @@ namespace emulator::tpp
 		search_intruder(player.get_id(), false);
 
 		const auto follows = database::player_follows::get_follows(player.get_id());
-		for (const auto& follow_id : follows)
+		for (const auto& follow : follows)
 		{
-			search_intruder(follow_id, true);
+			search_intruder(follow.get_player_id(), true);
 		}
 
 		return targets;

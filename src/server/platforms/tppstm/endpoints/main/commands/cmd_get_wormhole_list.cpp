@@ -22,30 +22,33 @@ namespace emulator::tpp
 			return error(ERR_OPTION_OUTOFRANGE);
 		}
 
-		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-			std::chrono::system_clock::now().time_since_epoch());
+		auto& wormhole_list_j = result["wormhole_list"];
+		wormhole_list_j = nlohmann::json::array();
 
-		const auto list = database::wormholes::get_wormholes_status(player->get_id(), flag);
-		auto idx = 0;
-
-		result["wormhole_list"] = nlohmann::json::array();
+		auto count = 0u;
+		const auto list = database::wormholes::get_wormhole_list(player->get_id(), flag);
 
 		for (auto i = 0u; i < list.size(); i++)
 		{
-			const auto to_player = database::players::find(list[i].to_player_id);
+			if (!list[i].is_open())
+			{
+				continue;
+			}
+
+			const auto to_player = database::players::find(list[i].opponent_id);
 			if (!to_player.has_value())
 			{
 				continue;
 			}
 
-			auto& entry = result["wormhole_list"][idx++];
+			auto& entry = wormhole_list_j[count++];
 			entry["flag"] = flag == database::wormholes::wormhole_flag_friendly ? 0 : 1;
-			entry["left_hour"] = std::chrono::duration_cast<std::chrono::seconds>(now - list[i].expire).count();
-			entry["player_id"] = list[i].to_player_id;
+			entry["left_hour"] = list[i].get_left_hour();
+			entry["player_id"] = list[i].opponent_id;
 			entry["player_name"] = std::format("{}_player01", to_player->get_account_id());
 		}
 
-		result["wormhole_num"] = idx;
+		result["wormhole_num"] = count;
 
 		return result;
 	}

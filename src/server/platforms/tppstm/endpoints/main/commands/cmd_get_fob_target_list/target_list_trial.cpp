@@ -17,11 +17,13 @@ namespace emulator::tpp
 		self.player_id = player.get_id();
 		targets.emplace_back(self);
 
-		for (const auto& id : follows)
+		for (const auto& follow : follows)
 		{
 			target_data_t data{};
-			data.player_id = id;
-			data.extra_data["owner_detail_record"]["follower"] = followers.contains(id);
+			data.player_id = follow.player.get_id();
+			data.player = follow.player;
+			data.player_record = follow.record;
+			data.extra_data["owner_detail_record"]["follower"] = followers.contains(follow.player.get_id());
 			data.extra_data["owner_detail_record"]["follow"] = 1;
 			targets.emplace_back(data);
 		}

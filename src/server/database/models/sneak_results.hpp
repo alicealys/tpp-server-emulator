@@ -226,6 +226,7 @@ namespace database::sneak_results
 			return std::chrono::duration_cast<std::chrono::seconds>(this->date_).count();
 		}
 
+		std::uint32_t get_cluster() const;
 		std::string get_event_log() const;
 		static std::string encode_client_event_log(const std::string& event_log);
 

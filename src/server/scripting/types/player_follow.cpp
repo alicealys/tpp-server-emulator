@@ -10,7 +10,5 @@ namespace emulator::scripting
 
 		this->state_["database"]["playerfollows"]["addfollow"] = database::player_follows::add_follow;
 		this->state_["database"]["playerfollows"]["removefollow"] = database::player_follows::remove_follow;
-		this->state_["database"]["playerfollows"]["getfollows"] = database::player_follows::get_follows;
-		this->state_["database"]["playerfollows"]["getfollowers"] = database::player_follows::get_followers;
 	}
 }

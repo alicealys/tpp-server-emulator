@@ -15,43 +15,23 @@ namespace emulator::tpp
 
 		const auto follows = database::player_follows::get_follows(player.get_id());
 
-		for (const auto& follow_id : follows)
+		for (const auto& follow : follows)
 		{
-			const auto follow = database::players::find(follow_id);
-			if (!follow.has_value())
+			const auto friend_wormholes = database::wormholes::get_wormhole_list(follow.get_player_id(), database::wormholes::wormhole_flag_invalid, player.get_id());
+			for (const auto& wormhole : friend_wormholes)
 			{
-				continue;
-			}
-
-			const auto follow_record = database::player_records::find(follow_id);
-			if (!follow_record.has_value())
-			{
-				continue;
-			}
-
-			const auto list = database::wormholes::get_wormholes_status(follow_id);
-
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-
-			for (const auto& wormhole : list)
-			{
-				target_data_t target{};
-
-				auto left_hour = 0;
-				if (wormhole.expire > now)
+				if (!wormhole.is_open(true) || wormhole.opponent_id == player.get_id())
 				{
-					const auto diff = wormhole.expire - now;
-					left_hour = std::chrono::duration_cast<std::chrono::hours>(diff).count();
+					continue;
 				}
 
+				target_data_t target{};
 				target.extra_data["owner_detail_record"]["enemy"] = 1;
-				target.extra_data["owner_fob_record"]["left_hour"] = left_hour;
-				target.extra_data["attacker_info"] = player_info(follow.value());
-				target.extra_data["attacker_sneak_rank_grade"]["win"] = follow_record->get_fob_grade();
-
-				target.player_id = wormhole.to_player_id;
-
+				target.extra_data["owner_fob_record"]["left_hour"] = wormhole.get_left_hour();
+				target.extra_data["owner_fob_record"]["attack_count"] = wormhole.attack_count;
+				target.extra_data["attacker_info"] = player_info(follow.player);
+				target.extra_data["attacker_sneak_rank_grade"] = follow.record.get_fob_grade();
+				target.player_id = wormhole.opponent_id;
 				targets.emplace_back(target);
 			}
 		}

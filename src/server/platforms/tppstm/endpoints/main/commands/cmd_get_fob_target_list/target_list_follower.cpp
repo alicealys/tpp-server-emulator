@@ -13,12 +13,14 @@ namespace emulator::tpp
 		const auto follows = database::player_follows::get_follows(player.get_id());
 		const auto followers = database::player_follows::get_followers(player.get_id());
 
-		for (const auto& id : followers)
+		for (const auto& follower : followers)
 		{
 			target_data_t data{};
-			data.player_id = id;
+			data.player_id = follower.get_player_id();
+			data.player = follower.player;
+			data.player_record = follower.record;
 			data.extra_data["owner_detail_record"]["follower"] = 1;
-			data.extra_data["owner_detail_record"]["follow"] = follows.contains(id);
+			data.extra_data["owner_detail_record"]["follow"] = follows.contains(follower.get_player_id());
 			targets.emplace_back(data);
 		}
 
