@@ -56,7 +56,7 @@ namespace emulator::tpp
 			to_player_id = active_sneak->get_wormhole_player_id();
 		}
 
-		if (!owner->is_security_challenge_enabled())
+		if (owner->is_real_player() && !owner->is_security_challenge_enabled())
 		{
 			const auto capped_score = std::min(database::wormholes::max_retaliate_score, retaliate_score);
 			database::wormholes::add_wormhole(from_player_id, to_player_id, follower_id, flag_id, is_open, capped_score);

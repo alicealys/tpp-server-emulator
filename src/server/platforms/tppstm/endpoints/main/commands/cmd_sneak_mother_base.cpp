@@ -186,7 +186,7 @@ namespace emulator::tpp
 			return false;
 		};
 
-		if (!is_event)
+		if (owner->is_real_player())
 		{
 			auto security_soldier_index = 0;
 			auto reward_soldier_index = 0;
@@ -204,7 +204,7 @@ namespace emulator::tpp
 					staff.fields.packed_status_no_sync = 4096; // fix broken staff
 				}
 
-				if (!is_event && staff.fields.status_sync.designation == game::SECTION_SECURITY)
+				if (staff.fields.status_sync.designation == game::SECTION_SECURITY)
 				{
 					result["security_soldier"][security_soldier_index]["header"] = staff.fields.packed_header;
 					result["security_soldier"][security_soldier_index]["seed"] = staff.fields.packed_seed;
@@ -241,7 +241,6 @@ namespace emulator::tpp
 			result["recover_soldier_count"] = recover_soldier_count;
 			result["recover_soldier_num"] = rescuable_list.size();
 			result["security_soldier_num"] = security_soldier_index;
-			result["reward_soldier_num"] = reward_soldier_index;
 		}
 		else
 		{
@@ -336,7 +335,11 @@ namespace emulator::tpp
 		}
 		else
 		{
-			database::player_records::clear_shield_date(player->get_id());
+			if (owner->is_real_player())
+			{
+				database::player_records::clear_shield_date(player->get_id());
+			}
+
 			database::fob_deploy_assists::delete_deploy_to_fob(player->get_id(), fob->get_id());
 
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), wormhole_player_id, platform, mode,

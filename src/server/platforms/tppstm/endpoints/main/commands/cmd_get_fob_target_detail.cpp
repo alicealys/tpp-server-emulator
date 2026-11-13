@@ -211,7 +211,7 @@ namespace emulator::tpp
 		session_j["xnkid"] = {};
 		session_j["xuid"] = 0;
 
-		if (!owner->is_real_player() && is_actual)
+		if (owner->is_real_player() && is_actual)
 		{
 			const auto wormhole = database::wormholes::get_wormhole_status(player->get_id(), owner->get_id());
 			if ((!wormhole.is_open() || !wormhole.first) && owner_record->is_shield_active())

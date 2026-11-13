@@ -43,7 +43,7 @@ namespace database::fob_prisoners
 
 				insert_query.values.add(
 					fob_prisoner::table.attacker_id = attacker_id,
-					fob_prisoner::table.owner_id = owner_id,
+					fob_prisoner::table.owner_id = nullable_integer(owner_id),
 					fob_prisoner::table.prisoner_state = static_cast<std::uint32_t>(state_captured),
 					fob_prisoner::table.staff_param = param.serialize(),
 					fob_prisoner::table.capture_date = date_value
@@ -67,7 +67,7 @@ namespace database::fob_prisoners
 					sqlpp::select(
 						sqlpp::all_of(fob_prisoner::table))
 							.from(fob_prisoner::table)
-								.where(fob_prisoner::table.attacker_id == player_id &&
+								.where(fob_prisoner::table.attacker_id == player_id && fob_prisoner::table.owner_id.is_not_null() && 
 									   fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_captured) &&
 									   fob_prisoner::table.capture_date > std::chrono::system_clock::now() - prisoner_hold_time)
 					);
@@ -90,7 +90,8 @@ namespace database::fob_prisoners
 			{
 				const auto is_free_prisoner = fob_prisoner::table.attacker_id == player_id &&
 					fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_captured) &&
-					fob_prisoner::table.capture_date <= std::chrono::system_clock::now() - prisoner_hold_time;
+					(fob_prisoner::table.owner_id.is_null() || 
+						fob_prisoner::table.capture_date <= std::chrono::system_clock::now() - prisoner_hold_time);
 
 				const auto is_rescue_prisoner = fob_prisoner::table.owner_id == player_id &&
 					fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_rescued);
@@ -171,7 +172,7 @@ namespace database::fob_prisoners
 					sqlpp::select(
 						sqlpp::count(1))
 							.from(fob_prisoner::table)
-								.where(fob_prisoner::table.attacker_id == player_id &&
+								.where(fob_prisoner::table.attacker_id == player_id && fob_prisoner::table.owner_id.is_not_null() && 
 									   fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_captured) &&
 									   fob_prisoner::table.capture_date > std::chrono::system_clock::now() - prisoner_hold_time)
 					);
