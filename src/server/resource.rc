@@ -129,6 +129,7 @@ RESOURCE_PF_POINTS_EXCHANGE_LIST  RCDATA "resources/data/pf_points_exchange_list
 RESOURCE_ONLINE_CHALLENGE_TASKS   RCDATA "resources/data/online_challenge_tasks.json"
 RESOURCE_NAMEPLATES               RCDATA "resources/data/nameplates.json"
 RESOURCE_SNEAK_REWARD_SETTINGS    RCDATA "resources/data/sneak_reward_settings.json"
+RESOURCE_LANG_STRINGS             RCDATA "resources/data/lang_strings.json"
 
 RESOURCE_SQL_MYSQL                RCDATA "resources/sql/mysql.sql"
 RESOURCE_SQL_SQLITE3              RCDATA "resources/sql/sqlite3.sql"

@@ -1,6 +1,7 @@
 #include <std_include.hpp>
 
 #include "cmd_open_steam_shop.hpp"
+#include "cmd_get_steam_shop_item_list.hpp"
 
 #include "database/models/player_data.hpp"
 
@@ -13,12 +14,12 @@ namespace emulator::tpp
 
 	nlohmann::json cmd_open_steam_shop::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		const auto& steam_item_id_j = data["steam_item_id"];
+		auto& steam_item_id_j = data["steam_item_id"];
 
 		nlohmann::json result;
 		result["orderid"] = 0;
 		result["transid"] = 0;
-		result["result"] = game::get_error(ERR_INVALIDARG); // intentional error
+		result["result"] = game::get_error(ERR_DATABASE);
 
 		if (!steam_item_id_j.is_number_unsigned())
 		{
@@ -26,40 +27,20 @@ namespace emulator::tpp
 		}
 
 		const auto steam_item_id = steam_item_id_j.get<std::uint64_t>();
-		const auto& list = this->list_["list"];
-
-		if (!list.is_array())
+		if (steam_item_id > cmd_get_steam_shop_item_list::items.size())
 		{
-			return result;
+			return error(ERR_INVALIDARG);
+		}
+		
+		const auto& item = cmd_get_steam_shop_item_list::items[steam_item_id];
+		const auto player_data = database::player_data::find(player->get_id());
+
+		if (!player_data.has_value())
+		{
+			return error(ERR_DATABASE);
 		}
 
-		const auto get_item_index = [&]
-		{
-			for (auto i = 0; i < static_cast<std::int32_t>(list.size()); i++)
-			{
-				if (list[i]["steam_item_id"] == steam_item_id)
-				{
-					return i;
-				}
-			}
-
-			return -1;
-		};
-
-		const auto index = get_item_index();
-		if (index == -1)
-		{
-			return result;
-		}
-
-		const auto& mb_coins_j = list[index]["mb_coins"];
-		if (!mb_coins_j.is_number_unsigned())
-		{
-			return result;
-		}
-
-		const auto mb_coins = mb_coins_j.get<std::int32_t>();
-		database::player_data::add_mb_coins(player->get_id(), mb_coins);
+		player_data->give_reward(item.reward);
 
 		return result;
 	}

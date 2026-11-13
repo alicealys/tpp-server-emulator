@@ -3,179 +3,196 @@
 #include "database/models/fob_events.hpp"
 #include "database/models/players.hpp"
 
+#include "utils/lang_strings.hpp"
+
 #include "cmd_get_informationlist2.hpp"
 
 namespace emulator::tpp
 {
+	std::vector<cmd_get_informationlist2::message_t> cmd_get_informationlist2::messages;
+
+	namespace
+	{
+		std::uint64_t get_date(const cmd_get_informationlist2_base::message_t& message)
+		{
+			if (message.date == 0)
+			{
+				return std::time(nullptr);
+			}
+			else
+			{
+				return message.date;
+			}
+		}
+
+		std::uint32_t get_info_id(const cmd_get_informationlist2_base::message_t& message)
+		{
+			return message.info_id;
+		}
+	}
+
+	std::string cmd_get_informationlist2_base::message_t::format_text(const std::uint8_t lang) const
+	{
+		const auto str = utils::lang::get_string(this->text, lang);
+		return utils::lang::format_vars(str, lang);
+	}
+
 	cmd_get_informationlist2_base::cmd_get_informationlist2_base()
 	{
-		this->register_message_var("online_players", static_cast<std::uint64_t(*)()>(database::players::get_online_player_count));
-		this->register_message_var("total_players", database::players::get_player_count);
-
-		this->register_message_var("event_start", []()
-			-> std::string
+		utils::lang::register_var("online_players", [](const std::uint8_t)
 		{
-			const auto current_event = database::fob_events::get_current_event();
-			if (!current_event.has_value())
-			{
-				return {};
-			}
-
-			return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.start));
+			return database::players::get_online_player_count();
 		});
 
-		this->register_message_var("event_end", []()
-			-> std::string
+		utils::lang::register_var("total_players", [](const std::uint8_t)
 		{
-			const auto current_event = database::fob_events::get_current_event();
-			if (!current_event.has_value())
-			{
-				return {};
-			}
-
-			return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.end));
+			return database::players::get_player_count();
 		});
 	}
 
-	information_list_entry_t cmd_get_informationlist2_base::parse_message(nlohmann::json& info)
+	bool cmd_get_informationlist2_base::message_t::parse(nlohmann::json& data)
 	{
-		information_list_entry_t entry{};
-		entry.id = info["info_id"].get<std::uint32_t>();
-		entry.important = info["important"].get<bool>();
+		auto& date_j = data["date"];
+		auto& info_id_j = data["info_id"];
+		auto& text_j = data["text"];
+		auto& important_j = data["important"];
 
-		if (info["body"].is_string())
+		if (!text_j.is_string() || !info_id_j.is_number_unsigned())
 		{
-			entry.body["EN"] = info["body"].get<std::string>();
+			return false;
 		}
-		else if (info["body"].is_array())
+
+		if (date_j.is_number_unsigned())
 		{
-			for (auto i = 0u; i < info["body"].size(); i++)
+			this->date = date_j.get<std::uint64_t>();
+		}
+
+		this->info_id = info_id_j.get<std::uint32_t>();
+		this->text = text_j.get<std::string>();
+		this->important = important_j.is_boolean() && important_j.get<bool>();
+		return true;
+	}
+
+	void cmd_get_informationlist2_base::message_t::to_json(nlohmann::json& data, const std::uint8_t lang) const
+	{
+		data["date"] = this->get_date(*this);
+		data["info_id"] = this->get_info_id(*this);
+		data["important"] = this->important ? "TRUE" : "FALSE";
+		data["mes_subject"] = "";
+		data["mes_body"] = this->format_text(lang);
+	}
+
+	void cmd_get_informationlist2_base::register_message(std::vector<message_t>& messages, message_t& message)
+	{
+		const auto iter = std::ranges::find_if(
+			messages.begin(),
+			messages.end(),
+			[&](const message_t& other)
 			{
-				const auto language = info["body"][i]["lang"].get<std::string>();
-				const auto message = info["body"][i]["text"].get<std::string>();
-
-				entry.body[language] = message;
+				return message.info_id == other.info_id;
 			}
+		);
+
+		if (iter != messages.end())
+		{
+			throw std::runtime_error(std::format("[information list] duplicate info_id {}", message.info_id));
 		}
 
-		return entry;
-	}
-
-	nlohmann::json cmd_get_informationlist2_base::serialize_message(const information_list_entry_t& entry, const std::string& language)
-	{
-		nlohmann::json info;
-		const auto message = this->get_message_body(entry, language);
-		info["date"] = std::time(nullptr);
-		info["important"] = entry.important ? "TRUE" : "FALSE";
-		info["info_id"] = entry.id;
-		info["mes_subject"] = "";
-		info["mes_body"] = this->format_message(message);
-		return info;
-	}
-
-	void cmd_get_informationlist2_base::parse_list(nlohmann::json& list)
-	{
-		if (!list.is_array())
+		if (message.get_date == nullptr)
 		{
-			return;
+			message.get_date = get_date;
 		}
 
-		for (auto i = 0u; i < list.size(); i++)
+		if (message.get_info_id == nullptr)
 		{
-			auto& info = list[i];
-			const auto entry = this->parse_message(info);
-			this->messages_.emplace_back(entry);
-		}
-	}
-
-	std::string cmd_get_informationlist2_base::format_message(const std::string& msg)
-	{
-		std::string formatted = msg;
-
-		for (auto& [k, v] : this->message_vars_)
-		{
-			const auto value = v();
-			formatted = utils::string::replace(formatted, std::format("{{{}}}", k), value);
+			message.get_info_id = get_info_id;
 		}
 
-		return formatted;
-	}
-
-	std::string cmd_get_informationlist2_base::get_message_body(const information_list_entry_t& entry, const std::string& language)
-	{
-		if (entry.body.empty())
-		{
-			return "";
-		}
-
-		auto iter = entry.body.find(language);
-		if (iter == entry.body.end())
-		{
-			iter = entry.body.find("EN");
-			if (iter == entry.body.end())
+		messages.emplace_back(message);
+		std::sort(messages.begin(), messages.end(),
+			[](const message_t& a, const message_t& b)
 			{
-				return "";
-			}
-		}
+				if (a.priority == b.priority)
+				{
+					return a.get_date(a) > b.get_date(b);
+				}
 
-		return iter->second;
+				return a.priority < b.priority;
+			}
+		);
 	}
 
-	nlohmann::json cmd_get_informationlist2_base::generate_list(nlohmann::json& data)
+	void cmd_get_informationlist2_base::parse_list(std::vector<message_t>& messages, nlohmann::json& data)
 	{
-		const auto language = data["lang"].get<std::string>();
+		for (auto i = 0ull; i < data.size(); i++)
+		{
+			message_t message{};
+			if (!message.parse(data[i]))
+			{
+				console::warning("[information list] invalid message at index %lli\n", i);
+				continue;
+			}
 
+			register_message(messages, message);
+		}
+	}
+
+	nlohmann::json cmd_get_informationlist2_base::generate(const std::vector<message_t>& messages, nlohmann::json& data, const std::optional<database::players::player>& player)
+	{
 		nlohmann::json result;
 
-		for (auto i = 0u; i < this->messages_.size(); i++)
+		auto& lang_j = data["lang"];
+		if (!lang_j.is_string())
 		{
-			result[i] = this->serialize_message(this->messages_[i], language);
+			return error(ERR_INVALIDARG);
 		}
+
+		const auto lang_name = lang_j.get<std::string>();
+		const auto lang = utils::lang::get_lang(lang_name);
+
+		auto count = 0u;
+		for (const auto& message : messages)
+		{
+			if (message.visible != nullptr && !message.visible(message))
+			{
+				continue;
+			}
+
+			message.to_json(result["info_list"][count++], lang);
+		}
+
+		const auto current_event = database::fob_events::get_current_event();
+		if (current_event.has_value())
+		{
+			for (const auto& message : current_event->information)
+			{
+				if (message.visible != nullptr && !message.visible(message))
+				{
+					continue;
+				}
+
+				message.to_json(result["info_list"][count++], lang);
+			}
+		}
+
+		result["info_num"] = count;
 
 		return result;
 	}
 
 	cmd_get_informationlist2::cmd_get_informationlist2()
 	{
-		try
-		{
-			auto list = resource(RESOURCE_TPP_INFORMATIONLIST2);
-			this->parse_list(list);
-		}
-		catch (const std::exception& e)
-		{
-			console::error("failed to parse informationlist: %s\n", e.what());
-		}
+		auto data = utils::resources::load_json(RESOURCE_TPP_INFORMATIONLIST2);
+		cmd_get_informationlist2_base::parse_list(cmd_get_informationlist2::messages, data);
 	}
 
 	nlohmann::json cmd_get_informationlist2::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		auto base_list = this->generate_list(data);
+		return cmd_get_informationlist2_base::generate(cmd_get_informationlist2::messages, data, player);
+	}
 
-		nlohmann::json result;
-
-		const auto language = data["lang"].get<std::string>();
-		const auto current_event = database::fob_events::get_current_event();
-
-		if (current_event.has_value())
-		{
-			result["info_list"] = nlohmann::json::array();
-			for (auto i = 0ull; i < current_event->information.size(); i++)
-			{
-				result["info_list"][i] = cmd_get_informationlist2_base::serialize_message(current_event->information[i], language);
-				result["info_list"][i]["date"] = std::time(nullptr);
-				result["info_list"][i]["info_id"] = 1000000 + i * 10 + (current_event->number) * 20;
-			}
-		}
-
-		auto start_index = result["info_list"].size();
-		for (auto i = 0u; i < base_list.size(); i++)
-		{
-			result["info_list"][start_index++] = base_list[i];
-		}
-
-		result["info_num"] = result["info_list"].size();
-
-		return result;
+	void cmd_get_informationlist2::register_message(message_t& message)
+	{
+		cmd_get_informationlist2_base::register_message(cmd_get_informationlist2::messages, message);
 	}
 }

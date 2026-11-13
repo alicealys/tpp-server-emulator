@@ -6,20 +6,16 @@
 
 namespace emulator::mgo
 {
+	std::vector<cmd_get_informationlist2::message_t> cmd_get_informationlist2::messages;
+
 	cmd_get_informationlist2::cmd_get_informationlist2()
 	{
-		auto list = resource(RESOURCE_MGO_INFORMATIONLIST2);
-		this->parse_list(list);
+		auto list = utils::resources::load_json(RESOURCE_MGO_INFORMATIONLIST2);
+		cmd_get_informationlist2_base::parse_list(cmd_get_informationlist2::messages, list);
 	}
 
 	nlohmann::json cmd_get_informationlist2::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		nlohmann::json result;
-
-		const auto list = this->generate_list(data);
-		result["info_list"] = list;
-		result["info_num"] = list.size();
-
-		return result;
+		return cmd_get_informationlist2_base::generate(cmd_get_informationlist2::messages, data, player);
 	}
 }

@@ -15,10 +15,13 @@ namespace emulator::tpp
 	public:
 		cmd_get_login_param();
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
+		bool needs_player() override;
 
 	private:
-		nlohmann::json list_;
-		std::vector<std::string> server_text_langs_;
+		void dump_challenge_tasks(const database::players::player& player, nlohmann::json& result);
+		void dump_event_tasks(const database::players::player& player, nlohmann::json& result);
+
+		nlohmann::json data_;
 		std::vector<server_text_t> custom_server_texts_;
 
 	};

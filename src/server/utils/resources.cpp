@@ -44,6 +44,7 @@ namespace utils::resources
 			{RESOURCE_ONLINE_CHALLENGE_TASKS, "resources/data/online_challenge_tasks.json"},
 			{RESOURCE_NAMEPLATES, "resources/data/nameplates.json"},
 			{RESOURCE_SNEAK_REWARD_SETTINGS, "resources/data/sneak_reward_settings.json"},
+			{RESOURCE_LANG_STRINGS, "resources/data/lang_strings.json"},
 
 			{RESOURCE_SQL_MYSQL, "resources/sql/mysql.sql"},
 			{RESOURCE_SQL_SQLITE3, "resources/sql/sqlite3.sql"},

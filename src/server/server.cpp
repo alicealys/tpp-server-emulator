@@ -6,6 +6,7 @@
 #include "database/database.hpp"
 #include "database/auth.hpp"
 #include "scripting/engine.hpp"
+#include "utils/lang_strings.hpp"
 
 #include "component/console.hpp"
 #include "component/command.hpp"
@@ -46,6 +47,7 @@ namespace emulator
 		}
 
 		auth::initialize_lists();
+		utils::lang::initialize();
 
 		server s;
 		if (!s.start())

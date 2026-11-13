@@ -11,6 +11,10 @@ namespace emulator::mgo
 	public:
 		cmd_get_informationlist2();
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;
+		static void register_message(message_t& message);
+
+	private:
+		static std::vector<message_t> messages;
 
 	};
 }

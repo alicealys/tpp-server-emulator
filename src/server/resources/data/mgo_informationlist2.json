@@ -1,12 +1,8 @@
 [
     {
-        "important": false,
+        "important": true,
         "info_id": 100000,
-        "body": [
-            {
-                "lang": "EN",
-                "text": "tpp-server-emulator"
-            }
-        ]
+        "text": "info_list_sample1_text",
+        "date": 0
     }
 ]

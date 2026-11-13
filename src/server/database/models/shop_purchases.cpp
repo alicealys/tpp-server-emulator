@@ -17,16 +17,7 @@ namespace database::shop_purchases
 		{
 			shop_item_entry_t entry{};
 			entry.item_type = list[i]["id"].get<std::uint32_t>();
-
-			const auto names_count = std::min(list[i]["name"].size(), entry.name.size());
-			for (auto o = 0u; o < names_count; o++)
-			{
-				if (list[i]["name"][o].is_string())
-				{
-					entry.name[o] = list[i]["name"][o].get<std::string>();
-				}
-			}
-
+			entry.name = list[i]["name"].get<std::string>();
 			entry.price = list[i]["price"].get<std::uint32_t>();
 			entries.emplace_back(entry);
 		}

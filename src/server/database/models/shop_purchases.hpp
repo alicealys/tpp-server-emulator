@@ -51,7 +51,7 @@ namespace database::shop_purchases
 	struct shop_item_entry_t
 	{
 		std::uint32_t item_type;
-		std::array<std::string, 20> name;
+		std::string name;
 		std::uint32_t price;
 	};
 

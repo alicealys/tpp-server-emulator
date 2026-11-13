@@ -53,7 +53,6 @@ namespace database::fob_events
 		std::string player_name;
 		game::emblem_t emblem;
 		game::motherbase_t motherbase;
-		nlohmann::json reward;
 		std::vector<std::uint64_t> fob_ids;
 		std::vector<game::fob_param_t> fob_params;
 		fob_even_staff_resources_t staff_resources;
@@ -68,7 +67,7 @@ namespace database::fob_events
 		std::string server_text;
 		nlohmann::json one_event_task;
 		fob_event_date_range_t date_range;
-		std::vector<emulator::tpp::information_list_entry_t> information;
+		std::vector<emulator::tpp::cmd_get_informationlist2_base::message_t> information;
 		point_exchange_params_t point_exchange_params;
 		std::vector<std::uint64_t> player_ids;
 	};
@@ -87,4 +86,5 @@ namespace database::fob_events
 	std::optional<fob_event_t> get_current_event();
 
 	bool is_intermission();
+	bool is_event_text(const std::string& text);
 }

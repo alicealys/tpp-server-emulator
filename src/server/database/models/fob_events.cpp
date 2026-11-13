@@ -10,6 +10,8 @@
 #include "mgo_data.hpp"
 #include "../../component/command.hpp"
 
+#include "utils/lang_strings.hpp"
+
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
@@ -18,6 +20,115 @@ namespace database::fob_events
 	namespace
 	{
 		constexpr auto event_number_variable_name = "fob_event_number";
+
+		std::uint32_t get_information_message_id(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
+		{
+			const auto& event = get_current_event();
+			if (!event.has_value())
+			{
+				return 0u;
+			}
+
+			return 1000000u + event->index * 10u + (event->number) * 20u;
+		}
+
+		std::uint64_t get_information_message_date(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
+		{
+			const auto& event = get_current_event();
+			if (!event.has_value())
+			{
+				return 0u;
+			}
+
+			return event->date_range.start.count();
+		}
+
+		void register_lang_vars()
+		{
+			utils::lang::register_var("event_name", [](const std::uint8_t lang)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return utils::lang::get_string(current_event->server_text, lang);
+			});
+
+			utils::lang::register_var("event_start", [](const std::uint8_t)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.start));
+			});
+
+			utils::lang::register_var("event_end", [](const std::uint8_t)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.end));
+			});
+
+			utils::lang::register_var("event_start_ymd", [](const std::uint8_t)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return date::format("%Y/%m/%d", std::chrono::system_clock::time_point(current_event->date_range.start));
+			});
+
+			utils::lang::register_var("event_end_ymd", [](const std::uint8_t)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return date::format("%Y/%m/%d", std::chrono::system_clock::time_point(current_event->date_range.end));
+			});
+
+			utils::lang::register_var("event_start_ymd_rev", [](const std::uint8_t)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return date::format("%d/%m/%Y", std::chrono::system_clock::time_point(current_event->date_range.start));
+			});
+
+			utils::lang::register_var("event_end_ymd_rev", [](const std::uint8_t)
+				-> std::string
+			{
+				const auto current_event = database::fob_events::get_current_event();
+				if (!current_event.has_value())
+				{
+					return {};
+				}
+
+				return date::format("%d/%m/%Y", std::chrono::system_clock::time_point(current_event->date_range.end));
+			});
+		}
 
 		std::uint32_t get_event_number()
 		{
@@ -34,7 +145,6 @@ namespace database::fob_events
 
 			game::parse_emblem(player_j["emblem"], player.emblem, false);
 			game::parse_motherbase(player_j["motherbase"], player.motherbase);
-			player.reward = player_j["reward"];
 			player.player_id = player_j["player_id"].get<std::uint64_t>();
 			player.player_name = player_j["player_name"].get<std::string>();
 
@@ -126,9 +236,16 @@ namespace database::fob_events
 			auto& information_list = event_j["information_list"];
 			for (auto i = 0ull; i < information_list.size(); i++)
 			{
-				auto& info = information_list[i];
-				const auto entry = emulator::tpp::cmd_get_informationlist2_base::parse_message(info);
-				event.information.emplace_back(entry);
+				emulator::tpp::cmd_get_informationlist2_base::message_t message{};
+
+				if (!message.parse(information_list[i]))
+				{
+					continue;
+				}
+
+				message.get_info_id = get_information_message_id;
+				message.get_date = get_information_message_date;
+				event.information.emplace_back(message);
 			}
 
 			auto& point_exchange_params = event_j["point_exchange_params"];
@@ -358,11 +475,30 @@ namespace database::fob_events
 		return std::chrono::system_clock::now() < event_end - event_intermission_duration;
 	}
 
+	bool is_event_text(const std::string& text)
+	{
+		const auto& event_data = get_events_data();
+		for (const auto& event : event_data.events)
+		{
+			for (const auto& message : event.information)
+			{
+				if (message.text == text)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	class table final : public table_interface
 	{
 	public:
 		void create(database_t& database) override
 		{
+			register_lang_vars();
+
 			create_database_entries();
 
 			command::add("get_current_event", []()
