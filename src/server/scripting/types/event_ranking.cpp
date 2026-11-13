@@ -9,7 +9,6 @@ namespace emulator::scripting
 		this->state_["database"]["eventrankings"] = sol::state::create_table(this->state_.lua_state());
 
 		this->state_["database"]["eventrankings"]["getlookuptypefromname"] = database::event_rankings::get_lookup_type_from_name;
-		this->state_["database"]["eventrankings"]["geteventtypefromid"] = database::event_rankings::get_event_type_from_id;
 		this->state_["database"]["eventrankings"]["createentries"] = database::event_rankings::create_entries;
 		this->state_["database"]["eventrankings"]["seteventvalue"] = database::event_rankings::set_event_value;
 		this->state_["database"]["eventrankings"]["incrementeventvalue"] = database::event_rankings::increment_event_value;

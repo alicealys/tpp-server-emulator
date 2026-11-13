@@ -3,6 +3,8 @@
 #include "cmd_get_combat_deploy_result.hpp"
 #include "cmd_get_daily_reward.hpp"
 
+#include "database/models/event_rankings.hpp"
+
 namespace emulator::tpp
 {
 	bool cmd_get_combat_deploy_result::can_give_reward(const database::player_data::player_data& player_data, const game::reward_t& reward)
@@ -46,6 +48,9 @@ namespace emulator::tpp
 		const auto deployments = database::combat_deployments::get_deployments(player->get_id());
 		auto i = 0u;
 
+		std::vector<std::uint64_t> remove_list;
+		auto win_count = 0;
+
 		for (auto& deployment : deployments)
 		{
 			if (!deployment.completed())
@@ -75,7 +80,7 @@ namespace emulator::tpp
 			deployment_j["damage_seed"] = deployment_info.seed;
 			deployment_j["dead_rate"] = deployment_info.dead_rate;
 			deployment_j["id"] = deployment.get_mission_id();
-			deployment_j["is_win"] = deployment.get_is_win() ? 1 : 0;
+			deployment_j["is_win"] = std::uint8_t(deployment.get_is_win());
 			deployment_j["name_key"] = iter->name_key;
 
 			deployment_j["staff_count"] = deployment_info.combat_count + deployment_info.sub_count;
@@ -91,14 +96,23 @@ namespace emulator::tpp
 			deployment_j["walker_gear_soviet_support"] = 0;
 
 			std::vector<game::reward_t> result_rewards;
-			player_data->give_rewards(iter->rewards, &result_rewards);
+			if (deployment.get_is_win())
+			{
+				player_data->give_rewards(iter->rewards, &result_rewards);
+				++win_count;
+			}
+
 			for (auto o = 0u; o < result_rewards.size(); o++)
 			{
 				result_rewards[o].to_json(deployment_j["reward"][o]);
 			}
 
-			database::combat_deployments::delete_deployment(player->get_id(), deployment.get_mission_id());
+			remove_list.emplace_back(deployment.get_id());
 		}
+
+		database::event_rankings::increment_event_value(player->get_id(), 
+			database::event_rankings::league_dispatch_mission_wins, win_count);
+		database::combat_deployments::delete_deployments(remove_list);
 
 		result["result_num"] = i;
 

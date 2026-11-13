@@ -221,6 +221,19 @@ namespace database::combat_deployments
 		}
 
 		template <database_type_t Type>
+		bool delete_deployments(const std::vector<std::uint64_t> deployment_ids)
+		{
+			return database::access<bool>([&](database::database_t& db)
+			{
+				const auto result = db.get_database<Type>()->operator()(
+					sqlpp::remove_from(combat_deployment::table)
+						.where(combat_deployment::table.id.in(sqlpp::value_list(deployment_ids))));
+
+				return result != 0;
+			});
+		}
+
+		template <database_type_t Type>
 		void delete_player_data(const std::uint64_t player_id)
 		{
 			database::access([&](database_t& db)
@@ -261,6 +274,11 @@ namespace database::combat_deployments
 	bool complete_deployment(const std::uint64_t player_id, const std::uint32_t mission_id)
 	{
 		RUN_IMPL(impl::complete_deployment, player_id, mission_id);
+	}
+
+	bool delete_deployments(const std::vector<std::uint64_t> deployment_ids)
+	{
+		RUN_IMPL(impl::delete_deployments, deployment_ids);
 	}
 
 	void delete_player_data(const std::uint64_t player_id)

@@ -84,35 +84,37 @@ namespace database::event_rankings
 		{
 			switch (event_id)
 			{
-				case cores_reached_defender:
-					return cores_reached_defender_total;
-				case cores_reached_no_defender:
-					return cores_reached_no_defender_total;
-				case damage_defender:
-					return damage_defender_total;
-				case materials_stolen:
-					return materials_stolen_total;
-				case total_stealth:
-					return total_stealth_total;
-				case defense_deployments:
-					return defense_deployments_total;
-				case defense_deployments_support:
-					return defense_deployments_support_total;
-				case defense_deployments_support_received:
-					return defense_deployments_support_received_total;
-				case defender_neutralized_intruder:
-					return defender_neutralized_intruder_total;
-				case successful_defenses:
-					return successful_defenses_total;
-				case times_neutralized_by_intruder:
-					return times_neutralized_by_intruder_total;
+			case most_ep_in_mission:
+				return most_ep_in_mission_total;
+			case cores_reached_defender:
+				return cores_reached_defender_total;
+			case cores_reached_no_defender:
+				return cores_reached_no_defender_total;
+			case damage_defender:
+				return damage_defender_total;
+			case materials_stolen:
+				return materials_stolen_total;
+			case total_stealth:
+				return total_stealth_total;
+			case defense_deployments:
+				return defense_deployments_total;
+			case defense_deployments_support:
+				return defense_deployments_support_total;
+			case defense_deployments_support_received:
+				return defense_deployments_support_received_total;
+			case defender_neutralized_intruder:
+				return defender_neutralized_intruder_total;
+			case successful_defenses:
+				return successful_defenses_total;
+			case times_neutralized_by_intruder:
+				return times_neutralized_by_intruder_total;
 			}
 
 			return event_invalid;
 		}
 	}
 
-	std::optional<event_type> get_event_type_from_id(const std::uint32_t id, const std::string& type)
+	std::optional<std::uint8_t> get_event_type_from_id(const std::uint8_t id, const std::string& type)
 	{
 		const auto upper = utils::string::to_upper(type);
 		const auto iter = event_class_map.find(upper);
@@ -121,13 +123,28 @@ namespace database::event_rankings
 			return {};
 		}
 
-		if ((iter->second == class_fob || iter->second == class_fob_event) && id <= fob_event_end)
+		switch (iter->second)
 		{
-			return static_cast<event_type>(id);
+		case class_fob:
+		case class_fob_event:
+		{
+			if (id > fob_event_count)
+			{
+				return {};
+			}
+
+			return static_cast<std::uint8_t>(fob_event_start + id);
 		}
-		else if ((iter->second == class_league || iter->second == class_league_event) && id <= (league_event_end - fob_event_end))
+		case class_league:
+		case class_league_event:
 		{
-			return static_cast<event_type>(id + league_event_start);
+			if (id > league_event_count)
+			{
+				return {};
+			}
+
+			return static_cast<std::uint8_t>(league_event_start + id);
+		}
 		}
 
 		return {};
@@ -215,7 +232,7 @@ namespace database::event_rankings
 		}
 	
 		template <database_type_t Type>
-		bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
+		bool set_event_value(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t value)
 		{
 			return database::access<bool>([&](database_t& db)
 			{
@@ -230,7 +247,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count)
+		bool increment_event_value(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t count)
 		{
 			const auto total_event = get_event_total(event_id);
 
@@ -261,7 +278,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
+		bool set_value_if_bigger(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t value)
 		{
 			const auto total_event = get_event_total(event_id);
 
@@ -304,7 +321,7 @@ namespace database::event_rankings
 		}
 		
 		template <database_type_t Type>
-		void reset_values(const event_type event_id)
+		void reset_values(const std::uint8_t event_id)
 		{
 			return database::access([&](database_t& db)
 			{
@@ -317,7 +334,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const event_type event_id)
+		std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const std::uint8_t event_id)
 		{
 			return database::access<std::optional<std::uint64_t>>([&](database_t& db)
 				-> std::optional<std::uint64_t>
@@ -339,7 +356,7 @@ namespace database::event_rankings
 		}
 		
 		template <database_type_t Type>
-		std::int32_t get_entry_value(const std::uint64_t player_id, const event_type event_id)
+		std::int32_t get_entry_value(const std::uint64_t player_id, const std::uint8_t event_id)
 		{
 			return database::access<std::int32_t>([&](database_t& db)
 				-> std::int32_t
@@ -361,7 +378,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id)
+		std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const std::uint8_t event_id)
 		{
 			return database::access<std::optional<event_ranking>>([&](database_t& db)
 				-> std::optional<event_ranking>
@@ -383,7 +400,7 @@ namespace database::event_rankings
 		}
 				
 		template <database_type_t Type>
-		std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const event_type event_id, const bool league)
+		std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const std::uint8_t event_id, const bool league)
 		{
 			return database::access<std::optional<std::uint64_t>>([&](database_t& db)
 				-> std::optional<std::uint64_t>
@@ -440,7 +457,7 @@ namespace database::event_rankings
 		}
 						
 		template <database_type_t Type>
-		std::uint32_t snap_grade(const std::uint32_t grade, const event_type event_id, const bool league)
+		std::uint32_t snap_grade(const std::uint32_t grade, const std::uint8_t event_id, const bool league)
 		{
 			return database::access<uint32_t>([&](database_t& db)
 				-> std::uint32_t
@@ -497,7 +514,7 @@ namespace database::event_rankings
 		}
 
 		template <database_type_t Type>
-		std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num)
+		std::vector<event_ranking> get_entries(const std::uint8_t event_id, const std::uint64_t offset, const std::uint32_t num)
 		{
 			return database::access<std::vector<event_ranking>>([&](database_t& db)
 				-> std::vector<event_ranking>
@@ -550,17 +567,17 @@ namespace database::event_rankings
 		RUN_IMPL(impl::create_entries, player_id);
 	}
 
-	bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
+	bool set_event_value(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t value)
 	{
 		RUN_IMPL(impl::set_event_value, player_id, event_id, value);
 	}
 
-	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count)
+	bool increment_event_value(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t count)
 	{
 		RUN_IMPL(impl::increment_event_value, player_id, event_id, count);
 	}
 
-	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value)
+	bool set_value_if_bigger(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t value)
 	{
 		RUN_IMPL(impl::set_value_if_bigger, player_id, event_id, value);
 	}
@@ -570,37 +587,37 @@ namespace database::event_rankings
 		RUN_IMPL(impl::reset_periodic_values);
 	}
 
-	void reset_values(const event_type type)
+	void reset_values(const std::uint8_t type)
 	{
 		RUN_IMPL(impl::reset_values, type);
 	}
 
-	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const event_type event_id)
+	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const std::uint8_t event_id)
 	{
 		RUN_IMPL(impl::get_player_rank, player_id, event_id);
 	}
 
-	std::int32_t get_entry_value(const std::uint64_t player_id, const event_type event_id)
+	std::int32_t get_entry_value(const std::uint64_t player_id, const std::uint8_t event_id)
 	{
 		RUN_IMPL(impl::get_entry_value, player_id, event_id);
 	}
 
-	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id)
+	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const std::uint8_t event_id)
 	{
 		RUN_IMPL(impl::get_player_entry, player_id, event_id);
 	}
 
-	std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const event_type event_id, const bool league)
+	std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const std::uint8_t event_id, const bool league)
 	{
 		RUN_IMPL(impl::get_grade_offset, grade, event_id, league);
 	}
 
-	std::uint32_t snap_grade(const std::uint32_t grade, const event_type event_id, const bool league)
+	std::uint32_t snap_grade(const std::uint32_t grade, const std::uint8_t event_id, const bool league)
 	{
 		RUN_IMPL(impl::snap_grade, grade, event_id, league);
 	}
 
-	std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num)
+	std::vector<event_ranking> get_entries(const std::uint8_t event_id, const std::uint64_t offset, const std::uint32_t num)
 	{
 		RUN_IMPL(impl::get_entries, event_id, offset, num);
 	}
@@ -660,7 +677,7 @@ namespace database::event_rankings
 			auto& ranking = rankings[info.target.event];
 			if (!ranking.has_value() && !loaded_ranking[info.target.event])
 			{
-				ranking = get_player_entry(player_id, database::event_rankings::event_type(info.target.event));
+				ranking = get_player_entry(player_id, info.target.event);
 				loaded_ranking[info.target.event] = true;
 			}
 

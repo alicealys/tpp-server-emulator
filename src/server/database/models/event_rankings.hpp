@@ -14,7 +14,7 @@ namespace database::event_rankings
 		class_league_event
 	};
 
-	enum event_type : std::uint32_t
+	enum event_type : std::uint8_t
 	{
 		fob_event_start = 0,
 		ep_earned = 0,
@@ -33,6 +33,7 @@ namespace database::event_rankings
 		times_neutralized_by_intruder = 13,
 		fob_event_ranking = 14,
 		fob_event_end = 14,
+		fob_event_count = fob_event_end - fob_event_start + 1,
 
 		league_event_start = 15,
 		league_point_total = 15,
@@ -46,25 +47,28 @@ namespace database::event_rankings
 		league_emplacements = 23,
 		league_wins = 24,
 		league_pf_points_exchange = 25,
-		league_event_end = 25,
+		league_dispatch_mission_wins = 26,
+		league_event_end = 26,
+		league_event_count = league_event_end - league_event_start + 1,
 
-		event_total_start = 26,
-		most_ep_in_mission_total = 26,
-		cores_reached_defender_total = 27,
-		cores_reached_no_defender_total = 28,
-		damage_defender_total = 29,
-		materials_stolen_total = 30,
-		total_stealth_total = 31,
-		defense_deployments_total = 32,
-		defense_deployments_support_total = 33,
-		defense_deployments_support_received_total = 34,
-		defender_neutralized_intruder_total = 35,
-		successful_defenses_total = 36,
-		times_neutralized_by_intruder_total = 37,
-		event_total_end = 37,
+		event_total_start = 27,
+		most_ep_in_mission_total = 27,
+		cores_reached_defender_total = 28,
+		cores_reached_no_defender_total = 29,
+		damage_defender_total = 30,
+		materials_stolen_total = 31,
+		total_stealth_total = 32,
+		defense_deployments_total = 33,
+		defense_deployments_support_total = 34,
+		defense_deployments_support_received_total = 35,
+		defender_neutralized_intruder_total = 36,
+		successful_defenses_total = 37,
+		times_neutralized_by_intruder_total = 38,
+		event_total_end = 38,
+		event_total_count = event_total_end - event_total_start + 1,
 
-		event_count = 38,
-		event_invalid = 0xFFFFFFFF,
+		event_count = fob_event_count + league_event_count + event_total_count,
+		event_invalid = 0xFF,
 	};
 
 	enum event_ranking_lookup_type
@@ -81,7 +85,7 @@ namespace database::event_rankings
 	};
 
 	std::optional<event_ranking_lookup_type> get_lookup_type_from_name(const std::string& name);
-	std::optional<event_type> get_event_type_from_id(const std::uint32_t id, const std::string& type);
+	std::optional<std::uint8_t> get_event_type_from_id(const std::uint8_t id, const std::string& type);
 
 	enum nameplate_target_type_t
 	{
@@ -165,20 +169,20 @@ namespace database::event_rankings
 
 	void create_entries(const std::uint64_t player_id);
 
-	bool set_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t value);
-	bool increment_event_value(const std::uint64_t player_id, const event_type event_id, const std::int32_t count);
-	bool set_value_if_bigger(const std::uint64_t player_id, const event_type event_id, const std::int32_t value);
+	bool set_event_value(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t value);
+	bool increment_event_value(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t count);
+	bool set_value_if_bigger(const std::uint64_t player_id, const std::uint8_t event_id, const std::int32_t value);
 
-	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const event_type event_id);
-	std::int32_t get_entry_value(const std::uint64_t player_id, const event_type event_id);
-	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const event_type event_id);
-	std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const event_type event_id, const bool league);
-	std::uint32_t snap_grade(const std::uint32_t grade, const event_type event_id, const bool league);
+	std::optional<std::uint64_t> get_player_rank(const std::uint64_t player_id, const std::uint8_t event_id);
+	std::int32_t get_entry_value(const std::uint64_t player_id, const std::uint8_t event_id);
+	std::optional<event_ranking> get_player_entry(const std::uint64_t player_id, const std::uint8_t event_id);
+	std::optional<std::uint64_t> get_grade_offset(const std::uint32_t grade, const std::uint8_t event_id, const bool league);
+	std::uint32_t snap_grade(const std::uint32_t grade, const std::uint8_t event_id, const bool league);
 
-	std::vector<event_ranking> get_entries(const event_type event_id, const std::uint64_t offset, const std::uint32_t num);
+	std::vector<event_ranking> get_entries(const std::uint8_t event_id, const std::uint64_t offset, const std::uint32_t num);
 
 	void reset_periodic_values();
-	void reset_values(const event_type event_id);
+	void reset_values(const std::uint8_t event_id);
 
 	std::chrono::seconds get_last_update();
 

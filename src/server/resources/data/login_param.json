@@ -1,4 +1,152 @@
 {
+    "hero_threshold_point": 150000,
+    "not_hero_threshold_point": 100000,
+    "server_texts": [],
+    "staff_rank_bonus_rates": [
+        {
+            "rates": [
+                -100,
+                1000
+            ]
+        },
+        {
+            "rates": [
+                -20,
+                200
+            ]
+        },
+        {
+            "rates": [
+                -20,
+                200
+            ]
+        },
+        {
+            "rates": [
+                -20,
+                200
+            ]
+        },
+        {
+            "rates": [
+                -20,
+                200
+            ]
+        },
+        {
+            "rates": [
+                -20,
+                200
+            ]
+        },
+        {
+            "rates": [
+                800,
+                2000
+            ]
+        }
+    ],
+    "fob_event_task_list": {
+        "normal_defense": [
+            {
+                "reward": 2000,
+                "task_type_id": 79,
+                "threshold": 1
+            },
+            {
+                "reward": 4000,
+                "task_type_id": 78,
+                "threshold": 1
+            },
+            {
+                "reward": 500,
+                "task_type_id": 96,
+                "threshold": 1
+            },
+            {
+                "reward": 500,
+                "task_type_id": 97,
+                "threshold": 5
+            }
+        ],
+        "normal_sneak": [
+            {
+                "reward": 2000,
+                "task_type_id": 10,
+                "threshold": 10
+            },
+            {
+                "reward": 1000,
+                "task_type_id": 8,
+                "threshold": 5
+            },
+            {
+                "reward": 2000,
+                "task_type_id": 69,
+                "threshold": 1
+            },
+            {
+                "reward": 4000,
+                "task_type_id": 41,
+                "threshold": 1
+            }
+        ],
+        "one_event_task": []
+    },
+    "fob_event_task_result_param": {
+        "normal_defense_same_time_bonus": [
+            1000,
+            1100,
+            1200,
+            1300,
+            1400,
+            1500,
+            1600,
+            1700
+        ],
+        "normal_sneak_same_time_bonus": [
+            1000,
+            1100,
+            1200,
+            1300,
+            1400,
+            1500,
+            1600,
+            1700
+        ],
+        "one_event_param": [
+            {
+                "event_id": 5,
+                "event_sneak_clear_point_max": 1000,
+                "event_sneak_clear_point_min": 30,
+                "event_sneak_same_time_bonus": [
+                    1000,
+                    1100,
+                    1200,
+                    1300,
+                    1400,
+                    1500,
+                    1600,
+                    1700
+                ]
+            },
+            {
+                "event_id": 25,
+                "event_sneak_clear_point_max": 2000,
+                "event_sneak_clear_point_min": 100,
+                "event_sneak_same_time_bonus": [
+                    1000,
+                    1300,
+                    1400,
+                    1500,
+                    1700,
+                    1800,
+                    2000,
+                    2300
+                ]
+            }
+        ]
+    },
     "cluster_build_costs_per_cluster": [
         {
             "cluster_build_costs_per_grade": [
@@ -510,223 +658,6 @@
                         }
                     ]
                 }
-            ]
-        }
-    ],
-    "fob_event_task_list": {
-        "normal_defense": [
-            {
-                "reward": 2000,
-                "task_type_id": 79,
-                "threshold": 1
-            },
-            {
-                "reward": 4000,
-                "task_type_id": 78,
-                "threshold": 1
-            },
-            {
-                "reward": 500,
-                "task_type_id": 96,
-                "threshold": 1
-            },
-            {
-                "reward": 500,
-                "task_type_id": 97,
-                "threshold": 5
-            }
-        ],
-        "normal_sneak": [
-            {
-                "reward": 2000,
-                "task_type_id": 10,
-                "threshold": 10
-            },
-            {
-                "reward": 1000,
-                "task_type_id": 8,
-                "threshold": 5
-            },
-            {
-                "reward": 2000,
-                "task_type_id": 69,
-                "threshold": 1
-            },
-            {
-                "reward": 4000,
-                "task_type_id": 41,
-                "threshold": 1
-            }
-        ],
-        "one_event_task": []
-    },
-    "fob_event_task_result_param": {
-        "normal_defense_same_time_bonus": [
-            1000,
-            1100,
-            1200,
-            1300,
-            1400,
-            1500,
-            1600,
-            1700
-        ],
-        "normal_sneak_same_time_bonus": [
-            1000,
-            1100,
-            1200,
-            1300,
-            1400,
-            1500,
-            1600,
-            1700
-        ],
-        "one_event_param": [
-            {
-                "event_id": 5,
-                "event_sneak_clear_point_max": 1000,
-                "event_sneak_clear_point_min": 30,
-                "event_sneak_same_time_bonus": [
-                    1000,
-                    1100,
-                    1200,
-                    1300,
-                    1400,
-                    1500,
-                    1600,
-                    1700
-                ]
-            },
-            {
-                "event_id": 25,
-                "event_sneak_clear_point_max": 2000,
-                "event_sneak_clear_point_min": 100,
-                "event_sneak_same_time_bonus": [
-                    1000,
-                    1300,
-                    1400,
-                    1500,
-                    1700,
-                    1800,
-                    2000,
-                    2300
-                ]
-            }
-        ]
-    },
-    "hero_threshold_point": 150000,
-    "not_hero_threshold_point": 100000,
-    "ranking_espi_event_ids": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        0,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-    ],
-    "ranking_pf_event_ids": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-    ],
-    "server_product_params": [],
-    "server_texts": [],
-    "staff_rank_bonus_rates": [
-        {
-            "rates": [
-                -100,
-                1000
-            ]
-        },
-        {
-            "rates": [
-                -20,
-                200
-            ]
-        },
-        {
-            "rates": [
-                -20,
-                200
-            ]
-        },
-        {
-            "rates": [
-                -20,
-                200
-            ]
-        },
-        {
-            "rates": [
-                -20,
-                200
-            ]
-        },
-        {
-            "rates": [
-                -20,
-                200
-            ]
-        },
-        {
-            "rates": [
-                800,
-                2000
             ]
         }
     ]

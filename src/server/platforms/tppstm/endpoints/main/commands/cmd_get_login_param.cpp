@@ -6,6 +6,7 @@
 #include "database/models/fob_events.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/challenge_tasks.hpp"
+#include "database/models/event_rankings.hpp"
 
 #include "utils/lang_strings.hpp"
 
@@ -145,6 +146,21 @@ namespace emulator::tpp
 				entry["language"] = lang_codes[i];
 				entry["text"] = text.text();
 			}
+		}
+
+		auto& ranking_espi_event_ids_j = result["ranking_espi_event_ids"];
+		auto& ranking_pf_event_ids_j = result["ranking_pf_event_ids"];
+
+		for (auto i = static_cast<std::uint32_t>(database::event_rankings::fob_event_start) + 1;
+			i <= database::event_rankings::fob_event_end + 5; i++)
+		{
+			ranking_espi_event_ids_j[ranking_espi_event_ids_j.size()] = i - database::event_rankings::fob_event_start;
+		}
+
+		for (auto i = static_cast<std::uint32_t>(database::event_rankings::league_event_start) + 1; 
+			i <= database::event_rankings::league_event_end; i++)
+		{
+			ranking_pf_event_ids_j[ranking_pf_event_ids_j.size()] = i - database::event_rankings::league_event_start;
 		}
 
 		return result;

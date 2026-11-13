@@ -11,12 +11,12 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		const auto& event_id_j = data["event_id"];
-		const auto& get_type_j = data["get_type"];
-		const auto& index_j = data["index"];
-		const auto& is_new_j = data["is_new"];
-		const auto& num_j = data["num"];
-		const auto& type_j = data["type"];
+		auto& event_id_j = data["event_id"];
+		auto& get_type_j = data["get_type"];
+		auto& index_j = data["index"];
+		auto& is_new_j = data["is_new"];
+		auto& num_j = data["num"];
+		auto& type_j = data["type"];
 
 		if (!event_id_j.is_number_unsigned() || !get_type_j.is_string() || !index_j.is_number_unsigned() ||
 			!is_new_j.is_number_unsigned() || !num_j.is_number_unsigned() || !type_j.is_string())
@@ -27,7 +27,7 @@ namespace emulator::tpp
 		const auto get_type = get_type_j.get<std::string>();
 		const auto lookup_type_opt = database::event_rankings::get_lookup_type_from_name(get_type);
 		const auto type = type_j.get<std::string>();
-		const auto event_id_opt = database::event_rankings::get_event_type_from_id(event_id_j.get<std::uint32_t>(), type);
+		const auto event_id_opt = database::event_rankings::get_event_type_from_id(event_id_j.get<std::uint8_t>(), type);
 		const auto num = std::min(50u, num_j.get<std::uint32_t>());
 		const auto index = index_j.get<std::uint64_t>();
 
