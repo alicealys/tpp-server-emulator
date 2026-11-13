@@ -37,6 +37,7 @@ namespace database
 		database_type_t type;
 		bool use_multi_connection;
 		std::string rand_func;
+		std::string min_func;
 		std::size_t max_connections;
 	};
 

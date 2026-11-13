@@ -31,12 +31,14 @@ namespace database
 		case database_mysql:
 		{
 			database_def.rand_func = "rand()";
+			database_def.min_func = "least";
 			database_def.use_multi_connection = true;
 			break;
 		}
 		case database_sqlite3:
 		{
 			database_def.rand_func = "random()";
+			database_def.min_func = "min";
 			database_def.use_multi_connection = false;
 			break;
 		}

@@ -251,11 +251,15 @@ namespace database::event_rankings
 		{
 			const auto total_event = get_event_total(event_id);
 
+			constexpr const auto cap = std::numeric_limits<std::int32_t>::max();
+			const auto& min_func = get_database_def().min_func;
+			const auto value = sqlpp::verbatim<sqlpp::integer>(std::format("{}({}, cast(value as signed) + {})", min_func, cap, count));
+
+			auto update = sqlpp::update(event_ranking::table)
+				.set(event_ranking::table.value = value);
+
 			return database::access<bool>([&](database_t& db)
 			{
-				auto update = sqlpp::update(event_ranking::table)
-					.set(event_ranking::table.value = event_ranking::table.value + count);
-
 				if (total_event == event_invalid)
 				{
 					const auto query = update.where(event_ranking::table.player_id == player_id && 
@@ -273,7 +277,6 @@ namespace database::event_rankings
 					const auto result = db.get_database<Type>()->operator()(query);
 					return result != 0;
 				}
-
 			});
 		}
 

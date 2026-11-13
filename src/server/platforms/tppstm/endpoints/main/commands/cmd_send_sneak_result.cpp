@@ -361,6 +361,19 @@ namespace emulator::tpp
 				}
 
 				update_resources(param, context);
+
+				const auto materials_stolen = 
+					context.event_data.capture_resource.biotic_resource +
+					context.event_data.capture_resource.fuel_resource +
+					context.event_data.capture_resource.common_metal +
+					context.event_data.capture_resource.minor_metal +
+					context.event_data.capture_resource.precious_metal;
+
+				database::event_rankings::increment_event_value(player.get_id(),
+					database::event_rankings::materials_stolen, materials_stolen);
+
+				database::event_rankings::increment_event_value(player.get_id(),
+					database::event_rankings::damage_defender, param.damage_point);
 			}
 
 			auto& active_sneak_val = context.active_sneak.value();
