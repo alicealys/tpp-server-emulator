@@ -33,20 +33,20 @@ namespace utils::lang
 
 	std::uint8_t get_lang(const std::string& lang_name);
 
-	std::string get_string(const std::string& key, const std::string& language);
-	std::string get_string(const std::string& key, const std::uint8_t language);
+	const std::string& get_string(const std::string& key, const std::string& language);
+	const std::string& get_string(const std::string& key, const std::uint8_t language);
 
 	template <typename ...Args>
 	std::string get_string(const std::string& key, const std::string& language, Args&&... args)
 	{
-		const auto text = get_string(key, language);
+		const auto& text = get_string(key, language);
 		return std::vformat(text, std::make_format_args(args...));
 	}
 
 	template <typename ...Args>
 	std::string get_string(const std::string& key, const std::uint8_t language, Args&&... args)
 	{
-		const auto text = get_string(key, language);
+		const auto& text = get_string(key, language);
 		return std::vformat(text, std::make_format_args(args...));
 	}
 

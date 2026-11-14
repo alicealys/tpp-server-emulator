@@ -33,7 +33,7 @@ namespace emulator::tpp
 
 	std::string cmd_get_informationlist2_base::message_t::format_text(const std::uint8_t lang) const
 	{
-		const auto str = utils::lang::get_string(this->text, lang);
+		const auto& str = utils::lang::get_string(this->text, lang);
 		return utils::lang::format_vars(str, lang);
 	}
 

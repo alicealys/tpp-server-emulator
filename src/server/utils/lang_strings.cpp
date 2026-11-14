@@ -61,8 +61,13 @@ namespace utils::lang
 		return LANG_ANY;
 	}
 
-	std::string get_string(const std::string& key, const std::uint8_t language)
+	const std::string& get_string(const std::string& key, const std::uint8_t language)
 	{
+		if (key.size() > 64)
+		{
+			return key;
+		}
+
 		const auto string = get_strings().find(key);
 		if (string == get_strings().end())
 		{
@@ -83,7 +88,7 @@ namespace utils::lang
 		return text;
 	}
 
-	std::string get_string(const std::string& key, const std::string& language)
+	const std::string& get_string(const std::string& key, const std::string& language)
 	{
 		const auto lang_code = get_lang(language);
 		return get_string(key, lang_code);
