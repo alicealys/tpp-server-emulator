@@ -44,9 +44,9 @@ function mysql.install_win()
 	print("Downloading MySQL")
 	os.execute(string.format("curl \"%s\" -L -o \"%s\"", mysql.download_win.url, archive))
 
-    os.execute(string.format("powershell -command \"Expand-Archive -Force \\\"%s\\\" \\\"%s\\\"\"", archive, mysql.source))
-    os.execute(string.format("powershell -command \"mv \\\"%s/*\\\" \\\"%s\\\"\"", folder, mysql.source))
-    os.execute(string.format("powershell -command \"rm \\\"%s\\\"\"", archive))
+    os.execute(string.format("pwsh -command \"Expand-Archive -Force \\\"%s\\\" \\\"%s\\\"\"", archive, mysql.source))
+    os.execute(string.format("pwsh -command \"mv \\\"%s/*\\\" \\\"%s\\\"\"", folder, mysql.source))
+    os.execute(string.format("pwsh -command \"rm \\\"%s\\\"\"", archive))
     os.execute(string.format("rmdir \"%s\"", folder))
 end
 

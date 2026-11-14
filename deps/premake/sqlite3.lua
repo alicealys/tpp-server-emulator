@@ -38,9 +38,9 @@ function sqlite3.install_win()
 	print("Downloading sqlite3")
 	os.execute(string.format("curl \"%s\" -L -o \"%s\"", sqlite3.download, archive))
 
-    os.execute(string.format("powershell -command \"Expand-Archive -Force \\\"%s\\\" \\\"%s\\\"\"", archive, sqlite3.source))
-    os.execute(string.format("powershell -command \"mv \\\"%s/*\\\" \\\"%s\\\"\"", folder, sqlite3.source))
-    os.execute(string.format("powershell -command \"rm \\\"%s\\\"\"", archive))
+    os.execute(string.format("pwsh -command \"Expand-Archive -Force \\\"%s\\\" \\\"%s\\\"\"", archive, sqlite3.source))
+    os.execute(string.format("pwsh -command \"mv \\\"%s/*\\\" \\\"%s\\\"\"", folder, sqlite3.source))
+    os.execute(string.format("pwsh -command \"rm \\\"%s\\\"\"", archive))
     os.execute(string.format("rmdir \"%s\"", folder))
 end
 
