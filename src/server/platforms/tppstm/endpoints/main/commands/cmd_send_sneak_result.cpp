@@ -400,7 +400,7 @@ namespace emulator::tpp
 				return false;
 			}
 
-			if (!context.owner->is_real_player(), !context.active_sneak->is_security_challenge())
+			if (!context.owner->is_real_player() && !context.active_sneak->is_security_challenge())
 			{
 				database::player_records::set_shield_date(context.active_sneak->get_owner_id(), context.is_win);
 			}
