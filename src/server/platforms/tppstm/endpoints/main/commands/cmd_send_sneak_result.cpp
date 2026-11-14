@@ -400,7 +400,7 @@ namespace emulator::tpp
 				return false;
 			}
 
-			if (!context.owner->is_real_player() && !context.active_sneak->is_security_challenge())
+			if (context.owner->is_real_player() && !context.active_sneak->is_security_challenge())
 			{
 				database::player_records::set_shield_date(context.active_sneak->get_owner_id(), context.is_win);
 			}
@@ -476,7 +476,7 @@ namespace emulator::tpp
 
 	bool cmd_send_sneak_result::open_wormhole(const database::players::player& player, const param_t& param, context_t& context)
 	{
-		if (!context.owner->is_real_player())
+		if (!context.owner->is_real_player() || context.active_sneak->is_security_challenge())
 		{
 			return false;
 		}
