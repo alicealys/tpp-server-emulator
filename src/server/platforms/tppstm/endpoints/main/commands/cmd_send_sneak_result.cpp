@@ -476,7 +476,9 @@ namespace emulator::tpp
 
 	bool cmd_send_sneak_result::open_wormhole(const database::players::player& player, const param_t& param, context_t& context)
 	{
-		if (!context.owner->is_real_player() || context.active_sneak->is_security_challenge())
+		if (!context.owner->is_real_player() || context.active_sneak->is_security_challenge() || 
+			!context.active_sneak->is_sneak() || context.active_sneak->get_mode() != database::players::mode_actual ||
+			context.active_sneak->get_owner_id() == player.get_id())
 		{
 			return false;
 		}
