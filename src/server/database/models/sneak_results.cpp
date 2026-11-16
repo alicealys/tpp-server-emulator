@@ -867,7 +867,7 @@ namespace database::sneak_results
 			return 0u;
 		}
 
-		return game::cluster_index_map[this->platform_];
+		return this->platform_;
 	}
 
 	bool add_sneak_result(const players::player& player, const fobs::fob& fob, const players::sneak_info& sneak,

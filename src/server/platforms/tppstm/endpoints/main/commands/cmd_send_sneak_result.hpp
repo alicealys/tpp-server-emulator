@@ -77,6 +77,9 @@ namespace emulator::tpp
 			std::string event_log;
 			std::uint32_t mode;
 			bool is_win;
+			std::uint32_t kill_staff_count;
+			std::uint32_t capture_staff_count;
+			std::uint32_t injure_staff_count;
 		};
 
 		nlohmann::json execute(nlohmann::json& data, const std::optional<database::players::player>& player) override;

@@ -24,7 +24,7 @@ namespace database::event_rankings
 		damage_defender = 4,
 		materials_stolen = 5,
 		total_stealth = 6,
-		unknown = 7,
+		security_guards_neutralized = 7,
 		defense_deployments = 8,
 		defense_deployments_support = 9,
 		defense_deployments_support_received = 10,

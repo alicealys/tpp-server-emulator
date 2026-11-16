@@ -57,7 +57,7 @@ namespace database::event_rankings
 				case damage_defender:
 				case materials_stolen:
 				case total_stealth:
-				case unknown:
+				case security_guards_neutralized:
 				case defense_deployments:
 				case defense_deployments_support:
 				case defense_deployments_support_received:

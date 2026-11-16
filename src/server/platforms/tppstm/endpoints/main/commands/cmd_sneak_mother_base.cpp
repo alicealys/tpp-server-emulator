@@ -89,7 +89,7 @@ namespace emulator::tpp
 		}
 
 		auto platform = platform_j.get<std::uint32_t>();
-		if (active_sneak.has_value())
+		if (!is_sneak && active_sneak.has_value())
 		{
 			platform = active_sneak->get_platform();
 		}

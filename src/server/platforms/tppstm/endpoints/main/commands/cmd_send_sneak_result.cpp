@@ -63,9 +63,9 @@ namespace emulator::tpp
 			return map;
 		}
 
-		bool modify_staff_array(
+		bool modify_staff_array(cmd_send_sneak_result::context_t& context, 
 			database::player_data::staff_array_container& staff_array, std::vector<game::staff_t>& prisoners,
-			soldier_map_t& soldier_ids, const std::size_t soldier_count, const soldier_array_action action, std::uint32_t* counts)
+			soldier_map_t& soldier_ids, const std::size_t soldier_count, const soldier_array_action action)
 		{
 			auto result = false;
 			auto soldiers_left = soldier_count;
@@ -98,14 +98,16 @@ namespace emulator::tpp
 				{
 				case soldier_injure:
 				{
-					counts[staff->fields.header.peak_rank]++;
+					context.event_data.injury_staff_count[staff->fields.header.peak_rank]++;
+					context.injure_staff_count++;
 					staff->fields.status_sync.designation = game::SECTION_HOSPITAL;
 					result = true;
 					break;
 				}
 				case soldier_capture:
 				{
-					counts[staff->fields.header.peak_rank]++;
+					context.event_data.capture_staff_count[staff->fields.header.peak_rank]++;
+					context.capture_staff_count++;
 					prisoners.emplace_back(*staff);
 					std::memset(staff, 0, sizeof(game::staff_t));
 					result = true;
@@ -113,7 +115,8 @@ namespace emulator::tpp
 				}
 				case soldier_kill:
 				{
-					counts[staff->fields.header.peak_rank]++;
+					context.event_data.kill_staff_count[staff->fields.header.peak_rank]++;
+					context.kill_staff_count++;
 					std::memset(staff, 0, sizeof(game::staff_t));
 					result = true;
 					break;
@@ -162,15 +165,15 @@ namespace emulator::tpp
 			if (!param.kill_soldier_id.empty())
 			{
 				auto kill_soldier_id = make_soldier_map(param.kill_soldier_id);
-				modified_owner_staff |= modify_staff_array(owner_staff, new_prisoners,
-					kill_soldier_id, param.kill_soldier_id.size(), soldier_kill, context.event_data.kill_staff_count);
+				modified_owner_staff |= modify_staff_array(context, owner_staff, new_prisoners,
+					kill_soldier_id, param.kill_soldier_id.size(), soldier_kill);
 			}
 
 			if (!param.injure_soldier_id.empty())
 			{
 				auto injury_staff_id = make_soldier_map(param.injure_soldier_id);
-				modified_owner_staff |= modify_staff_array(owner_staff, new_prisoners,
-					injury_staff_id, param.injure_soldier_id.size(), soldier_injure, context.event_data.injury_staff_count);
+				modified_owner_staff |= modify_staff_array(context, owner_staff, new_prisoners,
+					injury_staff_id, param.injure_soldier_id.size(), soldier_injure);
 			}
 
 			if (!context.owner->is_real_player())
@@ -190,8 +193,8 @@ namespace emulator::tpp
 			if (!param.capture_soldier_id.empty())
 			{
 				auto capture_soldier_id = make_soldier_map(param.capture_soldier_id);
-				modified_owner_staff |= modify_staff_array(owner_staff, new_prisoners,
-					capture_soldier_id, param.capture_soldier_id.size(), soldier_capture, context.event_data.capture_staff_count);
+				modified_owner_staff |= modify_staff_array(context, owner_staff, new_prisoners,
+					capture_soldier_id, param.capture_soldier_id.size(), soldier_capture);
 
 				database::fob_prisoners::add_prisoners(context.attacker_data->get_player_id(), context.owner->get_id(), new_prisoners);
 			}
@@ -363,7 +366,7 @@ namespace emulator::tpp
 		const param_t& param, cmd_send_sneak_result::context_t& context)
 	{
 		if (context.active_sneak->get_mode() != database::players::mode_actual || 
-			context.active_sneak->get_owner_id() == player.get_id())
+			(context.active_sneak->is_sneak() && context.active_sneak->get_owner_id() == player.get_id()))
 		{
 			return true;
 		}
@@ -405,6 +408,8 @@ namespace emulator::tpp
 				database::player_records::set_shield_date(context.active_sneak->get_owner_id(), context.is_win);
 			}
 
+			const auto defender_id = context.active_sneak->get_defender_id();
+
 			if (context.is_win)
 			{
 				if (param.is_goal && param.is_perfect_stealth)
@@ -412,28 +417,31 @@ namespace emulator::tpp
 					database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::total_stealth, 1);
 				}
 
-				const auto event_id = context.active_sneak->get_defender_id() != 0ull
+				const auto event_id = defender_id != 0ull
 					? database::event_rankings::cores_reached_defender
 					: database::event_rankings::cores_reached_no_defender;
 				database::event_rankings::increment_event_value(player.get_id(), event_id, 1);
 			}
+
+			if (defender_id != 0ull)
+			{
+				if (param.count_of_neutralized_by_intruder > 0)
+				{
+					const auto c = std::min(100u, param.count_of_neutralized_by_intruder);
+					database::event_rankings::increment_event_value(defender_id,
+						database::event_rankings::times_neutralized_by_intruder, c);
+				}
+
+				{
+					const auto c = std::min(100u, param.count_of_neutralize_intruder);
+					database::event_rankings::increment_event_value(defender_id,
+						database::event_rankings::defender_neutralized_intruder, c);
+				}
+			}
+
+			database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::security_guards_neutralized, 
+				context.capture_staff_count + context.kill_staff_count + context.injure_staff_count);
 		}
-		else // defense
-		{
-			if (param.count_of_neutralized_by_intruder > 0)
-			{
-				const auto c = std::min(100u, param.count_of_neutralized_by_intruder);
-				database::event_rankings::increment_event_value(player.get_id(),
-					database::event_rankings::times_neutralized_by_intruder, c);
-			}
-
-			if (param.count_of_neutralize_intruder > 0 && player.get_id() == context.active_sneak->get_owner_id())
-			{
-				const auto c = std::min(100u, param.count_of_neutralize_intruder);
-				database::event_rankings::increment_event_value(player.get_id(),
-					database::event_rankings::defender_neutralized_intruder, c);
-			}
-
 			if (context.is_win)
 			{
 				database::event_rankings::increment_event_value(player.get_id(),

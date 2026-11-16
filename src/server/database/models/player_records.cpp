@@ -115,9 +115,12 @@ namespace database::player_records
 		{
 			database::access([&](database::database_t& db)
 			{
+				const auto value_str = std::format("{}(fob_point + {}, 0)", get_database_def().max_func, point_add, 0);
+				const auto value = sqlpp::verbatim<sqlpp::integer>(value_str);
+
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player_record::table)
-						.set(player_record::table.fob_point = player_record::table.fob_point + point_add)
+						.set(player_record::table.fob_point = value)
 								.where(player_record::table.player_id == player_id)
 					);
 

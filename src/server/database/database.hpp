@@ -38,6 +38,7 @@ namespace database
 		bool use_multi_connection;
 		std::string rand_func;
 		std::string min_func;
+		std::string max_func;
 		std::size_t max_connections;
 	};
 

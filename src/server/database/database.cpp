@@ -32,6 +32,7 @@ namespace database
 		{
 			database_def.rand_func = "rand()";
 			database_def.min_func = "least";
+			database_def.max_func = "greatest";
 			database_def.use_multi_connection = true;
 			break;
 		}
@@ -39,6 +40,7 @@ namespace database
 		{
 			database_def.rand_func = "random()";
 			database_def.min_func = "min";
+			database_def.max_func = "max";
 			database_def.use_multi_connection = false;
 			break;
 		}
