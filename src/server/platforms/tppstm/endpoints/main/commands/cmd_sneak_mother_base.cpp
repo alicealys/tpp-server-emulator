@@ -71,14 +71,10 @@ namespace emulator::tpp
 
 		const auto attacker_data = database::player_data::find(attacker_id);
 		const auto owner_data = database::player_data::find(fob->get_player_id());
-
-		if (!attacker_data.has_value() || !owner_data.has_value())
-		{
-			return error(ERR_INVALIDARG);
-		}
-
+		const auto owner_record = database::player_records::find(fob->get_player_id());
 		const auto owner = database::players::find(fob->get_player_id());
-		if (!owner.has_value())
+
+		if (!attacker_data.has_value() || !owner_data.has_value() || !owner_record.has_value() || !owner.has_value())
 		{
 			return error(ERR_DATABASE);
 		}
@@ -129,7 +125,7 @@ namespace emulator::tpp
 		}
 
 		result["is_event"] = std::uint8_t(is_event);
-		result["is_security_contract"] = 0;
+		result["is_security_contract"] = std::uint8_t(owner_record->get_is_insurance());
 		result["owner_gmp"] = owner_data->get_server_gmp();
 
 		game::fob_resources_t recover_resource{};
@@ -320,7 +316,7 @@ namespace emulator::tpp
 
 		if (!is_sneak)
 		{
-			if (!active_sneak.has_value() || owner->is_real_player())
+			if (!active_sneak.has_value() || !owner->is_real_player())
 			{
 				return error(ERR_DATABASE);
 			}
@@ -330,7 +326,7 @@ namespace emulator::tpp
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), 0u, 
 				active_sneak->get_platform(), mode, database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled()))
 			{
-				return error(ERR_DATABASE);
+				return error(ERR_ALREADY_SNEAK);
 			}
 		}
 		else
@@ -345,7 +341,7 @@ namespace emulator::tpp
 			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), wormhole_player_id, platform, mode,
 				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled(), owner->is_real_player()))
 			{
-				return error(ERR_DATABASE);
+				return error(ERR_ALREADY_SNEAK);
 			}
 		}
 
