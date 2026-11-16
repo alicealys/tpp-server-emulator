@@ -63,6 +63,10 @@ namespace database::variables
 			database::access([&](database_t& db)
 			{
 				db.get_database<Type>()->start_transaction();
+				const auto _0 = gsl::finally([&]
+				{
+					db.get_database<Type>()->commit_transaction();
+				});
 
 				try
 				{
@@ -81,7 +85,6 @@ namespace database::variables
 					console::error("failed to acquire lock: %s\n", e.what());
 				}
 
-				db.get_database<Type>()->commit_transaction();
 			});
 		}
 	}

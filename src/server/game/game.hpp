@@ -1384,4 +1384,16 @@ namespace game
 		bool parse(nlohmann::json& data);
 		void to_json(nlohmann::json& data) const;
 	};
+
+	enum sneak_result_type_t
+	{
+		RESULT_GOAL = 0,
+		RESULT_WORMHOLE = 1,
+		RESULT_DEAD = 2,
+		RESULT_FULTON = 3,
+		RESULT_TIMEOUT = 4,
+		RESULT_ABORT = 5,
+		RESULT_ERROR = 6,
+		RESULT_NONE = 0xFF,
+	};
 }

@@ -222,7 +222,7 @@ with ranked as (
         value,
         rank() over (partition by event_id order by value desc) as new_rank,
         row_number() over (partition by event_id order by value desc) as new_rank_number
-    from event_rankings where event_id != {}
+    from event_rankings where event_id = {}
 )
 update event_rankings
 set player_rank = (
