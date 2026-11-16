@@ -13,7 +13,8 @@ namespace emulator::tpp
 	void cmd_abort_mother_base::send_interrupted_sneak_result(const database::players::player& player)
 	{
 		const auto active_sneak = database::players::find_active_sneak_from_player(player.get_id());
-		if (!active_sneak.has_value() || active_sneak->get_status() != database::players::status_in_game)
+		if (!active_sneak.has_value() || !active_sneak->is_sneak() || active_sneak->get_mode() != database::players::mode_actual ||
+			active_sneak->get_status() != database::players::status_in_game)
 		{
 			return;
 		}
