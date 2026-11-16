@@ -472,7 +472,8 @@ namespace database::fob_events
 		std::chrono::system_clock::time_point event_start{};
 		std::chrono::system_clock::time_point event_end{};
 		get_maintenance_range(event_start, event_end);
-		return std::chrono::system_clock::now() < event_end - event_intermission_duration;
+		const auto now = std::chrono::system_clock::now();
+		return now < event_end && now > event_end - event_intermission_duration;
 	}
 
 	bool is_event_text(const std::string& text)

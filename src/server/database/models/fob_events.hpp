@@ -9,7 +9,7 @@
 
 namespace database::fob_events
 {
-	constexpr const auto event_intermission_duration = 12h;
+	constexpr const auto event_intermission_duration = 8h;
 
 	struct point_exchange_param_t
 	{
