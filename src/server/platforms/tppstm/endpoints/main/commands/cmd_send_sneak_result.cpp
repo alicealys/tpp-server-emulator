@@ -432,6 +432,7 @@ namespace emulator::tpp
 						database::event_rankings::times_neutralized_by_intruder, c);
 				}
 
+				if (param.count_of_neutralize_intruder > 0 && defender_id == context.active_sneak->get_owner_id())
 				{
 					const auto c = std::min(100u, param.count_of_neutralize_intruder);
 					database::event_rankings::increment_event_value(defender_id,
@@ -442,6 +443,8 @@ namespace emulator::tpp
 			database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::security_guards_neutralized, 
 				context.capture_staff_count + context.kill_staff_count + context.injure_staff_count);
 		}
+		else // defense
+		{
 			if (context.is_win)
 			{
 				database::event_rankings::increment_event_value(player.get_id(),
@@ -472,7 +475,7 @@ namespace emulator::tpp
 				database::event_rankings::most_ep_in_mission, param.sneak_point);
 		}
 
-		if (param.is_event && !context.owner->is_real_player())
+		if (param.is_event && !context.owner->is_real_player() && param.event_point > 0)
 		{
 			database::player_records::add_event_points(player.get_id(), param.event_point);
 			database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::fob_event_ranking, param.event_point);
