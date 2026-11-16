@@ -10,10 +10,7 @@ namespace emulator::tpp
 {
 	nlohmann::json cmd_active_sneak_mother_base::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
+		nlohmann::json result;
 
 		const auto& mother_base_id_j = data["mother_base_id"];
 		if (!mother_base_id_j.is_number_unsigned())
@@ -41,18 +38,31 @@ namespace emulator::tpp
 		}
 
 		const auto active_sneak = database::players::find_active_sneak_from_player(player->get_id());
-
 		if (!active_sneak.has_value() || active_sneak->get_fob_id() != mother_base_id)
 		{
 			return error(ERR_DATABASE);
 		}
 
-		if (!database::players::set_active_sneak(player->get_id(), active_sneak->get_fob_id(), active_sneak->get_owner_id(), active_sneak->get_wormhole_player_id(), 
-			active_sneak->get_platform(), active_sneak->get_mode(), database::players::status_in_game, active_sneak->is_sneak(), false))
+		if (!database::players::set_active_sneak(
+			player->get_id(), 
+			active_sneak->get_fob_id(), 
+			active_sneak->get_owner_id(), 
+			active_sneak->get_wormhole_player_id(), 
+			active_sneak->get_platform(), 
+			active_sneak->get_mode(), 
+			database::players::status_in_game, 
+			active_sneak->is_sneak(), 
+			active_sneak->is_security_challenge(), 
+			owner->is_real_player()))
 		{
 			return error(ERR_DATABASE);
 		}
 
-		return error(NOERR);
+		return result;
+	}
+
+	bool cmd_active_sneak_mother_base::needs_player()
+	{
+		return true;
 	}
 }

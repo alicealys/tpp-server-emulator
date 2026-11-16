@@ -21,6 +21,7 @@ create table if not exists `players`
 	current_sneak_fob					bigint unsigned not null		default 0,
 	current_sneak_player				bigint unsigned not null		default 0,
 	current_sneak_wormhole_player_id 	bigint unsigned	not null		default 0,
+	current_sneak_defender_id 			bigint unsigned	not null		default 0,
 	current_sneak_platform				int unsigned	not null		default 0,
 	current_sneak_status				int unsigned	not null		default 0,
 	current_sneak_is_sneak				tinyint			not null		default 0,

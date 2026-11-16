@@ -20,6 +20,16 @@ namespace emulator::tpp
 		result["fob_index"] = -1;
 		result["sneak_mode"] = -1;
 
+		const auto current_sneak = database::players::find_active_sneak_from_player(player->get_id());
+		if (current_sneak.has_value() && !current_sneak->is_sneak())
+		{
+			const auto attacker_sneak = database::players::find_active_sneak(current_sneak->get_owner_id(), current_sneak->get_mode());
+			if (attacker_sneak.has_value())
+			{
+				database::players::set_active_sneak_defender(attacker_sneak->get_player_id(), player->get_id());
+			}
+		}
+
 		const auto set_sneak = [&](const database::players::sneak_info& sneak, const bool is_support)
 		{
 			const auto fob = database::fobs::get_fob(sneak.get_fob_id());

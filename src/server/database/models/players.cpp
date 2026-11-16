@@ -116,6 +116,7 @@ namespace database::players
 	GET_FIELD_C(sneak_info, std::uint64_t, owner_id);
 	GET_FIELD_C(sneak_info, std::uint64_t, fob_id);
 	GET_FIELD_C(sneak_info, std::uint64_t, wormhole_player_id);
+	GET_FIELD_C(sneak_info, std::uint64_t, defender_id);
 	GET_FIELD_C(sneak_info, std::uint32_t, platform);
 	GET_FIELD_C(sneak_info, std::chrono::seconds, start_time);
 
@@ -699,6 +700,19 @@ namespace database::players
 		}
 
 		template <database_type_t Type>
+		void set_active_sneak_defender(const std::uint64_t attacker_id, const std::uint64_t defender_id)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player::table)
+						.set(player::table.current_sneak_defender_id = defender_id)
+							.where(player::table.id == attacker_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
 		bool set_security_challenge(const std::uint64_t player_id, bool enabled)
 		{
 			return database::access<bool>([&](database::database_t& db)
@@ -920,6 +934,11 @@ namespace database::players
 	std::optional<sneak_info> get_active_sneak(const std::uint64_t fob_id)
 	{
 		RUN_IMPL(impl::get_active_sneak, fob_id);
+	}
+
+	void set_active_sneak_defender(const std::uint64_t attacker_id, const std::uint64_t defender_id)
+	{
+		RUN_IMPL(impl::set_active_sneak_defender, attacker_id, defender_id);
 	}
 
 	bool set_security_challenge(const std::uint64_t player_id, bool enabled)

@@ -412,8 +412,7 @@ namespace emulator::tpp
 					database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::total_stealth, 1);
 				}
 
-				const auto defense_sneak = database::players::find_active_sneak(context.active_sneak->get_owner_id(), false, true);
-				const auto event_id = defense_sneak.has_value()
+				const auto event_id = context.active_sneak->get_defender_id() != 0ull
 					? database::event_rankings::cores_reached_defender
 					: database::event_rankings::cores_reached_no_defender;
 				database::event_rankings::increment_event_value(player.get_id(), event_id, 1);

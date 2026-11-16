@@ -82,7 +82,12 @@ namespace emulator::tpp
 		game::motherbase_t motherbase{};
 		owner_data->get_motherbase(motherbase);
 
-		const auto active_sneak = database::players::get_active_sneak(mother_base_id);
+		const auto active_sneak = database::players::find_active_sneak(owner->get_id(), mode);
+		if (!active_sneak.has_value() || active_sneak->get_fob_id() != fob->get_id())
+		{
+			return error(ERR_DATABASE);
+		}
+
 		auto platform = platform_j.get<std::uint32_t>();
 		if (active_sneak.has_value())
 		{
@@ -200,7 +205,7 @@ namespace emulator::tpp
 					staff.fields.packed_status_no_sync = 4096; // fix broken staff
 				}
 
-				if (staff.fields.status_sync.designation == game::SECTION_SECURITY)
+				if (!owner_record->get_is_insurance() && staff.fields.status_sync.designation == game::SECTION_SECURITY)
 				{
 					result["security_soldier"][security_soldier_index]["header"] = staff.fields.packed_header;
 					result["security_soldier"][security_soldier_index]["seed"] = staff.fields.packed_seed;
