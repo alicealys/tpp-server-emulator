@@ -83,7 +83,7 @@ namespace database::fob_events
 	fob_event_date_range_t get_event_range();
 	std::optional<fob_event_player_t> get_player(const std::uint64_t id);
 	bool is_event_player(const std::uint64_t id);
-	std::optional<fob_event_t> get_current_event();
+	const fob_event_t* get_current_event();
 
 	bool is_intermission();
 	bool is_event_text(const std::string& text);

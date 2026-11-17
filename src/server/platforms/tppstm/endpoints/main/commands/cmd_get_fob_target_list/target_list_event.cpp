@@ -11,7 +11,7 @@ namespace emulator::tpp
 		target_list_t targets;
 
 		const auto fob_event = database::fob_events::get_current_event();
-		if (!fob_event.has_value())
+		if (fob_event == nullptr)
 		{
 			return {};
 		}

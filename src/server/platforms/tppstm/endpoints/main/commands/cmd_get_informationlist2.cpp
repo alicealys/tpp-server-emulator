@@ -29,6 +29,16 @@ namespace emulator::tpp
 		{
 			return message.info_id;
 		}
+
+		bool compare_messages(const cmd_get_informationlist2_base::message_t& a, const cmd_get_informationlist2_base::message_t& b)
+		{
+			if (a.priority == b.priority)
+			{
+				return a.get_date(a) > b.get_date(b);
+			}
+
+			return a.priority < b.priority;
+		}
 	}
 
 	std::string cmd_get_informationlist2_base::message_t::format_text(const std::uint8_t lang) const
@@ -109,17 +119,7 @@ namespace emulator::tpp
 		}
 
 		messages.emplace_back(message);
-		std::sort(messages.begin(), messages.end(),
-			[](const message_t& a, const message_t& b)
-			{
-				if (a.priority == b.priority)
-				{
-					return a.get_date(a) > b.get_date(b);
-				}
-
-				return a.priority < b.priority;
-			}
-		);
+		std::sort(messages.begin(), messages.end(), compare_messages);
 	}
 
 	void cmd_get_informationlist2_base::parse_list(std::vector<message_t>& messages, nlohmann::json& data)
@@ -137,7 +137,7 @@ namespace emulator::tpp
 		}
 	}
 
-	nlohmann::json cmd_get_informationlist2_base::generate(const std::vector<message_t>& messages, nlohmann::json& data, const std::optional<database::players::player>& player)
+	nlohmann::json cmd_get_informationlist2_base::generate(const std::vector<message_t>& messages, nlohmann::json& data, const std::optional<database::players::player>& player, const bool is_tpp)
 	{
 		nlohmann::json result;
 
@@ -151,6 +151,9 @@ namespace emulator::tpp
 		const auto lang = utils::lang::get_lang(lang_name);
 
 		auto count = 0u;
+
+		std::vector<const message_t*> result_messages;
+
 		for (const auto& message : messages)
 		{
 			if (message.visible != nullptr && !message.visible(message))
@@ -158,21 +161,34 @@ namespace emulator::tpp
 				continue;
 			}
 
-			message.to_json(result["info_list"][count++], lang);
+			result_messages.emplace_back(&message);
 		}
 
-		const auto current_event = database::fob_events::get_current_event();
-		if (current_event.has_value())
+		if (is_tpp)
 		{
-			for (const auto& message : current_event->information)
+			const auto current_event = database::fob_events::get_current_event();
+			if (current_event != nullptr)
 			{
-				if (message.visible != nullptr && !message.visible(message))
+				for (const auto& message : current_event->information)
 				{
-					continue;
-				}
+					if (message.visible != nullptr && !message.visible(message))
+					{
+						continue;
+					}
 
-				message.to_json(result["info_list"][count++], lang);
+					result_messages.emplace_back(&message);
+				}
 			}
+		}
+
+		std::sort(result_messages.begin(), result_messages.end(), [](const message_t* a, const message_t* b)
+		{
+			return compare_messages(*a, *b);
+		});
+
+		for (const auto& message : result_messages)
+		{
+			message->to_json(result["info_list"][count++], lang);
 		}
 
 		result["info_num"] = count;
@@ -188,7 +204,7 @@ namespace emulator::tpp
 
 	nlohmann::json cmd_get_informationlist2::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		return cmd_get_informationlist2_base::generate(cmd_get_informationlist2::messages, data, player);
+		return cmd_get_informationlist2_base::generate(cmd_get_informationlist2::messages, data, player, true);
 	}
 
 	void cmd_get_informationlist2::register_message(message_t& message)

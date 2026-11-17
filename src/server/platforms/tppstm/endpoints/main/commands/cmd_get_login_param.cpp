@@ -85,7 +85,7 @@ namespace emulator::tpp
 		fob_event_task_list_j["version"] = "";
 
 		const auto current_event = database::fob_events::get_current_event();
-		if (!current_event.has_value())
+		if (current_event == nullptr)
 		{
 			return;
 		}

@@ -31,7 +31,7 @@ namespace emulator::tpp
 		static void register_message(std::vector<message_t>& messages, message_t& message);
 		static void parse_list(std::vector<message_t>& messages, nlohmann::json& data);
 		static nlohmann::json generate(const std::vector<message_t>& messages, nlohmann::json& data, 
-			const std::optional<database::players::player>& player);
+			const std::optional<database::players::player>& player, const bool is_tpp);
 
 	};
 

@@ -30,7 +30,7 @@ namespace emulator::tpp
 		const auto current_event = database::fob_events::get_current_event();
 		const auto& league_params = database::pf_league::get_point_exchange_params();
 
-		if (is_event && !current_event.has_value())
+		if (is_event && current_event == nullptr)
 		{
 			return error(ERR_INVALIDARG);
 		}

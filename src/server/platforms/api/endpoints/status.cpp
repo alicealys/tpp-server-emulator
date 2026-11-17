@@ -27,7 +27,7 @@ namespace emulator
 		result["version"] = VERSION;
 
 		const auto current_event = database::fob_events::get_current_event();
-		if (current_event.has_value())
+		if (current_event != nullptr)
 		{
 			result["event"]["start_date"] = current_event->date_range.start.count();
 			result["event"]["end_date"] = current_event->date_range.end.count();

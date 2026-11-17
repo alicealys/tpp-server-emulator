@@ -24,18 +24,18 @@ namespace database::fob_events
 		std::uint32_t get_information_message_id(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
 		{
 			const auto& event = get_current_event();
-			if (!event.has_value())
+			if (event == nullptr)
 			{
 				return 0u;
 			}
 
-			return 1000000u + event->index * 10u + (event->number) * 20u;
+			return 100000000u + event->index * 10u + (event->number) * 20u + message.info_id;
 		}
 
 		std::uint64_t get_information_message_date(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
 		{
 			const auto& event = get_current_event();
-			if (!event.has_value())
+			if (event == nullptr)
 			{
 				return 0u;
 			}
@@ -49,7 +49,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -61,7 +61,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -73,7 +73,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -85,7 +85,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -97,7 +97,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -109,7 +109,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -121,7 +121,7 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (!current_event.has_value())
+				if (current_event == nullptr)
 				{
 					return {};
 				}
@@ -245,6 +245,7 @@ namespace database::fob_events
 
 				message.get_info_id = get_information_message_id;
 				message.get_date = get_information_message_date;
+				message.info_id = static_cast<std::uint32_t>(i);
 				event.information.emplace_back(message);
 			}
 
@@ -451,7 +452,7 @@ namespace database::fob_events
 		return player.has_value();
 	}
 
-	std::optional<fob_event_t> get_current_event()
+	const fob_event_t* get_current_event()
 	{
 		auto& events_data = get_events_data();
 		if (events_data.events.empty())
@@ -464,7 +465,7 @@ namespace database::fob_events
 		event.index = static_cast<std::uint32_t>(index);
 		event.number = get_event_number();
 		event.date_range = get_event_range();
-		return event;
+		return &event;
 	}
 
 	bool is_intermission()
@@ -505,7 +506,7 @@ namespace database::fob_events
 			command::add("get_current_event", []()
 			{
 				const auto event = get_current_event();
-				if (event.has_value())
+				if (event != nullptr)
 				{
 					console::print("[FOB Events] current event: \n");
 					console::print("\tname: %s\n", event->server_text.data());

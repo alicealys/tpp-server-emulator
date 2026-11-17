@@ -72,7 +72,7 @@ namespace emulator::tpp
 		};
 
 		const auto fob_event = database::fob_events::get_current_event();
-		if (is_event && fob_event.has_value())
+		if (is_event && fob_event != nullptr)
 		{
 			serialize_list(fob_event->point_exchange_params);
 		}

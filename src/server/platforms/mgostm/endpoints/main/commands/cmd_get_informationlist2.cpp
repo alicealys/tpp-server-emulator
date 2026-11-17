@@ -16,6 +16,6 @@ namespace emulator::mgo
 
 	nlohmann::json cmd_get_informationlist2::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
-		return cmd_get_informationlist2_base::generate(cmd_get_informationlist2::messages, data, player);
+		return cmd_get_informationlist2_base::generate(cmd_get_informationlist2::messages, data, player, false);
 	}
 }

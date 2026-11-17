@@ -112,7 +112,7 @@ namespace emulator::tpp
 			flag |= notice_daily_reward;
 		}
 
-		if (fob_event.has_value())
+		if (fob_event != nullptr)
 		{
 			flag |= notice_event;
 		}
@@ -124,7 +124,7 @@ namespace emulator::tpp
 
 		const auto motd_text = motd::get_motd_text();
 
-		result["active_event_server_text"] = fob_event.has_value() ? fob_event->server_text : "NotImplement";
+		result["active_event_server_text"] = fob_event != nullptr ? fob_event->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 
 		if (!motd_text.empty())
@@ -140,8 +140,8 @@ namespace emulator::tpp
 		}
 
 		result["daily"] = 0;
-		result["event_delete_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
-		result["event_end_date"] = fob_event.has_value() ? fob_event->date_range.end.count() : 0ull;
+		result["event_delete_date"] = fob_event != nullptr ? fob_event->date_range.end.count() : 0ull;
+		result["event_end_date"] = fob_event != nullptr ? fob_event->date_range.end.count() : 0ull;
 		result["exists_event_point_combat_deploy"] = 0;
 		result["flag"] = flag;
 
