@@ -671,6 +671,11 @@ namespace database::event_rankings
 
 				db.run_query("mgstpp.event_rankings.update_entries", event_id);
 			}
+
+			if (event_id == ep_earned)
+			{
+				player_records::update_fob_ranking(db);
+			}
 		
 			++event_id;
 			if (event_id > league_event_end)
