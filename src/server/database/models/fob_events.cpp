@@ -29,7 +29,7 @@ namespace database::fob_events
 				return 0u;
 			}
 
-			return 100000000u + event->index * 10u + (event->number) * 20u + message.info_id;
+			return 1000000u + event->index * 10u + (event->number) * 20u + message.info_id;
 		}
 
 		std::uint64_t get_information_message_date(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
