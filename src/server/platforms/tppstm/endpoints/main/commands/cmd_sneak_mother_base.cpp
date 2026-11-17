@@ -58,9 +58,10 @@ namespace emulator::tpp
 		}
 
 		auto attacker_id = player->get_id();
+
+		const auto attacker_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode, true);
 		if (!is_sneak)
 		{
-			const auto attacker_sneak = database::players::find_active_sneak(fob->get_player_id(), mode, alt_mode, true);
 			if (!attacker_sneak.has_value())
 			{
 				return error(ERR_DATABASE);
@@ -82,7 +83,7 @@ namespace emulator::tpp
 		game::motherbase_t motherbase{};
 		owner_data->get_motherbase(motherbase);
 
-		const auto active_sneak = database::players::find_active_sneak(owner->get_id(), mode);
+		const auto active_sneak = database::players::find_active_sneak(owner->get_id(), mode, database::players::mode_invalid, is_sneak);
 		if (!active_sneak.has_value() || active_sneak->get_fob_id() != fob->get_id())
 		{
 			return error(ERR_DATABASE);
@@ -118,17 +119,6 @@ namespace emulator::tpp
 		result["damage_param"] = nlohmann::json::array();
 		result["event_fob_params"] = {0, 0, 0, 0, 0};
 
-		const auto current_deploy = database::fob_deploy_assists::get_current_deploy(player->get_id());
-		if (current_deploy.has_value())
-		{
-			current_deploy->to_json(result["fob_deploy_damage_param"]);
-		}
-		else
-		{
-			database::fob_deploy_assists::deploy_params_t empty_params{};
-			empty_params.to_json(result["fob_deploy_damage_param"]);
-		}
-
 		result["is_event"] = std::uint8_t(is_event);
 		result["is_security_contract"] = std::uint8_t(owner_record->get_is_insurance());
 		result["owner_gmp"] = owner_data->get_server_gmp();
@@ -136,9 +126,23 @@ namespace emulator::tpp
 		game::fob_resources_t recover_resource{};
 		recover_resource.to_json(result["recover_resource"]);
 
-		if (owner->is_real_player() && current_deploy.has_value() && current_deploy->get_fob_id() == fob->get_id())
+		const auto current_deploy = is_sneak
+			? database::fob_deploy_assists::get_current_deploy(player->get_id())
+			: database::fob_deploy_assists::get_used_deploy(attacker_sneak->get_deploy_id());
+
+		if (current_deploy.has_value())
 		{
-			current_deploy->apply(cluster_param);
+			current_deploy->to_json(result["fob_deploy_damage_param"]);
+
+			if (owner->is_real_player() && current_deploy->get_fob_id() == fob->get_id())
+			{
+				current_deploy->apply(cluster_param);
+			}
+		}
+		else
+		{
+			database::fob_deploy_assists::deploy_params_t empty_params{};
+			empty_params.to_json(result["fob_deploy_damage_param"]);
 		}
 
 		database::player_data::staff_array_container staff_array;
@@ -213,7 +217,7 @@ namespace emulator::tpp
 					result["security_soldier"][security_soldier_index]["status_sync"] = staff.fields.packed_status_sync;
 					++security_soldier_index;
 				}
-				else if (matches_current_platform(staff) && reward_soldier_index < 10)
+				else if (matches_current_platform(staff) && reward_soldier_index < 10 && is_sneak)
 				{
 					result["reward_soldier"][reward_soldier_index]["header"] = staff.fields.packed_header;
 					result["reward_soldier"][reward_soldier_index]["seed"] = staff.fields.packed_seed;
@@ -223,25 +227,28 @@ namespace emulator::tpp
 				}
 			}
 
-			std::array<std::uint32_t, 10> recover_soldier_count{};
-
-			const auto rescuable_list = database::fob_prisoners::get_rescueable_list(player->get_id(), owner->get_id());
-			for (auto i = 0ull; i < rescuable_list.size(); i++)
+			if (is_sneak)
 			{
-				const auto param = rescuable_list[i].get_staff_param();
-				auto& entry_j = recover_soldier_j[i];
-				entry_j["header"] = param.packed_header;
-				entry_j["seed"] = param.packed_seed;
-				entry_j["status_no_sync"] = param.packed_status_no_sync;
-				entry_j["status_sync"] = param.packed_status_sync;
+				std::array<std::uint32_t, 10> recover_soldier_count{};
 
-				const auto peak_rank = param.header.peak_rank;
-				recover_soldier_count[peak_rank]++;
+				const auto rescuable_list = database::fob_prisoners::get_rescueable_list(player->get_id(), owner->get_id());
+				for (auto i = 0ull; i < rescuable_list.size(); i++)
+				{
+					const auto param = rescuable_list[i].get_staff_param();
+					auto& entry_j = recover_soldier_j[i];
+					entry_j["header"] = param.packed_header;
+					entry_j["seed"] = param.packed_seed;
+					entry_j["status_no_sync"] = param.packed_status_no_sync;
+					entry_j["status_sync"] = param.packed_status_sync;
+
+					const auto peak_rank = param.header.peak_rank;
+					recover_soldier_count[peak_rank]++;
+				}
+
+				result["recover_soldier_count"] = recover_soldier_count;
+				result["recover_soldier_num"] = rescuable_list.size();
+				result["security_soldier_num"] = security_soldier_index;
 			}
-
-			result["recover_soldier_count"] = recover_soldier_count;
-			result["recover_soldier_num"] = rescuable_list.size();
-			result["security_soldier_num"] = security_soldier_index;
 		}
 		else
 		{
@@ -336,17 +343,21 @@ namespace emulator::tpp
 		}
 		else
 		{
+			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), wormhole_player_id, platform, mode,
+				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled(), owner->is_real_player()))
+			{
+				return error(ERR_ALREADY_SNEAK);
+			}
+
 			if (owner->is_real_player())
 			{
 				database::player_records::clear_shield_date(player->get_id());
 			}
 
-			database::fob_deploy_assists::delete_deploy_to_fob(player->get_id(), fob->get_id());
-
-			if (!database::players::set_active_sneak(player->get_id(), fob->get_id(), fob->get_player_id(), wormhole_player_id, platform, mode,
-				database::players::status_pre_game, is_sneak, owner->is_security_challenge_enabled(), owner->is_real_player()))
+			if (current_deploy.has_value())
 			{
-				return error(ERR_ALREADY_SNEAK);
+				database::players::set_active_sneak_deploy(player->get_id(), current_deploy->get_deploy_assist_id());
+				database::fob_deploy_assists::use_deploy_to_fob(current_deploy->get_deploy_assist_id());
 			}
 		}
 

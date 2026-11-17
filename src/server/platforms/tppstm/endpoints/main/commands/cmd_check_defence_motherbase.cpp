@@ -11,14 +11,8 @@ namespace emulator::tpp
 	nlohmann::json cmd_check_defence_motherbase::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "NOERR";
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
-		const auto& owner_player_id_j = data["owner_player_id"];
+		auto& owner_player_id_j = data["owner_player_id"];
 		if (!owner_player_id_j.is_number_unsigned())
 		{
 			return error(ERR_INVALIDARG);
@@ -47,5 +41,10 @@ namespace emulator::tpp
 		}
 
 		return result;
+	}
+
+	bool cmd_check_defence_motherbase::needs_player()
+	{
+		return true;
 	}
 }

@@ -43,6 +43,20 @@ namespace database::players
 		}
 
 #define IS_ACTIVE_EXPR player::table.last_update >= std::chrono::system_clock::now() - database::vars.session_timeout
+
+#define RESET_CURRENT_SNEAK_EXPR \
+			player::table.current_sneak_fob = nullable_integer(0), \
+			player::table.current_sneak_player = nullable_integer(0), \
+			player::table.current_sneak_defender_id = nullable_integer(0), \
+			player::table.current_sneak_deploy_id = nullable_integer(0), \
+			player::table.current_sneak_wormhole_player_id = nullable_integer(0), \
+			player::table.current_sneak_is_sneak = false, \
+			player::table.current_sneak_security_challenge = false, \
+			player::table.current_sneak_start = std::chrono::system_clock::time_point{}, \
+			player::table.current_sneak_platform = 0, \
+			player::table.current_sneak_status = 0, \
+			player::table.current_sneak_mode = 0 \
+
 	}
 
 	bool is_system_player_id(const std::uint64_t id)
@@ -117,6 +131,7 @@ namespace database::players
 	GET_FIELD_C(sneak_info, std::uint64_t, fob_id);
 	GET_FIELD_C(sneak_info, std::uint64_t, wormhole_player_id);
 	GET_FIELD_C(sneak_info, std::uint64_t, defender_id);
+	GET_FIELD_C(sneak_info, std::uint64_t, deploy_id);
 	GET_FIELD_C(sneak_info, std::uint32_t, platform);
 	GET_FIELD_C(sneak_info, std::chrono::seconds, start_time);
 
@@ -362,13 +377,9 @@ namespace database::players
 				{
 					result = db.get_database<Type>()->operator()(
 						sqlpp::update(player::table)
-							.set(player::table.last_update = std::chrono::system_clock::now(),
-								 player::table.current_sneak_fob = 0,
-								 player::table.current_sneak_player = 0,
-								 player::table.current_sneak_platform = 0,
-								 player::table.current_sneak_status = 0,
-								 player::table.current_sneak_mode = 0)
-									.where(player::table.id == player.get_id()));
+						.set(player::table.last_update = std::chrono::system_clock::now(), 
+							 RESET_CURRENT_SNEAK_EXPR)
+								.where(player::table.id == player.get_id()));
 				});
 			}
 
@@ -453,13 +464,8 @@ namespace database::players
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player::table)
-						.set(player::table.current_sneak_fob = 0,
-							 player::table.current_sneak_player = 0,
-							 player::table.current_sneak_platform = 0,
-							 player::table.current_sneak_status = 0,
-							 player::table.current_sneak_mode = 0,
-							 player::table.current_sneak_is_sneak = false)
-								.where(player::table.id == player_id)
+						.set(RESET_CURRENT_SNEAK_EXPR)
+							.where(player::table.id == player_id)
 					);
 
 				db.get_database<Type>()->operator()(
@@ -713,6 +719,19 @@ namespace database::players
 		}
 
 		template <database_type_t Type>
+		void set_active_sneak_deploy(const std::uint64_t attacker_id, const std::uint64_t deploy_id)
+		{
+			database::access([&](database::database_t& db)
+			{
+				db.get_database<Type>()->operator()(
+					sqlpp::update(player::table)
+						.set(player::table.current_sneak_deploy_id = deploy_id)
+							.where(player::table.id == attacker_id)
+					);
+			});
+		}
+
+		template <database_type_t Type>
 		bool set_security_challenge(const std::uint64_t player_id, bool enabled)
 		{
 			return database::access<bool>([&](database::database_t& db)
@@ -740,7 +759,8 @@ namespace database::players
 						sqlpp::all_of(player::table))
 							.from(player::table.join(player_records::player_record::table)
 										.on(player_records::player_record::table.player_id == player::table.id))
-								.where(player::table.security_challenge == true && player_records::player_record::table.has_fob == true)
+								.where(player::table.security_challenge == true && 
+									   player_records::player_record::table.has_fob == true)
 									.order_by(rand.asc()).limit(limit)
 					);
 
@@ -939,6 +959,11 @@ namespace database::players
 	void set_active_sneak_defender(const std::uint64_t attacker_id, const std::uint64_t defender_id)
 	{
 		RUN_IMPL(impl::set_active_sneak_defender, attacker_id, defender_id);
+	}
+
+	void set_active_sneak_deploy(const std::uint64_t attacker_id, const std::uint64_t deploy_id)
+	{
+		RUN_IMPL(impl::set_active_sneak_deploy, attacker_id, deploy_id);
 	}
 
 	bool set_security_challenge(const std::uint64_t player_id, bool enabled)

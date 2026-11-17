@@ -590,6 +590,7 @@ namespace database::fob_deploy_assists
 
 	GET_FIELD_C(fob_deploy_assist, std::uint64_t, deploy_assist_id);
 	GET_FIELD_C(fob_deploy_assist, std::uint64_t, player_id);
+	GET_FIELD_C(fob_deploy_assist, bool, is_used);
 
 	std::uint64_t fob_deploy_assist::get_fob_id() const
 	{
@@ -626,15 +627,38 @@ namespace database::fob_deploy_assists
 		}
 
 		template <database_type_t Type>
-		bool delete_deploy_to_fob(const std::uint64_t player_id, const std::uint64_t fob_id)
+		bool use_deploy_to_fob(const std::uint64_t deploy_id)
 		{
 			return database::access<bool>([&](database_t& db)
 			{
 				auto result = db.get_database<Type>()->operator()(
-					sqlpp::remove_from(fob_deploy_assist::table)
-						.where(fob_deploy_assist::table.player_id == player_id && fob_deploy_assist::table.fob_id == fob_id));
+					sqlpp::update(fob_deploy_assist::table)
+						.set(fob_deploy_assist::table.is_used = true)
+							.where(fob_deploy_assist::table.deploy_assist_id == deploy_id));
 				return result != 0ull;
 			});
+		}
+		
+		template <database_type_t Type>
+		std::optional<fob_deploy_assist> get_used_deploy(const std::uint64_t deploy_id)
+		{
+			std::optional<fob_deploy_assist> list;
+
+			database::access([&](database_t& db)
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::all_of(fob_deploy_assist::table))
+							.from(fob_deploy_assist::table)
+								.where(fob_deploy_assist::table.deploy_assist_id == deploy_id && 
+									   fob_deploy_assist::table.is_used));
+
+				if (!results.empty())
+				{
+					list.emplace(results.front());
+				}
+			});
+
+			return list;
 		}
 
 		template <database_type_t Type>
@@ -647,7 +671,8 @@ namespace database::fob_deploy_assists
 					sqlpp::select(sqlpp::all_of(fob_deploy_assist::table))
 							.from(fob_deploy_assist::table)
 								.where(fob_deploy_assist::table.player_id == player_id &&
-									   fob_deploy_assist::table.expire_date > std::chrono::system_clock::now())
+									   fob_deploy_assist::table.expire_date > std::chrono::system_clock::now() && 
+									   !fob_deploy_assist::table.is_used)
 									.order_by(fob_deploy_assist::table.expire_date.desc())
 										.limit(1u));
 
@@ -709,9 +734,9 @@ namespace database::fob_deploy_assists
 		RUN_IMPL(impl::deploy_assist, player_id, params);
 	}
 
-	bool delete_deploy_to_fob(const std::uint64_t player_id, const std::uint64_t fob_id)
+	bool use_deploy_to_fob(const std::uint64_t deploy_id)
 	{
-		RUN_IMPL(impl::delete_deploy_to_fob, player_id, fob_id);
+		RUN_IMPL(impl::use_deploy_to_fob, deploy_id);
 	}
 
 	bool delete_deployments(const std::uint64_t player_id)
@@ -722,6 +747,11 @@ namespace database::fob_deploy_assists
 	std::optional<fob_deploy_assist> get_current_deploy(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::get_current_deploy, player_id);
+	}
+
+	std::optional<fob_deploy_assist> get_used_deploy(const std::uint64_t deploy_id)
+	{
+		RUN_IMPL(impl::get_used_deploy, deploy_id);
 	}
 
 	void delete_player_data(const std::uint64_t player_id)

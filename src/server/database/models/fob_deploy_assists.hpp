@@ -209,13 +209,15 @@ namespace database::fob_deploy_assists
 		DEFINE_FIELD(cluster_index, sqlpp::integer_unsigned);
 		DEFINE_FIELD(damage_values, sqlpp::text);
 		DEFINE_FIELD(expire_date, sqlpp::time_point);
+		DEFINE_FIELD(is_used, sqlpp::boolean);
 		DEFINE_TABLE(fob_deploy_assists, 
 			deploy_assist_id_field_t, 
 			player_id_field_t, 
 			fob_id_field_t,
 			cluster_index_field_t,
 			damage_values_field_t,
-			expire_date_field_t
+			expire_date_field_t,
+			is_used_field_t
 		);
 
 		inline static table_t table;
@@ -229,6 +231,7 @@ namespace database::fob_deploy_assists
 			this->params_.cluster_index = static_cast<std::uint8_t>(row.cluster_index);
 			this->params_.expire_date = std::chrono::duration_cast<std::chrono::seconds>(row.expire_date.value().time_since_epoch());
 			this->params_.damage_values.deserialize(row.damage_values.value());
+			this->is_used_ = row.is_used;
 		}
 
 		void to_json(nlohmann::json& data) const;
@@ -236,6 +239,7 @@ namespace database::fob_deploy_assists
 
 		GET_FIELD_H(std::uint64_t, deploy_assist_id);
 		GET_FIELD_H(std::uint64_t, player_id);
+		GET_FIELD_H(bool, is_used);
 
 		std::uint64_t get_fob_id() const;
 		std::uint8_t get_cluster_index() const;
@@ -247,9 +251,10 @@ namespace database::fob_deploy_assists
 	};
 
 	bool deploy_assist(const std::uint64_t player_id, const deploy_params_t& params);
-	bool delete_deploy_to_fob(const std::uint64_t player_id, const std::uint64_t fob_id);
+	bool use_deploy_to_fob(const std::uint64_t deploy_id);
 	bool delete_deployments(const std::uint64_t player_id);
 	std::optional<fob_deploy_assist> get_current_deploy(const std::uint64_t player_id);
+	std::optional<fob_deploy_assist> get_used_deploy(const std::uint64_t deploy_id);
 
 	void delete_player_data(const std::uint64_t player_id);
 }

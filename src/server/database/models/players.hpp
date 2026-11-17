@@ -59,6 +59,7 @@ namespace database::players
 		DEFINE_FIELD(current_sneak_player, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_wormhole_player_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_defender_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(current_sneak_deploy_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_platform, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_status, sqlpp::integer_unsigned);
 		DEFINE_FIELD(current_sneak_is_sneak, sqlpp::boolean);
@@ -86,6 +87,7 @@ namespace database::players
 			current_sneak_player_field_t,
 			current_sneak_wormhole_player_id_field_t,
 			current_sneak_defender_id_field_t,
+			current_sneak_deploy_id_field_t,
 			current_sneak_platform_field_t,
 			current_sneak_status_field_t, 
 			current_sneak_is_sneak_field_t,
@@ -245,6 +247,7 @@ namespace database::players
 			this->owner_id_ = row.current_sneak_player;
 			this->wormhole_player_id_ = row.current_sneak_wormhole_player_id;
 			this->defender_id_ = row.current_sneak_defender_id;
+			this->deploy_id_ = row.current_sneak_deploy_id;
 			this->platform_ = static_cast<std::uint32_t>(row.current_sneak_platform);
 			this->is_sneak_ = row.current_sneak_is_sneak;
 			this->start_time_ = std::chrono::duration_cast<std::chrono::seconds>(row.current_sneak_start.value().time_since_epoch());
@@ -263,6 +266,7 @@ namespace database::players
 		GET_FIELD_H(std::uint64_t, owner_id);
 		GET_FIELD_H(std::uint64_t, wormhole_player_id);
 		GET_FIELD_H(std::uint64_t, defender_id);
+		GET_FIELD_H(std::uint64_t, deploy_id);
 		GET_FIELD_H(std::uint32_t, platform);
 		GET_FIELD_H(std::chrono::seconds, start_time);
 
@@ -304,6 +308,7 @@ namespace database::players
 	std::optional<sneak_info> find_active_sneak_from_player(const std::uint64_t player_id);
 	std::optional<sneak_info> get_active_sneak(const std::uint64_t fob_id);
 	void set_active_sneak_defender(const std::uint64_t attacker_id, const std::uint64_t defender_id);
+	void set_active_sneak_deploy(const std::uint64_t attacker_id, const std::uint64_t deploy_id);
 
 	bool set_security_challenge(const std::uint64_t player_id, bool enabled);
 
