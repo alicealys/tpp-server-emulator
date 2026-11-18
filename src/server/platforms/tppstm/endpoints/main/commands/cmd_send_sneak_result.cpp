@@ -281,7 +281,7 @@ namespace emulator::tpp
 		
 			database::player_data::set_resources(context.attacker_data->get_player_id(), attacker_resources);
 
-			if (!context.owner->is_real_player())
+			if (context.owner->is_real_player())
 			{
 				database::player_data::set_resources(context.owner_data->get_player_id(), owner_resources);
 			}
