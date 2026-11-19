@@ -3,7 +3,7 @@
 #include "../database.hpp"
 #include "player_data.hpp"
 #include "fobs.hpp"
-#include "fob_events.hpp"
+#include "point_exchanges.hpp"
 
 namespace database::pf_league
 {
@@ -120,7 +120,7 @@ namespace database::pf_league
 	bool calculate_pf_params(const std::uint64_t player_id, player_pf_data_t& pf_data, player_pf_params_t& out_params);
 	const std::vector<pf_point_info_t>& get_pf_points_table();
 
-	const std::vector<fob_events::point_exchange_param_t>& get_point_exchange_params();
+	const point_exchanges::point_exchange_params_t& get_point_exchange_params(const std::uint64_t league_id);
 
 	void get_short_pf_league_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end);
 	void get_short_pf_league_duration(std::chrono::hours& start_offset, std::chrono::hours& duration);

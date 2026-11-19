@@ -4,6 +4,7 @@
 #include "database/models/pf_league.hpp"
 #include "database/models/items.hpp"
 #include "database/models/event_rankings.hpp"
+#include "database/models/point_exchanges.hpp"
 
 #include "cmd_get_pf_point_exchange_params.hpp"
 
@@ -13,7 +14,9 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		result["param_list"] = nlohmann::json::array();
+		auto& param_list_j = result["param_list"];
+
+		param_list_j = nlohmann::json::array();
 		result["param_num"] = 0;
 
 		const auto items = database::items::get_item_list(player->get_id(), false);
@@ -25,18 +28,18 @@ namespace emulator::tpp
 			return iter != items.end() && iter->is_open();
 		};
 
-		const auto serialize_list = [&](const database::fob_events::point_exchange_params_t& params)
+		const auto serialize_list = [&](const database::point_exchanges::point_exchange_params_t& params, const database::point_exchanges::point_exchange_params_t& exchanged_params)
 		{
 			auto count = 0u;
 			for (auto i = 0ull; i < params.size(); i++)
 			{
-				auto& param = params[i];
+				database::point_exchanges::point_exchange_param_t param = params[i];
 				auto limit = param.exchange_limit;
 
 				switch (param.type)
 				{
-				case 3:
-				case 4:
+				case database::point_exchanges::exchange_type_blueprint:
+				case database::point_exchanges::exchange_type_uniform:
 				{
 					if (!is_open(param.unique_id))
 					{
@@ -45,7 +48,7 @@ namespace emulator::tpp
 
 					break;
 				}
-				case 8:
+				case database::point_exchanges::exchange_type_nameplate:
 				{
 					if (!nameplate_entitlements.has_nameplate(param.unique_id))
 					{
@@ -56,30 +59,32 @@ namespace emulator::tpp
 				}
 				}
 
-				auto& entry = result["param_list"][count++];
-				entry["common_value"] = param.common_value;
-				entry["count"] = param.count;
-				entry["exchange_limit"] = limit;
-				entry["info_lang_id"] = param.info_lang_id;
-				entry["limited_count"] = param.limited_count;
-				entry["name_lang_id"] = param.name_lang_id;
-				entry["point"] = param.point;
-				entry["type"] = param.type;
-				entry["unique_id"] = param.unique_id;
+				param.exchange_limit = database::point_exchanges::get_exchange_limit(param, exchanged_params);
+				if (param.exchange_limit == 0)
+				{
+					continue;
+				}
+
+				param.to_json(param_list_j[count++]);
 			}
 
 			result["param_num"] = count;
 		};
 
-		const auto fob_event = database::fob_events::get_current_event();
-		if (is_event && fob_event != nullptr)
+		const auto current_event = database::fob_events::get_current_event();
+		const auto current_league = database::pf_league::get_current_pf_league();
+		const auto exchanged_params = database::point_exchanges::get_exchanged_params(player->get_id(), is_event 
+			? database::point_exchanges::exchange_mode_event 
+			: database::point_exchanges::exchange_mode_league);
+
+		if (is_event && current_event != nullptr)
 		{
-			serialize_list(fob_event->point_exchange_params);
+			serialize_list(current_event->point_exchange_params, exchanged_params);
 		}
-		else
+		else if (!is_event && current_league.has_value())
 		{
-			const auto& pf_params = database::pf_league::get_point_exchange_params();
-			serialize_list(pf_params);
+			const auto& pf_params = database::pf_league::get_point_exchange_params(current_league->get_id());
+			serialize_list(pf_params, exchanged_params);
 		}
 
 		return result;

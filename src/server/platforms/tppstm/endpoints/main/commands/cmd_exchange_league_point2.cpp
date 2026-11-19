@@ -4,6 +4,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/pf_league.hpp"
 #include "database/models/items.hpp"
+#include "database/models/point_exchanges.hpp"
 
 #include "cmd_exchange_league_point2.hpp"
 
@@ -13,11 +14,11 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		const auto& common_value_j = data["common_value"];
-		const auto& is_event_j = data["is_event"];
-		const auto& num_to_exchange_j = data["num_to_exchange"];
-		const auto& unique_id_j = data["unique_id"];
-		const auto& type_j = data["type"];
+		auto& common_value_j = data["common_value"];
+		auto& is_event_j = data["is_event"];
+		auto& num_to_exchange_j = data["num_to_exchange"];
+		auto& unique_id_j = data["unique_id"];
+		auto& type_j = data["type"];
 
 		if (!is_event_j.is_number_unsigned() || !num_to_exchange_j.is_number_unsigned() || !unique_id_j.is_number_unsigned() ||
 			!type_j.is_number_unsigned() || !common_value_j.is_number_unsigned())
@@ -28,13 +29,18 @@ namespace emulator::tpp
 		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
 
 		const auto current_event = database::fob_events::get_current_event();
-		const auto& league_params = database::pf_league::get_point_exchange_params();
+		const auto current_league = database::pf_league::get_current_pf_league();
 
 		if (is_event && current_event == nullptr)
 		{
 			return error(ERR_INVALIDARG);
 		}
+		else if (!is_event && !current_league.has_value())
+		{
+			return error(ERR_INVALIDARG);
+		}
 
+		const auto& league_params = database::pf_league::get_point_exchange_params(current_league->get_id());
 		const auto& params = is_event
 			? current_event->point_exchange_params
 			: league_params;
@@ -47,7 +53,7 @@ namespace emulator::tpp
 		const auto type = type_j.get<std::uint32_t>();
 
 		const auto iter = std::find_if(params.begin(), params.end(),
-			[&](const database::fob_events::point_exchange_param_t& param)
+			[&](const database::point_exchanges::point_exchange_param_t& param)
 			{
 				return param.unique_id == unique_id && param.type == type && param.common_value == common_value;
 			}
@@ -70,13 +76,13 @@ namespace emulator::tpp
 
 		switch (iter->type)
 		{
-		case 2:
+		case database::point_exchanges::exchange_type_resource:
 		{
 			database::player_data::give_resource(player->get_id(), iter->unique_id, iter->count);
 			break;
 		}
-		case 3:
-		case 4:
+		case database::point_exchanges::exchange_type_blueprint:
+		case database::point_exchanges::exchange_type_uniform:
 		{
 			const auto item = database::items::get_item(player->get_id(), iter->unique_id);
 			if (item.is_open())
@@ -88,12 +94,21 @@ namespace emulator::tpp
 			break;
 		}
 		}
-
+		
 		const auto stats = database::player_records::find(player->get_id());
 
-		result["point"] = is_event 
-			? stats->get_event_point()
-			: stats->get_pf_point();
+		if (is_event)
+		{
+			database::point_exchanges::add_entry(player->get_id(), database::point_exchanges::exchange_mode_event, 
+				*iter, current_event->date_range.end);
+			result["point"] = stats->get_event_point();
+		}
+		else
+		{
+			database::point_exchanges::add_entry(player->get_id(), database::point_exchanges::exchange_mode_league,
+				*iter, current_league->get_end_date());
+			result["point"] = stats->get_pf_point();
+		}
 
 		return result;
 	}

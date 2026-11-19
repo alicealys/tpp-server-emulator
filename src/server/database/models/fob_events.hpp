@@ -6,23 +6,11 @@
 #include "fobs.hpp"
 #include "players.hpp"
 #include "player_data.hpp"
+#include "point_exchanges.hpp"
 
 namespace database::fob_events
 {
 	constexpr const auto event_intermission_duration = 8h;
-
-	struct point_exchange_param_t
-	{
-		std::uint32_t common_value;
-		std::uint32_t count;
-		std::uint32_t exchange_limit;
-		std::uint32_t info_lang_id;
-		std::uint32_t limited_count;
-		std::uint32_t name_lang_id;
-		std::uint32_t point;
-		std::uint32_t type;
-		std::uint32_t unique_id;
-	};
 
 	struct fob_event_information_t
 	{
@@ -58,8 +46,6 @@ namespace database::fob_events
 		fob_even_staff_resources_t staff_resources;
 	};
 
-	using point_exchange_params_t = std::vector<point_exchange_param_t>;
-
 	struct fob_event_t
 	{
 		std::uint32_t index;
@@ -68,7 +54,7 @@ namespace database::fob_events
 		nlohmann::json one_event_task;
 		fob_event_date_range_t date_range;
 		std::vector<emulator::tpp::cmd_get_informationlist2_base::message_t> information;
-		point_exchange_params_t point_exchange_params;
+		point_exchanges::point_exchange_params_t point_exchange_params;
 		std::vector<std::uint64_t> player_ids;
 	};
 
@@ -78,7 +64,6 @@ namespace database::fob_events
 		std::vector<fob_event_t> events;
 	};
 
-	point_exchange_params_t parse_point_exchange_params(nlohmann::json& data);
 	void get_maintenance_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end);
 	fob_event_date_range_t get_event_range();
 	std::optional<fob_event_player_t> get_player(const std::uint64_t id);

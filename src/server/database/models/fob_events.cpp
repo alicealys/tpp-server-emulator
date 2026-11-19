@@ -250,7 +250,10 @@ namespace database::fob_events
 			}
 
 			auto& point_exchange_params = event_j["point_exchange_params"];
-			event.point_exchange_params = parse_point_exchange_params(point_exchange_params);
+			if (!event.point_exchange_params.parse(point_exchange_params))
+			{
+				throw std::runtime_error("[fob events] failed to parse point exchange params");
+			}
 
 			auto& players = event_j["players"];
 			for (auto i = 0ull; i < players.size(); i++)
@@ -390,33 +393,6 @@ namespace database::fob_events
 			start -= event_duration;
 			end -= event_duration;
 		}
-	}
-
-	point_exchange_params_t parse_point_exchange_params(nlohmann::json& data)
-	{
-		point_exchange_params_t params;
-
-		if (!data.is_array())
-		{
-			return params;
-		}
-
-		for (auto i = 0ull; i < data.size(); i++)
-		{
-			point_exchange_param_t param{};
-			param.common_value = data[i]["common_value"].get<std::uint32_t>();
-			param.count = data[i]["count"].get<std::uint32_t>();
-			param.exchange_limit = data[i]["exchange_limit"].get<std::uint32_t>();
-			param.info_lang_id = data[i]["info_lang_id"].get<std::uint32_t>();
-			param.limited_count = data[i]["limited_count"].get<std::uint32_t>();
-			param.name_lang_id = data[i]["name_lang_id"].get<std::uint32_t>();
-			param.point = data[i]["point"].get<std::uint32_t>();
-			param.type = data[i]["type"].get<std::uint32_t>();
-			param.unique_id = data[i]["unique_id"].get<std::uint32_t>();
-			params.emplace_back(param);
-		}
-
-		return params;
 	}
 
 	fob_event_date_range_t get_event_range()

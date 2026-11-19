@@ -3,6 +3,7 @@
 #include "pf_league.hpp"
 #include "player_records.hpp"
 #include "event_rankings.hpp"
+#include "fob_events.hpp"
 
 #include "utils/encoding.hpp"
 
@@ -390,30 +391,30 @@ namespace database::pf_league
 		return static_cast<std::uint32_t>(entry.baseline + (static_cast<float>(16u - bracket_rank) * ((0.8f * entry.group) / 15.f)));
 	}
 
-	std::vector<std::vector<fob_events::point_exchange_param_t>> load_point_exchange_params_lists()
+	std::vector<point_exchanges::point_exchange_params_t> load_point_exchange_params_lists()
 	{
-		std::vector<std::vector<fob_events::point_exchange_param_t>> lists;
+		std::vector<point_exchanges::point_exchange_params_t> lists;
 
-		auto lists_j = utils::resources::load_json(RESOURCE_PF_POINTS_EXCHANGE_LIST);
-		for (auto i = 0u; i < lists_j.size(); i++)
+		auto data = utils::resources::load_json(RESOURCE_PF_POINTS_EXCHANGE_LIST);
+		for (auto i = 0u; i < data.size(); i++)
 		{
-			lists.emplace_back(fob_events::parse_point_exchange_params(lists_j[i]));
+			point_exchanges::point_exchange_params_t list{};
+			if (!list.parse(data[i]))
+			{
+				throw std::runtime_error("[pf league] failed to parse point exchange param lists");
+			}
+
+			lists.emplace_back(list);
 		}
 
 		return lists;
 	}
 
-	const std::vector<fob_events::point_exchange_param_t>& get_point_exchange_params()
+	const point_exchanges::point_exchange_params_t& get_point_exchange_params(const std::uint64_t league_id)
 	{
 		static const auto lists = load_point_exchange_params_lists();
-		static std::vector<fob_events::point_exchange_param_t> default_list;
-		const auto league = get_current_pf_league();
-		if (!league.has_value())
-		{
-			return default_list;
-		}
-
-		const auto idx = league->get_id() % lists.size();
+		static point_exchanges::point_exchange_params_t default_list;
+		const auto idx = league_id % lists.size();
 		return lists[idx];
 	}
 
@@ -1616,6 +1617,8 @@ namespace database::pf_league
 	public:
 		void create(database_t& database) override
 		{
+			get_point_exchange_params(0);
+
 			database.run_query("mgstpp.pf_leagues.create");
 			database.run_query("mgstpp.pf_brackets.create");
 			database.run_query("mgstpp.pf_competitors.create");

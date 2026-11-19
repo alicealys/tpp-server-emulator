@@ -25,4 +25,6 @@ namespace utils::random
 
 	bool chance(const std::uint32_t probability);
 	bool cointoss();
+
+	float uniform_distribution(float min = 0.f, float max = 1.f);
 }

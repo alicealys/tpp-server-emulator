@@ -6,7 +6,7 @@ namespace utils::random
 {
 	std::mt19937& get_engine()
 	{
-		static auto engine = []()
+		static thread_local auto engine = []()
 		{
 			std::random_device rnd;
 			std::mt19937 mt(rnd());
@@ -36,5 +36,11 @@ namespace utils::random
 	bool cointoss()
 	{
 		return chance(50u);
+	}
+
+	float uniform_distribution(float min, float max)
+	{
+		std::uniform_real_distribution<double> distribution(min, max);
+		return distribution(get_engine());
 	}
 }

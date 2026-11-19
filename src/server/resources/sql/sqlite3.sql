@@ -524,3 +524,15 @@ create table if not exists `personal_messages`
 	foreign key (`sender_id`) references players(`id`),
 	foreign key (`receiver_id`) references players(`id`)
 )
+-- query:mgstpp.point_exchanges.create
+create table if not exists `point_exchanges`
+(
+	exchange_id				integer	primary key autoincrement,
+	player_id				bigint unsigned	not null,
+	exchange_mode			int unsigned	not null,
+	exchange_common_value	int unsigned	not null,
+	exchange_type			int unsigned	not null,
+	exchange_unique_id		int unsigned	not null,
+	expire_date				datetime not null,
+	foreign key (`player_id`) references players(`id`)
+)
