@@ -390,12 +390,10 @@ namespace database::player_records
 		{
 			auto date = std::chrono::system_clock::now();
 			const auto nuke_count = player_data::get_player_nuke_count(player_id);
-			const auto frac = static_cast<float>(nuke_count) / 16.f;
-			const auto extra_days = static_cast<std::uint32_t>(frac * 7);
 
 			if (nuke_count != 0)
 			{
-				date += 24h * extra_days;
+				date += 24h * nuke_count;
 			}
 			else
 			{

@@ -334,6 +334,34 @@ namespace emulator::tpp
 
 			return true;
 		}
+
+		bool should_blockade(const cmd_send_sneak_result::param_t& param, cmd_send_sneak_result::context_t& context, bool& is_high_damage)
+		{
+			if (!context.owner->is_real_player() || context.active_sneak->is_security_challenge())
+			{
+				return false;
+			}
+
+			is_high_damage = context.is_win || context.kill_staff_count || context.capture_staff_count || context.event_data.capture_nuclear > 0;
+
+			if (context.is_win || param.damage_point > 0 || context.event_data.capture_nuclear > 0 ||
+				context.kill_staff_count || context.injure_staff_count || context.capture_staff_count)
+			{
+				return true;
+			}
+
+			for (auto i = 0u; i < sizeof(param.capture_placement) / sizeof(std::uint32_t); i++)
+			{
+				if (reinterpret_cast<const std::uint32_t*>(&context.event_data.capture_placement)[i] != 0 ||
+					reinterpret_cast<const std::uint32_t*>(&context.event_data.destroy_placement)[i] != 0 ||
+					reinterpret_cast<const std::uint32_t*>(&context.event_data.capture_resource)[i] != 0)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	void cmd_send_sneak_result::handle_rewards(const database::players::player& player,
@@ -396,16 +424,17 @@ namespace emulator::tpp
 					database::event_rankings::damage_defender, param.damage_point);
 			}
 
+			auto is_high_damage = false;
+			if (should_blockade(param, context, is_high_damage))
+			{
+				database::player_records::set_shield_date(context.owner->get_id(), is_high_damage);
+			}
+
 			auto& active_sneak_val = context.active_sneak.value();
 			if (!database::sneak_results::add_sneak_result(player, context.fob.value(),
 				active_sneak_val, context.is_win, context.event_data, context.event_log))
 			{
 				return false;
-			}
-
-			if (context.owner->is_real_player() && !context.active_sneak->is_security_challenge())
-			{
-				database::player_records::set_shield_date(context.active_sneak->get_owner_id(), context.is_win);
 			}
 
 			const auto defender_id = context.active_sneak->get_defender_id();
