@@ -7,6 +7,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/challenge_tasks.hpp"
 #include "database/models/event_rankings.hpp"
+#include "database/models/personal_messages.hpp"
 
 #include "utils/lang_strings.hpp"
 
@@ -147,6 +148,29 @@ namespace emulator::tpp
 				entry["text"] = text.text();
 			}
 		}
+
+		const auto personal_messages = database::personal_messages::get_login_message_list(player->get_id());
+
+		std::vector<std::uint64_t> new_readable_messages;
+		for (const auto& message : personal_messages)
+		{
+			for (auto i = 0u; i < utils::lang::LANG_ANY; i++)
+			{
+				auto& title_entry = server_texts_j[server_texts_j.size()];
+				title_entry["identifier"] = message.get_identifier(true);
+				title_entry["language"] = lang_codes[i];
+				title_entry["text"] = message.get_message_title();
+
+				auto& text_entry = server_texts_j[server_texts_j.size()];
+				text_entry["identifier"] = message.get_identifier(false);
+				text_entry["language"] = lang_codes[i];
+				text_entry["text"] = message.get_message_text();
+			}
+
+			new_readable_messages.emplace_back(message.get_message_id());
+		}
+
+		database::personal_messages::set_messages_unread(new_readable_messages);
 
 		auto& ranking_espi_event_ids_j = result["ranking_espi_event_ids"];
 		auto& ranking_pf_event_ids_j = result["ranking_pf_event_ids"];

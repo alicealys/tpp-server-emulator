@@ -336,8 +336,8 @@ namespace database::fob_prisoners
 				db.get_database<Type>()->operator()(
 					sqlpp::remove_from(fob_prisoner::table)
 						.where(fob_prisoner::table.attacker_id == player_id && 
-							   (fob_prisoner::table.owner_id == nullable_integer(0) || 
-								  fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_none))));
+							   (fob_prisoner::table.owner_id.is_null() || 
+								fob_prisoner::table.prisoner_state == static_cast<std::uint32_t>(state_none))));
 
 				db.get_database<Type>()->operator()(
 					sqlpp::update(fob_prisoner::table)

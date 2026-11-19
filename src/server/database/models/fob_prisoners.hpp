@@ -28,8 +28,6 @@ namespace database::fob_prisoners
 	class fob_prisoner
 	{
 	public:
-		friend class item_list;
-
 		DEFINE_FIELD(prisoner_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(attacker_id, sqlpp::integer_unsigned);
 		DEFINE_FIELD(owner_id, sqlpp::integer_unsigned);

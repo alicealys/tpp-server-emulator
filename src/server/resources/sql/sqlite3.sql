@@ -510,3 +510,17 @@ create table if not exists `fob_prisoners`
 	foreign key (`owner_id`) references players(`id`),
 	foreign key (`rescuer_id`) references players(`id`)
 )
+-- query:mgstpp.personal_messages.create
+create table if not exists `personal_messages`
+(
+	message_id				integer	primary key autoincrement,
+	sender_id				bigint unsigned,
+	receiver_id				bigint unsigned not null,
+	message_state			int unsigned not null,
+	message_mode			int unsigned not null,
+	message_text			varchar(128) not null,
+	message_title			varchar(512) not null,
+	message_date			datetime not null,
+	foreign key (`sender_id`) references players(`id`),
+	foreign key (`receiver_id`) references players(`id`)
+)

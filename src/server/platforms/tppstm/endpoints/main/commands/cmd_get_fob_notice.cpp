@@ -8,6 +8,7 @@
 #include "database/models/player_records.hpp"
 #include "database/models/fob_events.hpp"
 #include "database/models/pf_league.hpp"
+#include "database/models/personal_messages.hpp"
 
 #include "component/motd.hpp"
 
@@ -127,7 +128,20 @@ namespace emulator::tpp
 		result["active_event_server_text"] = fob_event != nullptr ? fob_event->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 
-		if (!motd_text.empty())
+		const auto personal_messages = database::personal_messages::get_unread_message_list(player->get_id(), 
+			database::personal_messages::message_mode_tpp_idroid);
+
+		if (!personal_messages.empty())
+		{
+			const auto& top_message = personal_messages[0];
+
+			result["common_server_text"] = top_message.get_identifier(false);
+			result["common_server_text_title"] = top_message.get_identifier(true);
+			flag |= notice_common_text;
+
+			database::personal_messages::set_messages_read({top_message.get_message_id()});
+		}
+		else if (!motd_text.empty())
 		{
 			result["common_server_text"] = "mb_motd_text";
 			result["common_server_text_title"] = "mb_motd_title";

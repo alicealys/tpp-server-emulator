@@ -2,6 +2,7 @@
 
 #include "database/models/fob_events.hpp"
 #include "database/models/players.hpp"
+#include "database/models/personal_messages.hpp"
 
 #include "utils/lang_strings.hpp"
 
@@ -190,6 +191,25 @@ namespace emulator::tpp
 		{
 			message->to_json(result["info_list"][count++], lang);
 		}
+
+		const auto personal_messages = database::personal_messages::get_unread_message_list(player->get_id(), is_tpp
+			? database::personal_messages::message_mode_tpp
+			: database::personal_messages::message_mode_mgo);
+
+		std::vector<std::uint64_t> read_message_list;
+		for (const auto& personal_message : personal_messages)
+		{
+			auto& entry = result["info_list"][count++];
+			entry["date"] = personal_message.get_message_date().count();
+			entry["info_id"] = 0;
+			entry["important"] = "TRUE";
+			entry["mes_subject"] = personal_message.get_message_title();
+			entry["mes_body"] = personal_message.get_message_text();
+
+			read_message_list.emplace_back(personal_message.get_message_id());
+		}
+
+		database::personal_messages::set_messages_read(read_message_list);
 
 		result["info_num"] = count;
 
