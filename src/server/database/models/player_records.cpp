@@ -323,8 +323,6 @@ namespace database::player_records
 
 			database::access([&](database::database_t& db)
 			{
-				const auto rand = sqlpp::verbatim(database::get_database_def().rand_func);
-
 				auto where = !IS_SYSTEM_PLAYER_ID(player_record::table.player_id) &&
 					player_record::table.fob_grade >= min_grade && player_record::table.fob_grade <= max_grade &&
 					player_record::table.player_id != player_id && player_record::table.has_fob;
