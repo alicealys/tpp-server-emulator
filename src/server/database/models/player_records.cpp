@@ -4,6 +4,8 @@
 #include "player_data.hpp"
 #include "event_rankings.hpp"
 
+#include "utils/random.hpp"
+
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
 
@@ -317,29 +319,51 @@ namespace database::player_records
 		template <database_type_t Type>
 		std::vector<player_record> find_players_of_grade(const std::uint64_t player_id, const std::uint32_t min_grade, const std::uint32_t max_grade, const std::uint32_t limit)
 		{
-			return database::access<std::vector<player_record>>([&](database::database_t& db)
-				-> std::vector<player_record>
+			std::vector<player_record> list;
+
+			database::access([&](database::database_t& db)
 			{
 				const auto rand = sqlpp::verbatim(database::get_database_def().rand_func);
+
+				auto where = !IS_SYSTEM_PLAYER_ID(player_record::table.player_id) &&
+					player_record::table.fob_grade >= min_grade && player_record::table.fob_grade <= max_grade &&
+					player_record::table.player_id != player_id && player_record::table.has_fob;
+
+				auto count = db.get_database<Type>()->operator()(
+					sqlpp::select(sqlpp::count(1))
+						.from(player_record::table)
+							.where(where));
+
+				const std::uint64_t total = count.front().count.value();
+				auto offset = 0u;
+
+				if (total > static_cast<std::uint64_t>(limit)) 
+				{
+					constexpr const auto recency_bias = 2.5f;
+					const auto base = utils::random::uniform_distribution(0.f, 1.f);
+					const auto bias = std::pow(base, recency_bias);
+					const auto max = total - limit;
+					offset = static_cast<std::uint64_t>(bias * max);
+				}
 
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::all_of(player_record::table))
 							.from(player_record::table)
-								.where(!IS_SYSTEM_PLAYER_ID(player_record::table.player_id) && 
-									   player_record::table.fob_grade >= min_grade && player_record::table.fob_grade <= max_grade &&
-									   player_record::table.player_id != player_id && player_record::table.has_fob)
-											.order_by(rand.asc())
-												.limit(limit));
+								.where(where)
+									.order_by(player_record::table.daily_last.desc())
+										.limit(limit)
+											.offset(offset));
 
-				std::vector<player_record> list;
 				for (auto& row : results)
 				{
 					list.emplace_back(row);
 				}
 
-				return list;
+				std::shuffle(list.begin(), list.end(), utils::random::get_engine());
 			});
+
+			return list;
 		}
 
 		template <database_type_t Type>
