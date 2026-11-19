@@ -40,7 +40,7 @@ namespace utils::random
 
 	float uniform_distribution(float min, float max)
 	{
-		std::uniform_real_distribution<double> distribution(min, max);
+		std::uniform_real_distribution<float> distribution(min, max);
 		return distribution(get_engine());
 	}
 }

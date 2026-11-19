@@ -357,9 +357,9 @@ namespace database::player_records
 				{
 					list.emplace_back(row);
 				}
-
-				std::shuffle(list.begin(), list.end(), utils::random::get_engine());
 			});
+
+			std::shuffle(list.begin(), list.end(), utils::random::get_engine());
 
 			return list;
 		}
