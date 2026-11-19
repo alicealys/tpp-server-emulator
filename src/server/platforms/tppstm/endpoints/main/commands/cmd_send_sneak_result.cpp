@@ -342,25 +342,14 @@ namespace emulator::tpp
 				return false;
 			}
 
-			is_high_damage = context.is_win || context.kill_staff_count || context.capture_staff_count || context.event_data.capture_nuclear > 0;
+			is_high_damage = 
+				context.is_win || 
+				context.kill_staff_count ||
+				context.injure_staff_count ||
+				context.capture_staff_count || 
+				context.event_data.capture_nuclear > 0;
 
-			if (context.is_win || param.damage_point > 0 || context.event_data.capture_nuclear > 0 ||
-				context.kill_staff_count || context.injure_staff_count || context.capture_staff_count)
-			{
-				return true;
-			}
-
-			for (auto i = 0u; i < sizeof(param.capture_placement) / sizeof(std::uint32_t); i++)
-			{
-				if (reinterpret_cast<const std::uint32_t*>(&context.event_data.capture_placement)[i] != 0 ||
-					reinterpret_cast<const std::uint32_t*>(&context.event_data.destroy_placement)[i] != 0 ||
-					reinterpret_cast<const std::uint32_t*>(&context.event_data.capture_resource)[i] != 0)
-				{
-					return true;
-				}
-			}
-
-			return false;
+			return true;
 		}
 	}
 
