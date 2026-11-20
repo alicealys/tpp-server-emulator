@@ -1132,8 +1132,8 @@ namespace game
 			return false;
 		}
 
-		auto& parts = data["parts"];
-		if (!parts.is_array() || parts.size() != 4)
+		auto& parts_j = data["parts"];
+		if (!parts_j.is_array() || parts_j.size() != 4)
 		{
 			return false;
 		}
@@ -1142,7 +1142,7 @@ namespace game
 
 		const auto parse_part = [&](const std::int32_t index)
 		{
-			auto& part_j = parts[index];
+			auto& part_j = parts_j[index];
 
 			const auto get_u = [&](const std::string& name)
 			{

@@ -414,10 +414,10 @@ namespace database::fob_events
 			return false;
 		}
 
-		auto& players = data["players"];
-		for (auto i = 0ull; i < players.size(); i++)
+		auto& players_j = data["players"];
+		for (auto i = 0ull; i < players_j.size(); i++)
 		{
-			const auto player_id = players[i].get<std::uint64_t>();
+			const auto player_id = players_j[i].get<std::uint64_t>();
 			this->player_ids.emplace_back(player_id);
 		}
 
