@@ -100,7 +100,7 @@ namespace emulator::tpp
 		if (is_event)
 		{
 			database::point_exchanges::add_entry(player->get_id(), database::point_exchanges::exchange_mode_event, 
-				*iter, current_event->end);
+				*iter, current_event->get_end_date());
 			result["point"] = stats->get_event_point();
 		}
 		else

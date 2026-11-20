@@ -149,8 +149,8 @@ namespace emulator::tpp
 		}
 
 		result["daily"] = 0;
-		result["event_delete_date"] = current_event.has_value() ? current_event->end.count() : 0ull;
-		result["event_end_date"] = current_event.has_value() ? current_event->end.count() : 0ull;
+		result["event_delete_date"] = current_event.has_value() ? current_event->get_end_date().count() : 0ull;
+		result["event_end_date"] = current_event.has_value() ? current_event->get_end_date().count() : 0ull;
 		result["exists_event_point_combat_deploy"] = 0;
 		result["flag"] = flag;
 

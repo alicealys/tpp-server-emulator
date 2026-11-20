@@ -23,16 +23,15 @@ namespace emulator::tpp
 		{
 			result["status"] = "ALREADY_ENTERED";
 
-			std::chrono::system_clock::time_point start{};
-			std::chrono::system_clock::time_point end{};
+			std::chrono::seconds start{};
+			std::chrono::seconds end{};
 			database::pf_league::get_short_pf_league_range(start, end);
 
 			std::chrono::hours start_offset{};
 			std::chrono::hours duration{};
 			database::pf_league::get_short_pf_league_duration(start_offset, duration);
 
-			const auto date = std::chrono::duration_cast<std::chrono::seconds>((end + start_offset).time_since_epoch());
-			result["pfleague_date"] = date.count();
+			result["pfleague_date"] = (end + start_offset).count();
 		}
 		else
 		{

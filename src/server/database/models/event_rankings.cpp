@@ -642,12 +642,20 @@ namespace database::event_rankings
 		RUN_IMPL(impl::get_entries, event_id, offset, num);
 	}
 
-	std::chrono::system_clock::time_point last_update{};
+	void update_rankings(database_t& db, const std::uint8_t event_id)
+	{
+		if (get_database_def().type == database_mysql)
+		{
+			db.execute("set transaction isolation level read committed;");
+		}
+
+		db.run_query("mgstpp.event_rankings.update_entries", event_id);
+		set_updated(event_id);
+	}
 
 	void update_entries(database_t& db)
 	{
-		static auto event_id = static_cast<std::uint8_t>(fob_event_start);
-		static std::chrono::system_clock::time_point last_query{};
+		static std::chrono::system_clock::time_point last_update{};
 
 		const auto now = std::chrono::system_clock::now();
 		if (now - last_update < 1h)
@@ -655,52 +663,40 @@ namespace database::event_rankings
 			return;
 		}
 
-		if (now - last_query < 1min)
-		{
-			return;
-		}
-
-		if (!database::fob_events::is_intermission() || event_id != fob_event_start)
-		{
-			if (event_id != league_point_total)
-			{
-				if (get_database_def().type == database_mysql)
-				{
-					db.execute("set transaction isolation level read committed;");
-				}
-
-				db.run_query("mgstpp.event_rankings.update_entries", event_id);
-			}
-
-			if (event_id == ep_earned)
-			{
-				player_records::update_fob_ranking(db);
-			}
-		
-			++event_id;
-			if (event_id > league_event_end)
-			{
-				event_id = fob_event_start;
-				last_update = now;
-			}
-		}
-
-		last_query = now;
-	}
-
-	std::chrono::seconds get_last_update()
-	{
-		return std::chrono::duration_cast<std::chrono::seconds>(last_update.time_since_epoch());
+		update_rankings(db, ep_earned);
+		player_records::update_fob_ranking(db);
+		last_update = now;
 	}
 
 	void update_league(database_t& db)
 	{
 		db.run_query("mgstpp.event_rankings.update_entries_league", static_cast<std::uint32_t>(league_point_total));
+		set_updated(league_point_total);
 	}
 
 	void delete_player_data(const std::uint64_t player_id)
 	{
 		RUN_IMPL(impl::delete_player_data, player_id);
+	}
+
+	void set_updated(const std::uint8_t event_id)
+	{
+		const auto key = std::format("ranking_last_update_{}", event_id);
+		const auto now = std::chrono::system_clock::now();
+		const auto now_s = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
+		variables::set(key, now_s.count());
+	}
+
+	std::chrono::seconds get_last_update(const std::uint8_t event_id)
+	{
+		const auto key = std::format("ranking_last_update_{}", event_id);
+		const auto last_update = variables::get(key);
+		if (!last_update.has_value())
+		{
+			return 0s;
+		}
+
+		return std::chrono::seconds(last_update->get<std::uint64_t>());
 	}
 
 	nameplate_entitlement_list get_nameplate_entitlement_list(const std::uint64_t player_id)

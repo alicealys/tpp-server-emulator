@@ -6,6 +6,7 @@
 #include "fob_events.hpp"
 
 #include "utils/encoding.hpp"
+#include "utils/time.hpp"
 
 #include <utils/string.hpp>
 
@@ -418,18 +419,21 @@ namespace database::pf_league
 		return lists[idx];
 	}
 
-	void get_short_pf_league_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end)
+	void get_short_pf_league_range(std::chrono::seconds& start_res, std::chrono::seconds& end_res)
 	{
 		const auto now = std::chrono::system_clock::now();
-		start = std::chrono::floor<std::chrono::days>(now);
-		start = start + 15h + 30 * 60s;
-		end = start + 24h;
+
+		std::chrono::system_clock::time_point start = std::chrono::floor<std::chrono::days>(now) + 15h + 30min;
+		std::chrono::system_clock::time_point end = start + 24h;
 
 		if (now < start)
 		{
 			start -= 24h;
 			end -= 24h;
 		}
+
+		start_res = std::chrono::duration_cast<std::chrono::seconds>(start.time_since_epoch());
+		end_res = std::chrono::duration_cast<std::chrono::seconds>(end.time_since_epoch());
 	}
 
 	void get_short_pf_league_duration(std::chrono::hours& start_offset, std::chrono::hours& duration)
@@ -515,12 +519,12 @@ namespace database::pf_league
 
 		template <database_type_t Type>
 		bool create_pf_league(database_t& db, const std::uint32_t type, 
-			const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
+			const std::chrono::seconds& start_date, const std::chrono::seconds& end_date)
 		{
 			auto result = db.get_database<Type>()->operator()(
 				sqlpp::insert_into(pf_league::table)
-					.set(pf_league::table.start_date = start_date,
-						 pf_league::table.end_date = end_date,
+					.set(pf_league::table.start_date = std::chrono::system_clock::time_point(start_date),
+						 pf_league::table.end_date = std::chrono::system_clock::time_point(end_date),
 						 pf_league::table.type = type,
 						 pf_league::table.state = static_cast<std::uint32_t>(league_state_none)));
 			return result != 0ull;
@@ -1015,7 +1019,7 @@ namespace database::pf_league
 	}
 
 	bool create_pf_league(database_t& db, const std::uint32_t type, 
-		const std::chrono::system_clock::time_point& start_date, const std::chrono::system_clock::time_point& end_date)
+		const std::chrono::seconds& start_date, const std::chrono::seconds& end_date)
 	{
 		RUN_IMPL(impl::create_pf_league, db, type, start_date, end_date);
 	}
@@ -1575,9 +1579,9 @@ namespace database::pf_league
 		const auto league = get_current_pf_league(db);
 		if (!league.has_value())
 		{
-			std::chrono::system_clock::time_point start;
-			std::chrono::system_clock::time_point end;
-			fob_events::get_maintenance_range(start, end);
+			std::chrono::seconds start{};
+			std::chrono::seconds end{};
+			utils::time::get_section(24h * 7, start, end);
 			create_pf_league(db, league_type_long, start, end);
 			return;
 		}
@@ -1590,8 +1594,8 @@ namespace database::pf_league
 		const auto league = get_current_short_pf_league(db);
 		if (!league.has_value())
 		{
-			std::chrono::system_clock::time_point start;
-			std::chrono::system_clock::time_point end;
+			std::chrono::seconds start{};
+			std::chrono::seconds end{};
 			get_short_pf_league_range(start, end);
 			create_pf_league(db, league_type_short, start, end);
 			return;

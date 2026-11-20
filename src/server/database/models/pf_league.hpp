@@ -122,7 +122,7 @@ namespace database::pf_league
 
 	const point_exchanges::point_exchange_params_t& get_point_exchange_params(const std::uint64_t league_id);
 
-	void get_short_pf_league_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end);
+	void get_short_pf_league_range(std::chrono::seconds& start, std::chrono::seconds& end);
 	void get_short_pf_league_duration(std::chrono::hours& start_offset, std::chrono::hours& duration);
 
 	enum pf_league_state_t

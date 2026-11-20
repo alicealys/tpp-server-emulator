@@ -85,6 +85,18 @@ namespace database
 			}
 		}
 
+		template <database_type_t Type, typename F>
+		auto exec(F&& fn)
+		{
+			return this->get_database<Type>()->operator()(fn);
+		}
+
+		template <database_type_t Type, typename F>
+		auto operator()(F&& fn)
+		{
+			return this->exec<Type>(fn);
+		}
+
 		mysql_connection* get_mysql() const;
 		sqlite3_connection* get_sqlite3() const;
 

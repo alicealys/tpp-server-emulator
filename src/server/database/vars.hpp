@@ -8,7 +8,7 @@ namespace database
 	{
 		std::chrono::seconds session_heartbeat = 60s;
 		std::chrono::seconds session_timeout = 200s;
-		std::chrono::seconds reference_time = 1441094400s;
+		std::chrono::seconds reference_time = 1441699200s;
 		std::chrono::hours wormhole_duration = 24h * 30;
 		std::int32_t max_server_gmp = 25000000;
 		std::int32_t max_local_gmp = 5000000;

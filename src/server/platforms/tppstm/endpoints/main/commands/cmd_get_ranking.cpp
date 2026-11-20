@@ -94,7 +94,7 @@ namespace emulator::tpp
 		}
 
 		result["ranking_num"] = entries.size();
-		result["update_date"] = database::event_rankings::get_last_update().count();
+		result["update_date"] = database::event_rankings::get_last_update(event_id).count();
 
 		return result;
 	}

@@ -184,9 +184,11 @@ namespace database::event_rankings
 	void reset_periodic_values();
 	void reset_values(const std::uint8_t event_id);
 
-	std::chrono::seconds get_last_update();
+	void set_updated(const std::uint8_t event_id);
+	std::chrono::seconds get_last_update(const std::uint8_t event_id);
 
 	void update_league(database_t& db);
+	void update_rankings(database_t& db, const std::uint8_t event_id);
 
 	void delete_player_data(const std::uint64_t player_id);
 

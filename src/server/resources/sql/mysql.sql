@@ -546,3 +546,13 @@ create table if not exists `point_exchanges`
 	primary key (`exchange_id`),
 	foreign key (`player_id`) references players(`id`)
 )
+-- query:mgstpp.fob_events.create
+create table if not exists `fob_events`
+(
+	event_id			bigint unsigned	not null	auto_increment,
+	event_type			varchar(64) not null,
+	event_state			int unsigned not null default 0,
+	start_date			datetime not null,
+	end_date			datetime not null,
+	primary key (`event_id`)
+)

@@ -24,7 +24,7 @@ namespace emulator::tpp
 
 				data.player_id = event_player->player_id;
 
-				data.extra_data["owner_fob_record"]["date_time"] = fob_event->end.count();
+				data.extra_data["owner_fob_record"]["date_time"] = fob_event->get_end_date().count();
 				data.extra_data["owner_info"]["player_name"] = event_player->player_name;
 				data.extra_data["owner_detail_record"]["staff_count"] = 0;
 

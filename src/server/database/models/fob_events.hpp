@@ -50,6 +50,7 @@ namespace database::fob_events
 
 	struct fob_event_t
 	{
+		std::string name;
 		std::uint32_t index;
 		std::uint32_t number;
 		std::string server_text;
@@ -63,10 +64,12 @@ namespace database::fob_events
 		bool parse(nlohmann::json& data);
 	};
 
-	struct fob_events_data_t
+	struct fob_events_settings_t
 	{
-		std::vector<std::shared_ptr<fob_event_player_t>> players;
-		std::vector<std::shared_ptr<fob_event_t>> events;
+		std::uint32_t event_duration;
+		std::vector<std::shared_ptr<fob_event_player_t>> event_players;
+		std::vector<std::shared_ptr<fob_event_t>> event_list;
+		std::vector<std::shared_ptr<fob_event_t>> event_rotation;
 
 		bool parse(nlohmann::json& data);
 		std::shared_ptr<fob_event_player_t> get_player(const std::uint64_t id);
@@ -76,17 +79,68 @@ namespace database::fob_events
 	{
 		std::chrono::seconds start;
 		std::chrono::seconds end;
-		std::uint32_t index;
-		std::uint32_t number;
+		std::size_t index;
+		std::size_t number;
 		std::shared_ptr<fob_event_t> params;
 	};
 
-	void get_maintenance_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end);
-	void get_event_range(std::chrono::seconds& start, std::chrono::seconds& end);
-
-	
-	std::optional<running_event_info_t> get_current_event();
-
 	bool is_intermission();
 	bool is_event_text(const std::string& text);
+
+	enum event_state_t
+	{
+		event_state_none = 0u,
+		event_state_running = 1u,
+		event_state_finished = 2u,
+		event_state_dead = 3u,
+	};
+
+	enum event_ranking_state_t
+	{
+		ranking_state_none = 0u,
+		ranking_state_ack = 1u
+	};
+
+	class fob_event
+	{
+	public:
+		DEFINE_FIELD(event_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_type, sqlpp::text);
+		DEFINE_FIELD(event_state, sqlpp::integer_unsigned);
+		DEFINE_FIELD(start_date, sqlpp::time_point);
+		DEFINE_FIELD(end_date, sqlpp::time_point);
+		DEFINE_TABLE(fob_events,
+			event_id_field_t,
+			event_type_field_t,
+			event_state_field_t,
+			start_date_field_t,
+			end_date_field_t
+		);
+
+		inline static table_t table;
+
+		template <typename ...Args>
+		fob_event(const sqlpp::result_row_t<Args...>& row)
+		{
+			this->event_id_ = row.event_id;
+			this->event_type_ = row.event_type;
+			this->event_state_ = static_cast<std::uint32_t>(row.event_state);
+			this->start_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.start_date.value().time_since_epoch());
+			this->end_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.end_date.value().time_since_epoch());
+		}
+
+		bool initialize_params();
+
+		GET_FIELD_H(std::uint64_t, event_id);
+		GET_FIELD_H(std::string, event_type);
+		GET_FIELD_H(std::uint32_t, event_state);
+		GET_FIELD_H(std::chrono::seconds, start_date);
+		GET_FIELD_H(std::chrono::seconds, end_date);
+
+		std::shared_ptr<fob_event_t> params;
+
+	};
+
+	std::optional<fob_event> get_current_event();
+
 }

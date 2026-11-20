@@ -1,5 +1,6 @@
 {
-    "players": [
+    "event_duration": 14,
+    "event_players": [
         {
             "player_id": 1,
             "player_name": "MOSQUITO",
@@ -5760,6 +5761,7 @@
     ],
     "event_list": [
         {
+            "name": "mosquito",
             "server_text": "mb_fob_event_name_01",
             "information_list": [
                 {
@@ -6685,6 +6687,7 @@
             "players": [1]
         },
         {
+            "name": "new_world_order",
             "server_text": "mb_fob_event_name_02",
             "information_list": [
                 {
@@ -7511,6 +7514,7 @@
             "players": [2]
         },
         {
+            "name": "bound_dragons",
             "server_text": "mb_fob_event_name_03",
             "information_list": [
                 {
@@ -8392,6 +8396,7 @@
             "players": [3]
         },
         {
+            "name": "freedom",
             "server_text": "mb_fob_event_name_04",
             "information_list": [
                 {
@@ -9239,6 +9244,7 @@
             "players": [4]
         },
         {
+            "name": "skulls",
             "server_text": "mb_fob_event_name_05",
             "information_list": [
                 {
@@ -10075,5 +10081,12 @@
             ],
             "players": [5]
         }
+    ],
+    "event_rotation": [
+        "mosquito",
+        "new_world_order",
+        "bound_dragons",
+        "freedom",
+        "skulls"
     ]
 }

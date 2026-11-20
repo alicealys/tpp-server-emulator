@@ -198,6 +198,11 @@ namespace database::point_exchanges
 		RUN_IMPL(impl::get_exchanged_params, player_id, mode);
 	}
 
+	void delete_player_data(const std::uint64_t player_id)
+	{
+		RUN_IMPL(impl::delete_player_data, player_id);
+	}
+
 	class table final : public table_interface
 	{
 	public:

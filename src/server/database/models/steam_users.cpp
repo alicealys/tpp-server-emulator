@@ -25,6 +25,8 @@
 #include "challenge_tasks.hpp"
 #include "fob_deploy_assists.hpp"
 #include "fob_prisoners.hpp"
+#include "point_exchanges.hpp"
+#include "personal_messages.hpp"
 
 #include <utils/cryptography.hpp>
 #include <utils/string.hpp>
@@ -148,6 +150,8 @@ namespace database::steam_users
 		challenge_tasks::delete_player_data(player->get_id());
 		fob_deploy_assists::delete_player_data(player->get_id());
 		fob_prisoners::delete_player_data(player->get_id());
+		point_exchanges::delete_player_data(player->get_id());
+		personal_messages::delete_player_data(player->get_id());
 
 		players::delete_player_data(player->get_id());
 
