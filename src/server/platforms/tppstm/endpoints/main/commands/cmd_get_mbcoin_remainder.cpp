@@ -11,13 +11,13 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		result["remainder"] = database::player_data::get_mb_coins(player->get_id());
 
 		return result;
+	}
+
+	bool cmd_get_mbcoin_remainder::needs_player()
+	{
+		return true;
 	}
 }

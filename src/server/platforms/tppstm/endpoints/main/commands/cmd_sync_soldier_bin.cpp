@@ -24,7 +24,7 @@ namespace emulator::tpp
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.has_value())
 		{
-			return error(ERR_INVALID_SESSION);
+			return error(ERR_DATABASE);
 		}
 
 		const auto& soldier_num_j = data["soldier_num"];

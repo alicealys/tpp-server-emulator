@@ -168,9 +168,9 @@ namespace emulator::tpp
 		if (is_tpp)
 		{
 			const auto current_event = database::fob_events::get_current_event();
-			if (current_event != nullptr)
+			if (current_event.has_value())
 			{
-				for (const auto& message : current_event->information)
+				for (const auto& message : current_event->params->information)
 				{
 					if (message.visible != nullptr && !message.visible(message))
 					{

@@ -31,7 +31,7 @@ namespace emulator::tpp
 		const auto current_event = database::fob_events::get_current_event();
 		const auto current_league = database::pf_league::get_current_pf_league();
 
-		if (is_event && current_event == nullptr)
+		if (is_event && !current_event.has_value())
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -42,7 +42,7 @@ namespace emulator::tpp
 
 		const auto& league_params = database::pf_league::get_point_exchange_params(current_league->get_id());
 		const auto& params = is_event
-			? current_event->point_exchange_params
+			? current_event->params->point_exchange_params
 			: league_params;
 
 		result["is_event"] = is_event;
@@ -100,7 +100,7 @@ namespace emulator::tpp
 		if (is_event)
 		{
 			database::point_exchanges::add_entry(player->get_id(), database::point_exchanges::exchange_mode_event, 
-				*iter, current_event->date_range.end);
+				*iter, current_event->end);
 			result["point"] = stats->get_event_point();
 		}
 		else

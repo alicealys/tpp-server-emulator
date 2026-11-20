@@ -697,17 +697,17 @@ namespace game
 		{"unique_security"},
 	};
 
-	void parse_cluster_param_security(nlohmann::json& security_j, game::fob_security_t& security, bool is_unique, const std::uint32_t cluster)
+	bool fob_security_t::parse(nlohmann::json& data, bool is_unique, const std::uint32_t cluster)
 	{
-		if (!security_j.is_object())
+		if (!data.is_object())
 		{
-			return;
+			return false;
 		}
 
 		const auto get = [&](const std::string& name, const std::uint8_t cap)
 			-> std::uint8_t
 		{
-			const auto& value_j = security_j[name];
+			const auto& value_j = data[name];
 			if (!value_j.is_number_unsigned())
 			{
 				return 0u;
@@ -724,20 +724,20 @@ namespace game
 
 		if (is_unique)
 		{
-			security.antitheft = get("antitheft", antitheft_unique_caps[cluster]);
+			this->antitheft = get("antitheft", antitheft_unique_caps[cluster]);
 		}
 		else
 		{
-			security.antitheft = get("antitheft", game::fob_security_caps[is_unique].antitheft);
+			this->antitheft = get("antitheft", game::fob_security_caps[is_unique].antitheft);
 		}
 
-		security.camera = get("camera", game::fob_security_caps[is_unique].camera);
-		security.caution_area = get("caution_area", game::fob_security_caps[is_unique].caution_area);
-		security.decoy = get("decoy", game::fob_security_caps[is_unique].decoy);
-		security.ir_sensor = get("ir_sensor", game::fob_security_caps[is_unique].ir_sensor);
-		security.mine = get("mine", game::fob_security_caps[is_unique].mine);
-		security.soldier = get("soldier", game::fob_security_caps[is_unique].soldier);
-		security.uav = get("uav", game::fob_security_caps[is_unique].uav);
+		this->camera = get("camera", game::fob_security_caps[is_unique].camera);
+		this->caution_area = get("caution_area", game::fob_security_caps[is_unique].caution_area);
+		this->decoy = get("decoy", game::fob_security_caps[is_unique].decoy);
+		this->ir_sensor = get("ir_sensor", game::fob_security_caps[is_unique].ir_sensor);
+		this->mine = get("mine", game::fob_security_caps[is_unique].mine);
+		this->soldier = get("soldier", game::fob_security_caps[is_unique].soldier);
+		this->uav = get("uav", game::fob_security_caps[is_unique].uav);
 
 		const auto parse_coord = [&](nlohmann::json& coord_j, game::fob_voluntary_coord_t& coord)
 		{
@@ -794,29 +794,30 @@ namespace game
 			return result_count;
 		};
 
-		auto& voluntary_coord_mine_params_j = security_j["voluntary_coord_mine_params"];
-		auto& voluntary_coord_camera_params_j = security_j["voluntary_coord_camera_params"];
+		auto& voluntary_coord_mine_params_j = data["voluntary_coord_mine_params"];
+		auto& voluntary_coord_camera_params_j = data["voluntary_coord_camera_params"];
 
 		if (voluntary_coord_mine_params_j.is_array())
 		{
-			security.voluntary_coord_mine_count = parse_coords(voluntary_coord_mine_params_j, 
-				&security.voluntary_coord_mine_params[0], game::max_fob_voluntary_mine_count);
+			this->voluntary_coord_mine_count = parse_coords(voluntary_coord_mine_params_j,
+				&this->voluntary_coord_mine_params[0], game::max_fob_voluntary_mine_count);
 		}
 		else
 		{
-			security.voluntary_coord_mine_count = -1;
+			this->voluntary_coord_mine_count = -1;
 		}
 
 		if (voluntary_coord_camera_params_j.is_array())
 		{
-			security.voluntary_coord_camera_count = parse_coords(voluntary_coord_camera_params_j, 
-				&security.voluntary_coord_camera_params[0], game::max_fob_voluntary_camera_count);
+			this->voluntary_coord_camera_count = parse_coords(voluntary_coord_camera_params_j,
+				&this->voluntary_coord_camera_params[0], game::max_fob_voluntary_camera_count);
 		}
 		else
 		{
-			security.voluntary_coord_camera_count = -1;
+			this->voluntary_coord_camera_count = -1;
 		}
 
+		return true;
 	}
 
 	void validate_construct_param(fob_construct_param_t& param)
@@ -864,17 +865,17 @@ namespace game
 		}
 	}
 
-	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param)
+	bool fob_cluster_param_t::parse(nlohmann::json& data)
 	{
-		if (!param_j.is_array() || param_j.size() != game::fob_clusters_count)
+		if (!data.is_array() || data.size() != game::fob_clusters_count)
 		{
 			return false;
 		}
 
 		for (auto i = 0u; i < game::fob_clusters_count; i++)
 		{
-			auto& section_param_j = param_j[i];
-			auto& section_param = param.param[i];
+			auto& section_param_j = data[i];
+			auto& section_param = this->param[i];
 
 			const auto& build_j = section_param_j["build"];
 			const auto& cluster_security_j = section_param_j["cluster_security"];
@@ -894,25 +895,33 @@ namespace game
 			section_param.soldier_rank = section_param_j["soldier_rank"].get<std::uint8_t>();
 			section_param.soldier_rank = std::clamp(section_param.soldier_rank, std::uint8_t(0u), std::uint8_t(9u));
 
-			parse_cluster_param_security(section_param_j["unique_security"], section_param.unique_security, true, i);
-			parse_cluster_param_security(section_param_j["common1_security"], section_param.common_security[0], false, i);
-			parse_cluster_param_security(section_param_j["common2_security"], section_param.common_security[1], false, i);
-			parse_cluster_param_security(section_param_j["common3_security"], section_param.common_security[2], false, i);
+			section_param.unique_security.parse(section_param_j["unique_security"], true, i);
+			section_param.common_security[0].parse(section_param_j["common1_security"], false, i);
+			section_param.common_security[1].parse(section_param_j["common2_security"], false, i);
+			section_param.common_security[2].parse(section_param_j["common3_security"], false, i);
 		}
 
 		return true;
 	}
 
-	bool parse_fob_param(nlohmann::json& param_j, game::fob_param_t& param)
+	bool fob_param_t::parse(nlohmann::json& data)
 	{
-		param.security_rank = param_j["security_rank"].get<std::uint8_t>();
-		param.construct_param.packed = param_j["construct_param"].get<std::uint32_t>();
+		auto& security_rank_j = data["security_rank"];
+		auto& construct_param_j = data["construct_param"];
+
+		if (!security_rank_j.is_number_unsigned() || !construct_param_j.is_number_unsigned())
+		{
+			return false;
+		}
+
+		this->security_rank = security_rank_j.get<std::uint8_t>();
+		this->construct_param.packed = construct_param_j.get<std::uint32_t>();
 		
-		validate_construct_param(param.construct_param);
+		validate_construct_param(this->construct_param);
 
-		param.area_id = param.construct_param.fields.area;
+		this->area_id = this->construct_param.fields.area;
 
-		if (!game::parse_cluster_param(param_j["cluster_param"], param.cluster_param))
+		if (!this->cluster_param.parse(data["cluster_param"]))
 		{
 			return false;
 		}
@@ -920,23 +929,23 @@ namespace game
 		auto security_rank_total = 0u;
 		auto section_count = 0u;
 
-		for (auto i = 0; i < fob_clusters_count; i++)
+		for (auto i = 0ull; i < ARRAYSIZE(this->cluster_param.param); i++)
 		{
-			if (param.cluster_param.param[i].build.fields.platform_count > 4)
+			if (this->cluster_param.param[i].build.fields.platform_count > 4)
 			{
-				param.cluster_param.param[i].build.fields.platform_count = 4;
+				this->cluster_param.param[i].build.fields.platform_count = 4;
 			}
 
-			if (param.cluster_param.param[i].build.fields.platform_count > 0)
+			if (this->cluster_param.param[i].build.fields.platform_count > 0)
 			{
 				section_count++;
 			}
 
-			security_rank_total += param.cluster_param.param[i].cluster_security.fields.level;
-			param.platform_count += static_cast<std::uint8_t>(param.cluster_param.param[i].build.fields.platform_count);
+			security_rank_total += this->cluster_param.param[i].cluster_security.fields.level;
+			this->platform_count += static_cast<std::uint8_t>(this->cluster_param.param[i].build.fields.platform_count);
 		}
 
-		param.security_rank = static_cast<std::uint8_t>(static_cast<float>(security_rank_total) / static_cast<float>(section_count));
+		this->security_rank = static_cast<std::uint8_t>(static_cast<float>(security_rank_total) / static_cast<float>(section_count));
 
 		return true;
 	}
@@ -1021,8 +1030,13 @@ namespace game
 		}
 	}
 
-	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase)
+	bool motherbase_t::parse(nlohmann::json& data)
 	{
+		if (!data.is_object())
+		{
+			return false;
+		}
+
 		const auto copy_array = [&]<typename T>(T * array, nlohmann::json & array_j, const std::size_t size)
 		{
 			if (!array_j.is_array() || array_j.size() != size)
@@ -1046,39 +1060,43 @@ namespace game
 			value = value_j.get<T>();
 		};
 
-		copy_array(&motherbase.equip_flag[0], motherbase_j["equip_flag"], 32);
-		copy_array(&motherbase.equip_grade[0], motherbase_j["equip_grade"], 28);
-		copy_array(&motherbase.local_base_param->packed, motherbase_j["local_base_param"], 7);
-		copy_array(&motherbase.security_level[0], motherbase_j["security_level"], 18);
-		copy_array(&motherbase.tape_flag[0], motherbase_j["tape_flag"], 8);
+		copy_array(&this->equip_flag[0], data["equip_flag"], 32);
+		copy_array(&this->equip_grade[0], data["equip_grade"], 28);
+		copy_array(&this->local_base_param->packed, data["local_base_param"], 7);
+		copy_array(&this->security_level[0], data["security_level"], 18);
+		copy_array(&this->tape_flag[0], data["tape_flag"], 8);
 
-		if (motherbase_j["pf_skill_staff"].is_object())
+		auto& pf_skill_staff_j = data["pf_skill_staff"];
+
+		if (pf_skill_staff_j.is_object())
 		{
-			copy_value(motherbase.pf_skill_staff.all_staff_num, motherbase_j["pf_skill_staff"]["all_staff_num"]);
-			copy_value(motherbase.pf_skill_staff.defender1_num, motherbase_j["pf_skill_staff"]["defender1_num"]);
-			copy_value(motherbase.pf_skill_staff.defender2_num, motherbase_j["pf_skill_staff"]["defender2_num"]);
-			copy_value(motherbase.pf_skill_staff.defender3_num, motherbase_j["pf_skill_staff"]["defender3_num"]);
-			copy_value(motherbase.pf_skill_staff.interceptor_missile1_num, motherbase_j["pf_skill_staff"]["interceptor_missile1_num"]);
-			copy_value(motherbase.pf_skill_staff.interceptor_missile2_num, motherbase_j["pf_skill_staff"]["interceptor_missile2_num"]);
-			copy_value(motherbase.pf_skill_staff.interceptor_missile3_num, motherbase_j["pf_skill_staff"]["interceptor_missile3_num"]);
-			copy_value(motherbase.pf_skill_staff.liquid_carbon_missile1_num, motherbase_j["pf_skill_staff"]["liquid_carbon_missile1_num"]);
-			copy_value(motherbase.pf_skill_staff.liquid_carbon_missile2_num, motherbase_j["pf_skill_staff"]["liquid_carbon_missile2_num"]);
-			copy_value(motherbase.pf_skill_staff.liquid_carbon_missile3_num, motherbase_j["pf_skill_staff"]["liquid_carbon_missile3_num"]);
-			copy_value(motherbase.pf_skill_staff.medic1_num, motherbase_j["pf_skill_staff"]["medic1_num"]);
-			copy_value(motherbase.pf_skill_staff.medic2_num, motherbase_j["pf_skill_staff"]["medic2_num"]);
-			copy_value(motherbase.pf_skill_staff.medic3_num, motherbase_j["pf_skill_staff"]["medic3_num"]);
-			copy_value(motherbase.pf_skill_staff.ranger1_num, motherbase_j["pf_skill_staff"]["ranger1_num"]);
-			copy_value(motherbase.pf_skill_staff.ranger2_num, motherbase_j["pf_skill_staff"]["ranger2_num"]);
-			copy_value(motherbase.pf_skill_staff.ranger3_num, motherbase_j["pf_skill_staff"]["ranger3_num"]);
-			copy_value(motherbase.pf_skill_staff.sentry1_num, motherbase_j["pf_skill_staff"]["sentry1_num"]);
-			copy_value(motherbase.pf_skill_staff.sentry2_num, motherbase_j["pf_skill_staff"]["sentry2_num"]);
-			copy_value(motherbase.pf_skill_staff.sentry3_num, motherbase_j["pf_skill_staff"]["sentry3_num"]);
+			copy_value(this->pf_skill_staff.all_staff_num, pf_skill_staff_j["all_staff_num"]);
+			copy_value(this->pf_skill_staff.defender1_num, pf_skill_staff_j["defender1_num"]);
+			copy_value(this->pf_skill_staff.defender2_num, pf_skill_staff_j["defender2_num"]);
+			copy_value(this->pf_skill_staff.defender3_num, pf_skill_staff_j["defender3_num"]);
+			copy_value(this->pf_skill_staff.interceptor_missile1_num, pf_skill_staff_j["interceptor_missile1_num"]);
+			copy_value(this->pf_skill_staff.interceptor_missile2_num, pf_skill_staff_j["interceptor_missile2_num"]);
+			copy_value(this->pf_skill_staff.interceptor_missile3_num, pf_skill_staff_j["interceptor_missile3_num"]);
+			copy_value(this->pf_skill_staff.liquid_carbon_missile1_num, pf_skill_staff_j["liquid_carbon_missile1_num"]);
+			copy_value(this->pf_skill_staff.liquid_carbon_missile2_num, pf_skill_staff_j["liquid_carbon_missile2_num"]);
+			copy_value(this->pf_skill_staff.liquid_carbon_missile3_num, pf_skill_staff_j["liquid_carbon_missile3_num"]);
+			copy_value(this->pf_skill_staff.medic1_num, pf_skill_staff_j["medic1_num"]);
+			copy_value(this->pf_skill_staff.medic2_num, pf_skill_staff_j["medic2_num"]);
+			copy_value(this->pf_skill_staff.medic3_num, pf_skill_staff_j["medic3_num"]);
+			copy_value(this->pf_skill_staff.ranger1_num, pf_skill_staff_j["ranger1_num"]);
+			copy_value(this->pf_skill_staff.ranger2_num, pf_skill_staff_j["ranger2_num"]);
+			copy_value(this->pf_skill_staff.ranger3_num, pf_skill_staff_j["ranger3_num"]);
+			copy_value(this->pf_skill_staff.sentry1_num, pf_skill_staff_j["sentry1_num"]);
+			copy_value(this->pf_skill_staff.sentry2_num, pf_skill_staff_j["sentry2_num"]);
+			copy_value(this->pf_skill_staff.sentry3_num, pf_skill_staff_j["sentry3_num"]);
 		}
 
-		copy_value(motherbase.pickup_open, motherbase_j["pickup_open"]);
-		copy_value(motherbase.section_open, motherbase_j["section_open"]);
-		copy_value(motherbase.invalid_fob, motherbase_j["invalid_fob"]);
-		copy_value(motherbase.name_plate_id, motherbase_j["name_plate_id"]);
+		copy_value(this->pickup_open, data["pickup_open"]);
+		copy_value(this->section_open, data["section_open"]);
+		copy_value(this->invalid_fob, data["invalid_fob"]);
+		copy_value(this->name_plate_id, data["name_plate_id"]);
+
+		return true;
 	}
 
 	std::uint32_t validate_emblem_tag(const std::uint32_t tag, const emblem_list_part_t& part_params)
@@ -1107,17 +1125,17 @@ namespace game
 		return 0u;
 	}
 
-	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem, bool validate_tags)
+	bool emblem_t::parse(nlohmann::json& data, bool validate_tags)
 	{
-		if (!emblem_j.is_object())
+		if (!data.is_object())
 		{
-			return;
+			return false;
 		}
 
-		auto& parts = emblem_j["parts"];
+		auto& parts = data["parts"];
 		if (!parts.is_array() || parts.size() != 4)
 		{
-			return;
+			return false;
 		}
 
 		const auto& emblem_list = get_emblem_list();
@@ -1151,27 +1169,29 @@ namespace game
 
 			if (validate_tags)
 			{
-				emblem.parts[index].base_color = validate_emblem_tag(get_u("base_color"), emblem_list.color_params);
-				emblem.parts[index].frame_color = validate_emblem_tag(get_u("frame_color"), emblem_list.color_params);
-				emblem.parts[index].texture_tag = validate_emblem_texture(get_u("texture_tag"), index, emblem_list);
+				this->parts[index].base_color = validate_emblem_tag(get_u("base_color"), emblem_list.color_params);
+				this->parts[index].frame_color = validate_emblem_tag(get_u("frame_color"), emblem_list.color_params);
+				this->parts[index].texture_tag = validate_emblem_texture(get_u("texture_tag"), index, emblem_list);
 			}
 			else
 			{
-				emblem.parts[index].base_color = get_u("base_color");
-				emblem.parts[index].frame_color = get_u("frame_color");
-				emblem.parts[index].texture_tag = get_u("texture_tag");
+				this->parts[index].base_color = get_u("base_color");
+				this->parts[index].frame_color = get_u("frame_color");
+				this->parts[index].texture_tag = get_u("texture_tag");
 			}
 
-			emblem.parts[index].position_x = get("position_x");
-			emblem.parts[index].position_y = get("position_y");
-			emblem.parts[index].rotate = get("rotate");
-			emblem.parts[index].scale = get("scale");
+			this->parts[index].position_x = get("position_x");
+			this->parts[index].position_y = get("position_y");
+			this->parts[index].rotate = get("rotate");
+			this->parts[index].scale = get("scale");
 		};
 
 		for (auto i = 0; i < 4; i++)
 		{
 			parse_part(i);
 		}
+
+		return true;
 	}
 
 	bool reward_t::parse(nlohmann::json& data)

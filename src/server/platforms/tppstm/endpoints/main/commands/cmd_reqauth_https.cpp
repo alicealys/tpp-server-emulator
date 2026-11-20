@@ -9,12 +9,27 @@
 
 namespace emulator::tpp
 {
+	void cmd_reqauth_https::wait_fail_delay(const std::chrono::system_clock::time_point start)
+	{
+		constexpr const auto duration = 50ms;
+		const auto now = std::chrono::system_clock::now();
+		const auto diff = now - start;
+
+		if (diff < duration)
+		{
+			std::this_thread::sleep_for(duration - diff);
+		}
+	}
+
 	nlohmann::json cmd_reqauth_https::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
+		const auto start = std::chrono::system_clock::now();
+
 		nlohmann::json result;
 
-		const auto& hash_val = data["hash"];
-		const auto& account_id_val = data["user_name"];
+		auto& hash_val = data["hash"];
+		auto& account_id_val = data["user_name"];
+
 		if (!hash_val.is_string() || !account_id_val.is_string())
 		{
 			return error(ERR_INVALIDARG);
@@ -28,22 +43,20 @@ namespace emulator::tpp
 
 		if (!player.has_value())
 		{
-			const auto auth_result_opt = auth::authenticate_user(account_id_val, hash);
-			if (!auth_result_opt.has_value())
+			const auto auth_result = auth::authenticate_user(account_id_val, hash);
+			if (!auth_result.success)
 			{
+				this->wait_fail_delay(start);
 				return error(ERR_INVALID_ACCOUNT);
 			}
 
-			const auto& auth_result = auth_result_opt.value();
 			result["crypto_key"] = auth_result.crypto_key;
 			result["session"] = auth_result.session_id;
-			result["smart_device_id"] = auth_result.smart_device_id;
-			result["user_id"] = auth_result.player_id;
+			result["smart_device_id"] = auth_result.player->get_smart_device_id();
+			result["user_id"] = auth_result.player->get_id();
 
-			const auto found_player = database::players::find(auth_result.player_id);
-
-			database::event_rankings::create_entries(auth_result.player_id);
-			cmd_abort_mother_base::send_abort(found_player.value());
+			database::event_rankings::create_entries(auth_result.player->get_id());
+			cmd_abort_mother_base::send_abort(auth_result.player.value());
 		}
 		else
 		{

@@ -63,11 +63,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.has_value())
 		{
@@ -80,7 +75,7 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
-		const auto fob_event = database::fob_events::get_current_event();
+		const auto current_event = database::fob_events::get_current_event();
 
 		auto flag = notice_unk7 | notice_unk8 | notice_mb_coins;
 
@@ -113,7 +108,7 @@ namespace emulator::tpp
 			flag |= notice_daily_reward;
 		}
 
-		if (fob_event != nullptr)
+		if (current_event.has_value())
 		{
 			flag |= notice_event;
 		}
@@ -125,7 +120,7 @@ namespace emulator::tpp
 
 		const auto motd_text = motd::get_motd_text();
 
-		result["active_event_server_text"] = fob_event != nullptr ? fob_event->server_text : "NotImplement";
+		result["active_event_server_text"] = current_event.has_value() ? current_event->params->server_text : "NotImplement";
 		result["campaign_param_list"] = nlohmann::json::array();
 
 		const auto personal_messages = database::personal_messages::get_unread_message_list(player->get_id(), 
@@ -154,8 +149,8 @@ namespace emulator::tpp
 		}
 
 		result["daily"] = 0;
-		result["event_delete_date"] = fob_event != nullptr ? fob_event->date_range.end.count() : 0ull;
-		result["event_end_date"] = fob_event != nullptr ? fob_event->date_range.end.count() : 0ull;
+		result["event_delete_date"] = current_event.has_value() ? current_event->end.count() : 0ull;
+		result["event_end_date"] = current_event.has_value() ? current_event->end.count() : 0ull;
 		result["exists_event_point_combat_deploy"] = 0;
 		result["flag"] = flag;
 
@@ -198,5 +193,10 @@ namespace emulator::tpp
 		database::player_records::sync_prev_values(player->get_id());
 
 		return result;
+	}
+
+	bool cmd_get_fob_notice::needs_player()
+	{
+		return true;
 	}
 }

@@ -11,13 +11,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		result["result"] = "NOERR";
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		result["fob"] = nlohmann::json::array();
 		result["enable_security_challenge"] = player->is_security_challenge_enabled();
 
@@ -41,5 +34,10 @@ namespace emulator::tpp
 		}
 		
 		return result;
+	}
+
+	bool cmd_get_own_fob_list::needs_player()
+	{
+		return true;
 	}
 }

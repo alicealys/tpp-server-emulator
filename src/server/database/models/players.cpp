@@ -35,13 +35,6 @@ namespace database::players
 			{"ACTUAL", mode_actual},
 		};
 
-		bool is_session_expired(const player& player)
-		{
-			const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
-				std::chrono::system_clock::now().time_since_epoch());
-			return (now - player.get_last_update()) > database::vars.session_timeout;
-		}
-
 #define IS_ACTIVE_EXPR player::table.last_update >= std::chrono::system_clock::now() - database::vars.session_timeout
 
 #define RESET_CURRENT_SNEAK_EXPR \
@@ -226,7 +219,7 @@ namespace database::players
 				const auto& row = results.front();
 				player player(row);
 
-				const auto expired = is_session_expired(player);
+				const auto expired = player.is_session_expired();
 				if (is_expired != nullptr)
 				{
 					*is_expired = expired;
@@ -312,12 +305,14 @@ namespace database::players
 		std::string generate_login_password(const std::uint64_t account_id)
 		{
 			const auto password = auth::generate_data(16, false);
+			const auto md5 = utils::cryptography::md5::compute(password, false);
+			const auto hash = utils::cryptography::sha512::compute(md5, true);
 
 			database::access([&](database::database_t& db)
 			{
 				db.get_database<Type>()->operator()(
 					sqlpp::update(player::table)
-						.set(player::table.login_password = password)
+						.set(player::table.login_password = hash)
 							.where(player::table.account_id == account_id));
 			});
 
@@ -361,7 +356,7 @@ namespace database::players
 		bool update_session(const player& player)
 		{
 			size_t result = 0;
-			if (!is_session_expired(player))
+			if (!player.is_session_expired())
 			{
 				database::access([&](database::database_t& db)
 				{
@@ -828,6 +823,13 @@ namespace database::players
 						.where(player::table.id == player_id));
 			});
 		}
+	}
+
+	bool player::is_session_expired() const
+	{
+		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(
+			std::chrono::system_clock::now().time_since_epoch());
+		return (now - this->get_last_update()) > database::vars.session_timeout;
 	}
 
 	std::int32_t sneak_info::get_game_sneak_mode() const

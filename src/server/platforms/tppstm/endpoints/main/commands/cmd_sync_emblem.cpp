@@ -10,23 +10,20 @@ namespace emulator::tpp
 	nlohmann::json cmd_sync_emblem::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "NOERR";
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
-		if (!data["emblem"].is_object())
+		game::emblem_t emblem{};
+		if (!emblem.parse(data["emblem"], true))
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		game::emblem_t emblem{};
-		game::parse_emblem(data["emblem"], emblem);
-
 		database::player_data::sync_emblem(player->get_id(), emblem);
 
 		return result;
+	}
+
+	bool cmd_sync_emblem::needs_player()
+	{
+		return true;
 	}
 }

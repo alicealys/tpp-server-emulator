@@ -11,28 +11,20 @@ namespace emulator::tpp
 		target_list_t targets;
 
 		const auto fob_event = database::fob_events::get_current_event();
-		if (fob_event == nullptr)
+		if (!fob_event.has_value())
 		{
-			return {};
+			return targets;
 		}
 
-		auto end = fob_event->date_range.end.count();
-
-		for (const auto& player_id : fob_event->player_ids)
+		for (const auto& event_player : fob_event->params->players)
 		{
-			const auto event_player = database::fob_events::get_player(player_id);
-			if (!event_player.has_value())
-			{
-				continue;
-			}
-
 			for (const auto& fob_id : event_player->fob_ids)
 			{
 				target_data_t data{};
 
 				data.player_id = event_player->player_id;
 
-				data.extra_data["owner_fob_record"]["date_time"] = end;
+				data.extra_data["owner_fob_record"]["date_time"] = fob_event->end.count();
 				data.extra_data["owner_info"]["player_name"] = event_player->player_name;
 				data.extra_data["owner_detail_record"]["staff_count"] = 0;
 

@@ -12,11 +12,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		create_nuclear(player);
 
 		[[ maybe_unused ]] const auto& version_j = data["version"];
@@ -137,5 +132,10 @@ namespace emulator::tpp
 		result["server_gmp"] = server_gmp;
 
 		return result;
+	}
+
+	bool cmd_sync_resource::needs_player()
+	{
+		return true;
 	}
 }

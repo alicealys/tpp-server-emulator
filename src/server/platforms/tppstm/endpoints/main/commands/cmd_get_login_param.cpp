@@ -86,13 +86,13 @@ namespace emulator::tpp
 		fob_event_task_list_j["version"] = "";
 
 		const auto current_event = database::fob_events::get_current_event();
-		if (current_event == nullptr)
+		if (!current_event.has_value())
 		{
 			return;
 		}
 
-		fob_event_task_list_j["one_event_task"] = current_event->one_event_task;
-		fob_event_task_list_j["version"] = utils::time::version(current_event->date_range.end);
+		fob_event_task_list_j["one_event_task"] = current_event->params->one_event_task;
+		fob_event_task_list_j["version"] = utils::time::version(current_event->end);
 	}
 
 	nlohmann::json cmd_get_login_param::execute(nlohmann::json& data, const std::optional<database::players::player>& player)

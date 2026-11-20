@@ -68,7 +68,7 @@ namespace emulator
 						params.address.ip[0], params.address.ip[1], params.address.ip[2], params.address.ip[3]);
 				}
 
-				if (handler->second->needs_player() && !player.has_value())
+				if (handler->second->needs_player() && (!player.has_value() || player->is_session_expired()))
 				{
 					return error(ERR_INVALID_SESSION);
 				}

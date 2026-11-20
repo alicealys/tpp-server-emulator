@@ -4,7 +4,7 @@ create table if not exists `players`
 	id									integer	primary key autoincrement,
 	account_id							bigint unsigned		 		 unique,
 	session_id							char(32)		default null unique,
-	login_password						char(32)		default null,
+	login_password						char(128)		default null,
 	last_update							datetime		default null,
 	crypto_key							char(32)		default null,
 	smart_device_id						char(128)		default null,

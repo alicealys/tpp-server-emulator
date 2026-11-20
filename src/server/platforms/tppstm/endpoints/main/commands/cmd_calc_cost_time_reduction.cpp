@@ -10,11 +10,6 @@ namespace emulator::tpp
 	nlohmann::json cmd_calc_cost_time_reduction::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
 		
 		const auto& kind_j = data["kind"];
 		const auto& remaining_time_j = data["remaining_time"];
@@ -45,5 +40,10 @@ namespace emulator::tpp
 		result["cost"] = get_cost();
 
 		return result;
+	}
+
+	bool cmd_calc_cost_time_reduction::needs_player()
+	{
+		return true;
 	}
 }

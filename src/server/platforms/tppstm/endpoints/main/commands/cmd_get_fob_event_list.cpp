@@ -10,11 +10,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		auto sneak_results = database::sneak_results::get_sneak_results(player->get_id(), 10);
 
 		for (auto i = 0u; i < sneak_results.size(); i++)
@@ -33,5 +28,10 @@ namespace emulator::tpp
 		result["event_num"] = sneak_results.size();
 
 		return result;
+	}
+
+	bool cmd_get_fob_event_list::needs_player()
+	{
+		return true;
 	}
 }

@@ -1242,6 +1242,8 @@ namespace game
 		fob_voluntary_coord_t voluntary_coord_mine_params[max_fob_voluntary_mine_count]{};
 		std::int8_t voluntary_coord_camera_count;
 		fob_voluntary_coord_t voluntary_coord_camera_params[max_fob_voluntary_camera_count]{};
+
+		bool parse(nlohmann::json& data, bool is_unique, const std::uint32_t cluster);
 	};
 
 	struct fob_cluster_param_single_t
@@ -1259,6 +1261,8 @@ namespace game
 	struct fob_cluster_param_t
 	{
 		fob_cluster_param_single_t param[fob_clusters_count];
+
+		bool parse(nlohmann::json& data);
 	};
 
 	struct fob_param_t
@@ -1268,11 +1272,11 @@ namespace game
 		std::uint8_t security_rank;
 		fob_construct_param_t construct_param;
 		fob_cluster_param_t cluster_param;
+
+		bool parse(nlohmann::json& data);
 	};
 
 	void validate_construct_param(fob_construct_param_t& param);
-	bool parse_cluster_param(nlohmann::json& param_j, game::fob_cluster_param_t& param);
-	bool parse_fob_param(nlohmann::json& param_j, game::fob_param_t& param);
 
 	extern std::array<fob_security_t, 2> fob_security_caps;
 	extern std::array<std::uint8_t, 16> deploy_damage_param_caps;
@@ -1329,6 +1333,8 @@ namespace game
 	struct emblem_t
 	{
 		emblem_part_t parts[4];
+
+		bool parse(nlohmann::json& data, bool validate_tags);
 		void to_json(nlohmann::json& data) const;
 	};
 
@@ -1367,10 +1373,10 @@ namespace game
 		std::uint8_t section_open;
 		std::uint8_t invalid_fob;
 		std::uint16_t name_plate_id;
+
+		bool parse(nlohmann::json& data);
 	};
 
-	void parse_motherbase(nlohmann::json& motherbase_j, game::motherbase_t& motherbase);
-	void parse_emblem(nlohmann::json& emblem_j, game::emblem_t& emblem, bool validate_tags = true);
 
 	struct reward_t
 	{

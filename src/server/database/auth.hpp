@@ -1,5 +1,7 @@
 #pragma once
 
+#include "models/players.hpp"
+
 namespace auth
 {
 	struct auth_ticket_response
@@ -13,10 +15,9 @@ namespace auth
 	struct auth_response
 	{
 		bool success;
-		std::uint64_t player_id;
+		std::optional<database::players::player> player;
 		std::string session_id;
 		std::string crypto_key;
-		std::string smart_device_id;
 	};
 
 	struct auth_ticket_custom_t
@@ -39,7 +40,7 @@ namespace auth
 	void reload_lists();
 
 	std::optional<auth_ticket_response> authenticate_user_with_ticket(const std::string& auth_ticket, const size_t ticket_size, const bool is_tpp);
-	std::optional<auth_response> authenticate_user(const std::string& account_id, const std::string& password);
+	auth_response authenticate_user(const std::string& account_id, const std::string& password);
 	std::string generate_data(const size_t len, bool base64);
 	bool validate_auth_mode(const nlohmann::json& value);
 	std::string get_default_steam_public_key();

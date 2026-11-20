@@ -77,9 +77,9 @@ namespace emulator::tpp
 			? database::point_exchanges::exchange_mode_event 
 			: database::point_exchanges::exchange_mode_league);
 
-		if (is_event && current_event != nullptr)
+		if (is_event && current_event.has_value())
 		{
-			serialize_list(current_event->point_exchange_params, exchanged_params);
+			serialize_list(current_event->params->point_exchange_params, exchanged_params);
 		}
 		else if (!is_event && current_league.has_value())
 		{

@@ -209,6 +209,8 @@ namespace database::players
 			return std::format("{}_player01", this->get_account_id());
 		}
 
+		bool is_session_expired() const;
+
 	private:
 		std::uint64_t id_;
 		std::uint64_t account_id_;

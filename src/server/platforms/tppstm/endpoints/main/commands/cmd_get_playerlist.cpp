@@ -13,39 +13,39 @@ namespace emulator::tpp
 	nlohmann::json cmd_get_playerlist::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["xuid"] = {};
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
 
 		const auto stats = database::player_records::find(player->get_id());
 		const auto player_data = database::player_data::find(player->get_id());
 
-		result["player_num"] = 0;
 
 		if (stats.has_value() && player_data.has_value())
 		{
+			auto& entry = result["player_list"][0];
+			entry["index"] = 0;
+			entry["name"] = std::format("{}_player01", player->get_account_id());
+			entry["espionage_lose"] = stats->get_sneak_win();
+			entry["espionage_win"] = stats->get_sneak_lose();
+			entry["fob_grade"] = stats->get_fob_grade();
+			entry["fob_point"] = stats->get_fob_point();
+			entry["fob_rank"] = stats->get_fob_rank();
+			entry["is_insurance"] = stats->get_is_insurance();
+			entry["league_grade"] = stats->get_league_grade();
+			entry["league_rank"] = stats->get_league_rank();
+			entry["playtime"] = stats->get_playtime();
+			entry["point"] = stats->get_point();
 			result["player_num"] = 1;
-
-			result["player_list"][0]["index"] = 0;
-			result["player_list"][0]["name"] = std::format("{}_player01", player->get_account_id());
-
-			result["player_list"][0]["espionage_lose"] = stats->get_sneak_win();
-			result["player_list"][0]["espionage_win"] = stats->get_sneak_lose();
-			result["player_list"][0]["fob_grade"] = stats->get_fob_grade();
-			result["player_list"][0]["fob_point"] = stats->get_fob_point();
-			result["player_list"][0]["fob_rank"] = stats->get_fob_rank();
-			result["player_list"][0]["is_insurance"] = stats->get_is_insurance();
-			result["player_list"][0]["league_grade"] = stats->get_league_grade();
-			result["player_list"][0]["league_rank"] = stats->get_league_rank();
-			result["player_list"][0]["playtime"] = stats->get_playtime();
-			result["player_list"][0]["point"] = stats->get_point();
+		}
+		else
+		{
+			result["player_list"] = nlohmann::json::array();
+			result["player_num"] = 0;
 		}
 
-		result["result"] = "NOERR";
-
 		return result;
+	}
+
+	bool cmd_get_playerlist::needs_player()
+	{
+		return true;
 	}
 }

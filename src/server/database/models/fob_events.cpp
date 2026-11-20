@@ -24,7 +24,7 @@ namespace database::fob_events
 		std::uint32_t get_information_message_id(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
 		{
 			const auto& event = get_current_event();
-			if (event == nullptr)
+			if (!event.has_value())
 			{
 				return 0u;
 			}
@@ -35,12 +35,12 @@ namespace database::fob_events
 		std::uint64_t get_information_message_date(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
 		{
 			const auto& event = get_current_event();
-			if (event == nullptr)
+			if (!event.has_value())
 			{
 				return 0u;
 			}
 
-			return event->date_range.start.count();
+			return event->start.count();
 		}
 
 		void register_lang_vars()
@@ -49,84 +49,84 @@ namespace database::fob_events
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return utils::lang::get_string(current_event->server_text, lang);
+				return utils::lang::get_string(current_event->params->server_text, lang);
 			});
 
 			utils::lang::register_var("event_start", [](const std::uint8_t)
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.start));
+				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->start));
 			});
 
 			utils::lang::register_var("event_end", [](const std::uint8_t)
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->date_range.end));
+				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->end));
 			});
 
 			utils::lang::register_var("event_start_ymd", [](const std::uint8_t)
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return date::format("%Y/%m/%d", std::chrono::system_clock::time_point(current_event->date_range.start));
+				return date::format("%Y/%m/%d", std::chrono::system_clock::time_point(current_event->start));
 			});
 
 			utils::lang::register_var("event_end_ymd", [](const std::uint8_t)
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return date::format("%Y/%m/%d", std::chrono::system_clock::time_point(current_event->date_range.end));
+				return date::format("%Y/%m/%d", std::chrono::system_clock::time_point(current_event->end));
 			});
 
 			utils::lang::register_var("event_start_ymd_rev", [](const std::uint8_t)
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return date::format("%d/%m/%Y", std::chrono::system_clock::time_point(current_event->date_range.start));
+				return date::format("%d/%m/%Y", std::chrono::system_clock::time_point(current_event->start));
 			});
 
 			utils::lang::register_var("event_end_ymd_rev", [](const std::uint8_t)
 				-> std::string
 			{
 				const auto current_event = database::fob_events::get_current_event();
-				if (current_event == nullptr)
+				if (!current_event.has_value())
 				{
 					return {};
 				}
 
-				return date::format("%d/%m/%Y", std::chrono::system_clock::time_point(current_event->date_range.end));
+				return date::format("%d/%m/%Y", std::chrono::system_clock::time_point(current_event->end));
 			});
 		}
 
@@ -139,158 +139,6 @@ namespace database::fob_events
 			return week;
 		}
 
-		fob_event_player_t parse_event_player(nlohmann::json& player_j)
-		{
-			fob_event_player_t player{};
-
-			game::parse_emblem(player_j["emblem"], player.emblem, false);
-			game::parse_motherbase(player_j["motherbase"], player.motherbase);
-			player.player_id = player_j["player_id"].get<std::uint64_t>();
-			player.player_name = player_j["player_name"].get<std::string>();
-
-			auto& fob_list = player_j["fob_list"];
-			for (auto i = 0ull; i < fob_list.size(); i++)
-			{
-				player.fob_ids.emplace_back(fob_list[i]["mother_base_id"]);
-
-				game::fob_param_t param{};
-
-				param.area_id = fob_list[i]["area_id"].get<std::uint16_t>();
-				param.construct_param.packed = fob_list[i]["construct_param"].get<std::uint32_t>();
-				param.platform_count = fob_list[i]["platform_count"].get<std::uint8_t>();
-				param.security_rank = fob_list[i]["security_rank"].get<std::uint8_t>();
-
-				game::parse_cluster_param(fob_list[i]["cluster_param"], param.cluster_param);
-
-				player.fob_params.emplace_back(param);
-			}
-
-			auto& staff_resources = player_j["staff_resources"];
-
-			{
-				auto& placement = staff_resources["placement"];
-				auto& usable_resource = staff_resources["usable_resource"];
-				auto& processing_resource = staff_resources["processing_resource"];
-				auto& section_level = staff_resources["section_level"];
-				auto& section_staff = staff_resources["section_staff"];
-
-				auto& processed = player.staff_resources.resource_arrays[game::processed_server];
-				auto& unprocessed = player.staff_resources.resource_arrays[game::unprocessed_server];
-				auto& unit_levels = player.staff_resources.unit_levels;
-				auto& unit_counts = player.staff_resources.unit_counts;
-
-				processed[game::EMPLACEMENT_GUN_EAST] = placement["emplacement_gun_east"].get<std::uint32_t>();
-				processed[game::EMPLACEMENT_GUN_WEST] = placement["emplacement_gun_west"].get<std::uint32_t>();
-				processed[game::ANTI_AIR_GATLING_GUN_EAST] = placement["gatling_gun_east"].get<std::uint32_t>();
-				processed[game::ANTI_AIR_GATLING_GUN_WEST] = placement["gatling_gun_west"].get<std::uint32_t>();
-				processed[game::MORTAR_NORMAL] = placement["mortar_normal"].get<std::uint32_t>();
-
-				processed[game::BIOTIC_RESOURCE] = usable_resource["biotic_resource"].get<std::uint32_t>();
-				processed[game::COMMON_METAL] = usable_resource["common_metal"].get<std::uint32_t>();
-				processed[game::FUEL_RESOURCE] = usable_resource["fuel_resource"].get<std::uint32_t>();
-				processed[game::MINOR_METAL] = usable_resource["minor_metal"].get<std::uint32_t>();
-				processed[game::PRECIOUS_METAL] = usable_resource["precious_metal"].get<std::uint32_t>();
-
-				unprocessed[game::BIOTIC_RESOURCE] = processing_resource["biotic_resource"].get<std::uint32_t>();
-				unprocessed[game::COMMON_METAL] = processing_resource["common_metal"].get<std::uint32_t>();
-				unprocessed[game::FUEL_RESOURCE] = processing_resource["fuel_resource"].get<std::uint32_t>();
-				unprocessed[game::MINOR_METAL] = processing_resource["minor_metal"].get<std::uint32_t>();
-				unprocessed[game::PRECIOUS_METAL] = processing_resource["precious_metal"].get<std::uint32_t>();
-
-				for (auto i = 0; i < game::unit_count; i++)
-				{
-					unit_levels.value[i] = section_level[game::unit_names[i]].get<std::uint32_t>();
-				}
-
-				auto total_staff = 0;
-				for (auto i = 0ull; i < section_staff.size(); i++)
-				{
-					const auto& staff_of_rank_at_unit = section_staff[i];
-					for (auto o = 0; o < game::unit_count; o++)
-					{
-						const auto& unit_name = game::unit_names[o];
-						const auto& staff_count = staff_of_rank_at_unit[unit_name].get<std::uint32_t>();
-						unit_counts.value[o] += staff_count;
-						player.staff_resources.staff_count += staff_count;
-
-						for (auto l = 0u; l < staff_count; l++)
-						{
-							auto staff_index = total_staff++;
-							player.staff_resources.staff_array[staff_index].fields.header.peak_rank = i;
-							player.staff_resources.staff_array[staff_index].fields.status_sync.designation = game::SECTION_COMBAT + o;
-						}
-					}
-				}
-			}
-
-			return player;
-		}
-
-		fob_event_t parse_event(nlohmann::json& event_j)
-		{
-			fob_event_t event{};
-
-			event.one_event_task = event_j["one_event_task"];
-			event.server_text = event_j["server_text"].get<std::string>();
-
-			auto& information_list = event_j["information_list"];
-			for (auto i = 0ull; i < information_list.size(); i++)
-			{
-				emulator::tpp::cmd_get_informationlist2_base::message_t message{};
-
-				if (!message.parse(information_list[i]))
-				{
-					continue;
-				}
-
-				message.get_info_id = get_information_message_id;
-				message.get_date = get_information_message_date;
-				message.info_id = static_cast<std::uint32_t>(i);
-				event.information.emplace_back(message);
-			}
-
-			auto& point_exchange_params = event_j["point_exchange_params"];
-			if (!event.point_exchange_params.parse(point_exchange_params))
-			{
-				throw std::runtime_error("[fob events] failed to parse point exchange params");
-			}
-
-			auto& players = event_j["players"];
-			for (auto i = 0ull; i < players.size(); i++)
-			{
-				event.player_ids.emplace_back(players[i].get<std::uint64_t>());
-			}
-
-			return event;
-		}
-
-		fob_events_data_t parse_events_data()
-		{
-			fob_events_data_t data;
-
-			auto data_j = utils::resources::load_json(RESOURCE_FOB_EVENT_LIST);
-			auto& players_j = data_j["players"];
-			auto& event_list_j = data_j["event_list"];
-
-			for (auto i = 0ull; i < players_j.size(); i++)
-			{
-				data.players.emplace_back(parse_event_player(players_j[i]));
-			}
-
-			for (auto i = 0ull; i < event_list_j.size(); i++)
-			{
-				data.events.emplace_back(parse_event(event_list_j[i]));
-			}
-
-			return data;
-		}
-
-		fob_events_data_t& get_events_data()
-		{
-			static auto event_list = parse_events_data();
-			return event_list;
-		}
-
 		void create_database_entries_for_player(fob_event_player_t& event_player)
 		{
 			const auto player = database::players::create_system_player(event_player.player_id);
@@ -301,10 +149,10 @@ namespace database::fob_events
 			database::player_data::set_resources_gmp(player.get_id(), event_player.staff_resources.resource_arrays, 0, 0);
 
 			database::player_data::staff_info_t staff_info{};
-			database::player_data::set_staff(player.get_id(), player_data->get_server_staff_version(), 
+			database::player_data::set_staff(player.get_id(), player_data->get_server_staff_version(),
 				event_player.staff_resources.staff_array, staff_info);
 
-			database::player_data::set_staff_levels(player.get_id(), event_player.staff_resources.unit_levels, 
+			database::player_data::set_staff_levels(player.get_id(), event_player.staff_resources.unit_levels,
 				event_player.staff_resources.unit_counts);
 
 
@@ -323,21 +171,50 @@ namespace database::fob_events
 			database::fobs::sync_data(player.get_id(), event_player.fob_params);
 		}
 
+		fob_events_data_t parse_events_data()
+		{
+			fob_events_data_t event_data{};
+
+			auto data = utils::resources::load_json(RESOURCE_FOB_EVENT_LIST);
+			if (!event_data.parse(data))
+			{
+				throw std::runtime_error("[fob events] failed to parse fob event list");
+			}
+
+			for (auto& player : event_data.players)
+			{
+				create_database_entries_for_player(*player);
+			}
+
+			for (auto& event : event_data.events)
+			{
+				for (auto& player_id : event->player_ids)
+				{
+					const auto player = event_data.get_player(player_id);
+					if (player == nullptr)
+					{
+						throw std::runtime_error(std::format("[fob events] invalid player id {}", player_id));
+					}
+
+					event->players.emplace_back(player);
+				}
+			}
+
+			return event_data;
+		}
+
+		const fob_events_data_t& get_events_data()
+		{
+			static const auto event_list = parse_events_data();
+			return event_list;
+		}
+
 		std::size_t get_current_event_index()
 		{
 			const auto week = get_event_number();
 			auto& events_data = get_events_data();
 			const auto index = week % events_data.events.size();
 			return index;
-		}
-
-		void create_database_entries()
-		{
-			auto& events_data = get_events_data();
-			for (auto& player : events_data.players)
-			{
-				create_database_entries_for_player(player);
-			}
 		}
 
 		void reset_values()
@@ -381,6 +258,172 @@ namespace database::fob_events
 		}
 	}
 
+	bool fob_event_player_t::parse(nlohmann::json& data)
+	{
+		this->player_id = data["player_id"].get<std::uint64_t>();
+		this->player_name = data["player_name"].get<std::string>();
+
+		if (!this->emblem.parse(data["emblem"], false))
+		{
+			return false;
+		}
+
+		if (!this->motherbase.parse(data["motherbase"]))
+		{
+			return false;
+		}
+
+		auto& fob_list_j = data["fob_list"];
+		for (auto i = 0ull; i < fob_list_j.size(); i++)
+		{
+			this->fob_ids.emplace_back(fob_list_j[i]["mother_base_id"]);
+
+			game::fob_param_t param{};
+			if (!param.parse(fob_list_j[i]))
+			{
+				return false;
+			}
+
+			this->fob_params.emplace_back(param);
+		}
+
+		auto& staff_resources_j = data["staff_resources"];
+		if (!staff_resources_j.is_object())
+		{
+			return false;
+		}
+
+		game::fob_placements_t placement{};
+		game::fob_resources_t usable_resource{};
+		game::fob_resources_t processing_resource{};
+
+		if (!placement.parse(staff_resources_j["placement"]) ||
+			!usable_resource.parse(staff_resources_j["usable_resource"]) ||
+			!processing_resource.parse(staff_resources_j["processing_resource"]))
+		{
+			return false;
+		}
+
+		auto& section_level = staff_resources_j["section_level"];
+		auto& section_staff = staff_resources_j["section_staff"];
+
+		auto& processed = this->staff_resources.resource_arrays[game::processed_server];
+		auto& unprocessed = this->staff_resources.resource_arrays[game::unprocessed_server];
+		auto& unit_levels = this->staff_resources.unit_levels;
+		auto& unit_counts = this->staff_resources.unit_counts;
+
+		processed[game::EMPLACEMENT_GUN_EAST] = placement.emplacement_gun_east;
+		processed[game::EMPLACEMENT_GUN_WEST] = placement.emplacement_gun_west;
+		processed[game::ANTI_AIR_GATLING_GUN_EAST] = placement.gatling_gun_east;
+		processed[game::ANTI_AIR_GATLING_GUN_WEST] = placement.gatling_gun_west;
+		processed[game::MORTAR_NORMAL] = placement.mortar_normal;
+
+		processed[game::BIOTIC_RESOURCE] = usable_resource.biotic_resource;
+		processed[game::COMMON_METAL] = usable_resource.common_metal;
+		processed[game::FUEL_RESOURCE] = usable_resource.fuel_resource;
+		processed[game::MINOR_METAL] = usable_resource.minor_metal;
+		processed[game::PRECIOUS_METAL] = usable_resource.precious_metal;
+
+		unprocessed[game::BIOTIC_RESOURCE] = processing_resource.biotic_resource;
+		unprocessed[game::COMMON_METAL] = processing_resource.common_metal;
+		unprocessed[game::FUEL_RESOURCE] = processing_resource.fuel_resource;
+		unprocessed[game::MINOR_METAL] = processing_resource.minor_metal;
+		unprocessed[game::PRECIOUS_METAL] = processing_resource.precious_metal;
+
+		for (auto i = 0; i < game::unit_count; i++)
+		{
+			unit_levels.value[i] = section_level[game::unit_names[i]].get<std::uint32_t>();
+		}
+
+		auto total_staff = 0;
+		for (auto i = 0ull; i < section_staff.size(); i++)
+		{
+			const auto& staff_of_rank_at_unit = section_staff[i];
+			for (auto o = 0; o < game::unit_count; o++)
+			{
+				const auto& unit_name = game::unit_names[o];
+				const auto& staff_count = staff_of_rank_at_unit[unit_name].get<std::uint32_t>();
+				unit_counts.value[o] += staff_count;
+				this->staff_resources.staff_count += staff_count;
+
+				for (auto l = 0u; l < staff_count; l++)
+				{
+					auto staff_index = total_staff++;
+					this->staff_resources.staff_array[staff_index].fields.header.peak_rank = i;
+					this->staff_resources.staff_array[staff_index].fields.status_sync.designation = game::SECTION_COMBAT + o;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	bool fob_events_data_t::parse(nlohmann::json& data)
+	{
+		auto& players_j = data["players"];
+		auto& event_list_j = data["event_list"];
+
+		for (auto i = 0ull; i < players_j.size(); i++)
+		{
+			auto player = std::make_shared<fob_event_player_t>();
+			if (!player->parse(players_j[i]))
+			{
+				return false;
+			}
+
+			this->players.emplace_back(player);
+		}
+
+		for (auto i = 0ull; i < event_list_j.size(); i++)
+		{
+			auto event = std::make_shared<fob_event_t>();
+			if (!event->parse(event_list_j[i]))
+			{
+				return false;
+			}
+
+			this->events.emplace_back(event);
+		}
+
+		return true;
+	}
+
+	bool fob_event_t::parse(nlohmann::json& data)
+	{
+		this->one_event_task = data["one_event_task"];
+		this->server_text = data["server_text"].get<std::string>();
+
+		auto& information_list = data["information_list"];
+		for (auto i = 0ull; i < information_list.size(); i++)
+		{
+			emulator::tpp::cmd_get_informationlist2_base::message_t message{};
+
+			if (!message.parse(information_list[i]))
+			{
+				continue;
+			}
+
+			message.get_info_id = get_information_message_id;
+			message.get_date = get_information_message_date;
+			message.info_id = static_cast<std::uint32_t>(i);
+			this->information.emplace_back(message);
+		}
+
+		if (!this->point_exchange_params.parse(data["point_exchange_params"]))
+		{
+			return false;
+		}
+
+		auto& players = data["players"];
+		for (auto i = 0ull; i < players.size(); i++)
+		{
+			const auto player_id = players[i].get<std::uint64_t>();
+			this->player_ids.emplace_back(player_id);
+		}
+
+		return true;
+	}
+
 	void get_maintenance_range(std::chrono::system_clock::time_point& start, std::chrono::system_clock::time_point& end)
 	{
 		const auto day = date::floor<date::days>(std::chrono::system_clock::now());
@@ -395,53 +438,51 @@ namespace database::fob_events
 		}
 	}
 
-	fob_event_date_range_t get_event_range()
+	void get_event_range(std::chrono::seconds& start, std::chrono::seconds& end)
 	{
 		std::chrono::system_clock::time_point event_start{};
 		std::chrono::system_clock::time_point event_end{};
 		get_maintenance_range(event_start, event_end);
 
-		fob_event_date_range_t range{};
-		range.start = std::chrono::duration_cast<std::chrono::seconds>(event_start.time_since_epoch());
-		range.end = std::chrono::duration_cast<std::chrono::seconds>(event_end.time_since_epoch());
-
-		return range;
+		start = std::chrono::duration_cast<std::chrono::seconds>(event_start.time_since_epoch());
+		end = std::chrono::duration_cast<std::chrono::seconds>(event_end.time_since_epoch());
 	}
 
-	std::optional<fob_event_player_t> get_player(const std::uint64_t id)
+	std::shared_ptr<fob_event_player_t> fob_events_data_t::get_player(const std::uint64_t player_id)
 	{
-		auto& events_data = get_events_data();
-		for (const auto& player : events_data.players)
-		{
-			if (player.player_id == id)
+		const auto iter = std::ranges::find_if(this->players.begin(), this->players.end(),
+			[&](const std::shared_ptr<fob_event_player_t>& player)
 			{
-				return {player};
+				return player->player_id == player_id;
 			}
+		);
+
+		if (iter != this->players.end())
+		{
+			return *iter;
 		}
 
-		return {};
+		return nullptr;
 	}
 
-	bool is_event_player(const std::uint64_t id)
+	std::optional<running_event_info_t> get_current_event()
 	{
-		const auto player = get_player(id);
-		return player.has_value();
-	}
+		running_event_info_t info{};
 
-	const fob_event_t* get_current_event()
-	{
-		auto& events_data = get_events_data();
+		const auto& events_data = get_events_data();
 		if (events_data.events.empty())
 		{
 			return {};
 		}
 
 		const auto index = get_current_event_index();
-		auto& event = events_data.events[index];
-		event.index = static_cast<std::uint32_t>(index);
-		event.number = get_event_number();
-		event.date_range = get_event_range();
-		return &event;
+
+		info.index = static_cast<std::uint32_t>(index);
+		info.number = get_event_number();
+		info.params = events_data.events[index];
+		get_event_range(info.start, info.end);
+
+		return {info};
 	}
 
 	bool is_intermission()
@@ -458,7 +499,7 @@ namespace database::fob_events
 		const auto& event_data = get_events_data();
 		for (const auto& event : event_data.events)
 		{
-			for (const auto& message : event.information)
+			for (const auto& message : event->information)
 			{
 				if (message.text == text)
 				{
@@ -476,24 +517,22 @@ namespace database::fob_events
 		void create(database_t& database) override
 		{
 			register_lang_vars();
-
-			create_database_entries();
+			get_events_data();
 
 			command::add("get_current_event", []()
 			{
 				const auto event = get_current_event();
-				if (event != nullptr)
+				if (event.has_value())
 				{
 					console::print("[FOB Events] current event: \n");
-					console::print("\tname: %s\n", event->server_text.data());
+					console::print("\tname: %s\n", event->params->server_text.data());
 					console::print("\tplayer list:\n");
 
-					for (const auto id : event->player_ids)
+					for (const auto& player : event->params->players)
 					{
-						const auto player = get_player(id);
-						if (player.has_value())
+						if (player != nullptr)
 						{
-							console::print("\t\tid: %i, name: \"%s\"\n", id, player->player_name.data());
+							console::print("\t\tid: %i, name: \"%s\"\n", player->player_id, player->player_name.data());
 						}
 					}
 

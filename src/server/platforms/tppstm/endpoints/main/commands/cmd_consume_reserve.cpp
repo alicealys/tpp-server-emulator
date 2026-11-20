@@ -10,12 +10,12 @@ namespace emulator::tpp
 	nlohmann::json cmd_consume_reserve::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
 		
 		return result;
+	}
+
+	bool cmd_consume_reserve::needs_player()
+	{
+		return true;
 	}
 }

@@ -10,12 +10,6 @@ namespace emulator::tpp
 	nlohmann::json cmd_sale_resource::execute(nlohmann::json& data, const std::optional<database::players::player>& player)
 	{
 		nlohmann::json result;
-		result["result"] = "NOERR";
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
 
 		const auto& num_j = data["num"];
 		const auto& resource_id_j = data["resouce_id"]; // typo in the game
@@ -78,5 +72,10 @@ namespace emulator::tpp
 		database::player_data::set_resources_gmp(player->get_id(), resource_arrays, local_gmp, server_gmp);
 
 		return result;
+	}
+
+	bool cmd_sale_resource::needs_player()
+	{
+		return true;
 	}
 }

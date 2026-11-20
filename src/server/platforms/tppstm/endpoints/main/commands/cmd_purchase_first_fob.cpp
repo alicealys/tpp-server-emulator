@@ -11,13 +11,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		result["result"] = "NOERR";
-
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-		
 		const auto& area_id_j = data["area_id"];
 		
 		const auto fob_list = database::fobs::get_fob_list(player->get_id());
@@ -36,5 +29,10 @@ namespace emulator::tpp
 		database::fobs::create(player->get_id(), area_id);
 		
 		return result;
+	}
+
+	bool cmd_purchase_first_fob::needs_player()
+	{
+		return true;
 	}
 }

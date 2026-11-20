@@ -29,7 +29,7 @@ namespace emulator::tpp
 				}
 
 				game::fob_param_t param{};
-				if (!game::parse_fob_param(param_j, param))
+				if (!param.parse(param_j))
 				{
 					return error(ERR_INVALIDARG);
 				}
@@ -44,7 +44,11 @@ namespace emulator::tpp
 		}
 		
 		game::motherbase_t motherbase{};
-		game::parse_motherbase(data, motherbase);
+		if (!motherbase.parse(data))
+		{
+			return error(ERR_INVALIDARG);
+		}
+
 		database::player_data::sync_motherbase(player->get_id(), motherbase);
 		
 		result["version"] = 0;

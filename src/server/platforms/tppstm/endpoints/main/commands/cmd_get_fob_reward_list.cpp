@@ -13,15 +13,15 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		result["reward_count"] = 0;
 		result["version"] = 0;
 		result["reward_info"] = nlohmann::json::array();
 
 		return result;
+	}
+
+	bool cmd_get_fob_reward_list::needs_player()
+	{
+		return true;
 	}
 }

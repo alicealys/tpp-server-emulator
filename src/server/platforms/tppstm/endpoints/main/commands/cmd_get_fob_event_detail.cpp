@@ -11,11 +11,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		const auto& event_index_j = data["event_index"];
 		if (!event_index_j.is_number_unsigned())
 		{
@@ -67,5 +62,10 @@ namespace emulator::tpp
 		result["event"]["regist_date"] = sneak_result->get_date();
 
 		return result;
+	}
+
+	bool cmd_get_fob_event_detail::needs_player()
+	{
+		return true;
 	}
 }

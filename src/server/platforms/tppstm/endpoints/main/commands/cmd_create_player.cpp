@@ -46,11 +46,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		database::player_records::find_or_create(player->get_id());
 		database::player_data::find_or_create(player->get_id());
 		database::event_rankings::create_entries(player->get_id());
@@ -106,5 +101,10 @@ namespace emulator::tpp
 		result["player_id"] = player->get_id();
 
 		return result;
+	}
+
+	bool cmd_create_player::needs_player()
+	{
+		return true;
 	}
 }

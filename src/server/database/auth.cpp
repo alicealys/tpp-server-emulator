@@ -341,35 +341,36 @@ namespace auth
 		return {response};
 	}
 
-	std::optional<auth_response> authenticate_user(const std::string& account_id, const std::string& password)
+	auth_response authenticate_user(const std::string& account_id, const std::string& password)
 	{
-		const auto account_id_int = std::strtoull(account_id.data(), nullptr, 10);
-		const auto player_opt = database::players::find_from_account(account_id_int);
-		if (!player_opt.has_value())
-		{
-			return {};
-		}
-
-		const auto& player = player_opt.value();
-
 		auth_response response{};
 
-		const auto pwd = player.get_login_password();
-		const auto hash = utils::cryptography::md5::compute(pwd);
-		const auto hash_b64 = utils::cryptography::base64::encode(hash);
-
-		response.success = password == hash_b64;
-		if (!response.success)
+		const auto account_id_int = std::strtoull(account_id.data(), nullptr, 10);
+		response.player = database::players::find_from_account(account_id_int);
+		if (!response.player.has_value())
 		{
-			return {response};
+			return response;
 		}
 
-		response.player_id = player.get_id();
-		response.smart_device_id = player.get_smart_device_id();
+		const auto target_password_hash = response.player->get_login_password();
+		const auto password_decoded = utils::cryptography::base64::decode(password);
+		const auto password_hash = utils::cryptography::sha512::compute(password_decoded, true);
+
+		if (password_hash.size() != target_password_hash.size())
+		{
+			return response;
+		}
+
+		if (mem_neq(password_hash.data(), target_password_hash.data(), target_password_hash.size()) != 0)
+		{
+			return response;
+		}
+
+		response.success = true;
 		response.session_id = database::players::generate_session_id(account_id_int);
 		response.crypto_key = database::players::generate_crypto_key(account_id_int);
 
-		return {response};
+		return response;
 	}
 
 	std::string generate_data(const size_t len, bool base64)

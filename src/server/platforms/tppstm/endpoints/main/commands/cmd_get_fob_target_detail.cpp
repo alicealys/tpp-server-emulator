@@ -124,8 +124,7 @@ namespace emulator::tpp
 		database::sneak_results::generate_sneak_reward_previews(cluster_param, primary_reward);
 		primary_reward.to_json(detail_j["primary_reward"]);
 
-		const auto event_player = database::fob_events::get_player(owner->get_id());
-		if (is_event && event_player.has_value())
+		if (is_event)
 		{
 			detail_j["reward_rate"] = 200;
 			detail_j["platform"] = 255;

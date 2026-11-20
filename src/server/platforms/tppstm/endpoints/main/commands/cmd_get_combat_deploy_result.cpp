@@ -31,11 +31,6 @@ namespace emulator::tpp
 	{
 		nlohmann::json result;
 
-		if (!player.has_value())
-		{
-			return error(ERR_INVALID_SESSION);
-		}
-
 		const auto player_data = database::player_data::find(player->get_id());
 		if (!player_data.has_value())
 		{
