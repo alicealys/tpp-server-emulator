@@ -8,6 +8,7 @@
 #include "variables.hpp"
 #include "event_rankings.hpp"
 #include "mgo_data.hpp"
+#include "online_news.hpp"
 #include "../../component/command.hpp"
 
 #include "utils/lang_strings.hpp"
@@ -20,30 +21,6 @@ namespace database::fob_events
 {
 	namespace
 	{
-		constexpr auto event_number_variable_name = "fob_event_number";
-
-		std::uint32_t get_information_message_id(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
-		{
-			const auto& event = get_current_event();
-			if (!event.has_value())
-			{
-				return 0u;
-			}
-
-			return 1000000u + static_cast<std::uint32_t>(event->get_event_id()) * 100u + message.info_id;
-		}
-
-		std::uint64_t get_information_message_date(const emulator::tpp::cmd_get_informationlist2_base::message_t& message)
-		{
-			const auto& event = get_current_event();
-			if (!event.has_value())
-			{
-				return 0u;
-			}
-
-			return event->get_start_date().count();
-		}
-
 		void register_lang_vars()
 		{
 			utils::lang::register_var("event_name", [](const std::uint8_t lang)
@@ -415,15 +392,13 @@ namespace database::fob_events
 		{
 			for (auto i = 0ull; i < information_list_j.size(); i++)
 			{
-				emulator::tpp::cmd_get_informationlist2_base::message_t message{};
+				online_news::information_data_t message{};
 
 				if (!message.parse(information_list_j[i]))
 				{
 					continue;
 				}
 
-				message.get_info_id = get_information_message_id;
-				message.get_date = get_information_message_date;
 				message.info_id = static_cast<std::uint32_t>(i);
 				this->information.emplace_back(message);
 			}
@@ -470,7 +445,7 @@ namespace database::fob_events
 		{
 			for (const auto& message : event->information)
 			{
-				if (message.text == text)
+				if (message.body == text)
 				{
 					return true;
 				}
@@ -614,6 +589,14 @@ namespace database::fob_events
 		console::print("[events] creating event instance for event type \"%s\"\n", target_event->params->name.data());
 	}
 
+	void add_event_news(database_t& db, const fob_event& event)
+	{
+		for (const auto& info : event.params->information)
+		{
+			online_news::add_info(info.body, false, false, event.get_end_date());
+		}
+	}
+
 	void update_event(database_t& db)
 	{
 		auto current_event = get_current_event(db);
@@ -664,6 +647,7 @@ namespace database::fob_events
 		case event_state_none:
 		{
 			reset_values();
+			add_event_news(db, current_event.value());
 			set_event_state(db, current_event->get_event_id(), event_state_running);
 			console::print("[events] event state changed: RUNNING\n");
 			break;

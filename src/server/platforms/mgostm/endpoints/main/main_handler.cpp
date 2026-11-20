@@ -8,7 +8,7 @@
 #include "commands/cmd_do_mgo_ascension.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_gdpr_check.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_get_abolition_count.hpp"
-#include "commands/cmd_get_informationlist2.hpp"
+#include "../../../tppstm/endpoints/main/commands/cmd_get_informationlist2.hpp"
 #include "../../../tppstm/endpoints/main/commands/cmd_get_mbcoin_remainder.hpp"
 #include "commands/cmd_get_mgo_boost.hpp"
 #include "commands/cmd_get_mgo_character2.hpp"
@@ -70,7 +70,7 @@ namespace emulator::mgo
 		this->register_handler<cmd_do_mgo_ascension>("CMD_DO_MGO_ASCENSION");
 		this->register_handler<tpp::cmd_gdpr_check>("CMD_GDPR_CHECK");
 		this->register_handler<tpp::cmd_get_abolition_count>("CMD_GET_ABOLITION_COUNT");
-		this->register_handler<cmd_get_informationlist2>("CMD_GET_INFORMATIONLIST2");
+		this->register_handler<tpp::cmd_get_informationlist2>("CMD_GET_INFORMATIONLIST2");
 		this->register_handler<tpp::cmd_get_mbcoin_remainder>("CMD_GET_MBCOIN_REMAINDER");
 		this->register_handler<cmd_get_mgo_boost>("CMD_GET_MGO_BOOST");
 		this->register_handler<cmd_get_mgo_character2>("CMD_GET_MGO_CHARACTER2");

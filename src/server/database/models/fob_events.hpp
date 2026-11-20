@@ -7,6 +7,7 @@
 #include "players.hpp"
 #include "player_data.hpp"
 #include "point_exchanges.hpp"
+#include "online_news.hpp"
 
 namespace database::fob_events
 {
@@ -56,7 +57,7 @@ namespace database::fob_events
 		std::string server_text;
 		nlohmann::json one_event_task;
 		fob_event_date_range_t date_range;
-		std::vector<emulator::tpp::cmd_get_informationlist2_base::message_t> information;
+		std::vector<online_news::information_data_t> information;
 		point_exchanges::point_exchange_params_t point_exchange_params;
 		std::vector<std::uint64_t> player_ids;
 		std::vector<std::shared_ptr<fob_event_player_t>> players;

@@ -1,8 +1,8 @@
 [
     {
         "important": true,
-        "info_id": 100000,
-        "text": "info_list_sample1_text",
-        "date": 0
+        "info_id": 0,
+        "priority": -1,
+        "body": "info_list_sample1_text"
     }
 ]

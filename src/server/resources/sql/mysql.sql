@@ -526,8 +526,8 @@ create table if not exists `personal_messages`
 	receiver_id				bigint unsigned not null,
 	message_state			int unsigned not null,
 	message_mode			int unsigned not null,
-	message_text			varchar(128) not null,
-	message_title			varchar(512) not null,
+	message_text			varchar(4096) not null,
+	message_title			varchar(4096) not null,
 	message_date			datetime not null,
 	primary key (`message_id`),
 	foreign key (`sender_id`) references players(`id`),
@@ -555,4 +555,17 @@ create table if not exists `fob_events`
 	start_date			datetime not null,
 	end_date			datetime not null,
 	primary key (`event_id`)
+)
+-- query:mgstpp.online_news.create
+create table if not exists `online_news`
+(
+	info_id					bigint unsigned	not null	auto_increment,
+	subject					varchar(4096) default null,
+	body					varchar(4096) not null,
+	important				boolean not null,
+	is_mgo					boolean not null,
+	priority				int not null,
+	create_date				datetime not null,
+	end_date				datetime,
+	primary key (`info_id`)
 )
