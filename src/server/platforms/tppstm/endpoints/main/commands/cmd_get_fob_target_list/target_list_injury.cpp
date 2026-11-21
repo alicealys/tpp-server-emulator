@@ -51,7 +51,7 @@ namespace emulator::tpp
 			event_data.capture_resource.to_json(fob_record_j["capture_resource"]);
 			fob_record_j["capture_nuclear"] = event_data.capture_nuclear;
 			fob_record_j["attack_gmp"] = event_data.gmp;
-			fob_record_j["date_time"] = sneak_result.get_date();
+			fob_record_j["date_time"] = sneak_result.get_date().count();
 
 			target.player_id = sneak_result.get_attacker_id();
 

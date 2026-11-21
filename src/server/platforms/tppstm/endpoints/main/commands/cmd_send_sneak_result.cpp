@@ -724,6 +724,8 @@ namespace emulator::tpp
 			return error(ERR_INVALIDARG);
 		}
 
+		context.event_data.gmp = param.damage_point;
+
 		param.sneak_point = std::clamp(param.sneak_point, -500000, 500000);
 		param.event_point = std::clamp(param.event_point, 0, 500000);
 		context.is_win = param.sneak_result == "WIN";

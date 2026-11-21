@@ -1,5 +1,6 @@
 #include <std_include.hpp>
 
+#include "component/command.hpp"
 #include "sneak_results.hpp"
 
 #include "utils/random.hpp"
@@ -736,55 +737,128 @@ namespace database::sneak_results
 		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_MEDICAL], game::CLUSTER_CATEGORY_MEDICAL, info.platforms[6]);
 	}
 
+	GET_FIELD_C(sneak_result, std::uint64_t, id);
+	GET_FIELD_C(sneak_result, std::uint64_t, attacker_id);
+	GET_FIELD_C(sneak_result, std::uint64_t, target_id);
+	GET_FIELD_C(sneak_result, std::uint64_t, fob_id);
+	GET_FIELD_C(sneak_result, std::uint64_t, fob_index);
+	GET_FIELD_C(sneak_result, std::uint8_t, platform);
+	GET_FIELD_C(sneak_result, std::chrono::seconds, date);
+	GET_FIELD_C(sneak_result, std::uint32_t, attack_gmp);
+	GET_FIELD_C(sneak_result, std::uint32_t, capture_staff_count);
+	GET_FIELD_C(sneak_result, std::uint32_t, injure_staff_count);
+	GET_FIELD_C(sneak_result, std::uint32_t, kill_staff_count);
+	GET_FIELD_C(sneak_result, std::uint32_t, capture_resource_count);
+
 	namespace impl
 	{
 		template <database_type_t Type>
 		bool add_sneak_result(const players::player& attacker, const fobs::fob& fob, const players::sneak_info& sneak,
 			const bool is_win, const sneak_result_data_t& event_data, const std::string& event_log)
 		{
+			auto capture_staff_count = 0u;
+			auto injure_staff_count = 0u;
+			auto kill_staff_count = 0u;
+			auto capture_resource_count = 0u;
+
+			for (auto i = 0; i < 10; i++)
+			{
+				capture_staff_count += event_data.capture_staff_count[i];
+				injure_staff_count += event_data.injury_staff_count[i];
+				kill_staff_count += event_data.kill_staff_count[i];
+			}
+
+			capture_resource_count += event_data.capture_resource.biotic_resource;
+			capture_resource_count += event_data.capture_resource.fuel_resource;
+			capture_resource_count += event_data.capture_resource.common_metal;
+			capture_resource_count += event_data.capture_resource.minor_metal;
+			capture_resource_count += event_data.capture_resource.precious_metal;
+
+			auto insert = sqlpp::insert_into(sneak_result::table)
+				.set(sneak_result::table.attacker_id = attacker.get_id(),
+					 sneak_result::table.target_id = fob.get_player_id(),
+					 sneak_result::table.fob_id = fob.get_id(),
+					 sneak_result::table.fob_index = fob.get_index(),
+					 sneak_result::table.event_data = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(event_data)),
+					 sneak_result::table.event_log = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_as_hex(event_log)),
+					 sneak_result::table.is_win = is_win,
+					 sneak_result::table.platform = sneak.get_platform(),
+					 sneak_result::table.attack_gmp = event_data.gmp,
+					 sneak_result::table.capture_resource_count = capture_resource_count,
+					 sneak_result::table.capture_staff_count = capture_staff_count,
+					 sneak_result::table.injure_staff_count = injure_staff_count,
+					 sneak_result::table.kill_staff_count = kill_staff_count,
+					 sneak_result::table.create_date = std::chrono::system_clock::now()
+				);
+
+			std::uint64_t result{};
+
 			database::access([&](database::database_t& db)
 			{
-				db.get_database<Type>()->operator()(
-					sqlpp::insert_into(sneak_result::table)
-						.set(sneak_result::table.attacker_id = attacker.get_id(),
-							 sneak_result::table.target_id = fob.get_player_id(),
-							 sneak_result::table.fob_id = fob.get_id(),
-							 sneak_result::table.fob_index = fob.get_index(),
-							 sneak_result::table.event_data = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_binary(event_data)),
-							 sneak_result::table.event_log = sqlpp::verbatim<sqlpp::binary>(utils::encoding::encode_as_hex(event_log)),
-							 sneak_result::table.is_win = is_win,
-							 sneak_result::table.platform = sneak.get_platform(),
-							 sneak_result::table.create_date = std::chrono::system_clock::now()
-					));
+				result = db.get_database<Type>()->operator()(insert);
 			});
 
-			return true;
+			return result != 0ull;
 		}
 
 		template <database_type_t Type>
 		std::vector<sneak_result> get_sneak_results(const std::uint64_t target_id, const std::uint32_t limit)
 		{
-			return database::access<std::vector<sneak_result>>([&](database::database_t& db)
+			std::vector<sneak_result> sneak_results;
+
+			database::access([&](database::database_t& db)
 			{
 				auto results = db.get_database<Type>()->operator()(
 					sqlpp::select(
 						sqlpp::all_of(sneak_result::table))
 							.from(sneak_result::table)
 								.where(sneak_result::table.target_id == target_id)
-									.order_by(sneak_result::table.create_date.desc())
+									.order_by(sneak_result::table.create_date.asc())
 										.limit(limit));
-
-				std::vector<sneak_result> sneak_results;
 
 				for (const auto& row : results)
 				{
 					sneak_results.emplace_back(row);
 				}
-
-				std::reverse(sneak_results.begin(), sneak_results.end());
-
-				return sneak_results;
 			});
+
+			return sneak_results;
+		}
+
+		template <database_type_t Type>
+		sneak_damage_t get_damage_from(const std::uint64_t target_id, const std::uint64_t attacker_id, const std::chrono::seconds after_date)
+		{
+			sneak_damage_t damage{};
+
+			database::access([&](database::database_t& db)
+			{
+				auto results = db.get_database<Type>()->operator()(
+					sqlpp::select(
+						sqlpp::sum(sneak_result::table.attack_gmp).as(sqlpp::alias::a),
+						sqlpp::sum(sneak_result::table.capture_staff_count).as(sqlpp::alias::b),
+						sqlpp::sum(sneak_result::table.injure_staff_count).as(sqlpp::alias::c),
+						sqlpp::sum(sneak_result::table.kill_staff_count).as(sqlpp::alias::d),
+						sqlpp::sum(sneak_result::table.capture_resource_count).as(sqlpp::alias::e),
+						sqlpp::count(1).as(sqlpp::alias::f))
+							.from(sneak_result::table)
+								.where(sneak_result::table.target_id == target_id &&
+									   sneak_result::table.attacker_id == attacker_id &&
+									   sneak_result::table.create_date >= std::chrono::system_clock::time_point(after_date - 1s))
+									.group_by(sneak_result::table.attacker_id));
+
+				if (!results.empty())
+				{
+					auto& row = results.front();
+					damage.attack_gmp = static_cast<std::uint32_t>(row.a);
+					damage.attack_count = static_cast<std::uint32_t>(row.f);
+					damage.capture_staff_count = static_cast<std::uint32_t>(row.b);
+					damage.injure_staff_count = static_cast<std::uint32_t>(row.c);
+					damage.kill_staff_count = static_cast<std::uint32_t>(row.d);
+					damage.capture_resource_count = static_cast<std::uint32_t>(row.e);
+				}
+			});
+
+			return damage;
 		}
 
 		template <database_type_t Type>
@@ -831,6 +905,53 @@ namespace database::sneak_results
 		}
 
 		template <database_type_t Type>
+		void fix_sneak_results()
+		{
+			database::access([&](database::database_t& db)
+			{
+				auto results = db.exec<Type>(
+					sqlpp::select(sqlpp::all_of(sneak_result::table))
+						.from(sneak_result::table)
+							.unconditionally());
+
+				for (auto& row : results)
+				{
+					sneak_result result(row);
+
+					auto capture_staff_count = 0u;
+					auto injure_staff_count = 0u;
+					auto kill_staff_count = 0u;
+					auto capture_resource_count = 0u;
+
+					auto& event_data = result.get_event_data();
+
+					for (auto i = 0; i < 10; i++)
+					{
+						capture_staff_count += event_data.capture_staff_count[i];
+						injure_staff_count += event_data.injury_staff_count[i];
+						kill_staff_count += event_data.kill_staff_count[i];
+					}
+
+					capture_resource_count += event_data.capture_resource.biotic_resource;
+					capture_resource_count += event_data.capture_resource.fuel_resource;
+					capture_resource_count += event_data.capture_resource.common_metal;
+					capture_resource_count += event_data.capture_resource.minor_metal;
+					capture_resource_count += event_data.capture_resource.precious_metal;
+
+					auto update = sqlpp::update(sneak_result::table)
+						.set(sneak_result::table.capture_resource_count = capture_resource_count,
+							sneak_result::table.capture_staff_count = capture_staff_count,
+							sneak_result::table.injure_staff_count = injure_staff_count,
+							sneak_result::table.kill_staff_count = kill_staff_count,
+							sneak_result::table.attack_gmp = event_data.gmp)
+							.where(sneak_result::table.id == result.get_id());
+
+					db.exec<Type>(update);
+				}
+			});
+		}
+
+		template <database_type_t Type>
 		void delete_player_data(const std::uint64_t player_id)
 		{
 			return database::access([&](database_t& db)
@@ -870,6 +991,11 @@ namespace database::sneak_results
 		return this->platform_;
 	}
 
+	bool sneak_result::is_win() const
+	{
+		return this->is_win_;
+	}
+
 	bool add_sneak_result(const players::player& player, const fobs::fob& fob, const players::sneak_info& sneak,
 		const bool is_win, const sneak_result_data_t& event_data, const std::string& event_log)
 	{
@@ -879,6 +1005,11 @@ namespace database::sneak_results
 	std::vector<sneak_result> get_sneak_results(const std::uint64_t target_id, const std::uint32_t limit)
 	{
 		RUN_IMPL(impl::get_sneak_results, target_id, limit);
+	}
+
+	sneak_damage_t get_damage_from(const std::uint64_t target_id, const std::uint64_t attacker_id, const std::chrono::seconds after_date)
+	{
+		RUN_IMPL(impl::get_damage_from, target_id, attacker_id, after_date);
 	}
 
 	std::optional<sneak_result> get_sneak_result(const std::uint64_t target_id, const std::uint64_t event_id)
@@ -891,6 +1022,11 @@ namespace database::sneak_results
 		RUN_IMPL(impl::delete_player_data, player_id);
 	}
 
+	void fix_sneak_results()
+	{
+		RUN_IMPL(impl::fix_sneak_results);
+	}
+
 	class table final : public table_interface
 	{
 	public:
@@ -899,6 +1035,8 @@ namespace database::sneak_results
 			load_sneak_reward_settings();
 
 			database.run_query("mgstpp.sneak_results.create");
+
+			command::add("fix_sneak_results", fix_sneak_results);
 		}
 	};
 }

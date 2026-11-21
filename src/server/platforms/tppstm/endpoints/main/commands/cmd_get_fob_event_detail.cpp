@@ -45,7 +45,7 @@ namespace emulator::tpp
 		result["event"]["data"] = database::sneak_results::sneak_result::encode_client_event_log(event_log);
 		result["event"]["size"] = event_log.size();
 		result["event"]["gmp"] = event_data.gmp;
-		result["event"]["is_win"] = sneak_result->is_win() ? 1 : 0;
+		result["event"]["is_win"] = std::uint8_t(sneak_result->is_win());
 		result["event"]["layout_code"] = event_data.layout_code;
 		result["event"]["position_x"] = event_data.position_x;
 		result["event"]["position_z"] = event_data.position_z;
@@ -59,7 +59,7 @@ namespace emulator::tpp
 		result["event"]["attacker_info"] = player_info(attacker);
 		result["event"]["attacker_league_grade"] = attacker_record->get_league_grade();
 		result["event"]["attacker_sneak_grade"] = attacker_record->get_fob_grade();
-		result["event"]["regist_date"] = sneak_result->get_date();
+		result["event"]["regist_date"] = sneak_result->get_date().count();
 
 		return result;
 	}
