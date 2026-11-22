@@ -57,8 +57,8 @@ namespace emulator::tpp
 
 			emblem.to_json(target.extra_data["attacker_emblem"]);
 			auto& attacker_espionage_j = target.extra_data["attacker_espionage"];
-			attacker_espionage_j["win"] = attacker_record->get_sneak_win();
-			attacker_espionage_j["lose"] = attacker_record->get_sneak_lose();
+			attacker_espionage_j["win"] = attacker_record->get_fob_sneak_win();
+			attacker_espionage_j["lose"] = attacker_record->get_fob_sneak_lose();
 			attacker_espionage_j["score"] = attacker_record->get_fob_point();
 			attacker_espionage_j["section"] = 0;
 

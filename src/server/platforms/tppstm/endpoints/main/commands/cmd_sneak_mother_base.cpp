@@ -120,7 +120,7 @@ namespace emulator::tpp
 		result["event_fob_params"] = {0, 0, 0, 0, 0};
 
 		result["is_event"] = std::uint8_t(is_event);
-		result["is_security_contract"] = std::uint8_t(owner_record->get_is_insurance());
+		result["is_security_contract"] = std::uint8_t(owner_record->has_insurance());
 		result["owner_gmp"] = owner_data->get_server_gmp();
 
 		game::fob_resources_t recover_resource{};
@@ -209,7 +209,7 @@ namespace emulator::tpp
 					staff.fields.packed_status_no_sync = 4096; // fix broken staff
 				}
 
-				if (!owner_record->get_is_insurance() && staff.fields.status_sync.designation == game::SECTION_SECURITY)
+				if (!owner_record->has_insurance() && staff.fields.status_sync.designation == game::SECTION_SECURITY)
 				{
 					result["security_soldier"][security_soldier_index]["header"] = staff.fields.packed_header;
 					result["security_soldier"][security_soldier_index]["seed"] = staff.fields.packed_seed;

@@ -23,12 +23,12 @@ namespace emulator::tpp
 			auto& entry = result["player_list"][0];
 			entry["index"] = 0;
 			entry["name"] = std::format("{}_player01", player->get_account_id());
-			entry["espionage_lose"] = stats->get_sneak_win();
-			entry["espionage_win"] = stats->get_sneak_lose();
+			entry["espionage_lose"] = stats->get_fob_sneak_win();
+			entry["espionage_win"] = stats->get_fob_sneak_lose();
 			entry["fob_grade"] = stats->get_fob_grade();
 			entry["fob_point"] = stats->get_fob_point();
 			entry["fob_rank"] = stats->get_fob_rank();
-			entry["is_insurance"] = stats->get_is_insurance();
+			entry["is_insurance"] = std::uint8_t(stats->has_insurance());
 			entry["league_grade"] = stats->get_league_grade();
 			entry["league_rank"] = stats->get_league_rank();
 			entry["playtime"] = stats->get_playtime();

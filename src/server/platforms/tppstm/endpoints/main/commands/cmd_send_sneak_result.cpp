@@ -206,7 +206,7 @@ namespace emulator::tpp
 				database::fob_prisoners::indirect_rescue(context.attacker_data->get_player_id());
 			}
 
-			if (!modified_owner_staff || context.owner_record->get_is_insurance())
+			if (!modified_owner_staff || context.owner_record->has_insurance())
 			{
 				return true;
 			}
@@ -245,7 +245,7 @@ namespace emulator::tpp
 					add_value = std::min(sub_value, max_count - attacker_count);
 				}
 				
-				if (!context.owner_record->get_is_insurance() || resource_id == game::NUCLEAR_WEAPON)
+				if (!context.owner_record->has_insurance() || resource_id == game::NUCLEAR_WEAPON)
 				{
 					owner_resources[resource_type][resource_id] -= sub_value;
 				}

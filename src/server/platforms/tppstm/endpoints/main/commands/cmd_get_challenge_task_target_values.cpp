@@ -24,10 +24,10 @@ namespace emulator::tpp
 			database::event_rankings::get_entry_value(player->get_id(), database::event_rankings::defense_deployments_support);
 
 		result["espionage_rating_grade"] = record->get_fob_point();
-		result["fob_defense_success_count"] = record->get_defense_win();
+		result["fob_defense_success_count"] = record->get_fob_defense_win();
 		result["fob_deploy_to_supporters_emergency_count"] = deploy_to_supporters_count;
-		result["fob_sneak_count"] = record->get_sneak_win() + record->get_sneak_lose();
-		result["fob_sneak_success_count"] = record->get_sneak_win();
+		result["fob_sneak_count"] = record->get_fob_sneak_win() + record->get_fob_sneak_lose();
+		result["fob_sneak_success_count"] = record->get_fob_sneak_win();
 		result["fob_supporting_user_count"] = follows.size();
 		result["pf_rating_defense_force"] = 0;
 		result["pf_rating_defense_life"] = 0;

@@ -42,13 +42,36 @@ namespace database::player_records
 		DEFINE_FIELD(daily_last_ack, sqlpp::time_point);
 		DEFINE_FIELD(daily_total, sqlpp::integer_unsigned);
 		DEFINE_FIELD(league_last_ack, sqlpp::time_point);
-		DEFINE_TABLE(player_records, id_field_t, player_id_field_t, fob_grade_field_t, prev_fob_grade_field_t,
-			fob_point_field_t, fob_rank_field_t, prev_fob_rank_field_t, insurance_end_field_t,
-			league_grade_field_t, prev_league_grade_field_t, league_rank_field_t, prev_league_rank_field_t, 
-			league_point_field_t, pf_point_field_t, pf_point_add_field_t, event_point_field_t,
-			playtime_field_t, point_field_t, fob_defense_win_field_t, fob_defense_lose_field_t, fob_sneak_win_field_t,
-			fob_sneak_lose_field_t, shield_date_field_t, has_fob_field_t, 
-			daily_last_field_t, daily_last_ack_field_t, daily_total_field_t, league_last_ack_field_t);
+		DEFINE_TABLE(player_records, 
+			id_field_t,
+			player_id_field_t,
+			fob_grade_field_t,
+			prev_fob_grade_field_t,
+			fob_point_field_t,
+			fob_rank_field_t,
+			prev_fob_rank_field_t,
+			insurance_end_field_t,
+			league_grade_field_t,
+			prev_league_grade_field_t,
+			league_rank_field_t,
+			prev_league_rank_field_t,
+			league_point_field_t,
+			pf_point_field_t,
+			pf_point_add_field_t,
+			event_point_field_t,
+			playtime_field_t,
+			point_field_t,
+			fob_defense_win_field_t,
+			fob_defense_lose_field_t,
+			fob_sneak_win_field_t,
+			fob_sneak_lose_field_t,
+			shield_date_field_t,
+			has_fob_field_t,
+			daily_last_field_t,
+			daily_last_ack_field_t,
+			daily_total_field_t,
+			league_last_ack_field_t
+		);
 
 		inline static table_t table;
 
@@ -86,181 +109,40 @@ namespace database::player_records
 			this->insurance_end_ = std::chrono::duration_cast<std::chrono::seconds>(row.insurance_end.value().time_since_epoch());
 		}
 
-		std::uint64_t get_player_id() const
-		{
-			return this->player_id_;
-		}
+		bool has_insurance() const;
+		std::int64_t get_shield_date() const;
+		bool is_shield_active() const;
+		bool has_an_fob() const;
 
-		std::uint32_t get_fob_grade() const
-		{
-			return this->fob_grade_;
-		}
-
-		std::uint32_t get_prev_fob_grade() const
-		{
-			return this->prev_fob_grade_;
-		}
-
-		std::int32_t get_fob_point() const
-		{
-			return this->fob_point_;
-		}
-
-		std::uint32_t get_fob_rank() const
-		{
-			return this->fob_rank_;
-		}
-
-		std::uint32_t get_prev_fob_rank() const
-		{
-			return this->prev_fob_rank_;
-		}
-
-		std::uint32_t get_is_insurance() const
-		{
-			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
-			return now < this->insurance_end_;
-		}
-
-		std::uint32_t get_league_grade() const
-		{
-			return this->league_grade_;
-		}
-
-		std::uint32_t get_prev_league_grade() const
-		{
-			return this->prev_league_grade_;
-		}
-
-		std::uint32_t get_league_rank() const
-		{
-			return this->league_rank_;
-		}
-
-		std::uint32_t get_prev_league_rank() const
-		{
-			return this->prev_league_rank_;
-		}
-
-		std::uint32_t get_league_point() const
-		{
-			return this->league_point_;
-		}
-
-		std::uint32_t get_pf_point() const
-		{
-			return this->pf_point_;
-		}
-
-		std::uint32_t get_pf_point_add() const
-		{
-			return this->pf_point_add_;
-		}
-
-		std::uint32_t get_event_point() const
-		{
-			return this->event_point_;
-		}
-
-		std::uint32_t get_playtime() const
-		{
-			return this->playtime_;
-		}
-
-		std::uint32_t get_point() const
-		{
-			return this->point_;
-		}
-
-		std::uint32_t get_defense_win() const
-		{
-			return this->fob_defense_win_;
-		}
-
-		std::uint32_t get_defense_lose() const
-		{
-			return this->fob_defense_lose_;
-		}
-
-		std::uint32_t get_sneak_win() const
-		{
-			return this->fob_sneak_win_;
-		}
-
-		std::uint32_t get_sneak_lose() const
-		{
-			return this->fob_sneak_lose_;
-		}
-
-		std::int64_t get_shield_date() const
-		{
-			const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
-			if (now > this->shield_date_)
-			{
-				return 0u;
-			}
-
-			return this->shield_date_.count();
-		}
-
-		int is_shield_active() const
-		{
-			return this->get_shield_date() != 0;
-		}
-
-		bool has_an_fob() const
-		{
-			return this->has_fob_;
-		}
-
-		std::chrono::seconds get_daily_last() const
-		{
-			return this->daily_last_;
-		}
-
-		std::chrono::seconds get_daily_last_ack() const
-		{
-			return this->daily_last_ack_;
-		}
-
-		std::uint32_t get_daily_total() const
-		{
-			return this->daily_total_;
-		}
-
-		std::chrono::seconds get_league_last_ack() const
-		{
-			return this->league_last_ack_;
-		}
+		GET_FIELD_H(std::uint64_t, id);
+		GET_FIELD_H(std::uint64_t, player_id);
+		GET_FIELD_H(std::uint32_t, fob_grade);
+		GET_FIELD_H(std::uint32_t, prev_fob_grade);
+		GET_FIELD_H(std::int32_t, fob_point);
+		GET_FIELD_H(std::uint32_t, fob_rank);
+		GET_FIELD_H(std::uint32_t, prev_fob_rank);
+		GET_FIELD_H(std::uint32_t, league_grade);
+		GET_FIELD_H(std::uint32_t, prev_league_grade);
+		GET_FIELD_H(std::uint32_t, league_rank);
+		GET_FIELD_H(std::uint32_t, prev_league_rank);
+		GET_FIELD_H(std::uint32_t, league_point);
+		GET_FIELD_H(std::uint32_t, pf_point);
+		GET_FIELD_H(std::uint32_t, pf_point_add);
+		GET_FIELD_H(std::uint32_t, event_point);
+		GET_FIELD_H(std::uint32_t, playtime);
+		GET_FIELD_H(std::uint32_t, point);
+		GET_FIELD_H(std::uint32_t, fob_defense_win);
+		GET_FIELD_H(std::uint32_t, fob_defense_lose);
+		GET_FIELD_H(std::uint32_t, fob_sneak_win);
+		GET_FIELD_H(std::uint32_t, fob_sneak_lose);
+		GET_FIELD_H(bool, has_fob);
+		GET_FIELD_H(std::uint32_t, daily_total);
+		GET_FIELD_H(std::chrono::seconds, daily_last);
+		GET_FIELD_H(std::chrono::seconds, daily_last_ack);
+		GET_FIELD_H(std::chrono::seconds, league_last_ack);
+		GET_FIELD_H(std::chrono::seconds, insurance_end);
 
 	private:
-		std::uint64_t id_{};
-		std::uint64_t player_id_{};
-		std::uint32_t fob_grade_{};
-		std::uint32_t prev_fob_grade_{};
-		std::int32_t fob_point_{};
-		std::uint32_t fob_rank_{};
-		std::uint32_t prev_fob_rank_{};
-		std::chrono::seconds insurance_end_{};
-		std::uint32_t league_grade_{};
-		std::uint32_t prev_league_grade_{};
-		std::uint32_t league_rank_{};
-		std::uint32_t prev_league_rank_{};
-		std::uint32_t league_point_{};
-		std::uint32_t pf_point_{};
-		std::uint32_t pf_point_add_{};
-		std::uint32_t event_point_{};
-		std::uint32_t playtime_{};
-		std::uint32_t point_{};
-		std::uint32_t fob_defense_win_{};
-		std::uint32_t fob_defense_lose_{};
-		std::uint32_t fob_sneak_win_{};
-		std::uint32_t fob_sneak_lose_{};
-		bool has_fob_{};
-		std::chrono::seconds daily_last_{};
-		std::chrono::seconds daily_last_ack_{};
-		std::uint32_t daily_total_{};
-		std::chrono::seconds league_last_ack_{};
 		std::chrono::seconds shield_date_{};
 
 	};

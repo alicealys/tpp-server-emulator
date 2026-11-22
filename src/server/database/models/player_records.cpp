@@ -59,6 +59,62 @@ namespace database::player_records
 		}
 	}
 
+	GET_FIELD_C(player_record, std::uint64_t, id);
+	GET_FIELD_C(player_record, std::uint64_t, player_id);
+	GET_FIELD_C(player_record, std::uint32_t, fob_grade);
+	GET_FIELD_C(player_record, std::uint32_t, prev_fob_grade);
+	GET_FIELD_C(player_record, std::int32_t, fob_point);
+	GET_FIELD_C(player_record, std::uint32_t, fob_rank);
+	GET_FIELD_C(player_record, std::uint32_t, prev_fob_rank);
+	GET_FIELD_C(player_record, std::uint32_t, league_grade);
+	GET_FIELD_C(player_record, std::uint32_t, prev_league_grade);
+	GET_FIELD_C(player_record, std::uint32_t, league_rank);
+	GET_FIELD_C(player_record, std::uint32_t, prev_league_rank);
+	GET_FIELD_C(player_record, std::uint32_t, league_point);
+	GET_FIELD_C(player_record, std::uint32_t, pf_point);
+	GET_FIELD_C(player_record, std::uint32_t, pf_point_add);
+	GET_FIELD_C(player_record, std::uint32_t, event_point);
+	GET_FIELD_C(player_record, std::uint32_t, playtime);
+	GET_FIELD_C(player_record, std::uint32_t, point);
+	GET_FIELD_C(player_record, std::uint32_t, fob_defense_win);
+	GET_FIELD_C(player_record, std::uint32_t, fob_defense_lose);
+	GET_FIELD_C(player_record, std::uint32_t, fob_sneak_win);
+	GET_FIELD_C(player_record, std::uint32_t, fob_sneak_lose);
+	GET_FIELD_C(player_record, bool, has_fob);
+	GET_FIELD_C(player_record, std::uint32_t, daily_total);
+	GET_FIELD_C(player_record, std::chrono::seconds, daily_last);
+	GET_FIELD_C(player_record, std::chrono::seconds, daily_last_ack);
+	GET_FIELD_C(player_record, std::chrono::seconds, league_last_ack);
+	GET_FIELD_C(player_record, std::chrono::seconds, insurance_end);
+
+
+	bool player_record::has_insurance() const
+	{
+		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
+		return now < this->insurance_end_;
+	}
+
+	std::int64_t player_record::get_shield_date() const
+	{
+		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
+		if (now > this->shield_date_)
+		{
+			return 0u;
+		}
+
+		return this->shield_date_.count();
+	}
+
+	bool player_record::is_shield_active() const
+	{
+		return this->get_shield_date() != 0;
+	}
+
+	bool player_record::has_an_fob() const
+	{
+		return this->has_fob_;
+	}
+
 	namespace impl
 	{
 		template <database_type_t Type>

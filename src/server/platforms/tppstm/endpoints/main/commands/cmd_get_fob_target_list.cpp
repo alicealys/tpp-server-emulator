@@ -96,8 +96,8 @@ namespace emulator::tpp
 			empty_params.to_json(result["fob_deploy_damage_param"]);
 		}
 
-		result["win"] = stats->get_sneak_win();
-		result["lose"] = stats->get_sneak_lose();
+		result["win"] = stats->get_fob_sneak_win();
+		result["lose"] = stats->get_fob_sneak_lose();
 
 		result["shield_date"] = stats->get_shield_date();
 		result["target_list"] = nlohmann::json::array();
@@ -175,8 +175,8 @@ namespace emulator::tpp
 			target_entry.player_data->emblem.to_json(detail_record_j["emblem"]);
 
 			auto& espionage_j = detail_record_j["espionage"];
-			espionage_j["win"] = target_entry.player_record->get_sneak_win();
-			espionage_j["lose"] = target_entry.player_record->get_sneak_lose();
+			espionage_j["win"] = target_entry.player_record->get_fob_sneak_win();
+			espionage_j["lose"] = target_entry.player_record->get_fob_sneak_lose();
 			espionage_j["score"] = target_entry.player_record->get_fob_point();
 			espionage_j["section"] = 0;
 

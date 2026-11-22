@@ -18,7 +18,7 @@ namespace emulator::tpp
 		}
 
 		const auto enabled = data["status"] == "ENABLE";
-		if (enabled && player_record->get_is_insurance())
+		if (enabled && player_record->has_insurance())
 		{
 			return error(ERR_IN_CONTRACT);
 		}

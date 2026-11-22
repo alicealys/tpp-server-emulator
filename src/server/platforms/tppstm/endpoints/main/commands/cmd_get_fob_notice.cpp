@@ -170,13 +170,13 @@ namespace emulator::tpp
 		result["pf_finish_num_max"] = 0;
 		result["point_exchange_event_server_text"] = "NotImplement";
 
-		result["record"]["defense"]["lose"] = player_record->get_defense_lose();
-		result["record"]["defense"]["win"] = player_record->get_defense_win();
+		result["record"]["defense"]["lose"] = player_record->get_fob_defense_lose();
+		result["record"]["defense"]["win"] = player_record->get_fob_defense_win();
 		result["record"]["insurance"] = 0;
 		result["record"]["score"] = 0;
 		result["record"]["shield_date"] = player_record->get_shield_date();
-		result["record"]["sneak"]["lose"] = player_record->get_sneak_lose();
-		result["record"]["sneak"]["win"] = player_record->get_sneak_win();
+		result["record"]["sneak"]["lose"] = player_record->get_fob_sneak_lose();
+		result["record"]["sneak"]["win"] = player_record->get_fob_sneak_win();
 
 		result["short_pf_current_season"] = 0;
 		result["short_pf_finish_num"] = 0;

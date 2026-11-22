@@ -29,13 +29,13 @@ namespace emulator::tpp
 		result["sneak_mode"] = -1;
 
 		auto& record_j = result["record"];
-		record_j["defense"]["win"] = stats->get_defense_win();
-		record_j["defense"]["lose"] = stats->get_defense_lose();
-		record_j["insurance"] = std::uint8_t(stats->get_is_insurance());
+		record_j["defense"]["win"] = stats->get_fob_defense_win();
+		record_j["defense"]["lose"] = stats->get_fob_defense_lose();
+		record_j["insurance"] = std::uint8_t(stats->has_insurance());
 		record_j["score"] = stats->get_fob_point();
 		record_j["shield_date"] = stats->get_shield_date();
-		record_j["sneak"]["win"] = stats->get_sneak_win();
-		record_j["sneak"]["lose"] = stats->get_sneak_lose();
+		record_j["sneak"]["win"] = stats->get_fob_sneak_win();
+		record_j["sneak"]["lose"] = stats->get_fob_sneak_lose();
 
 		const auto set_sneak = [&](const database::players::sneak_info& sneak, const bool is_support)
 		{

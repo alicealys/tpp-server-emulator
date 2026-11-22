@@ -113,15 +113,15 @@ namespace emulator::tpp
 
 			competitor_data->emblem.to_json(entry["player_detail_record"]["emblem"]);
 			entry["player_detail_record"]["enemy"] = 0;
-			entry["player_detail_record"]["espionage"]["lose"] = competitor_record->get_sneak_lose();
+			entry["player_detail_record"]["espionage"]["lose"] = competitor_record->get_fob_sneak_lose();
 			entry["player_detail_record"]["espionage"]["score"] = competitor_record->get_fob_point();
 			entry["player_detail_record"]["espionage"]["section"] = 0;
-			entry["player_detail_record"]["espionage"]["win"] = competitor_record->get_sneak_win();
+			entry["player_detail_record"]["espionage"]["win"] = competitor_record->get_fob_sneak_win();
 			entry["player_detail_record"]["follow"] = 0;
 			entry["player_detail_record"]["follower"] = 0;
 			entry["player_detail_record"]["help"] = 0;
 			entry["player_detail_record"]["hero"] = 0;
-			entry["player_detail_record"]["insurance"] = competitor_record->get_is_insurance();
+			entry["player_detail_record"]["insurance"] = std::uint8_t(competitor_record->has_insurance());
 			entry["player_detail_record"]["is_security_challenge"] = competitor->is_security_challenge_enabled();
 			entry["player_detail_record"]["league_rank"]["grade"] = competitor_record->get_league_grade();
 			entry["player_detail_record"]["league_rank"]["rank"] = competitor_record->get_league_rank();
