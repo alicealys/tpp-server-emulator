@@ -5,6 +5,7 @@
 
 #include "database/models/player_data.hpp"
 #include "database/models/players.hpp"
+#include "database/models/event_rankings.hpp"
 
 namespace emulator::tpp
 {
@@ -15,16 +16,16 @@ namespace emulator::tpp
 		create_nuclear(player);
 
 		[[ maybe_unused ]] const auto& version_j = data["version"];
-		const auto& diff_resource_1 = data["diff_resource1"];
-		const auto& diff_resource_2 = data["diff_resource2"];
-		const auto& gmp_j = data["gmp"];
-		const auto& cumulative_grade_j = data["cumulative_grade"];
+		auto& diff_resource_1 = data["diff_resource1"];
+		auto& diff_resource_2 = data["diff_resource2"];
+		auto& gmp_j = data["gmp"];
+		auto& cumulative_grade_j = data["cumulative_grade"];
 
 		if (!gmp_j.is_number_integer() ||
 			!cumulative_grade_j.is_number_unsigned() ||
 			!diff_resource_1.is_array() || !diff_resource_2.is_array() ||
-			diff_resource_1.size() < game::RESOURCE_TYPE_COUNT ||
-			diff_resource_2.size() < game::RESOURCE_TYPE_COUNT)
+			diff_resource_1.size() != game::RESOURCE_TYPE_COUNT ||
+			diff_resource_2.size() != game::RESOURCE_TYPE_COUNT)
 		{
 			return error(ERR_INVALIDARG);
 		}
@@ -38,54 +39,58 @@ namespace emulator::tpp
 		database::player_data::resource_arrays_t resource_arrays{};
 		player_data->get_resource_arrays(resource_arrays);
 
-		const auto sync_resources = [&](const nlohmann::json& resources, 
+		database::player_data::resource_array_t captured_resources{};
+
+		const auto sync_resources = [&](nlohmann::json& resources_j, 
 			const game::resource_array_types_t local_type,
-			const game::resource_array_types_t server_type,
-			bool sync)
+			const game::resource_array_types_t server_type)
 		{
-			const auto id = local_type == game::unprocessed_local ? "2"s : "1"s;
+			const auto id = local_type == game::unprocessed_local ? 2 : 1;
 			const auto local_key = std::format("diff_resource{}", id);
 			const auto server_key = std::format("fix_resource{}", id);
 
 			auto& local_j = result[local_key];
 			auto& server_j = result[server_key];
 
-			for (auto i = 0; i < static_cast<std::int32_t>(resources.size()); i++)
+			for (auto i = 0; i < game::RESOURCE_TYPE_COUNT; i++)
 			{
-				if (sync)
+				const auto& value_j = resources_j[i];
+				if (!value_j.is_number_integer())
 				{
-					const auto& value_j = resources[i];
-					if (!value_j.is_number_integer())
-					{
-						return false;
-					}
-
-					const auto ratio = game::get_local_resource_ratio(local_type, server_type, i);
-					const auto value = value_j.get<std::int32_t>();
-
-					auto current_local_value = 0u;
-					auto current_server_value = game::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
-
-					if (value >= 0)
-					{
-						current_local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(value));
-					}
-					else
-					{
-						current_local_value = 0u;
-						current_server_value -= std::min(current_server_value, static_cast<std::uint32_t>(-1 * value));
-					}
-
-					const auto total = current_local_value + current_server_value;
-
-					const auto local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(static_cast<float>(total) * ratio));
-					const auto server_value = total >= local_value
-						? total - local_value
-						: 0u;
-
-					resource_arrays[local_type][i] = local_value;
-					resource_arrays[server_type][i] = server_value;
+					return false;
 				}
+
+				const auto ratio = game::get_local_resource_ratio(local_type, server_type, i);
+				const auto value = value_j.get<std::int32_t>();
+
+				auto current_local_value = 0u;
+				auto current_server_value = game::cap_resource_value(server_type, i, resource_arrays[server_type][i]);
+
+				if (value >= 0)
+				{
+					current_local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(value));
+				}
+				else
+				{
+					current_local_value = 0u;
+					current_server_value -= std::min(current_server_value, static_cast<std::uint32_t>(-1 * value));
+				}
+
+				const auto previous_local_value = resource_arrays[local_type][i];
+				if (local_type == game::processed_local && current_local_value > previous_local_value)
+				{
+					captured_resources[i] += current_local_value - previous_local_value;
+				}
+
+				const auto total = current_local_value + current_server_value;
+
+				const auto local_value = game::cap_resource_value(local_type, i, static_cast<std::uint32_t>(static_cast<float>(total) * ratio));
+				const auto server_value = total >= local_value
+					? total - local_value
+					: 0u;
+
+				resource_arrays[local_type][i] = local_value;
+				resource_arrays[server_type][i] = server_value;
 
 				local_j[i] = resource_arrays[local_type][i];
 				server_j[i] = resource_arrays[server_type][i];
@@ -98,23 +103,18 @@ namespace emulator::tpp
 		auto local_gmp = std::min(database::vars.max_local_gmp, gmp_j.get<std::int32_t>());
 		auto server_version = player_data->get_server_resource_version();
 
-		constexpr auto update_server = true;
-
-		if (!sync_resources(diff_resource_1, game::processed_local, game::processed_server, update_server) ||
-			!sync_resources(diff_resource_2, game::unprocessed_local, game::unprocessed_server, update_server))
+		if (!sync_resources(diff_resource_1, game::processed_local, game::processed_server) ||
+			!sync_resources(diff_resource_2, game::unprocessed_local, game::unprocessed_server))
 		{
 			return error(ERR_INVALIDARG);
 		}
 
-		if (update_server)
-		{
-			const auto total_gmp = local_gmp + server_gmp;
-			local_gmp = std::min(database::vars.max_local_gmp, static_cast<std::int32_t>(database::vars.gmp_ratio * total_gmp));
-			server_gmp = std::min(database::vars.max_server_gmp, total_gmp - local_gmp);
+		const auto total_gmp = local_gmp + server_gmp;
+		local_gmp = std::min(database::vars.max_local_gmp, static_cast<std::int32_t>(database::vars.gmp_ratio * total_gmp));
+		server_gmp = std::min(database::vars.max_server_gmp, total_gmp - local_gmp);
 
-			database::player_data::set_resources_as_sync(player->get_id(), resource_arrays, local_gmp, server_gmp);
-			server_version++;
-		}
+		database::player_data::set_resources_as_sync(player->get_id(), resource_arrays, local_gmp, server_gmp);
+		server_version++;
 
 		database::player_data::sync_client_resource_version(player->get_id());
 
@@ -130,6 +130,38 @@ namespace emulator::tpp
 
 		result["local_gmp"] = local_gmp;
 		result["server_gmp"] = server_gmp;
+
+		database::event_rankings::increment_event_value(player->get_id(),
+			database::event_rankings::league_vehicles,
+			captured_resources[game::CAR_EAST] +
+			captured_resources[game::CAR_WEST] +
+			captured_resources[game::TRUCK_EAST] +
+			captured_resources[game::TRUCK_WEST]);
+
+		database::event_rankings::increment_event_value(player->get_id(),
+			database::event_rankings::league_fight_vehicles,
+			captured_resources[game::ARMORED_VEHICLE_EAST] +
+			captured_resources[game::ARMORED_VEHICLE_WEST] +
+			captured_resources[game::ARMORED_VEHICLE_EAST_ROCKET] +
+			captured_resources[game::WHEELED_ARMORED_VEHICLE_WEST] +
+			captured_resources[game::TANK_EAST] +
+			captured_resources[game::TANK_WEST]);
+
+		database::event_rankings::increment_event_value(player->get_id(),
+			database::event_rankings::league_emplacements,
+			captured_resources[game::EMPLACEMENT_GUN_EAST] +
+			captured_resources[game::EMPLACEMENT_GUN_WEST] +
+			captured_resources[game::MORTAR_NORMAL] +
+			captured_resources[game::ANTI_AIR_GATLING_GUN_EAST] +
+			captured_resources[game::ANTI_AIR_GATLING_GUN_WEST]);
+
+		database::event_rankings::increment_event_value(player->get_id(),
+			database::event_rankings::league_walker_gears,
+			captured_resources[game::WALKER_GEAR_PROTO_HEUY] +
+			captured_resources[game::WALKER_GEAR_SOVIET_BATTLE] +
+			captured_resources[game::WALKER_GEAR_SOVIET_SUPPORT] +
+			captured_resources[game::WALKER_GEAR_CFA_BATTLE] +
+			captured_resources[game::WALKER_GEAR_CFA_SUPPORT]);
 
 		return result;
 	}

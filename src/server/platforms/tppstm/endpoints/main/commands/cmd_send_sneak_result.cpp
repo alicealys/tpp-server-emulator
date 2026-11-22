@@ -451,11 +451,21 @@ namespace emulator::tpp
 					context.event_data.capture_resource.minor_metal +
 					context.event_data.capture_resource.precious_metal;
 
+				const auto emplacements_captured =
+					context.event_data.capture_placement.emplacement_gun_east +
+					context.event_data.capture_placement.emplacement_gun_west +
+					context.event_data.capture_placement.gatling_gun_east +
+					context.event_data.capture_placement.gatling_gun_west +
+					context.event_data.capture_placement.mortar_normal;
+
 				database::event_rankings::increment_event_value(player.get_id(),
 					database::event_rankings::materials_stolen, materials_stolen);
 
 				database::event_rankings::increment_event_value(player.get_id(),
 					database::event_rankings::damage_defender, param.damage_point);
+
+				database::event_rankings::increment_event_value(player.get_id(),
+					database::event_rankings::league_emplacements, emplacements_captured);
 			}
 
 			auto is_high_damage = false;
