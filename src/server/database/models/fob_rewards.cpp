@@ -57,7 +57,7 @@ namespace database::fob_rewards
 		{
 			std::vector<reward_group_t> list;
 			reward_group_t current_group{};
-			auto current_group_id = 0ull;
+			std::uint64_t current_group_id = 0ull;
 
 			database::access([&](database::database_t& db)
 			{
@@ -83,7 +83,9 @@ namespace database::fob_rewards
 					database_struct<game::reward_t> param{};
 					param.deserialize(row.reward_param);
 
-					if (row.reward_group_id != current_group_id)
+					const std::uint64_t reward_group_id = row.reward_group_id;
+
+					if (reward_group_id != current_group_id)
 					{
 						if (current_group_id != 0)
 						{
@@ -93,7 +95,7 @@ namespace database::fob_rewards
 						current_group.rewards.clear();
 						current_group.attacker_id = row.attacker_id;
 						current_group.attacker_xuid = row.account_id;
-						current_group_id = row.reward_group_id;
+						current_group_id = reward_group_id;
 					}
 
 					current_group.rewards.emplace_back(param);
