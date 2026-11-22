@@ -295,6 +295,10 @@ namespace database::sneak_results
 
 		auto& resource_multiplier_j = data["resource_multiplier"];
 		auto& staff_multiplier_j = data["staff_multiplier"];
+		auto& attack_rate_j = data["attack_rate"];
+		auto& defense_passive_rate_j = data["defense_passive_rate"];
+		auto& defense_active_rate_j = data["defense_active_rate"];
+		auto& security_challenge_rate_j = data["security_challenge_rate"];
 		auto& tiers_j = data["tiers"];
 		auto& clusters_j = data["clusters"];
 
@@ -314,6 +318,42 @@ namespace database::sneak_results
 		else
 		{
 			this->staff_multiplier = 1.f;
+		}
+
+		if (attack_rate_j.is_number())
+		{
+			this->attack_rate = attack_rate_j.get<float>();
+		}
+		else
+		{
+			this->attack_rate = 1.f;
+		}
+
+		if (defense_passive_rate_j.is_number())
+		{
+			this->defense_passive_rate = defense_passive_rate_j.get<float>();
+		}
+		else
+		{
+			this->defense_passive_rate = 0.1f;
+		}
+
+		if (defense_active_rate_j.is_number())
+		{
+			this->defense_active_rate = defense_active_rate_j.get<float>();
+		}
+		else
+		{
+			this->defense_active_rate = 0.01f;
+		}
+
+		if (security_challenge_rate_j.is_number())
+		{
+			this->security_challenge_rate = security_challenge_rate_j.get<float>();
+		}
+		else
+		{
+			this->security_challenge_rate = 1.5f;
 		}
 
 		if (!tiers_j.is_array() || !clusters_j.is_array() || clusters_j.size() != this->clusters.size())
@@ -512,8 +552,29 @@ namespace database::sneak_results
 			case game::POOL_REWARD_TYPE_HAOMA:
 				this->haoma += reward.value;
 				break;
+			case game::POOL_REWARD_TYPE_STAFF_SPP:
+			case game::POOL_REWARD_TYPE_STAFF_SP:
+			case game::POOL_REWARD_TYPE_STAFF_S:
+			case game::POOL_REWARD_TYPE_STAFF_A:
+			case game::POOL_REWARD_TYPE_STAFF_B:
+			case game::POOL_REWARD_TYPE_STAFF_C:
+			case game::POOL_REWARD_TYPE_STAFF_D:
+			case game::POOL_REWARD_TYPE_STAFF_E:
+			case game::POOL_REWARD_TYPE_STAFF_F:
+			case game::POOL_REWARD_TYPE_STAFF_G:
+			{
+				this->section = reward.section;
+				const auto rank = game::POOL_REWARD_TYPE_STAFF_G - reward.type;
+				this->staff_rank.emplace_back(rank);
+				break;
+			}
 			}
 		}
+
+		std::sort(this->staff_rank.begin(), this->staff_rank.end(), [](const std::uint8_t a, const std::uint8_t b)
+		{
+			return a < b;
+		});
 	}
 
 	void sneak_result_rewards_t::to_json(nlohmann::json& data) const
@@ -564,7 +625,7 @@ namespace database::sneak_results
 	}
 
 	bool generate_sneak_rewards(const game::fob_cluster_param_single_t& cluster_param, const std::uint8_t cluster_type, 
-		sneak_result_rewards_t& info, std::vector<game::reward_t>& rewards)
+		sneak_result_rewards_t& info, std::vector<game::reward_t>& rewards, const bool is_security_challenge, const std::uint32_t sneak_type)
 	{
 		const auto& settings = get_sneak_reward_settings();
 
@@ -585,7 +646,30 @@ namespace database::sneak_results
 		const auto& tier = *iter;
 		const auto& cluster = settings.clusters[cluster_type];
 
-		info.rate = tier.rate;
+		auto rate = tier.rate;
+		auto multiplier = 1.f;
+
+		switch (sneak_type)
+		{
+		case sneak_reward_type_attack:
+			multiplier = settings.attack_rate;
+			break;
+		case sneak_reward_type_defense_active:
+			multiplier = settings.defense_active_rate;
+			break;
+		case sneak_reward_type_defense_passive:
+			multiplier = settings.defense_passive_rate;
+			break;
+		}
+
+		if (is_security_challenge)
+		{
+			multiplier *= settings.security_challenge_rate;
+		}
+
+		rate = static_cast<std::uint32_t>(static_cast<float>(rate) * multiplier);
+
+		info.rate = rate;
 		info.key_item = 0xFFFF;
 		info.main_type = 0;
 		info.param_id = 0;
@@ -596,7 +680,7 @@ namespace database::sneak_results
 			reward.rate = 100000;
 			reward.type = resource.type;
 			reward.value = static_cast<std::uint32_t>(
-				static_cast<float>(resource.value.generate(tier.rate)) * settings.resource_multiplier);
+				static_cast<float>(resource.value.generate(rate)) * settings.resource_multiplier);
 			rewards.emplace_back(reward);
 		}
 
@@ -606,7 +690,7 @@ namespace database::sneak_results
 		}
 
 		const auto staff_count = static_cast<std::uint32_t>(
-			static_cast<float>(cluster.staff.count.generate(tier.rate)) * settings.staff_multiplier);
+			static_cast<float>(cluster.staff.count.generate(rate)) * settings.staff_multiplier);
 
 		const auto section_index = utils::random::index(cluster.staff.sections);
 		info.section = cluster.staff.sections[section_index];
@@ -616,20 +700,24 @@ namespace database::sneak_results
 
 		for (auto i = 0u; i < staff_count; i++)
 		{
-			const auto rank = static_cast<std::uint8_t>(dist(engine));
-			info.staff_rank.emplace_back(rank);
-		}
+			const auto rank = std::clamp(
+				static_cast<std::uint8_t>(dist(engine)),
+				std::uint8_t(game::STAFF_SECTION_RANK_G),
+				std::uint8_t(game::STAFF_SECTION_RANK_SPP));
 
-		std::sort(info.staff_rank.begin(), info.staff_rank.end(), [](const std::uint8_t a, const std::uint8_t b)
-		{
-			return a < b;
-		});
+			game::reward_t reward{};
+			reward.rate = 100000;
+			reward.type = game::POOL_REWARD_TYPE_STAFF_G - rank;
+			reward.section = info.section;
+			reward.value = 1;
+			rewards.emplace_back(reward);
+		}
 
 		return true;
 	}
 
 	void generate_sneak_reward_preview(const game::fob_cluster_param_single_t& cluster_param, const std::uint32_t cluster_type, 
-		std::array<game::reward_t, 4>& rewards)
+		std::array<game::reward_t, 4>& rewards, const bool is_security_challenge, const std::uint32_t sneak_type)
 	{
 		const auto& settings = get_sneak_reward_settings();
 
@@ -644,6 +732,28 @@ namespace database::sneak_results
 
 		const auto& tier = *iter;
 		const auto& cluster = settings.clusters[cluster_type];
+		auto rate = tier.rate;
+		auto multiplier = 1.f;
+
+		switch (sneak_type)
+		{
+		case sneak_reward_type_attack:
+			multiplier = settings.attack_rate;
+			break;
+		case sneak_reward_type_defense_active:
+			multiplier = settings.defense_active_rate;
+			break;
+		case sneak_reward_type_defense_passive:
+			multiplier = settings.defense_passive_rate;
+			break;
+		}
+
+		if (is_security_challenge)
+		{
+			multiplier *= settings.security_challenge_rate;
+		}
+
+		rate = static_cast<std::uint32_t>(static_cast<float>(rate) * multiplier);
 
 		const auto count = std::min(rewards.size(), cluster.highlight.size());
 		for (auto i = 0ull; i < count; i++)
@@ -672,7 +782,7 @@ namespace database::sneak_results
 					std::int8_t min_rank = -1;
 					std::int8_t max_rank = -1;
 
-					reward.value = cluster.staff.count.generate(tier.rate, false);
+					reward.value = cluster.staff.count.generate(rate, false);
 
 					for (auto o = 0ull; o < tier.staff_ranks.size(); o++)
 					{
@@ -709,7 +819,7 @@ namespace database::sneak_results
 					}
 
 					reward.type = highlight.resource.type;
-					reward.value = highlight.resource.value.generate(tier.rate, false);
+					reward.value = highlight.resource.value.generate(rate, false);
 
 					if (reward.type == game::POOL_REWARD_TYPE_GMP)
 					{
@@ -726,15 +836,15 @@ namespace database::sneak_results
 		}
 	}
 
-	void generate_sneak_reward_previews(const game::fob_cluster_param_t& clusters, sneak_reward_previews_t& info)
+	void generate_sneak_reward_previews(const game::fob_cluster_param_t& clusters, sneak_reward_previews_t& info, const bool is_security_challenge, const std::uint32_t sneak_type)
 	{
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_COMMAND], game::CLUSTER_CATEGORY_COMMAND, info.platforms[0]);
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_COMBAT], game::CLUSTER_CATEGORY_COMBAT, info.platforms[1]);
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_DEVELOP], game::CLUSTER_CATEGORY_DEVELOP, info.platforms[2]);
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_BASE_DEV], game::CLUSTER_CATEGORY_BASE_DEV, info.platforms[3]);
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_SUPPORT], game::CLUSTER_CATEGORY_SUPPORT, info.platforms[4]);
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_SPY], game::CLUSTER_CATEGORY_SPY, info.platforms[5]);
-		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_MEDICAL], game::CLUSTER_CATEGORY_MEDICAL, info.platforms[6]);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_COMMAND], game::CLUSTER_CATEGORY_COMMAND, info.platforms[0], is_security_challenge, sneak_type);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_COMBAT], game::CLUSTER_CATEGORY_COMBAT, info.platforms[1], is_security_challenge, sneak_type);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_DEVELOP], game::CLUSTER_CATEGORY_DEVELOP, info.platforms[2], is_security_challenge, sneak_type);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_BASE_DEV], game::CLUSTER_CATEGORY_BASE_DEV, info.platforms[3], is_security_challenge, sneak_type);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_SUPPORT], game::CLUSTER_CATEGORY_SUPPORT, info.platforms[4], is_security_challenge, sneak_type);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_SPY], game::CLUSTER_CATEGORY_SPY, info.platforms[5], is_security_challenge, sneak_type);
+		generate_sneak_reward_preview(clusters.param[game::CLUSTER_CATEGORY_MEDICAL], game::CLUSTER_CATEGORY_MEDICAL, info.platforms[6], is_security_challenge, sneak_type);
 	}
 
 	GET_FIELD_C(sneak_result, std::uint64_t, id);

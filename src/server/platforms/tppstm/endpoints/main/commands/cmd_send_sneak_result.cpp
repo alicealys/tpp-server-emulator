@@ -6,6 +6,7 @@
 #include "database/models/fob_deploy_assists.hpp"
 #include "database/models/fob_events.hpp"
 #include "database/models/fob_prisoners.hpp"
+#include "database/models/fob_rewards.hpp"
 #include "database/models/player_records.hpp"
 #include "database/models/players.hpp"
 #include "database/models/sneak_results.hpp"
@@ -358,8 +359,35 @@ namespace emulator::tpp
 	{
 		database::sneak_results::sneak_result_rewards_t reward_info{};
 
-		if (!context.active_sneak->is_sneak() || context.active_sneak->get_mode() != database::players::mode_actual || 
-			!context.is_win || context.active_sneak->get_owner_id() == player.get_id())
+		if (context.active_sneak->get_mode() != database::players::mode_actual || 
+			(context.active_sneak->is_sneak() && context.active_sneak->get_owner_id() == player.get_id()))
+		{
+			reward_info.to_json(rewards_j);
+			return;
+		}
+
+		auto sneak_reward_type = database::sneak_results::sneak_reward_type_none;
+		if (context.active_sneak->is_sneak())
+		{
+			if (context.is_win)
+			{
+				sneak_reward_type = database::sneak_results::sneak_reward_type_attack;
+			}
+			else if (!context.defender.has_value() || context.defender->is_session_expired() || 
+					 context.defender->get_id() != context.owner->get_id())
+			{
+				sneak_reward_type = database::sneak_results::sneak_reward_type_defense_passive;
+			}
+		}
+		else
+		{
+			if (context.is_win)
+			{
+				sneak_reward_type = database::sneak_results::sneak_reward_type_defense_active;
+			}
+		}
+
+		if (sneak_reward_type == database::sneak_results::sneak_reward_type_none)
 		{
 			reward_info.to_json(rewards_j);
 			return;
@@ -371,11 +399,28 @@ namespace emulator::tpp
 		const auto cluster = clusters.param[cluster_type];
 
 		std::vector<game::reward_t> rewards;
-		std::vector<game::reward_t> result_rewards;
-		database::sneak_results::generate_sneak_rewards(cluster, cluster_type, reward_info, rewards);
+		database::sneak_results::generate_sneak_rewards(cluster, cluster_type, reward_info, 
+			rewards, context.active_sneak->is_security_challenge(), sneak_reward_type);
 
-		context.attacker_data->give_rewards(rewards, &result_rewards);
-		reward_info.set_rewards(result_rewards);
+		switch (sneak_reward_type)
+		{
+		case database::sneak_results::sneak_reward_type_attack:
+		case database::sneak_results::sneak_reward_type_defense_active:
+		{
+			std::vector<game::reward_t> attacker_rewards;
+			context.attacker_data->give_rewards(rewards, &attacker_rewards);
+			reward_info.set_rewards(attacker_rewards);
+			break;
+		}
+		case database::sneak_results::sneak_reward_type_defense_passive:
+		{
+			std::vector<game::reward_t> owner_rewards;
+			context.owner_data->give_rewards(rewards, &owner_rewards);
+			database::fob_rewards::send_rewards(context.owner->get_id(), context.attacker_data->get_player_id(), owner_rewards);
+			break;
+		}
+		}
+
 		reward_info.to_json(rewards_j);
 	}
 
@@ -435,7 +480,7 @@ namespace emulator::tpp
 					database::event_rankings::increment_event_value(player.get_id(), database::event_rankings::total_stealth, 1);
 				}
 
-				const auto event_id = defender_id != 0ull
+				const auto event_id = context.defender.has_value() && !context.defender->is_session_expired()
 					? database::event_rankings::cores_reached_defender
 					: database::event_rankings::cores_reached_no_defender;
 				database::event_rankings::increment_event_value(player.get_id(), event_id, 1);
@@ -754,6 +799,11 @@ namespace emulator::tpp
 			!context.owner_record.has_value())
 		{
 			return error(ERR_DATABASE);
+		}
+
+		if (context.active_sneak->is_sneak() && context.active_sneak->get_defender_id() != 0)
+		{
+			context.defender = database::players::find(context.active_sneak->get_defender_id());
 		}
 
 		if (!this->handle_result(player.value(), param, context))

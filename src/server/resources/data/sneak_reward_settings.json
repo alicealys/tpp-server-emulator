@@ -1,6 +1,10 @@
 {
     "resource_multiplier": 1.0,
     "staff_multiplier": 1.0,
+    "attack_rate": 1.0,
+    "defense_passive_rate": 0.1,
+    "defense_active_rate": 0.05,
+    "security_challenge_rate": 1.5,
     "tiers": [
         {
             "rate": 300,

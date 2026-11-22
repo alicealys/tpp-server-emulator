@@ -69,6 +69,7 @@ namespace emulator::tpp
 		{
 			std::optional<database::fobs::fob> fob;
 			std::optional<database::players::player> owner;
+			std::optional<database::players::player> defender;
 			std::optional<database::player_data::player_data> owner_data;
 			std::optional<database::player_records::player_record> owner_record;
 			std::optional<database::player_data::player_data> attacker_data;

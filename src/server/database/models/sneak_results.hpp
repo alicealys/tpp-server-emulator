@@ -71,6 +71,10 @@ namespace database::sneak_results
 
 		float resource_multiplier;
 		float staff_multiplier;
+		float attack_rate;
+		float defense_passive_rate;
+		float defense_active_rate;
+		float security_challenge_rate;
 		std::vector<tier_t> tiers;
 		std::array<cluster_rewards_t, 7> clusters;
 
@@ -126,8 +130,16 @@ namespace database::sneak_results
 		void to_json(nlohmann::json& data) const;
 	};
 
+	enum sneak_reward_type_t : std::uint32_t
+	{
+		sneak_reward_type_none = 0,
+		sneak_reward_type_attack = 1,
+		sneak_reward_type_defense_passive = 2,
+		sneak_reward_type_defense_active = 3,
+	};
+
 	bool generate_sneak_rewards(const game::fob_cluster_param_single_t& cluster_param, const std::uint8_t cluster_type,
-		sneak_result_rewards_t& info, std::vector<game::reward_t>& rewards);
+		sneak_result_rewards_t& info, std::vector<game::reward_t>& rewards, const bool is_security_challenge, const std::uint32_t sneak_type);
 
 	struct sneak_reward_previews_t
 	{
@@ -136,7 +148,7 @@ namespace database::sneak_results
 		void to_json(nlohmann::json& data) const;
 	};
 
-	void generate_sneak_reward_previews(const game::fob_cluster_param_t& cluster_param, sneak_reward_previews_t& info);
+	void generate_sneak_reward_previews(const game::fob_cluster_param_t& cluster_param, sneak_reward_previews_t& info, const bool is_security_challenge, const std::uint32_t sneak_type);
 
 	struct sneak_damage_t
 	{

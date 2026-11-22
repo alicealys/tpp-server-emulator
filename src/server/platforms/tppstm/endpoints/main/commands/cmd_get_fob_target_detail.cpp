@@ -41,6 +41,7 @@ namespace emulator::tpp
 		}
 
 		const auto is_event = is_event_j.get<std::uint32_t>() == 1;
+		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
 
 		const auto mother_base_id = mother_base_id_j.get<std::uint64_t>();
 		auto fob = database::fobs::get_fob(mother_base_id);
@@ -121,7 +122,13 @@ namespace emulator::tpp
 		placements.to_json(detail_j["placement"]);
 
 		database::sneak_results::sneak_reward_previews_t primary_reward{};
-		database::sneak_results::generate_sneak_reward_previews(cluster_param, primary_reward);
+		
+		if (is_sneak)
+		{
+			database::sneak_results::generate_sneak_reward_previews(cluster_param, primary_reward, 
+				owner->is_security_challenge_enabled(), database::sneak_results::sneak_reward_type_attack);
+		}
+
 		primary_reward.to_json(detail_j["primary_reward"]);
 
 		if (is_event)
@@ -219,7 +226,6 @@ namespace emulator::tpp
 			}
 		}
 
-		const auto is_sneak = is_sneak_j.get<std::uint32_t>() == 1;
 		if (is_sneak)
 		{
 			session_j["ip"] = player->get_ex_ip();

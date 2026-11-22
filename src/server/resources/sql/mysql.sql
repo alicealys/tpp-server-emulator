@@ -574,3 +574,23 @@ create table if not exists `online_news`
 	end_date				datetime,
 	primary key (`info_id`)
 )
+-- query:mgstpp.fob_reward_groups.create
+create table if not exists `fob_reward_groups`
+(
+	reward_group_id			bigint unsigned	not null	auto_increment,
+	owner_id				bigint unsigned	not null,
+	attacker_id				bigint unsigned,
+	create_date				datetime not null,
+	primary key (`reward_group_id`),
+	foreign key (`owner_id`) references players(`id`),
+	foreign key (`attacker_id`) references players(`id`)
+)
+-- query:mgstpp.fob_rewards.create
+create table if not exists `fob_rewards`
+(
+	reward_id				bigint unsigned	not null	auto_increment,
+	reward_group_id			bigint unsigned	not null,
+	reward_param			varchar(64) not null,
+	primary key (`reward_id`),
+	foreign key (`reward_group_id`) references fob_reward_groups(`reward_group_id`)
+)

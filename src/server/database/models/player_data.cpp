@@ -880,7 +880,7 @@ namespace database::player_data
 				game::reward_t reward{};
 				reward.value = new_mb_coin;
 				reward.type = game::POOL_REWARD_TYPE_MB_COIN;
-				reward.bottom_type = reward.type;
+				reward.bottom_type = 0;
 				reward.rate = 100;
 				result_rewards->emplace_back(reward);
 			}
@@ -911,7 +911,7 @@ namespace database::player_data
 					game::reward_t reward{};
 					reward.value = amount;
 					reward.type = static_cast<std::uint8_t>(game::resource_to_reward(i));
-					reward.bottom_type = reward.type;
+					reward.bottom_type = 0;
 					reward.rate = 100;
 					result_rewards->emplace_back(reward);
 				}
