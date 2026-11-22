@@ -86,7 +86,12 @@ namespace database::player_records
 	GET_FIELD_C(player_record, std::chrono::seconds, daily_last_ack);
 	GET_FIELD_C(player_record, std::chrono::seconds, league_last_ack);
 	GET_FIELD_C(player_record, std::chrono::seconds, insurance_end);
-
+	GET_FIELD_C(player_record, std::uint64_t, event_id);
+	GET_FIELD_C(player_record, std::uint32_t, event_offense_force);
+	GET_FIELD_C(player_record, std::uint32_t, event_defense_force);
+	GET_FIELD_C(player_record, std::uint32_t, event_security_level);
+	GET_FIELD_C(player_record, std::uint32_t, event_cumulative_grade);
+	GET_FIELD_C(player_record, std::chrono::seconds, event_last_update);
 
 	bool player_record::has_insurance() const
 	{

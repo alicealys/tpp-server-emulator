@@ -42,6 +42,12 @@ namespace database::player_records
 		DEFINE_FIELD(daily_last_ack, sqlpp::time_point);
 		DEFINE_FIELD(daily_total, sqlpp::integer_unsigned);
 		DEFINE_FIELD(league_last_ack, sqlpp::time_point);
+		DEFINE_FIELD(event_id, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_offense_force, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_defense_force, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_security_level, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_cumulative_grade, sqlpp::integer_unsigned);
+		DEFINE_FIELD(event_last_update, sqlpp::time_point);
 		DEFINE_TABLE(player_records, 
 			id_field_t,
 			player_id_field_t,
@@ -70,7 +76,13 @@ namespace database::player_records
 			daily_last_field_t,
 			daily_last_ack_field_t,
 			daily_total_field_t,
-			league_last_ack_field_t
+			league_last_ack_field_t,
+			event_id_field_t,
+			event_offense_force_field_t,
+			event_defense_force_field_t,
+			event_security_level_field_t,
+			event_cumulative_grade_field_t,
+			event_last_update_field_t
 		);
 
 		inline static table_t table;
@@ -107,6 +119,13 @@ namespace database::player_records
 
 			this->shield_date_ = std::chrono::duration_cast<std::chrono::seconds>(row.shield_date.value().time_since_epoch());
 			this->insurance_end_ = std::chrono::duration_cast<std::chrono::seconds>(row.insurance_end.value().time_since_epoch());
+
+			this->event_id_ = row.event_id;
+			this->event_offense_force_ = static_cast<std::uint32_t>(row.event_offense_force);
+			this->event_defense_force_ = static_cast<std::uint32_t>(row.event_defense_force);
+			this->event_security_level_ = static_cast<std::uint32_t>(row.event_security_level);
+			this->event_cumulative_grade_ = static_cast<std::uint32_t>(row.event_cumulative_grade);
+			this->event_last_update_ = std::chrono::duration_cast<std::chrono::seconds>(row.event_last_update.value().time_since_epoch());
 		}
 
 		bool has_insurance() const;
@@ -141,6 +160,12 @@ namespace database::player_records
 		GET_FIELD_H(std::chrono::seconds, daily_last_ack);
 		GET_FIELD_H(std::chrono::seconds, league_last_ack);
 		GET_FIELD_H(std::chrono::seconds, insurance_end);
+		GET_FIELD_H(std::uint64_t, event_id);
+		GET_FIELD_H(std::uint32_t, event_offense_force);
+		GET_FIELD_H(std::uint32_t, event_defense_force);
+		GET_FIELD_H(std::uint32_t, event_security_level);
+		GET_FIELD_H(std::uint32_t, event_cumulative_grade);
+		GET_FIELD_H(std::chrono::seconds, event_last_update);
 
 	private:
 		std::chrono::seconds shield_date_{};

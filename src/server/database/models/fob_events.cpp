@@ -9,6 +9,7 @@
 #include "event_rankings.hpp"
 #include "mgo_data.hpp"
 #include "online_news.hpp"
+#include "pf_league.hpp"
 #include "../../component/command.hpp"
 
 #include "utils/lang_strings.hpp"
@@ -522,6 +523,68 @@ namespace database::fob_events
 
 			return event;
 		}
+		
+		template <database_type_t Type>
+		std::vector<player_records::player_record> find_unset_snapshots(database_t& db, const std::uint64_t league_id, const std::uint32_t limit)
+		{
+			auto results = db.exec<Type>(
+				sqlpp::select(sqlpp::all_of(player_records::player_record::table))
+						.from(player_records::player_record::table)
+							.where(!IS_SYSTEM_PLAYER_ID(player_records::player_record::table.player_id) && 
+								   (player_records::player_record::table.event_id.is_null() || 
+									   player_records::player_record::table.event_id != league_id)  &&
+								   player_records::player_record::table.has_fob)
+										.limit(limit));
+
+			std::vector<player_records::player_record> list;
+			for (auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		}
+
+		template <database_type_t Type>
+		void set_player_snapshot(database_t& db, const std::uint64_t player_id, const std::uint64_t event_id, const std::uint32_t offense_force,
+			const std::uint32_t defense_force, const std::uint32_t security_level, const std::uint32_t cumulative_grade)
+		{
+			db.exec<Type>(sqlpp::update(player_records::player_record::table)
+				.set(player_records::player_record::table.event_id = event_id,
+					 player_records::player_record::table.event_offense_force = offense_force,
+					 player_records::player_record::table.event_defense_force = defense_force,
+					 player_records::player_record::table.event_security_level = security_level,
+					 player_records::player_record::table.event_cumulative_grade = cumulative_grade,
+					 player_records::player_record::table.event_last_update = std::chrono::system_clock::now())
+					.where(player_records::player_record::table.player_id == player_id));
+		}
+		
+		template <database_type_t Type>
+		void set_player_last_update(database_t& db, const std::uint64_t player_id, const std::chrono::seconds last_update)
+		{
+			db.exec<Type>(sqlpp::update(player_records::player_record::table)
+				.set(player_records::player_record::table.event_last_update = std::chrono::system_clock::time_point(last_update))
+					.where(player_records::player_record::table.player_id == player_id));
+		}
+
+		template <database_type_t Type>
+		std::vector<player_records::player_record> find_players_to_update(database_t& db, const std::uint64_t event_id, const std::uint32_t limit)
+		{
+			auto results = db.exec<Type>(
+				sqlpp::select(sqlpp::all_of(player_records::player_record::table))
+						.from(player_records::player_record::table)
+							.where(player_records::player_record::table.event_id == event_id &&
+								   player_records::player_record::table.event_last_update < std::chrono::system_clock::now() - 24h)
+										.limit(limit));
+
+			std::vector<player_records::player_record> list;
+			for (auto& row : results)
+			{
+				list.emplace_back(row);
+			}
+
+			return list;
+		}
 	}
 
 	bool fob_event::initialize_params()
@@ -574,6 +637,27 @@ namespace database::fob_events
 		RUN_IMPL(impl::create_event, db, type, start_date, end_date);
 	}
 
+	std::vector<player_records::player_record> find_unset_snapshots(database_t& db, const std::uint64_t event_id, const std::uint32_t limit)
+	{
+		RUN_IMPL(impl::find_unset_snapshots, db, event_id, limit);
+	}
+
+	std::vector<player_records::player_record> find_players_to_update(database_t& db, const std::uint64_t event_id, const std::uint32_t limit)
+	{
+		RUN_IMPL(impl::find_players_to_update, db, event_id, limit);
+	}
+
+	void set_player_snapshot(database_t& db, const std::uint64_t player_id, const std::uint64_t event_id, const std::uint32_t offense_force,
+		const std::uint32_t defense_force, const std::uint32_t security_level, const std::uint32_t cumulative_grade)
+	{
+		RUN_IMPL(impl::set_player_snapshot, db, player_id, event_id, offense_force, defense_force, security_level, cumulative_grade);
+	}
+
+	void set_player_last_update(database_t& db, const std::uint64_t player_id, const std::chrono::seconds last_update)
+	{
+		RUN_IMPL(impl::set_player_last_update, db, player_id, last_update);
+	}
+
 	void create_target_event(database_t& db)
 	{
 		const auto target_event = get_target_event();
@@ -595,6 +679,93 @@ namespace database::fob_events
 		{
 			online_news::add_info(info.body, false, false, event.get_end_date());
 		}
+	}
+
+	bool set_record_snapshots(database_t& db, const fob_event& fob_event)
+	{
+		const auto players = find_unset_snapshots(db, fob_event.get_event_id(), 100u);
+		if (players.empty())
+		{
+			return false;
+		}
+
+		for (const auto& player : players)
+		{
+			database::pf_league::player_pf_data_t player_pf_data{};
+			database::pf_league::player_pf_params_t player_pf_params{};
+			database::pf_league::calculate_pf_params(player.get_player_id(), player_pf_data, player_pf_params);
+
+			set_player_snapshot(db, player.get_player_id(), fob_event.get_event_id(),
+				player_pf_params.offensive_capability.elements[database::pf_league::offensive_capability_sum],
+				player_pf_params.defensive_capability.elements[database::pf_league::defensive_capability_sum],
+				player_pf_params.security_level,
+				player_pf_data.cumulative_grade);
+		}
+
+		return true;
+	}
+
+	bool update_player_ranking_values(database_t& db, const fob_event& fob_event)
+	{
+		const auto players = find_players_to_update(db, fob_event.get_event_id(), 100u);
+		if (players.empty())
+		{
+			return false;
+		}
+
+		const auto now = std::chrono::system_clock::now();
+		const auto now_s = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
+
+		for (const auto& player : players)
+		{
+			database::pf_league::player_pf_data_t player_pf_data{};
+			database::pf_league::player_pf_params_t player_pf_params{};
+			database::pf_league::calculate_pf_params(player.get_player_id(), player_pf_data, player_pf_params);
+
+			const auto prev_offense = player.get_event_offense_force();
+			const auto prev_defense = player.get_event_defense_force();
+			const auto prev_security = player.get_event_security_level();
+			const auto prev_grade = player.get_event_cumulative_grade();
+
+			const auto cur_offense = player_pf_params.offensive_capability.elements[database::pf_league::offensive_capability_sum];
+			const auto cur_defense = player_pf_params.defensive_capability.elements[database::pf_league::defensive_capability_sum];
+			const auto cur_security = player_pf_data.cumulative_grade;
+			const auto cur_grade = player_pf_params.security_level;
+
+			auto boost_offense = 0;
+			auto boost_defense = 0;
+			auto boost_security = 0;
+			auto boost_grade = 0;
+
+			if (cur_offense > prev_offense)
+			{
+				boost_offense = static_cast<std::int32_t>(cur_offense - prev_offense);
+			}
+
+			if (cur_defense > prev_defense)
+			{
+				boost_defense = static_cast<std::int32_t>(cur_defense - prev_defense);
+			}
+
+			if (cur_security > prev_security)
+			{
+				boost_security = static_cast<std::int32_t>(cur_security - prev_security);
+			}
+
+			if (cur_grade > prev_grade)
+			{
+				boost_grade = static_cast<std::int32_t>(cur_grade - prev_grade);
+			}
+
+			database::event_rankings::set_event_value(player.get_player_id(), database::event_rankings::league_offsensive_boost, boost_offense);
+			database::event_rankings::set_event_value(player.get_player_id(), database::event_rankings::league_defensive_boost, boost_defense);
+			database::event_rankings::set_event_value(player.get_player_id(), database::event_rankings::league_security_boost, boost_security);
+			database::event_rankings::set_event_value(player.get_player_id(), database::event_rankings::league_grade_boost, boost_grade);
+
+			set_player_last_update(db, player.get_player_id(), now_s);
+		}
+
+		return true;
 	}
 
 	void update_event(database_t& db)
@@ -646,10 +817,26 @@ namespace database::fob_events
 		{
 		case event_state_none:
 		{
+			set_event_state(db, current_event->get_event_id(), event_state_initial);
+			console::print("[events] event state changed: INITIAL\n");
+			break;
+		}
+		case event_state_initial:
+		{
 			reset_values();
 			add_event_news(db, current_event.value());
-			set_event_state(db, current_event->get_event_id(), event_state_running);
-			console::print("[events] event state changed: RUNNING\n");
+			set_event_state(db, current_event->get_event_id(), event_state_prepare);
+			console::print("[events] event state changed: PREPARE\n");
+			break;
+		}
+		case event_state_prepare:
+		{
+			if (!set_record_snapshots(db, current_event.value()))
+			{
+				set_event_state(db, current_event->get_event_id(), event_state_running);
+				console::print("[events] event state changed: RUNNING\n");
+			}
+
 			break;
 		}
 		case event_state_running:
@@ -670,6 +857,8 @@ namespace database::fob_events
 			}
 			else
 			{
+				update_player_ranking_values(db, current_event.value());
+				
 				if ((ranking_update_index != 0 || now - last_ranking_update > 1h) && (now - last_ranking_query > 1min))
 				{
 					event_rankings::update_rankings(db, ranking_entries[ranking_update_index]);

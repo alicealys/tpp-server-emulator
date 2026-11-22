@@ -91,9 +91,11 @@ namespace database::fob_events
 	enum event_state_t
 	{
 		event_state_none = 0u,
-		event_state_running = 1u,
-		event_state_finished = 2u,
-		event_state_dead = 3u,
+		event_state_initial = 1u,
+		event_state_prepare = 2u,
+		event_state_running = 3u,
+		event_state_finished = 4u,
+		event_state_dead = 5u,
 	};
 
 	enum event_ranking_state_t

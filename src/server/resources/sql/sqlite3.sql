@@ -63,7 +63,14 @@ create table if not exists `player_records`
 	league_last_ack				datetime default null,
 	daily_total					int unsigned not null default 0,
 	shield_date					datetime not null,
+	event_id					bigint unsigned default null,
+	event_offense_force			int unsigned not null default 0,
+	event_defense_force			int unsigned not null default 0,
+	event_security_level		int unsigned not null default 0,
+	event_cumulative_grade		int unsigned not null default 0,
+	event_last_update			datetime default null,
 	foreign key (`player_id`) references players(`id`),
+	foreign key (`event_id`) references fob_events(`event_id`),
 	unique (`player_id`)
 )
 -- query:mgstpp.player_records.update_fob_ranking
@@ -560,7 +567,7 @@ create table if not exists `online_news`
 	is_mgo					boolean not null,
 	priority				int not null,
 	create_date				datetime not null,
-	end_date				datetime,
+	end_date				datetime
 )
 -- query:mgstpp.fob_reward_groups.create
 create table if not exists `fob_reward_groups`
