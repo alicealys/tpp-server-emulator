@@ -241,8 +241,10 @@ join (
 on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
 set event_ranking.player_rank = ranked.new_rank,
 	event_ranking.player_rank_number = new_rank_number
-where event_ranking.player_rank <=> ranked.new_rank
-   or event_ranking.player_rank_number <=> ranked.new_rank_number;
+where event_ranking.player_rank != ranked.new_rank
+   or event_ranking.player_rank_number != ranked.new_rank_number
+   or event_ranking.player_rank is null
+   or event_ranking.player_rank_number is null;
 -- query:mgstpp.event_rankings.update_entries_league
 update event_rankings event_ranking
 join (
@@ -258,8 +260,10 @@ join (
 on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
 set event_ranking.player_rank = ranked.new_rank, 
 	event_ranking.player_rank_number = new_rank_number
-where event_ranking.player_rank <=> ranked.new_rank
-   or event_ranking.player_rank_number <=> ranked.new_rank_number;
+where event_ranking.player_rank != ranked.new_rank
+   or event_ranking.player_rank_number != ranked.new_rank_number
+   or event_ranking.player_rank is null
+   or event_ranking.player_rank_number is null;
 -- query:mgstpp.mgo_characters.create
 create table if not exists `mgo_characters`
 (
