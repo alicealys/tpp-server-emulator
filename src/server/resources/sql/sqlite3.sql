@@ -255,11 +255,11 @@ player_rank_number = (
 with ranked as (
     select
         event_rankings.player_id,
-        event_id,
+        event_rankings.event_id,
         value,
-        rank() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank,
-		row_number() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank_number    
-	from event_rankings join player_records on event_rankings.player_id = player_records.player_id where event_id = {}
+        rank() over (partition by event_rankings.event_id order by player_records.league_grade desc, value desc) as new_rank,
+		row_number() over (partition by event_rankings.event_id order by player_records.league_grade desc, value desc) as new_rank_number    
+	from event_rankings join player_records on event_rankings.player_id = player_records.player_id where event_rankings.event_id = {}
 )
 update event_rankings
 set player_rank = (
