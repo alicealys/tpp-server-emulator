@@ -45,7 +45,7 @@ namespace database::fob_events
 					return {};
 				}
 
-				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->get_start_date()));
+				return date::format("%b. %d, %Y, %R", std::chrono::system_clock::time_point(current_event->get_start_date()));
 			});
 
 			utils::lang::register_var("event_end", [](const std::uint8_t)
@@ -57,7 +57,7 @@ namespace database::fob_events
 					return {};
 				}
 
-				return date::format("%b. %d, %Y", std::chrono::system_clock::time_point(current_event->get_end_date()));
+				return date::format("%b. %d, %Y, %R", std::chrono::system_clock::time_point(current_event->get_end_date()));
 			});
 
 			utils::lang::register_var("event_start_ymd", [](const std::uint8_t)
