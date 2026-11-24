@@ -201,6 +201,8 @@ namespace game
 		RESERVE_M = 58,
 		RESOURCE_TYPE_COUNT = 59,
 	};
+
+	extern std::array<std::string_view, RESOURCE_TYPE_COUNT> resource_type_names;
 	
 	enum mbm_consts_t : std::uint32_t
 	{

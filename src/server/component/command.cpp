@@ -41,6 +41,36 @@ namespace command
 		return this->tokens_[index];
 	}
 
+	int params::get_int(const size_t index) const
+	{
+		if (this->tokens_.size() <= index)
+		{
+			return 0;
+		}
+
+		return std::atoi(this->tokens_[index].data());
+	}
+
+	float params::get_float(const size_t index) const
+	{
+		if (this->tokens_.size() <= index)
+		{
+			return 0;
+		}
+
+		return static_cast<float>(std::atof(this->tokens_[index].data()));
+	}
+
+	std::uint64_t params::get_uint64(const size_t index) const
+	{
+		if (this->tokens_.size() <= index)
+		{
+			return 0;
+		}
+
+		return std::strtoull(this->tokens_[index].data(), nullptr, 0);
+	}
+
 	std::string params::operator[](const size_t index) const
 	{
 		return this->get(index);
@@ -128,6 +158,26 @@ namespace command
 		{
 			cb();
 		});
+	}
+
+	std::optional<std::string> find_command_name(const std::string& input)
+	{
+		if (input.size() < 2)
+		{
+			return {};
+		}
+
+		const auto lower = utils::string::to_lower(input);
+
+		for (const auto& [name, command] : commands)
+		{
+			if (name.starts_with(lower))
+			{
+				return {name};
+			}
+		}
+
+		return {};
 	}
 
 	class component final : public component_interface
@@ -357,6 +407,136 @@ namespace command
 				}
 
 				console::print("deleted user %lli\n", account_id);
+			});
+
+			add("list_player_resources", [](const params& params)
+			{
+				if (params.size() < 2)
+				{
+					console::print("usage: list_player_resources <player_id>\n");
+					return;
+				}
+
+				const auto player_id = params.get_uint64(1);
+
+				database::player_data::resource_arrays_t resource_arrays{};
+				if (!database::player_data::get_resource_arrays(player_id, resource_arrays))
+				{
+					console::print("player not found\n");
+					return;
+				}
+
+				console::print("---------- usable resources ----------\n");
+				for (auto i = 0; i < game::RESOURCE_TYPE_COUNT; i++)
+				{
+					console::print("%02i: %-28s: %i\n", i, game::resource_type_names[i].data(), resource_arrays[game::processed_server][i]);
+				}
+
+				console::print("-------- processing resources --------\n");
+				for (auto i = 0; i <= game::PRECIOUS_METAL; i++)
+				{
+					console::print("%02i: %-28s: %i\n", i, game::resource_type_names[i].data(), resource_arrays[game::unprocessed_server][i]);
+				}
+			});
+
+			add("find_player", [](const params& params)
+			{
+				if (params.size() < 2)
+				{
+					console::print("usage: find_player <steam_id>\n");
+					return;
+				}
+
+				const auto steam_id = params.get_uint64(1);
+				const auto player = database::players::find_from_account(steam_id);
+
+				if (!player.has_value())
+				{
+					console::print("player not found\n");
+					return;
+				}
+
+				console::print("id: %lli\n", player->get_id());
+				console::print("account_id: %lli\n", player->get_account_id());
+				console::print("creation_time: %lli\n", player->get_creation_time().count());
+				console::print("last_update: %lli\n", player->get_last_update().count());
+				console::print("online: %i\n", !player->is_session_expired());
+			});
+
+			add("set_player_resource_usable", [](const params& params)
+			{
+				if (params.size() < 3)
+				{
+					console::print("usage: set_player_resource_usable <player_id> <resource_id> <value>\n");
+					return;
+				}
+
+				const auto player_id = params.get_uint64(1);
+				const auto resource_id = params.get_int(2);
+				const auto value = params.get_int(3);
+
+				if (resource_id >= game::RESOURCE_TYPE_COUNT)
+				{
+					console::print("invalid resource id\n");
+					return;
+				}
+
+				database::player_data::resource_arrays_t resource_arrays{};
+				if (!database::player_data::get_resource_arrays(player_id, resource_arrays))
+				{
+					console::print("player not found\n");
+					return;
+				}
+
+				const auto capped = game::cap_resource_value(game::processed_server, resource_id, value);
+				const auto old_value = resource_arrays[game::unprocessed_server][resource_id];
+				resource_arrays[game::processed_server][resource_id] = capped;
+				database::player_data::set_resources(player_id, resource_arrays);
+				console::print("changed resource %s: %i -> %i\n", game::resource_type_names[resource_id].data(), old_value, capped);
+			});
+
+			add("set_player_resource_processing", [](const params& params)
+			{
+				if (params.size() < 3)
+				{
+					console::print("usage: set_player_resource_processing <player_id> <resource_id> <value>\n");
+					return;
+				}
+
+				const auto player_id = params.get_uint64(1);
+				const auto resource_id = params.get_int(2);
+				const auto value = params.get_int(3);
+
+				if (resource_id >= game::RESOURCE_TYPE_COUNT)
+				{
+					console::print("invalid resource id\n");
+					return;
+				}
+
+				database::player_data::resource_arrays_t resource_arrays{};
+				if (!database::player_data::get_resource_arrays(player_id, resource_arrays))
+				{
+					console::print("player not found\n");
+					return;
+				}
+
+				const auto capped = game::cap_resource_value(game::unprocessed_server, resource_id, value);
+				const auto old_value = resource_arrays[game::unprocessed_server][resource_id];
+				resource_arrays[game::unprocessed_server][resource_id] = capped;
+				database::player_data::set_resources(player_id, resource_arrays);
+				console::print("changed resource %s: %i -> %i\n", game::resource_type_names[resource_id].data(), old_value, capped);
+			});
+
+			add("list_nukes", []()
+			{
+				const auto players = database::player_data::find_all_with_nukes();
+
+				for (auto i = 0ull; i < players.size(); i++)
+				{
+					const auto& player = players[i].first;
+					const auto count = players[i].second;
+					console::print("%lli: player_id: %lli account_id: %lli: %i\n", i, player.get_id(), player.get_account_id(), count);
+				}
 			});
 		}
 	};

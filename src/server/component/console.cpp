@@ -259,6 +259,7 @@ namespace console
 
 				con.history_index = -1;
 
+				console::print("]%s\n", con.buffer);
 				command::execute(con.buffer);
 
 				con.cursor = 0;
@@ -279,6 +280,23 @@ namespace console
 				std::memmove(con.buffer + con.cursor - 1, con.buffer + con.cursor,
 					strlen(con.buffer) + 1 - con.cursor);
 				con.cursor--;
+
+				update();
+				break;
+			}
+			case 0x9:
+			{
+				auto name_opt = command::find_command_name(con.buffer);
+				if (!name_opt.has_value())
+				{
+					break;
+				}
+
+				const auto& name = name_opt.value();
+				std::memcpy(con.buffer, name.data(), name.size());
+				con.cursor = static_cast<int>(name.size());
+				con.buffer[con.cursor++] = ' ';
+				con.buffer[con.cursor] = '\0';
 
 				update();
 				break;
@@ -703,7 +721,7 @@ namespace console
 
 				con.history_index = -1;
 
-				print("]%s\n", con.buffer);
+				console::print("]%s\n", con.buffer);
 				command::execute(con.buffer);
 
 				con.cursor = 0;
@@ -733,6 +751,23 @@ namespace console
 				con.cursor = 0;
 				clear_output();
 				strncpy_s(con.buffer, "", sizeof(con.buffer));
+				break;
+			}
+			case VK_TAB:
+			{
+				auto name_opt = command::find_command_name(con.buffer);
+				if (!name_opt.has_value())
+				{
+					break;
+				}
+
+				const auto& name = name_opt.value();
+				std::memcpy(con.buffer, name.data(), name.size());
+				con.cursor = static_cast<int>(name.size());
+				con.buffer[con.cursor++] = ' ';
+				con.buffer[con.cursor] = '\0';
+
+				update();
 				break;
 			}
 			default:

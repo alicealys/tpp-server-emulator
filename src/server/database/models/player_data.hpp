@@ -232,6 +232,7 @@ namespace database::player_data
 	bool inc_nuke_destruct_count(const std::uint64_t player_id, const std::uint32_t count);
 
 	std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit);
+	std::vector<std::pair<players::player, std::uint32_t>> find_all_with_nukes();
 
 	void sync_client_resource_version(const std::uint64_t player_id);
 	void sync_client_staff_version(const std::uint64_t player_id);

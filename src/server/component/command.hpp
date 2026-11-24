@@ -10,6 +10,10 @@ namespace command
 		std::string get(const size_t index) const;
 		std::string operator[](const size_t index) const;
 
+		int get_int(const size_t index) const;
+		float get_float(const size_t index) const;
+		std::uint64_t get_uint64(const size_t index) const;
+
 		size_t size() const;
 
 		std::string join(const size_t index) const;
@@ -27,4 +31,6 @@ namespace command
 	void execute(const std::string& cmd);
 	void add(const std::string& name, const callback& cb);
 	void add(const std::string& name, const callback_narg& cb);
+
+	std::optional<std::string> find_command_name(const std::string& input);
 }

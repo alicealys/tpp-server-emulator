@@ -620,6 +620,28 @@ namespace database::player_data
 
 			return list;
 		}
+		
+		template <database_type_t Type>
+		std::vector<std::pair<players::player, std::uint32_t>> find_all_with_nukes()
+		{
+			std::vector<std::pair<players::player, std::uint32_t>> list;
+
+			database::access([&](database::database_t& db)
+			{
+				auto results = db.exec<Type>(
+					sqlpp::select(sqlpp::all_of(players::player::table), player_data::table.nuke_count)
+						.from(player_data::table.join(players::player::table).on(players::player::table.id == player_data::table.player_id))
+							.where(player_data::table.nuke_count > 0).order_by(player_data::table.nuke_count.desc())
+					);
+
+				for (auto& row : results)
+				{
+					list.emplace_back(std::make_pair(players::player(row), static_cast<std::uint32_t>(row.nuke_count.value())));
+				}
+			});
+
+			return list;
+		}
 
 		template <database_type_t Type>
 		bool get_resource_arrays(const std::uint64_t player_id, resource_arrays_t& out_arrays)
@@ -1053,6 +1075,11 @@ namespace database::player_data
 	std::vector<std::uint64_t> find_with_nukes(const std::uint64_t player_id, const std::uint32_t limit)
 	{
 		RUN_IMPL(impl::find_with_nukes, player_id, limit);
+	}
+
+	std::vector<std::pair<players::player, std::uint32_t>> find_all_with_nukes()
+	{
+		RUN_IMPL(impl::find_all_with_nukes);
 	}
 
 	void sync_client_resource_version(const std::uint64_t player_id)
