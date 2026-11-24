@@ -1525,6 +1525,7 @@ namespace database::pf_league
 		{
 			if (!update_league_ranks(db, league))
 			{
+				console::print("[PF League] league type %i state changed: DESTROY\n", league.get_type());
 				set_league_state(db, league.get_id(), league_state_destroy);
 			}
 		}
@@ -1533,6 +1534,7 @@ namespace database::pf_league
 		for (const auto& league : destroy_leagues)
 		{
 			clear_pf_league(db, league.get_id());
+			console::print("[PF League] league type %i state changed: DEAD\n", league.get_type());
 			set_league_state(db, league.get_id(), league_state_dead);
 		}
 	}
@@ -1543,6 +1545,7 @@ namespace database::pf_league
 		{
 		case league_state_none:
 		{
+			console::print("[PF League] league type %i state changed: INITIAL\n", league.get_type());
 			set_league_state(db, league.get_id(), league_state_initial);
 			return;
 		}
@@ -1550,6 +1553,7 @@ namespace database::pf_league
 		{
 			if (!create_pf_battles(db, league))
 			{
+				console::print("[PF League] league type %i state changed: RUNNING\n", league.get_type());
 				set_league_state(db, league.get_id(), league_state_running);
 			}
 
@@ -1559,6 +1563,7 @@ namespace database::pf_league
 		{
 			if (!run_pf_battles(db, league))
 			{
+				console::print("[PF League] league type %i state changed: COMPLETED\n", league.get_type());
 				set_league_state(db, league.get_id(), league_state_completed);
 			}
 			return;

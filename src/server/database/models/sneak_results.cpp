@@ -923,7 +923,7 @@ namespace database::sneak_results
 						sqlpp::all_of(sneak_result::table))
 							.from(sneak_result::table)
 								.where(sneak_result::table.target_id == target_id)
-									.order_by(sneak_result::table.create_date.asc())
+									.order_by(sneak_result::table.create_date.desc())
 										.limit(limit));
 
 				for (const auto& row : results)
@@ -931,6 +931,8 @@ namespace database::sneak_results
 					sneak_results.emplace_back(row);
 				}
 			});
+
+			std::reverse(sneak_results.begin(), sneak_results.end());
 
 			return sneak_results;
 		}

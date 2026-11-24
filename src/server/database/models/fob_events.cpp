@@ -670,7 +670,7 @@ namespace database::fob_events
 			std::chrono::system_clock::time_point(target_event->start),
 			std::chrono::system_clock::time_point(target_event->end));
 
-		console::print("[events] creating event instance for event type \"%s\"\n", target_event->params->name.data());
+		console::print("[FOB Events] creating event instance for event type \"%s\"\n", target_event->params->name.data());
 	}
 
 	void add_event_news(database_t& db, const fob_event& event)
@@ -818,15 +818,19 @@ namespace database::fob_events
 		case event_state_none:
 		{
 			set_event_state(db, current_event->get_event_id(), event_state_initial);
-			console::print("[events] event state changed: INITIAL\n");
+			console::print("[FOB Events] event state changed: INITIAL\n");
 			break;
 		}
 		case event_state_initial:
 		{
+			last_ranking_update = {};
+			last_ranking_query = {};
+
 			reset_values();
 			add_event_news(db, current_event.value());
 			set_event_state(db, current_event->get_event_id(), event_state_prepare);
-			console::print("[events] event state changed: PREPARE\n");
+
+			console::print("[FOB Events] event state changed: PREPARE\n");
 			break;
 		}
 		case event_state_prepare:
@@ -834,7 +838,7 @@ namespace database::fob_events
 			if (!set_record_snapshots(db, current_event.value()))
 			{
 				set_event_state(db, current_event->get_event_id(), event_state_running);
-				console::print("[events] event state changed: RUNNING\n");
+				console::print("[FOB Events] event state changed: RUNNING\n");
 			}
 
 			break;
@@ -844,7 +848,7 @@ namespace database::fob_events
 			if (now_s > current_event->get_end_date())
 			{
 				set_event_state(db, current_event->get_event_id(), event_state_finished);
-				console::print("[events] event state changed: FINISHED\n");
+				console::print("[FOB Events] event state changed: FINISHED\n");
 				break;
 			}
 
@@ -852,7 +856,7 @@ namespace database::fob_events
 			if (ranking_update_index == 0 && time_left < event_intermission_duration)
 			{
 				set_event_state(db, current_event->get_event_id(), event_state_finished);
-				console::print("[events] event state changed: FINISHED\n");
+				console::print("[FOB Events] event state changed: FINISHED\n");
 				break;
 			}
 			else
@@ -879,7 +883,7 @@ namespace database::fob_events
 			if (now_s >= current_event->get_end_date())
 			{
 				set_event_state(db, current_event->get_event_id(), event_state_dead);
-				console::print("[events] event state changed: DEAD\n");
+				console::print("[FOB Events] event state changed: DEAD\n");
 			}
 
 			break;
