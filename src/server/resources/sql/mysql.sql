@@ -241,29 +241,25 @@ join (
 on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
 set event_ranking.player_rank = ranked.new_rank,
 	event_ranking.player_rank_number = new_rank_number
-where event_ranking.player_rank != ranked.new_rank
-   or event_ranking.player_rank_number != ranked.new_rank_number
-   OR event_ranking.player_rank is null
-   OR event_ranking.player_rank_number is null;
+where event_ranking.player_rank <=> ranked.new_rank
+   or event_ranking.player_rank_number <=> ranked.new_rank_number;
 -- query:mgstpp.event_rankings.update_entries_league
 update event_rankings event_ranking
 join (
 	select
 		event_rankings.player_id,
-		event_id,
+		event_rankings.event_id,
         league_grade,
 		value,
-		rank() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank,
-		row_number() over (partition by event_id order by player_records.league_grade desc, value desc) as new_rank_number
-	from event_rankings join player_records on event_rankings.player_id = player_records.player_id where event_id = {}
+		rank() over (partition by event_rankings.event_id order by player_records.league_grade desc, value desc) as new_rank,
+		row_number() over (partition by event_rankings.event_id order by player_records.league_grade desc, value desc) as new_rank_number
+	from event_rankings join player_records on event_rankings.player_id = player_records.player_id where event_rankings.event_id = {}
 ) ranked
 on event_ranking.player_id = ranked.player_id AND event_ranking.event_id = ranked.event_id
 set event_ranking.player_rank = ranked.new_rank, 
 	event_ranking.player_rank_number = new_rank_number
-where event_ranking.player_rank != ranked.new_rank
-   or event_ranking.player_rank_number != ranked.new_rank_number
-   OR event_ranking.player_rank is null
-   OR event_ranking.player_rank_number is null;
+where event_ranking.player_rank <=> ranked.new_rank
+   or event_ranking.player_rank_number <=> ranked.new_rank_number;
 -- query:mgstpp.mgo_characters.create
 create table if not exists `mgo_characters`
 (
