@@ -826,9 +826,9 @@ namespace game
 		param.fields.pad = 0;
 
 #define SNAP_VALUE(value, min, max, ceil) \
-			if (value >= min && param.fields.layout <= ceil) \
+			if (value >= min && value <= ceil) \
 			{ \
-				value = std::clamp(param.fields.layout, min, max); \
+				value = std::clamp(value, min, max); \
 			} \
 
 		if (param.fields.layout >= 10 && param.fields.layout <= 110)
@@ -916,10 +916,9 @@ namespace game
 
 		this->security_rank = security_rank_j.get<std::uint8_t>();
 		this->construct_param.packed = construct_param_j.get<std::uint32_t>();
-		
-		validate_construct_param(this->construct_param);
-
 		this->area_id = this->construct_param.fields.area;
+
+		validate_construct_param(this->construct_param);
 
 		if (!this->cluster_param.parse(data["cluster_param"]))
 		{
@@ -939,10 +938,9 @@ namespace game
 			if (this->cluster_param.param[i].build.fields.platform_count > 0)
 			{
 				section_count++;
+				security_rank_total += this->cluster_param.param[i].cluster_security.fields.level;
+				this->platform_count += static_cast<std::uint8_t>(this->cluster_param.param[i].build.fields.platform_count);
 			}
-
-			security_rank_total += this->cluster_param.param[i].cluster_security.fields.level;
-			this->platform_count += static_cast<std::uint8_t>(this->cluster_param.param[i].build.fields.platform_count);
 		}
 
 		this->security_rank = static_cast<std::uint8_t>(static_cast<float>(security_rank_total) / static_cast<float>(section_count));
