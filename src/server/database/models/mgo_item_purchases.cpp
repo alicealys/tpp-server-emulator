@@ -161,4 +161,4 @@ namespace database::mgo_item_purchases
 	};
 }
 
-REGISTER_TABLE(database::mgo_item_purchases::table, -1)
+REGISTER_TABLE(database::mgo_item_purchases::table, 1)

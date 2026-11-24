@@ -162,4 +162,4 @@ namespace database::mgo_titles
 	};
 }
 
-REGISTER_TABLE(database::mgo_titles::table, -1)
+REGISTER_TABLE(database::mgo_titles::table, 1)

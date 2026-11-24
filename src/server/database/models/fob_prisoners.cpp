@@ -453,4 +453,4 @@ namespace database::fob_prisoners
 	};
 }
 
-REGISTER_TABLE(database::fob_prisoners::table, -1)
+REGISTER_TABLE(database::fob_prisoners::table, 1)

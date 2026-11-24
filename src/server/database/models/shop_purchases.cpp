@@ -253,4 +253,4 @@ namespace database::shop_purchases
 	};
 }
 
-REGISTER_TABLE(database::shop_purchases::table, -1)
+REGISTER_TABLE(database::shop_purchases::table, 1)

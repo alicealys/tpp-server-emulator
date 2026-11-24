@@ -147,4 +147,4 @@ namespace database::online_news
 	};
 }
 
-REGISTER_TABLE(database::online_news::table, -1)
+REGISTER_TABLE(database::online_news::table, 0)

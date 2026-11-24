@@ -88,8 +88,16 @@ namespace emulator
 			});
 		}
 
-		database::post_start();
-		component_loader::post_start();
+		try
+		{
+			database::post_start();
+			component_loader::post_start();
+		}
+		catch (const std::exception& e)
+		{
+			console::error("Failed to start database: %s\n", e.what());
+			killed = true;
+		}
 
 		if (use_lua_scripts)
 		{

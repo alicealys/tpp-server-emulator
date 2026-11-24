@@ -295,4 +295,4 @@ namespace database::wormholes
 	};
 }
 
-REGISTER_TABLE(database::wormholes::table, -1)
+REGISTER_TABLE(database::wormholes::table, 1)

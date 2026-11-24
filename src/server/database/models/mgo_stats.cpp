@@ -328,4 +328,4 @@ namespace database::mgo_stats
 	};
 }
 
-REGISTER_TABLE(database::mgo_stats::table, -1)
+REGISTER_TABLE(database::mgo_stats::table, 1)

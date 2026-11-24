@@ -196,4 +196,4 @@ namespace database::fob_rewards
 	};
 }
 
-REGISTER_TABLE(database::fob_rewards::table, -1)
+REGISTER_TABLE(database::fob_rewards::table, 1)

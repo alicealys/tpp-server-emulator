@@ -266,4 +266,4 @@ namespace database::mgo_color_purchases
 	};
 }
 
-REGISTER_TABLE(database::mgo_color_purchases::table, -1)
+REGISTER_TABLE(database::mgo_color_purchases::table, 1)

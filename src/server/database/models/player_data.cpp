@@ -1156,4 +1156,4 @@ namespace database::player_data
 	};
 }
 
-REGISTER_TABLE(database::player_data::table, -1)
+REGISTER_TABLE(database::player_data::table, 1)

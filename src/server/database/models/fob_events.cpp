@@ -914,6 +914,10 @@ namespace database::fob_events
 			database.run_query("mgstpp.fob_events.create");
 
 			register_lang_vars();
+		}
+
+		void post_start(database_t& database) override
+		{
 			get_event_settings();
 		}
 
@@ -924,4 +928,4 @@ namespace database::fob_events
 	};
 }
 
-REGISTER_TABLE(database::fob_events::table, -1000)
+REGISTER_TABLE(database::fob_events::table, 2)

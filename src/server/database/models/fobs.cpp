@@ -278,4 +278,4 @@ namespace database::fobs
 	};
 }
 
-REGISTER_TABLE(database::fobs::table, -1)
+REGISTER_TABLE(database::fobs::table, 1)

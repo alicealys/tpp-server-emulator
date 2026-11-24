@@ -186,4 +186,4 @@ namespace database::personal_messages
 	};
 }
 
-REGISTER_TABLE(database::personal_messages::table, -1)
+REGISTER_TABLE(database::personal_messages::table, 1)

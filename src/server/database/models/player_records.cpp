@@ -791,4 +791,4 @@ namespace database::player_records
 	};
 }
 
-REGISTER_TABLE(database::player_records::table, -1)
+REGISTER_TABLE(database::player_records::table, 3)

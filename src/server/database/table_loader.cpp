@@ -81,7 +81,7 @@ namespace database
 
 		std::sort(tables.begin(), tables.end(), [](const auto& a, const auto& b)
 		{
-			return a.priority > b.priority;
+			return a.priority < b.priority;
 		});
 	}
 

@@ -204,4 +204,4 @@ namespace database::player_follows
 	};
 }
 
-REGISTER_TABLE(database::player_follows::table, -1)
+REGISTER_TABLE(database::player_follows::table, 1)

@@ -452,4 +452,4 @@ namespace database::mgo_data
 	};
 }
 
-REGISTER_TABLE(database::mgo_data::table, -1)
+REGISTER_TABLE(database::mgo_data::table, 1)

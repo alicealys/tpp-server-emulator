@@ -213,4 +213,4 @@ namespace database::point_exchanges
 	};
 }
 
-REGISTER_TABLE(database::point_exchanges::table, -1)
+REGISTER_TABLE(database::point_exchanges::table, 1)

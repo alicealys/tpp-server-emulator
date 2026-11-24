@@ -771,4 +771,4 @@ namespace database::fob_deploy_assists
 	};
 }
 
-REGISTER_TABLE(database::fob_deploy_assists::table, -1)
+REGISTER_TABLE(database::fob_deploy_assists::table, 3)

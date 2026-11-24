@@ -521,4 +521,4 @@ namespace database::mgo_characters
 	};
 }
 
-REGISTER_TABLE(database::mgo_characters::table, -1)
+REGISTER_TABLE(database::mgo_characters::table, 1)

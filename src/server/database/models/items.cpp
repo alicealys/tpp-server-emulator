@@ -487,4 +487,4 @@ namespace database::items
 	};
 }
 
-REGISTER_TABLE(database::items::table, -1)
+REGISTER_TABLE(database::items::table, 1)

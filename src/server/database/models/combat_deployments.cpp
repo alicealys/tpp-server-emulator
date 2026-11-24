@@ -296,4 +296,4 @@ namespace database::combat_deployments
 	};
 }
 
-REGISTER_TABLE(database::combat_deployments::table, -1)
+REGISTER_TABLE(database::combat_deployments::table, 1)

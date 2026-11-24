@@ -1645,4 +1645,4 @@ namespace database::pf_league
 	};
 }
 
-REGISTER_TABLE(database::pf_league::table, -1)
+REGISTER_TABLE(database::pf_league::table, 1)

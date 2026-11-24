@@ -196,4 +196,4 @@ namespace database::challenge_tasks
 	};
 }
 
-REGISTER_TABLE(database::challenge_tasks::table, -1)
+REGISTER_TABLE(database::challenge_tasks::table, 1)

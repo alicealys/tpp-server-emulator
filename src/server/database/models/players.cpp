@@ -1014,4 +1014,4 @@ namespace database::players
 	};
 }
 
-REGISTER_TABLE(database::players::table, 1)
+REGISTER_TABLE(database::players::table, 0)

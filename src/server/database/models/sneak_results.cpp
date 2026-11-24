@@ -1153,4 +1153,4 @@ namespace database::sneak_results
 	};
 }
 
-REGISTER_TABLE(database::sneak_results::table, -1)
+REGISTER_TABLE(database::sneak_results::table, 2)

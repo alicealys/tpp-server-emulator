@@ -127,4 +127,4 @@ namespace database::variables
 	};
 }
 
-REGISTER_TABLE(database::variables::table, -1)
+REGISTER_TABLE(database::variables::table, 0)

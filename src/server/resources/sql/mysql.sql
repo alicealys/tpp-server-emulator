@@ -28,7 +28,12 @@ create table if not exists `players`
 	current_sneak_is_sneak				tinyint			not null		default 0,
 	current_sneak_security_challenge 	tinyint			not null		default 0,
 	current_sneak_start 				datetime,
-	primary key (`id`)
+	primary key (`id`),
+	index current_sneak_player_index (current_sneak_player),
+	index current_sneak_fob_index (current_sneak_fob),
+	index current_sneak_wormhole_player_id_index (current_sneak_wormhole_player_id),
+	index current_sneak_defender_id_index (current_sneak_defender_id),
+	index current_sneak_deploy_id_index (current_sneak_deploy_id)
 )
 -- query:mgstpp.players.set_auto_increment
 alter table `players` auto_increment = {};
@@ -73,7 +78,9 @@ create table if not exists `player_records`
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
 	foreign key (`event_id`) references fob_events(`event_id`),
-	unique (`player_id`)
+	unique (`player_id`),
+	index fob_grade_index (fob_grade desc),
+	index league_grade_index (league_grade desc)
 )
 -- query:mgstpp.player_records.update_fob_ranking
 with ranked_players as (
@@ -132,7 +139,8 @@ create table if not exists `player_data`
 	server_staff_version 		bigint unsigned default 0,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
-	unique (`player_id`)
+	unique (`player_id`),
+	index nuke_count_index (nuke_count desc)
 )
 -- query:mgstpp.items.create
 create table if not exists `items`
@@ -144,7 +152,8 @@ create table if not exists `items`
 	create_date			datetime        not null,
 	primary key (`id`),
 	foreign key (`player_id`) references players(`id`),
-	unique key `unique_item_id` (`player_id`, `item_id`)
+	unique key `unique_item_id` (`player_id`, `item_id`),
+	index item_id_index (item_id)
 )
 -- query:mgstpp.player_follows.create
 create table if not exists `player_follows`

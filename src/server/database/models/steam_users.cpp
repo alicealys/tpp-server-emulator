@@ -168,4 +168,4 @@ namespace database::steam_users
 	};
 }
 
-REGISTER_TABLE(database::steam_users::table, 1)
+REGISTER_TABLE(database::steam_users::table, 0)

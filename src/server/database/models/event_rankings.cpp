@@ -808,4 +808,4 @@ namespace database::event_rankings
 	};
 }
 
-REGISTER_TABLE(database::event_rankings::table, -1)
+REGISTER_TABLE(database::event_rankings::table, 1)
