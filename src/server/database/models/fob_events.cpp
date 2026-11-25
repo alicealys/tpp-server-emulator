@@ -729,8 +729,8 @@ namespace database::fob_events
 
 			const auto cur_offense = player_pf_params.offensive_capability.elements[database::pf_league::offensive_capability_sum];
 			const auto cur_defense = player_pf_params.defensive_capability.elements[database::pf_league::defensive_capability_sum];
-			const auto cur_security = player_pf_data.cumulative_grade;
-			const auto cur_grade = player_pf_params.security_level;
+			const auto cur_security = player_pf_params.security_level;
+			const auto cur_grade = player_pf_data.cumulative_grade;
 
 			auto boost_offense = 0;
 			auto boost_defense = 0;
